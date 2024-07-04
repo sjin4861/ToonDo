@@ -7,7 +7,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      title: 'BBANTO',
+      debugShowCheckedModeBanner: false,
+      title: 'Hodong',
       home: Grade(),
     );
   }
@@ -21,7 +22,7 @@ class Grade extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.amber[800],
       appBar: AppBar(
-        title: const Text('BBANTO'),
+        title: const Text('HODONG'),
         backgroundColor: Colors.amber[700],
         centerTitle: true,
         elevation: 0.0,
@@ -31,6 +32,18 @@ class Grade extends StatelessWidget {
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              Center(
+                child: CircleAvatar(
+                  backgroundImage: AssetImage('assets/hodong.gif'),
+                  radius: 75.0,
+                ),
+              ),
+              Divider(
+                height: 60.0,
+                color: Color.fromARGB(255, 95, 56, 22),
+                thickness: 2.0,
+                endIndent: 30.0,
+              ),
               Text(
                 'NAME',
                 style: TextStyle(
@@ -42,7 +55,7 @@ class Grade extends StatelessWidget {
                 height: 10.0,
               ),
               Text(
-                'BBANTO',
+                '강호동',
                 style: TextStyle(
                     color: Colors.white,
                     letterSpacing: 2.0,
@@ -53,7 +66,7 @@ class Grade extends StatelessWidget {
                 height: 30.0,
               ),
               Text(
-                'BBANTO POWER LEVEL',
+                'HODONG POWER LEVEL',
                 style: TextStyle(
                   color: Colors.white,
                   letterSpacing: 2.0,
@@ -63,7 +76,7 @@ class Grade extends StatelessWidget {
                 height: 10.0,
               ),
               Text(
-                '14',
+                '53',
                 style: TextStyle(
                     color: Colors.white,
                     letterSpacing: 2.0,
@@ -80,7 +93,7 @@ class Grade extends StatelessWidget {
                     width: 10.0,
                   ),
                   Text(
-                    'using lightsaber',
+                    '나만 아니면 돼',
                     style: TextStyle(fontSize: 16.0, letterSpacing: 1.0),
                   ),
                 ],
@@ -92,7 +105,7 @@ class Grade extends StatelessWidget {
                     width: 10.0,
                   ),
                   Text(
-                    'face hero tattoo',
+                    '우리가 왜 굶어야 되는데',
                     style: TextStyle(fontSize: 16.0, letterSpacing: 1.0),
                   ),
                 ],
@@ -104,11 +117,20 @@ class Grade extends StatelessWidget {
                     width: 10.0,
                   ),
                   Text(
-                    'fire flames',
+                    '큰 박수가 필요합니다',
                     style: TextStyle(fontSize: 16.0, letterSpacing: 1.0),
                   ),
                 ],
               ),
+              SizedBox(
+                height: 30.0,
+              ),
+              Center(
+                child: CircleAvatar(
+                    backgroundImage: AssetImage('assets/hodong1.png'),
+                    radius: 40.0,
+                    backgroundColor: Colors.amber),
+              )
             ]),
       ),
     );
