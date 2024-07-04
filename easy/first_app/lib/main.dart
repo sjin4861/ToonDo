@@ -7,7 +7,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'First App',
+      title: 'First app',
       theme: ThemeData(primarySwatch: Colors.blue),
       home: const MyHomePage(),
     );
@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +25,12 @@ class MyHomePage extends StatelessWidget {
       ),
       body: const Center(
         child: Column(
-          children: <Widget>[Text('hello'), Text('hello'), Text('hello')],
+          children: <Widget>[
+            Text('Hello'),
+            Text('This'),
+            Text('is'),
+            Text('first app')
+          ],
         ),
       ),
     );
