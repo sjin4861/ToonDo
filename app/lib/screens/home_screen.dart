@@ -81,6 +81,26 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: const TextStyle(fontSize: 18),
                       ),
                     ),
+                    if (isLoggedIn)
+                      const SizedBox(height: 20), // 버튼 간의 여백 추가
+                    if (isLoggedIn)
+                      ElevatedButton(
+                        key: Key('log_activity_button'),
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white, backgroundColor: Colors.green,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                        ),
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/activity_input');
+                        },
+                        child: const Text(
+                          'Log Activity',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
                   ],
                 ),
               ),
