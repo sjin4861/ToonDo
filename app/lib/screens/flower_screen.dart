@@ -26,7 +26,7 @@ class FlowerScreen extends StatelessWidget {
               style: TextStyle(fontSize: 16),
             ),
             Text(
-              'Growth: 70%',
+              'Growth: 2%',
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 20),

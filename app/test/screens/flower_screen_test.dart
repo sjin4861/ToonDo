@@ -8,7 +8,7 @@ void main() {
 
     expect(find.text('Your Flower'), findsOneWidget);
     expect(find.text('Watered: 3 times'), findsOneWidget);
-    expect(find.text('Growth: 70%'), findsOneWidget);
+    expect(find.text('Growth: 2%'), findsOneWidget);
     expect(find.byType(Image), findsOneWidget);
   });
 }
