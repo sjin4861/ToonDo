@@ -10,6 +10,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  void _attemptLogin() {
+    if (_formKey.currentState?.validate() ?? false) {
+      // 로그인 성공
+      Navigator.pop(context, true);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,6 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               TextFormField(
+                key: Key('email_field'), // 추가된 key
                 controller: _emailController,
                 decoration: InputDecoration(labelText: 'Email'),
                 validator: (value) {
@@ -38,6 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 16),
               TextFormField(
+                key: Key('password_field'), // 추가된 key
                 controller: _passwordController,
                 decoration: InputDecoration(labelText: 'Password'),
                 obscureText: true,
@@ -50,12 +59,8 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 32),
               ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    // 로그인 로직 추가
-                    Navigator.pushReplacementNamed(context, '/home');
-                  }
-                },
+                key: Key('login_button'), // 추가된 key
+                onPressed: _attemptLogin,
                 child: Text('Login'),
               ),
             ],

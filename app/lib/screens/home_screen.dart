@@ -1,7 +1,23 @@
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool isLoggedIn = false;
+
+  void _login() async {
+    final result = await Navigator.pushNamed(context, '/login');
+    if (result == true) {
+      setState(() {
+        isLoggedIn = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +59,9 @@ class HomeScreen extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 80), // 추가 여백을 통해 로그인 버튼을 아래로 이동
+                    const SizedBox(height: 80), // 추가 여백을 통해 버튼을 아래로 이동
                     ElevatedButton(
+                      key: Key('main_button'),
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white, backgroundColor: Colors.pink,
                         shape: RoundedRectangleBorder(
@@ -53,11 +70,15 @@ class HomeScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                       ),
                       onPressed: () {
-                        Navigator.pushNamed(context, '/login');
+                        if (isLoggedIn) {
+                          Navigator.pushNamed(context, '/flower');
+                        } else {
+                          _login();
+                        }
                       },
-                      child: const Text(
-                        'Go to Login',
-                        style: TextStyle(fontSize: 18),
+                      child: Text(
+                        isLoggedIn ? 'Go to Flower' : 'Go to Login',
+                        style: const TextStyle(fontSize: 18),
                       ),
                     ),
                   ],
