@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 
 void main() => runApp(const MyApp());
@@ -32,12 +30,6 @@ class MyPage extends StatelessWidget {
         ),
         centerTitle: true,
         elevation: 0.0,
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {
-            print('menu button is clicked');
-          },
-        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.shopping_cart),
@@ -53,6 +45,68 @@ class MyPage extends StatelessWidget {
           ),
         ],
       ),
+      drawer: Drawer(
+          child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          UserAccountsDrawerHeader(
+            currentAccountPicture: const CircleAvatar(
+              backgroundImage: AssetImage('assets/chim.png'),
+              backgroundColor: Colors.white,
+            ),
+            otherAccountsPictures: const [
+              CircleAvatar(backgroundImage: AssetImage('assets/cat.png')),
+              //CircleAvatar(backgroundImage: AssetImage('assets/cat.png')),
+            ],
+            accountName: const Text(
+              'Chim-chak man',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            accountEmail: const Text('ccm@naver.com'),
+            onDetailsPressed: () {
+              print('arrow is clicked');
+            },
+            decoration: BoxDecoration(
+                color: Colors.red[200],
+                borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(40.0),
+                    bottomRight: Radius.circular(40.0))),
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.home,
+              color: Colors.grey[850],
+            ),
+            title: const Text('HOME'),
+            onTap: () {
+              print('Home is clicked');
+            },
+            trailing: const Icon(Icons.add),
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.settings,
+              color: Colors.grey[850],
+            ),
+            title: const Text('Settings'),
+            onTap: () {
+              print('settings is clicked');
+            },
+            trailing: const Icon(Icons.add),
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.question_answer,
+              color: Colors.grey[850],
+            ),
+            title: const Text('Q&A'),
+            onTap: () {
+              print('Q&A is clicked');
+            },
+            trailing: const Icon(Icons.add),
+          ),
+        ],
+      )),
     );
   }
 }
