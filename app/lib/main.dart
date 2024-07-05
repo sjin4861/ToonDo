@@ -13,7 +13,7 @@ class BlossomDaysApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.pink,
       ),
-      initialRoute: '/home',
+      initialRoute: '/onboarding',
       routes: Routes.routes,
       onGenerateRoute: Routes.generateRoute,
     );

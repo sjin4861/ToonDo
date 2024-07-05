@@ -4,9 +4,11 @@ import 'screens/login_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/flower_screen.dart';
 import 'screens/activity_input_screen.dart';
+import 'screens/onboarding_screen.dart';
 
 class Routes {
   static final Map<String, WidgetBuilder> routes = {
+    '/onboarding': (context) => OnboardingScreen(),
     '/home': (context) => HomeScreen(),
     '/login': (context) => LoginScreen(),
     '/profile': (context) => ProfileScreen(),
