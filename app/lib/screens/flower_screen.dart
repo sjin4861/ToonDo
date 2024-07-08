@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rive/rive.dart';
 
 class FlowerScreen extends StatelessWidget {
   @override
@@ -16,9 +17,11 @@ class FlowerScreen extends StatelessWidget {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20),
-            Image.asset(
-              'assets/images/happypot.png', // 꽃 이미지 경로
+            Container(
               height: 200,
+              child: RiveAnimation.asset(
+                'assets/animations/flower_animation.riv',
+              ),
             ),
             SizedBox(height: 20),
             Text(
