@@ -1,3 +1,4 @@
+import 'package:blossomdays/widgets/social_login_button.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 
@@ -17,7 +18,13 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.pop(context, true);
     }
   }
+  void _googleSignIn() {
+    // Google 로그인 로직 추가
+  }
 
+  void _facebookSignIn() {
+    // Facebook 로그인 로직 추가
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,6 +80,19 @@ class _LoginScreenState extends State<LoginScreen> {
                       key: Key('login_button'), // 추가된 key
                       onPressed: _attemptLogin,
                       child: Text('Login'),
+                    ),
+                    SocialLoginButton(
+                      text: 'Sign in with Google',
+                      color: Colors.red,
+                      icon: Icons.login,
+                      onPressed: _googleSignIn,
+                    ),
+                    SizedBox(height: 10),
+                    SocialLoginButton(
+                      text: 'Sign in with Facebook',
+                      color: Colors.blue,
+                      icon: Icons.login,
+                      onPressed: _facebookSignIn,
                     ),
                   ],
                 ),
