@@ -15,21 +15,36 @@ class _AddTaskState extends State<AddTask> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        const SizedBox(
+          height: 20,
+        ),
         const Text("Add Task"),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.all(20),
           child: TextField(
+            autofocus: true,
+            onSubmitted: (value) {
+              if (todoText.text.isNotEmpty) {
+                widget.addTodo(todoText: todoText.text);
+              }
+              todoText.clear();
+            },
             controller: todoText,
             decoration: const InputDecoration(hintText: "Add task"),
           ),
         ),
         ElevatedButton(
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.lightBlue),
           onPressed: () {
-            print(todoText.text);
-            widget.addTodo(todoText: todoText.text);
+            if (todoText.text.isNotEmpty) {
+              widget.addTodo(todoText: todoText.text);
+            }
             todoText.clear();
           },
-          child: const Text("Add"),
+          child: const Text(
+            "Add",
+            style: TextStyle(color: Colors.white),
+          ),
         )
       ],
     );
