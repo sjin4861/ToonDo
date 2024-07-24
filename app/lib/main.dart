@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'routes.dart';
+import 'services/user_service.dart';
 
 void main() {
-  runApp(BlossomDaysApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => UserService(),
+      child: BlossomDaysApp(),
+    ),
+  );
 }
 
 class BlossomDaysApp extends StatelessWidget {

@@ -5,6 +5,8 @@ import 'screens/profile_screen.dart';
 import 'screens/flower_screen.dart';
 import 'screens/activity_input_screen.dart';
 import 'screens/onboarding_screen.dart';
+import 'screens/goal_input_screen.dart'; // 새로운 목표 설정 화면
+import 'screens/character_match_screen.dart'; // 새로운 캐릭터 매칭 화면
 
 class Routes {
   static final Map<String, WidgetBuilder> routes = {
@@ -14,6 +16,8 @@ class Routes {
     '/profile': (context) => ProfileScreen(),
     '/flower': (context) => FlowerScreen(),
     '/activity_input': (context) => ActivityInputScreen(),
+    '/goalInput': (context) => GoalInputScreen(), // 새로운 목표 설정 화면 추가
+    '/characterMatch': (context) => CharacterMatchScreen(), // 새로운 캐릭터 매칭 화면 추가
   };
 
   static Route<dynamic>? generateRoute(RouteSettings settings) {
@@ -28,8 +32,12 @@ class Routes {
         return MaterialPageRoute(builder: (context) => FlowerScreen());
       case '/activity_input':
         return MaterialPageRoute(builder: (context) => ActivityInputScreen());
+      case '/goalInput':
+        return MaterialPageRoute(builder: (context) => GoalInputScreen()); // 새로운 목표 설정 화면
+      case '/characterMatch':
+        return MaterialPageRoute(builder: (context) => CharacterMatchScreen()); // 새로운 캐릭터 매칭 화면
       default:
-        return null; // null을 반환하여 알 수 없는 경로일 경우 오류 방지
+        return null; // 알 수 없는 경로일 경우 오류 방지
     }
   }
 }

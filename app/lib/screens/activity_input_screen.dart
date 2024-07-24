@@ -1,4 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import '../services/gpt_service.dart';
+import 'dart:convert';
 
 class ActivityInputScreen extends StatefulWidget {
   @override
@@ -6,55 +10,88 @@ class ActivityInputScreen extends StatefulWidget {
 }
 
 class _ActivityInputScreenState extends State<ActivityInputScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController _activityController = TextEditingController();
+  File? _image;
+  final picker = ImagePicker();
+  bool _isLoading = false;
+  String? _result;
+
+  Future<void> _pickImage() async {
+    try {
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          _image = File(pickedFile.path);
+        });
+      }
+    } catch (e) {
+      print('Error picking image: $e');
+    }
+  }
+
+  Future<void> _analyzeImage() async {
+    if (_image == null) {
+      print('No image selected.');
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final base64Image = base64Encode(_image!.readAsBytesSync());
+      final result = await GptService().analyzePlannerImage(base64Image);
+      setState(() {
+        _result = result['choices'][0]['message']['content'];
+      });
+      print('Result: $_result');
+    } catch (e) {
+      print('Error analyzing image: $e');
+      setState(() {
+        _result = 'Error analyzing image.';
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Log Daily Activity'),
+        title: Text('Activity Input'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              TextFormField(
-                controller: _activityController,
-                decoration: InputDecoration(labelText: 'Activity'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter an activity';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    // GPT API 호출 및 활동 저장 로직 추가
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Activity logged: ${_activityController.text}')),
-                    );
-                    _activityController.clear();
-                  }
-                },
-                child: Text('Log Activity'),
-              ),
-            ],
-          ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            _image == null
+                ? Text('No image selected.')
+                : Image.file(_image!),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _pickImage,
+              child: Text('Pick Image'),
+            ),
+            SizedBox(height: 20),
+            _isLoading
+                ? CircularProgressIndicator()
+                : ElevatedButton(
+              onPressed: _analyzeImage,
+              child: Text('Analyze Image'),
+            ),
+            SizedBox(height: 20),
+            _result == null
+                ? Container()
+                : Text(
+              _result!,
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _activityController.dispose();
-    super.dispose();
   }
 }
