@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../services/user_service.dart';
 
 class GoalInputScreen extends StatefulWidget {
   @override
@@ -27,7 +29,8 @@ class _GoalInputScreenState extends State<GoalInputScreen> {
               onPressed: () {
                 final goal = _goalController.text;
                 if (goal.isNotEmpty) {
-                  // 목표 저장 및 캐릭터 매칭 로직 호출
+                  // 목표 저장 및 상태 업데이트
+                  Provider.of<UserService>(context, listen: false).setGoal(goal);
                   Navigator.pushNamed(context, '/characterMatch', arguments: goal);
                 }
               },
