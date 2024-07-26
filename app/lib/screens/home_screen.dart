@@ -10,18 +10,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  void _login() async {
-    final result = await Navigator.pushNamed(context, '/login');
-    if (result == true) {
-      setState(() {});
-    }
-  }
-
-  void _logout() {
-    Provider.of<UserService>(context, listen: false).logout();
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     final userService = Provider.of<UserService>(context);
@@ -79,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       onPressed: () {
                         if (!isLoggedIn) {
-                          _login();
+                          Navigator.pushNamed(context, '/login');
                         } else if (!hasGoal) {
                           Navigator.pushNamed(context, '/goalInput');
                         } else {
@@ -118,7 +106,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     if (isLoggedIn)
                       TextButton(
-                        onPressed: _logout,
+                        onPressed: () {
+                          userService.logout();
+                          setState(() {});
+                        },
                         child: Text(
                           'Logout',
                           style: TextStyle(color: Colors.white),
