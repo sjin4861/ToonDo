@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../services/user_service.dart';
 
 class CharacterMatchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String goal = ModalRoute.of(context)!.settings.arguments as String;
     final String character = matchCharacter(goal);
+
+    // 캐릭터 정보를 UserService에 저장
+    final userService = Provider.of<UserService>(context, listen: false);
+    userService.setCharacter(character);
 
     return Scaffold(
       appBar: AppBar(
