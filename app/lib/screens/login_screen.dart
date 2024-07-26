@@ -1,6 +1,8 @@
 import 'package:blossomdays/widgets/social_login_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
+import '../services/user_service.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -15,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void _attemptLogin() {
     if (_formKey.currentState?.validate() ?? false) {
       // 로그인 성공
+      Provider.of<UserService>(context, listen: false).login();
       Navigator.pop(context, true);
     }
   }
