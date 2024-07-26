@@ -1,23 +1,14 @@
 import 'package:flutter/material.dart';
 
 class UserService with ChangeNotifier {
-  String _userName = 'User';
-  bool _hasGoal = false;
   bool _isLoggedIn = false;
+  String? _goal;
+  String? _character;
 
-  String get userName => _userName;
-  bool get hasGoal => _hasGoal;
   bool get isLoggedIn => _isLoggedIn;
-
-  void setUserName(String name) {
-    _userName = name;
-    notifyListeners();
-  }
-
-  void setGoal(bool value) {
-    _hasGoal = value;
-    notifyListeners();
-  }
+  bool get hasGoal => _goal != null;
+  String? get goal => _goal;
+  String? get character => _character;
 
   void login() {
     _isLoggedIn = true;
@@ -26,8 +17,18 @@ class UserService with ChangeNotifier {
 
   void logout() {
     _isLoggedIn = false;
-    _userName = 'User';
-    _hasGoal = false;
+    _goal = null;
+    _character = null;
+    notifyListeners();
+  }
+
+  void setGoal(String goal) {
+    _goal = goal;
+    notifyListeners();
+  }
+
+  void setCharacter(String character) {
+    _character = character;
     notifyListeners();
   }
 }
