@@ -9,6 +9,7 @@ class GoalInputScreen extends StatefulWidget {
 
 class _GoalInputScreenState extends State<GoalInputScreen> {
   final _goalController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +26,16 @@ class _GoalInputScreenState extends State<GoalInputScreen> {
               decoration: InputDecoration(labelText: 'Enter your goal'),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
+            _isLoading
+                ? CircularProgressIndicator()
+                : ElevatedButton(
+              onPressed: () async {
                 final goal = _goalController.text;
                 if (goal.isNotEmpty) {
-                  // 목표 저장 및 상태 업데이트
-                  Provider.of<UserService>(context, listen: false).setGoal(goal);
+                  setState(() {
+                    _isLoading = true;
+                  });
+                  await Provider.of<UserService>(context, listen: false).setGoal(goal);
                   Navigator.pushNamed(context, '/characterMatch', arguments: goal);
                 }
               },

@@ -8,7 +8,6 @@ class CharacterMatchScreen extends StatelessWidget {
     final String goal = ModalRoute.of(context)!.settings.arguments as String;
     final String character = matchCharacter(goal);
 
-    // 캐릭터 정보를 UserService에 저장
     final userService = Provider.of<UserService>(context, listen: false);
     userService.setCharacter(character);
 
@@ -25,11 +24,34 @@ class CharacterMatchScreen extends StatelessWidget {
               style: TextStyle(fontSize: 20),
             ),
             SizedBox(height: 20),
+            Image.asset('assets/images/level1_pot.png'),
             Text(
               'Matched Character: $character',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 40), // 버튼과 텍스트 사이의 간격을 위해 추가
+            SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: TextField(
+                decoration: InputDecoration(
+                  labelText: 'Name your character',
+                  border: OutlineInputBorder(),
+                ),
+                onSubmitted: (name) {
+                  if (name.isNotEmpty) {
+                    userService.setCharacter(name); // 저장 로직
+                    FocusScope.of(context).unfocus(); // 키보드 숨기기
+                    Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+                  } else {
+                    // 유효하지 않은 입력에 대한 처리
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('Please enter a valid name.'),
+                    ));
+                  }
+                },
+              ),
+            ),
+            SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
@@ -43,7 +65,7 @@ class CharacterMatchScreen extends StatelessWidget {
   }
 
   String matchCharacter(String goal) {
-    // 목표에 따라 식물 캐릭터를 선택하는 로직
+    // Match the character based on the user's goal
     if (goal.contains('fitness')) {
       return 'Cactus';
     } else if (goal.contains('study')) {
