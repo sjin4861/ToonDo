@@ -13,18 +13,48 @@ class NotificationService {
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
     // iOS 초기화 설정
-    const DarwinInitializationSettings initializationSettingsIOS =
+    final DarwinInitializationSettings initializationSettingsIOS =
       DarwinInitializationSettings(
         requestAlertPermission: true,
         requestBadgePermission: true,
         requestSoundPermission: true,
+        notificationCategories: [
+          DarwinNotificationCategory(
+            'demoCategory',
+            actions: <DarwinNotificationAction>[
+                DarwinNotificationAction.plain('id_1', 'Action 1'),
+                DarwinNotificationAction.plain(
+                'id_2',
+                'Action 2',
+                options: <DarwinNotificationActionOption>{
+                    DarwinNotificationActionOption.destructive,
+                },
+                ),
+                DarwinNotificationAction.plain(
+                'id_3',
+                'Action 3',
+                options: <DarwinNotificationActionOption>{
+                    DarwinNotificationActionOption.foreground,
+                },
+                ),
+            ],
+            options: <DarwinNotificationCategoryOption>{
+                DarwinNotificationCategoryOption.hiddenPreviewShowTitle,
+            },
+        ),
+        ]
       );
 
     // 전체 초기화 설정
-    const InitializationSettings initializationSettings = InitializationSettings(
+    final InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsIOS,
     );
+
+    @pragma('vm:entry-point')
+    void notificationTapBackground(NotificationResponse notificationResponse) {
+      // handle action
+    }
 
     // 플러그인 초기화
     await flutterLocalNotificationsPlugin.initialize(
@@ -32,6 +62,7 @@ class NotificationService {
       onDidReceiveNotificationResponse: (NotificationResponse response) async {
         // 알림 클릭 시 처리 로직
       },
+      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
 
     // iOS 권한 요청
@@ -95,8 +126,8 @@ class NotificationService {
       0,
       '목표 진행률 분석이 도착했어요!',
       '앱을 열어 목표를 확인해보세요.',
-      // _nextInstanceOfTime(12, 30), // 매일 12:30 PM 알림 예약
-      _nextInstanceOfTime(15, 00), // 매일 12:30 PM 알림 예약
+      _nextInstanceOfTime(12, 30), // 매일 12:30 PM 알림 예약
+      // _nextInstanceOfTime(15, 00), // 매일 12:30 PM 알림 예약
       platformChannelSpecifics,
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation:
@@ -114,5 +145,29 @@ class NotificationService {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
     return scheduledDate;
+  }
+
+  // NotificationService 클래스에 추가할 코드
+  Future<void> showImmediateNotification() async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      'immediate_channel_id', // 채널 ID
+      'Immediate Notifications', // 채널 이름
+      channelDescription: 'Immediate notification for testing',
+      importance: Importance.max,
+      priority: Priority.high,
+      showWhen: true,
+    );
+    const NotificationDetails platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+    );
+
+    // 즉시 알림 발송
+    await flutterLocalNotificationsPlugin.show(
+      0, // 알림 ID
+      '즉시 알림', // 알림 제목
+      '이것은 테스트 알림입니다.', // 알림 내용
+      platformChannelSpecifics,
+    );
   }
 }
