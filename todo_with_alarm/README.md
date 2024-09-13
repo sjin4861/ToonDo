@@ -32,18 +32,24 @@ This app is perfect for:
    ```bash
    git clone https://github.com/username/todo_with_alarm.git
    cd todo_with_alarm
+   ```
 
 2. **Install Dependencies**:
     Use the Flutter package manager to install the necessary dependencies:
+    ```bash
     flutter pub get
+    ```
 
 3. **Run the App**:
     To launch the app, use the following command:
+    ```bash
     flutter run
-
+    ```
 4. **Build APK for Android**:
     To build the Android APK:
+    ```bash
     flutter build apk
+    ```
 
 5. **Build for iOS**:
     For iOS development, open the ios directory in Xcode, configure the signing settings, and build the app.
@@ -60,6 +66,7 @@ This app is perfect for:
 
 **Project Structure**
 
+```bash
 lib/
 │
 ├── app/                # Contains the main app setup files
@@ -68,6 +75,7 @@ lib/
 ├── services/           # Contains services like GoalService and NotificationService
 ├── utils/              # Utility functions
 └── widgets/            # Custom widgets used across screens
+```
 
 **Flutter SDK Version**
 
@@ -85,4 +93,6 @@ lib/
 
 Unit and widget tests are included in the test/ directory:
 	•	Run the following command to execute tests:
+    ```bash
     flutter test
+    ```
