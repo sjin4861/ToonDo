@@ -177,6 +177,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Text('아이젠하워 매트릭스 보기'),
               ),
             ),
+
+            // 알림 테스트용 버튼임 (테스트 후 삭제 가능)
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(

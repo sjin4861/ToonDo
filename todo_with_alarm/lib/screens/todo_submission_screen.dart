@@ -15,6 +15,7 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
   DateTime selectedDate = DateTime.now();
   List<Todo> todos = [];
   final TextEditingController todoController = TextEditingController();
+  bool hideCompletionStatus = false; // 수행 여부 숨김 여부
 
   @override
   void initState() {
@@ -48,7 +49,7 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
   }
 
   // 투두 항목 삭제
-  void _removeTodo(int index) {
+  void _removeTodoAt(int index) {
     setState(() {
       todos.removeAt(index);
     });
@@ -98,6 +99,13 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
     _loadTodos();
   }
 
+  // 수행 여부 가리기 토글 함수
+  void _toggleHideCompletionStatus() {
+    setState(() {
+      hideCompletionStatus = !hideCompletionStatus;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
@@ -105,6 +113,14 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('투두리스트 ($formattedDate)'),
+        actions: [
+          IconButton(
+            icon: Icon(
+              hideCompletionStatus ? Icons.visibility_off : Icons.visibility,
+            ),
+            onPressed: _toggleHideCompletionStatus,
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -150,12 +166,15 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
                 itemBuilder: (context, index) {
                   return Dismissible(
                     key: Key(todos[index].title + todos[index].date.toIso8601String()),
+                    background: Container(color: Colors.red),
                     onDismissed: (direction) {
-                      _removeTodo(index);
+                      _removeTodoAt(index);
                     },
                     child: TodoListItem(
                       todo: todos[index],
                       onUpdate: _updateTodo,
+                      hideCompletionStatus: hideCompletionStatus,
+                      onDelete: () => _removeTodoAt(index),
                     ),
                   );
                 },
