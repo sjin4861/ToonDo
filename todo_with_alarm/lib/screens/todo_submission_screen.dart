@@ -1,6 +1,10 @@
+// screens/todo_submission_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:todo_with_alarm/models/todo.dart';
 import 'package:todo_with_alarm/services/todo_service.dart';
+import 'package:todo_with_alarm/widgets/todo_list_item.dart';
+import 'package:intl/intl.dart';
 
 class TodoSubmissionScreen extends StatefulWidget {
   @override
@@ -8,86 +12,150 @@ class TodoSubmissionScreen extends StatefulWidget {
 }
 
 class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
-  // Todo 항목을 저장할 리스트
+  DateTime selectedDate = DateTime.now();
   List<Todo> todos = [];
-
-  // TextField의 컨트롤러
   final TextEditingController todoController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _loadTodos(); // 저장된 Todo 리스트 불러오기
+    _loadTodos(); // 현재 날짜의 투두 리스트 불러오기
   }
 
   @override
   void dispose() {
-    todoController.dispose(); // TextField의 컨트롤러 해제
+    todoController.dispose();
     super.dispose();
   }
 
-  // 저장된 Todo 리스트 불러오기
+  // 특정 날짜의 투두 리스트 불러오기
   Future<void> _loadTodos() async {
-    List<Todo> loadedTodos = await TodoService.loadTodos();
+    List<Todo> loadedTodos = await TodoService.loadTodos(selectedDate);
     setState(() {
       todos = loadedTodos;
     });
   }
 
-  // Todo 항목을 추가하는 함수
+  // 투두 항목 추가
   void _addTodo() {
     if (todoController.text.isNotEmpty) {
       setState(() {
-        todos.add(Todo(title: todoController.text));
-        todoController.clear(); // 입력 필드 초기화
+        todos.add(Todo(title: todoController.text, date: selectedDate));
+        todoController.clear();
       });
-      TodoService.saveTodos(todos); // 추가 후 저장
+      TodoService.saveTodos(selectedDate, todos); // 저장
     }
   }
 
-  // Todo 항목을 삭제하는 함수
+  // 투두 항목 삭제
   void _removeTodo(int index) {
     setState(() {
       todos.removeAt(index);
     });
-    TodoService.saveTodos(todos); // 삭제 후 저장
+    TodoService.saveTodos(selectedDate, todos); // 저장
+  }
+
+  // 투두 항목 업데이트
+  void _updateTodo(Todo updatedTodo) {
+    int index = todos.indexWhere((todo) => todo.title == updatedTodo.title);
+    if (index != -1) {
+      setState(() {
+        todos[index] = updatedTodo;
+      });
+      TodoService.saveTodos(selectedDate, todos); // 저장
+    }
+  }
+
+  // 날짜 선택 함수
+  Future<void> _selectDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
+    );
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+      _loadTodos(); // 선택한 날짜의 투두 리스트 불러오기
+    }
+  }
+
+  // 다음날로 이동
+  void _goToNextDay() {
+    setState(() {
+      selectedDate = selectedDate.add(Duration(days: 1));
+    });
+    _loadTodos();
+  }
+
+  // 이전날로 이동
+  void _goToPreviousDay() {
+    setState(() {
+      selectedDate = selectedDate.subtract(Duration(days: 1));
+    });
+    _loadTodos();
   }
 
   @override
   Widget build(BuildContext context) {
+    String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Todo Submission'),
+        title: Text('투두리스트 ($formattedDate)'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Todo 입력 필드
+            // 날짜 선택 및 이동 버튼
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: _goToPreviousDay,
+                ),
+                TextButton(
+                  onPressed: _selectDate,
+                  child: Text(formattedDate),
+                ),
+                IconButton(
+                  icon: Icon(Icons.arrow_forward),
+                  onPressed: _goToNextDay,
+                ),
+              ],
+            ),
+            // 투두 입력 필드
             TextField(
               controller: todoController,
               decoration: InputDecoration(
-                labelText: 'Enter a new todo',
+                labelText: '투두 항목 입력',
                 border: OutlineInputBorder(),
               ),
             ),
             SizedBox(height: 10),
-            // Todo 추가 버튼
+            // 투두 추가 버튼
             ElevatedButton(
               onPressed: _addTodo,
-              child: Text('Add Todo'),
+              child: Text('투두 추가'),
             ),
             SizedBox(height: 20),
-            // Todo 리스트를 보여주는 영역
+            // 투두 리스트
             Expanded(
               child: ListView.builder(
                 itemCount: todos.length,
                 itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(todos[index].title),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () => _removeTodo(index),
+                  return Dismissible(
+                    key: Key(todos[index].title + todos[index].date.toIso8601String()),
+                    onDismissed: (direction) {
+                      _removeTodo(index);
+                    },
+                    child: TodoListItem(
+                      todo: todos[index],
+                      onUpdate: _updateTodo,
                     ),
                   );
                 },

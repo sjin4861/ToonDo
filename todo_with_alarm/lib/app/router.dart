@@ -1,26 +1,25 @@
+// app/router.dart
+
 import 'package:flutter/material.dart';
 import 'package:todo_with_alarm/screens/home_screen.dart';
-import 'package:todo_with_alarm/screens/settings_screen.dart';
-import 'package:todo_with_alarm/screens/progress_screen.dart';
+import 'package:todo_with_alarm/screens/goal_progress_screen.dart';
 import 'package:todo_with_alarm/screens/todo_submission_screen.dart';
+import 'package:todo_with_alarm/screens/eisenhower_matrix_screen.dart';
 
 class AppRouter {
-  static Route<dynamic> generateRoute(RouteSettings settings) {
+  static Route<dynamic>? generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) => HomeScreen());
-      case '/settings':
-        return MaterialPageRoute(builder: (_) => SettingsScreen());
+        return MaterialPageRoute(builder: (_) => const HomeScreen());
       case '/progress':
-        return MaterialPageRoute(builder: (_) => ProgressScreen());
-      case '/todo': // TodoSubmissionScreen 경로 추가
+        return MaterialPageRoute(builder: (_) => const GoalProgressScreen());
+      case '/todo':
         return MaterialPageRoute(builder: (_) => TodoSubmissionScreen());
+      case '/eisenhower':
+        return MaterialPageRoute(builder: (_) => EisenhowerMatrixScreen());
+      // 필요한 경우 추가 라우트 설정
       default:
-        return MaterialPageRoute(
-          builder: (_) => Scaffold(
-            body: Center(child: Text('No route defined for ${settings.name}')),
-          ),
-        );
+        return null;
     }
   }
 }

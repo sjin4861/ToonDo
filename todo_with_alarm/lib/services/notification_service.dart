@@ -1,49 +1,34 @@
+// services/notification_service.dart
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:todo_with_alarm/models/notification.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:flutter/material.dart'; // 화면 전환을 위해 필요
 
 class NotificationService {
+  static final NotificationService _instance = NotificationService._internal();
+  factory NotificationService() {
+    return _instance;
+  }
+  NotificationService._internal();
+
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  Future<void> initialize() async {
+  // 초기화 메서드 수정
+  Future<void> initialize(BuildContext context) async {
     // Android 초기화 설정
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
     // iOS 초기화 설정
     final DarwinInitializationSettings initializationSettingsIOS =
-      DarwinInitializationSettings(
-        requestAlertPermission: true,
-        requestBadgePermission: true,
-        requestSoundPermission: true,
-        notificationCategories: [
-          DarwinNotificationCategory(
-            'demoCategory',
-            actions: <DarwinNotificationAction>[
-                DarwinNotificationAction.plain('id_1', 'Action 1'),
-                DarwinNotificationAction.plain(
-                'id_2',
-                'Action 2',
-                options: <DarwinNotificationActionOption>{
-                    DarwinNotificationActionOption.destructive,
-                },
-                ),
-                DarwinNotificationAction.plain(
-                'id_3',
-                'Action 3',
-                options: <DarwinNotificationActionOption>{
-                    DarwinNotificationActionOption.foreground,
-                },
-                ),
-            ],
-            options: <DarwinNotificationCategoryOption>{
-                DarwinNotificationCategoryOption.hiddenPreviewShowTitle,
-            },
-        ),
-        ]
-      );
+        DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
 
     // 전체 초기화 설정
     final InitializationSettings initializationSettings = InitializationSettings(
@@ -51,92 +36,120 @@ class NotificationService {
       iOS: initializationSettingsIOS,
     );
 
-    @pragma('vm:entry-point')
-    void notificationTapBackground(NotificationResponse notificationResponse) {
-      // handle action
-    }
-
-    // 플러그인 초기화
+    // 알림 클릭 시 처리 로직
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) async {
-        // 알림 클릭 시 처리 로직
+        // 알림 클릭 시 처리
+        if (response.notificationResponseType == NotificationResponseType.selectedNotification) {
+          _handleNotificationNavigation(response.payload, context);
+        }
       },
-      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
-
-    // iOS 권한 요청
-    await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
-      ?.requestPermissions(
-        alert: true,
-        badge: true,
-        sound: true,
-      );
 
     // 타임존 초기화
     tz.initializeTimeZones();
   }
 
-  // 특정 시간에 알림을 예약하는 함수
-  Future<void> scheduleNotification(AppNotification notification) async {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails(
-      'scheduled_channel_id', // 채널 ID
-      'Scheduled Notifications', // 채널 이름
-      channelDescription: 'Scheduled notification to remind you of your tasks',
-      importance: Importance.max,
-      priority: Priority.high,
-      showWhen: true,
-    );
-    const NotificationDetails platformChannelSpecifics = NotificationDetails(
-      android: androidPlatformChannelSpecifics,
-    );
+  // 알림 클릭 시 화면 전환 처리 메서드
+  void _handleNotificationNavigation(String? payload, BuildContext context) {
+    if (payload == null) return;
 
-    // 알림 시간 설정을 TimeZone을 사용하여 처리
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      0, // 알림 ID
-      notification.title, // 알림 제목
-      notification.body, // 알림 내용
-      tz.TZDateTime.from(notification.scheduledTime, tz.local), // 시간대 설정
-      platformChannelSpecifics,
-      androidAllowWhileIdle: true, // 절전 모드에서도 알림 허용
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-    );
+    // payload에 따라 해당 화면으로 이동
+    switch (payload) {
+      case 'goal_progress':
+        Navigator.pushNamed(context, '/progress');
+        break;
+      case 'todo_list':
+        Navigator.pushNamed(context, '/todo');
+        break;
+      case 'eisenhower_matrix':
+        Navigator.pushNamed(context, '/eisenhower');
+        break;
+      default:
+        break;
+    }
   }
 
-  // 매일 같은 시간에 알림을 예약하는 함수
-  Future<void> showDailyNotification() async {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails(
-      'daily_channel_id', // 채널 ID
-      'Daily Notifications', // 채널 이름
-      channelDescription: 'Daily notification to remind you of your tasks',
-      importance: Importance.max,
-      priority: Priority.high,
-      showWhen: true,
-    );
-    const NotificationDetails platformChannelSpecifics = NotificationDetails(
-      android: androidPlatformChannelSpecifics,
-    );
-
-    // 매일 12시 30분에 알림 예약 (TimeZone을 사용하여 시간 처리)
+  // 주간 목표 진행률 알림 예약 메서드
+  Future<void> scheduleWeeklyGoalProgressNotification() async {
     await flutterLocalNotificationsPlugin.zonedSchedule(
-      0,
-      '목표 진행률 분석이 도착했어요!',
-      '앱을 열어 목표를 확인해보세요.',
-      _nextInstanceOfTime(12, 30), // 매일 12:30 PM 알림 예약
-      // _nextInstanceOfTime(15, 00), // 매일 12:30 PM 알림 예약
-      platformChannelSpecifics,
+      1, // 알림 ID
+      '주간 목표 달성률 분석이 도착했어요!',
+      '앱을 열어 목표 진행률을 확인해보세요.',
+      _nextInstanceOfMondayAt(12, 0),
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'weekly_goal_progress_channel',
+          'Weekly Goal Progress',
+          channelDescription: '주간 목표 진행률 알림',
+          importance: Importance.max,
+          priority: Priority.high,
+        ),
+      ),
+      payload: 'goal_progress',
       androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents: DateTimeComponents.time, // 매일 같은 시간
+      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
     );
   }
 
-  // 매일 특정 시간을 계산하는 함수
+  // 매일 투두리스트 알림 예약 메서드
+  Future<void> scheduleDailyTodoReminder() async {
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      2, // 알림 ID
+      '투두리스트를 확인하고 내일을 준비하세요!',
+      '오늘 투두리스트 수행 여부를 입력하고, 내일의 투두리스트를 작성해보세요.',
+      _nextInstanceOfTime(23, 30),
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'daily_todo_reminder_channel',
+          'Daily Todo Reminder',
+          channelDescription: '매일 투두리스트 알림',
+          importance: Importance.max,
+          priority: Priority.high,
+        ),
+      ),
+      payload: 'todo_list',
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time,
+    );
+  }
+
+  // 매일 중요한 일정 알림 예약 메서드
+  Future<void> scheduleDailyImportantTasksNotification() async {
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      3, // 알림 ID
+      '오늘의 중요한 일정 확인하세요!',
+      '중요한 일정을 간단히 정리해드렸어요.',
+      _nextInstanceOfTime(12, 30),
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'daily_important_tasks_channel',
+          'Daily Important Tasks',
+          channelDescription: '매일 중요한 일정 알림',
+          importance: Importance.max,
+          priority: Priority.high,
+        ),
+      ),
+      payload: 'eisenhower_matrix',
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time,
+    );
+  }
+
+  // 다음 월요일 특정 시간 계산 함수
+  tz.TZDateTime _nextInstanceOfMondayAt(int hour, int minute) {
+    tz.TZDateTime scheduledDate = _nextInstanceOfTime(hour, minute);
+    while (scheduledDate.weekday != DateTime.monday) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+    return scheduledDate;
+  }
+
+  // 매일 특정 시간 계산 함수
   tz.TZDateTime _nextInstanceOfTime(int hour, int minute) {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
     tz.TZDateTime scheduledDate =
@@ -147,7 +160,70 @@ class NotificationService {
     return scheduledDate;
   }
 
-  // NotificationService 클래스에 추가할 코드
+  // 모든 알림 예약 메서드 호출
+  Future<void> scheduleAllNotifications() async {
+    await scheduleWeeklyGoalProgressNotification();
+    await scheduleDailyTodoReminder();
+    await scheduleDailyImportantTasksNotification();
+  }
+
+  // 주간 목표 진행률 알림 즉시 발송 메서드
+  Future<void> showWeeklyGoalProgressNotificationNow() async {
+    await flutterLocalNotificationsPlugin.show(
+      1, // 알림 ID
+      '주간 목표 달성률 분석이 도착했어요!',
+      '앱을 열어 목표 진행률을 확인해보세요.',
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'weekly_goal_progress_channel',
+          'Weekly Goal Progress',
+          channelDescription: '주간 목표 진행률 알림',
+          importance: Importance.max,
+          priority: Priority.high,
+        ),
+      ),
+      payload: 'goal_progress',
+    );
+  }
+
+  // 투두리스트 알림 즉시 발송 메서드
+  Future<void> showDailyTodoReminderNow() async {
+    await flutterLocalNotificationsPlugin.show(
+      2, // 알림 ID
+      '투두리스트를 확인하고 내일을 준비하세요!',
+      '오늘 투두리스트 수행 여부를 입력하고, 내일의 투두리스트를 작성해보세요.',
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'daily_todo_reminder_channel',
+          'Daily Todo Reminder',
+          channelDescription: '매일 투두리스트 알림',
+          importance: Importance.max,
+          priority: Priority.high,
+        ),
+      ),
+      payload: 'todo_list',
+    );
+  }
+
+  // 중요한 일정 알림 즉시 발송 메서드
+  Future<void> showDailyImportantTasksNotificationNow() async {
+    await flutterLocalNotificationsPlugin.show(
+      3, // 알림 ID
+      '오늘의 중요한 일정 확인하세요!',
+      '중요한 일정을 간단히 정리해드렸어요.',
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'daily_important_tasks_channel',
+          'Daily Important Tasks',
+          channelDescription: '매일 중요한 일정 알림',
+          importance: Importance.max,
+          priority: Priority.high,
+        ),
+      ),
+      payload: 'eisenhower_matrix',
+    );
+  }
+
   Future<void> showImmediateNotification() async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(

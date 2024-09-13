@@ -1,3 +1,5 @@
+// models/goal.dart
+
 class Goal {
   String name; // 목표 이름
   double progress; // 목표 진행률 (0.0 ~ 100.0)
@@ -7,11 +9,33 @@ class Goal {
 
   Goal({
     required this.name,
-    this.progress = 0.0, // 기본값은 0.0 (아직 진행되지 않음)
+    this.progress = 0.0,
     required this.startDate,
     required this.endDate,
-    this.isCompleted = false, // 기본값은 성취되지 않은 상태
+    this.isCompleted = false,
   });
+
+  // JSON으로 변환하는 메서드
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'progress': progress,
+      'startDate': startDate.toIso8601String(),
+      'endDate': endDate.toIso8601String(),
+      'isCompleted': isCompleted,
+    };
+  }
+
+  // JSON에서 객체로 변환하는 메서드
+  factory Goal.fromJson(Map<String, dynamic> json) {
+    return Goal(
+      name: json['name'],
+      progress: json['progress'],
+      startDate: DateTime.parse(json['startDate']),
+      endDate: DateTime.parse(json['endDate']),
+      isCompleted: json['isCompleted'],
+    );
+  }
 
   // 목표 진행률을 업데이트하는 함수
   void updateProgress(double newProgress) {
