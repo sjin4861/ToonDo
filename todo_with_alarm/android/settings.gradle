@@ -14,6 +14,9 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
+    plugins {
+        id "org.jetbrains.kotlin.android" version "1.8.22" // Kotlin 버전을 1.8.22로 설정
+    }
 }
 
 plugins {

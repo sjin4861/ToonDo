@@ -24,35 +24,55 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace = "com.example.flutter_push_notification2"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    namespace = "com.example.todo_with_alarm" // 패키지 이름 변경
+    compileSdkVersion 34 // compileSdkVersion을 숫자로 지정
+    // ndkVersion "23.1.7779620" // NDK 버전 확인
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        // Flag to enable support for the new language APIs
+        coreLibraryDesugaringEnabled true
+        // Sets Java compatibility to Java 8
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.flutter_push_notification2"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutterVersionCode.toInteger()
-        versionName = flutterVersionName
+        applicationId "com.example.todo_with_alarm" // applicationId 변경
+        minSdkVersion 21 // 최소 SDK 버전 지정
+        targetSdkVersion 34 // targetSdkVersion 지정
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+        multiDexEnabled true
     }
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.debug
+            // 릴리스 빌드 설정
+            signingConfig signingConfigs.debug
+            // ProGuard 설정 등 추가 가능
+        }
+    }
+}
+
+configurations.all {
+    resolutionStrategy {
+        force "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+        force "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlin_version"
+        eachDependency { details ->
+            if (details.requested.group == 'org.jetbrains.kotlin') {
+                details.useVersion "$kotlin_version"
+            }
         }
     }
 }
 
 flutter {
-    source = "../.."
+    source "../.."
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    // 다른 의존성들 추가
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
+
 }
