@@ -49,6 +49,41 @@ class NotificationService {
 
     // 타임존 초기화
     tz.initializeTimeZones();
+
+    // 모든 필요한 알림 채널 생성
+    const List<AndroidNotificationChannel> channels = [
+      AndroidNotificationChannel(
+        'weekly_goal_progress_channel', // 채널 ID
+        'Weekly Goal Progress', // 채널 이름
+        description: '주간 목표 진행률 알림', // 채널 설명
+        importance: Importance.max,
+      ),
+      AndroidNotificationChannel(
+        'daily_todo_reminder_channel',
+        'Daily Todo Reminder',
+        description: '매일 투두리스트 알림',
+        importance: Importance.max,
+      ),
+      AndroidNotificationChannel(
+        'daily_important_tasks_channel',
+        'Daily Important Tasks',
+        description: '매일 중요한 일정 알림',
+        importance: Importance.max,
+      ),
+      AndroidNotificationChannel(
+        'immediate_channel_id',
+        'Immediate Notifications',
+        description: 'Immediate notification for testing',
+        importance: Importance.max,
+      ),
+    ];
+    
+    for (var channel in channels) {
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
+          ?.createNotificationChannel(channel);
+    }
   }
 
   // 알림 클릭 시 화면 전환 처리 메서드

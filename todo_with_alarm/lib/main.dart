@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:todo_with_alarm/app/router.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:todo_with_alarm/services/notification_service.dart';
 
 void main() async {
@@ -25,13 +26,39 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    _initializeNotifications();
+    // Delay the notification initialization until after the first frame is rendered
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _requestPermissionsAndInitializeNotifications();
+    });
   }
 
-  // 알림 서비스 초기화 및 알림 예약
-  void _initializeNotifications() async {
-    await _notificationService.initialize(navigatorKey.currentContext!);
-    await _notificationService.scheduleAllNotifications();
+  // 알림 권한 요청 및 알림 서비스 초기화
+  Future<void> _requestPermissionsAndInitializeNotifications() async {
+    // 알림 권한 요청
+    PermissionStatus status = await Permission.notification.status;
+
+    if (status.isDenied || status.isRestricted) {
+      // 권한 요청
+      status = await Permission.notification.request();
+    }
+
+    if (status.isGranted) {
+      // 권한이 부여된 경우 알림 서비스 초기화 및 알림 예약
+      if (navigatorKey.currentContext != null) {
+        await _notificationService.initialize(navigatorKey.currentContext!);
+        await _notificationService.scheduleAllNotifications();
+      } else {
+        print("Navigator context is null, cannot initialize notifications.");
+      }
+    } else if (status.isPermanentlyDenied) {
+      // 사용자가 권한을 영구적으로 거부한 경우 설정으로 유도
+      bool opened = await openAppSettings();
+      if (!opened) {
+        print("설정 앱을 열 수 없습니다.");
+      }
+    } else {
+      print("알림 권한이 거부되었습니다.");
+    }
   }
 
   @override
