@@ -26,7 +26,6 @@ if (flutterVersionName == null) {
 android {
     namespace = "com.example.todo_with_alarm" // 패키지 이름 변경
     compileSdkVersion 34 // compileSdkVersion을 숫자로 지정
-    // ndkVersion "23.1.7779620" // NDK 버전 확인
 
     compileOptions {
         // Flag to enable support for the new language APIs
@@ -74,5 +73,4 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     // 다른 의존성들 추가
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
-
 }

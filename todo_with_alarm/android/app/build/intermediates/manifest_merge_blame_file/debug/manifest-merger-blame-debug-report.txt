@@ -1,0 +1,195 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.example.todo_with_alarm"
+4    android:versionCode="1"
+5    android:versionName="0.1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="21"
+9        android:targetSdkVersion="34" />
+10    <!--
+11         The INTERNET permission is required for development. Specifically,
+12         the Flutter tool needs it to communicate with the running application
+13         to allow setting breakpoints, to provide hot reload, etc.
+14    -->
+15    <uses-permission android:name="android.permission.INTERNET" />
+15-->/Users/jun/Desktop/24_summer/BlossomDays/todo_with_alarm/android/app/src/debug/AndroidManifest.xml:6:5-66
+15-->/Users/jun/Desktop/24_summer/BlossomDays/todo_with_alarm/android/app/src/debug/AndroidManifest.xml:6:22-64
+16    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+16-->/Users/jun/Desktop/24_summer/BlossomDays/todo_with_alarm/android/app/src/main/AndroidManifest.xml:2:5-80
+16-->/Users/jun/Desktop/24_summer/BlossomDays/todo_with_alarm/android/app/src/main/AndroidManifest.xml:2:22-78
+17    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+17-->/Users/jun/Desktop/24_summer/BlossomDays/todo_with_alarm/android/app/src/main/AndroidManifest.xml:3:5-79
+17-->/Users/jun/Desktop/24_summer/BlossomDays/todo_with_alarm/android/app/src/main/AndroidManifest.xml:3:22-76
+18    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+18-->/Users/jun/Desktop/24_summer/BlossomDays/todo_with_alarm/android/app/src/main/AndroidManifest.xml:4:5-73
+18-->/Users/jun/Desktop/24_summer/BlossomDays/todo_with_alarm/android/app/src/main/AndroidManifest.xml:4:22-71
+19    <!--
+20 Required to query activities that can process text, see:
+21         https://developer.android.com/training/package-visibility and
+22         https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
+23
+24         In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin.
+25    -->
+26    <queries>
+26-->/Users/jun/Desktop/24_summer/BlossomDays/todo_with_alarm/android/app/src/main/AndroidManifest.xml:51:5-56:15
+27        <intent>
+27-->/Users/jun/Desktop/24_summer/BlossomDays/todo_with_alarm/android/app/src/main/AndroidManifest.xml:52:9-55:18
+28            <action android:name="android.intent.action.PROCESS_TEXT" />
+28-->/Users/jun/Desktop/24_summer/BlossomDays/todo_with_alarm/android/app/src/main/AndroidManifest.xml:53:13-72
+28-->/Users/jun/Desktop/24_summer/BlossomDays/todo_with_alarm/android/app/src/main/AndroidManifest.xml:53:21-70
+29
+30            <data android:mimeType="text/plain" />
+30-->/Users/jun/Desktop/24_summer/BlossomDays/todo_with_alarm/android/app/src/main/AndroidManifest.xml:54:13-50
+30-->/Users/jun/Desktop/24_summer/BlossomDays/todo_with_alarm/android/app/src/main/AndroidManifest.xml:54:19-48
+31        </intent>
+32    </queries>
+33
+34    <uses-permission android:name="android.permission.VIBRATE" />
+34-->[:flutter_local_notifications] /Users/jun/.pub-cache/hosted/pub.dev/flutter_local_notifications-17.2.2/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:7:5-66
+34-->[:flutter_local_notifications] /Users/jun/.pub-cache/hosted/pub.dev/flutter_local_notifications-17.2.2/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:7:22-63
+35    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+35-->[:flutter_local_notifications] /Users/jun/.pub-cache/hosted/pub.dev/flutter_local_notifications-17.2.2/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:8:5-77
+35-->[:flutter_local_notifications] /Users/jun/.pub-cache/hosted/pub.dev/flutter_local_notifications-17.2.2/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:8:22-74
+36
+37    <permission
+37-->[androidx.core:core:1.13.1] /Users/jun/.gradle/caches/transforms-3/07d81d8fc72f24dcfebe21b60be1eac5/transformed/core-1.13.1/AndroidManifest.xml:22:5-24:47
+38        android:name="com.example.todo_with_alarm.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+38-->[androidx.core:core:1.13.1] /Users/jun/.gradle/caches/transforms-3/07d81d8fc72f24dcfebe21b60be1eac5/transformed/core-1.13.1/AndroidManifest.xml:23:9-81
+39        android:protectionLevel="signature" />
+39-->[androidx.core:core:1.13.1] /Users/jun/.gradle/caches/transforms-3/07d81d8fc72f24dcfebe21b60be1eac5/transformed/core-1.13.1/AndroidManifest.xml:24:9-44
+40
+41    <uses-permission android:name="com.example.todo_with_alarm.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+41-->[androidx.core:core:1.13.1] /Users/jun/.gradle/caches/transforms-3/07d81d8fc72f24dcfebe21b60be1eac5/transformed/core-1.13.1/AndroidManifest.xml:26:5-97
+41-->[androidx.core:core:1.13.1] /Users/jun/.gradle/caches/transforms-3/07d81d8fc72f24dcfebe21b60be1eac5/transformed/core-1.13.1/AndroidManifest.xml:26:22-94
+42
+43    <application
+44        android:name="android.app.Application"
+45        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+45-->[androidx.core:core:1.13.1] /Users/jun/.gradle/caches/transforms-3/07d81d8fc72f24dcfebe21b60be1eac5/transformed/core-1.13.1/AndroidManifest.xml:28:18-86
+46        android:debuggable="true"
+47        android:icon="@mipmap/ic_launcher"
+48        android:label="todo_with_alarm" >
+49        <receiver
+50            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"
+51            android:exported="false" />
+52        <receiver
+53            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver"
+54            android:exported="false" >
+55            <intent-filter>
+56                <action android:name="android.intent.action.BOOT_COMPLETED" />
+57                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+58                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+59                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+60            </intent-filter>
+61        </receiver>
+62
+63        <activity
+64            android:name="com.example.todo_with_alarm.MainActivity"
+65            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+66            android:exported="true"
+67            android:hardwareAccelerated="true"
+68            android:launchMode="singleTop"
+69            android:taskAffinity=""
+70            android:theme="@style/LaunchTheme"
+71            android:windowSoftInputMode="adjustResize" >
+72
+73            <!--
+74                 Specifies an Android theme to apply to this Activity as soon as
+75                 the Android process has started. This theme is visible to the user
+76                 while the Flutter UI initializes. After that, this theme continues
+77                 to determine the Window background behind the Flutter UI.
+78            -->
+79            <meta-data
+80                android:name="io.flutter.embedding.android.NormalTheme"
+81                android:resource="@style/NormalTheme" />
+82
+83            <intent-filter>
+84                <action android:name="android.intent.action.MAIN" />
+85
+86                <category android:name="android.intent.category.LAUNCHER" />
+87            </intent-filter>
+88        </activity>
+89        <!--
+90             Don't delete the meta-data below.
+91             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java
+92        -->
+93        <meta-data
+94            android:name="flutterEmbedding"
+95            android:value="2" />
+96
+97        <uses-library
+97-->[androidx.window:window:1.2.0] /Users/jun/.gradle/caches/transforms-3/92138b183500fa2fd417dc69fafaa93a/transformed/jetified-window-1.2.0/AndroidManifest.xml:23:9-25:40
+98            android:name="androidx.window.extensions"
+98-->[androidx.window:window:1.2.0] /Users/jun/.gradle/caches/transforms-3/92138b183500fa2fd417dc69fafaa93a/transformed/jetified-window-1.2.0/AndroidManifest.xml:24:13-54
+99            android:required="false" />
+99-->[androidx.window:window:1.2.0] /Users/jun/.gradle/caches/transforms-3/92138b183500fa2fd417dc69fafaa93a/transformed/jetified-window-1.2.0/AndroidManifest.xml:25:13-37
+100        <uses-library
+100-->[androidx.window:window:1.2.0] /Users/jun/.gradle/caches/transforms-3/92138b183500fa2fd417dc69fafaa93a/transformed/jetified-window-1.2.0/AndroidManifest.xml:26:9-28:40
+101            android:name="androidx.window.sidecar"
+101-->[androidx.window:window:1.2.0] /Users/jun/.gradle/caches/transforms-3/92138b183500fa2fd417dc69fafaa93a/transformed/jetified-window-1.2.0/AndroidManifest.xml:27:13-51
+102            android:required="false" />
+102-->[androidx.window:window:1.2.0] /Users/jun/.gradle/caches/transforms-3/92138b183500fa2fd417dc69fafaa93a/transformed/jetified-window-1.2.0/AndroidManifest.xml:28:13-37
+103
+104        <provider
+104-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/jun/.gradle/caches/transforms-3/3ff6ff471a0085e90b5ccadc8804e058/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:24:9-32:20
+105            android:name="androidx.startup.InitializationProvider"
+105-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/jun/.gradle/caches/transforms-3/3ff6ff471a0085e90b5ccadc8804e058/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:25:13-67
+106            android:authorities="com.example.todo_with_alarm.androidx-startup"
+106-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/jun/.gradle/caches/transforms-3/3ff6ff471a0085e90b5ccadc8804e058/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:26:13-68
+107            android:exported="false" >
+107-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/jun/.gradle/caches/transforms-3/3ff6ff471a0085e90b5ccadc8804e058/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:27:13-37
+108            <meta-data
+108-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/jun/.gradle/caches/transforms-3/3ff6ff471a0085e90b5ccadc8804e058/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:29:13-31:52
+109                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+109-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/jun/.gradle/caches/transforms-3/3ff6ff471a0085e90b5ccadc8804e058/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:30:17-78
+110                android:value="androidx.startup" />
+110-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/jun/.gradle/caches/transforms-3/3ff6ff471a0085e90b5ccadc8804e058/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:31:17-49
+111            <meta-data
+111-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/jun/.gradle/caches/transforms-3/eafe6325531e4e51f3b3d27c7a573e51/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:29:13-31:52
+112                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+112-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/jun/.gradle/caches/transforms-3/eafe6325531e4e51f3b3d27c7a573e51/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:30:17-85
+113                android:value="androidx.startup" />
+113-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/jun/.gradle/caches/transforms-3/eafe6325531e4e51f3b3d27c7a573e51/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:31:17-49
+114        </provider>
+115
+116        <receiver
+116-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/jun/.gradle/caches/transforms-3/eafe6325531e4e51f3b3d27c7a573e51/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:34:9-52:20
+117            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+117-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/jun/.gradle/caches/transforms-3/eafe6325531e4e51f3b3d27c7a573e51/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:35:13-76
+118            android:directBootAware="false"
+118-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/jun/.gradle/caches/transforms-3/eafe6325531e4e51f3b3d27c7a573e51/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:36:13-44
+119            android:enabled="true"
+119-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/jun/.gradle/caches/transforms-3/eafe6325531e4e51f3b3d27c7a573e51/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:37:13-35
+120            android:exported="true"
+120-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/jun/.gradle/caches/transforms-3/eafe6325531e4e51f3b3d27c7a573e51/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:38:13-36
+121            android:permission="android.permission.DUMP" >
+121-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/jun/.gradle/caches/transforms-3/eafe6325531e4e51f3b3d27c7a573e51/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:39:13-57
+122            <intent-filter>
+122-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/jun/.gradle/caches/transforms-3/eafe6325531e4e51f3b3d27c7a573e51/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:40:13-42:29
+123                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+123-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/jun/.gradle/caches/transforms-3/eafe6325531e4e51f3b3d27c7a573e51/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:41:17-91
+123-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/jun/.gradle/caches/transforms-3/eafe6325531e4e51f3b3d27c7a573e51/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:41:25-88
+124            </intent-filter>
+125            <intent-filter>
+125-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/jun/.gradle/caches/transforms-3/eafe6325531e4e51f3b3d27c7a573e51/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:43:13-45:29
+126                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+126-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/jun/.gradle/caches/transforms-3/eafe6325531e4e51f3b3d27c7a573e51/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:44:17-85
+126-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/jun/.gradle/caches/transforms-3/eafe6325531e4e51f3b3d27c7a573e51/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:44:25-82
+127            </intent-filter>
+128            <intent-filter>
+128-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/jun/.gradle/caches/transforms-3/eafe6325531e4e51f3b3d27c7a573e51/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:46:13-48:29
+129                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+129-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/jun/.gradle/caches/transforms-3/eafe6325531e4e51f3b3d27c7a573e51/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:47:17-88
+129-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/jun/.gradle/caches/transforms-3/eafe6325531e4e51f3b3d27c7a573e51/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:47:25-85
+130            </intent-filter>
+131            <intent-filter>
+131-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/jun/.gradle/caches/transforms-3/eafe6325531e4e51f3b3d27c7a573e51/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:49:13-51:29
+132                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+132-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/jun/.gradle/caches/transforms-3/eafe6325531e4e51f3b3d27c7a573e51/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:50:17-95
+132-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/jun/.gradle/caches/transforms-3/eafe6325531e4e51f3b3d27c7a573e51/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:50:25-92
+133            </intent-filter>
+134        </receiver>
+135    </application>
+136
+137</manifest>

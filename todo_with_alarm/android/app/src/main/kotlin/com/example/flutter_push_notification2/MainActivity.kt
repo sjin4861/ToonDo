@@ -1,4 +1,4 @@
-package com.example.flutter_push_notification2
+package com.example.todo_with_alarm
 
 import io.flutter.embedding.android.FlutterActivity
 
