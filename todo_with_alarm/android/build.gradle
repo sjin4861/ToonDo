@@ -20,6 +20,10 @@ allprojects {
 rootProject.buildDir = "../build"
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
-    // 모든 서브프로젝트에 Kotlin 버전 적용
-    project.ext.kotlin_version = "$kotlin_version"
+}
+subprojects {
+    project.evaluationDependsOn(':app')
+}
+tasks.register('clean', Delete) {
+    delete rootProject.buildDir
 }
