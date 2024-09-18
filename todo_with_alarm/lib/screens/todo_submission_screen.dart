@@ -7,12 +7,15 @@ import 'package:todo_with_alarm/widgets/todo_list_item.dart';
 import 'package:intl/intl.dart';
 
 class TodoSubmissionScreen extends StatefulWidget {
+  final DateTime? selectedDate; // Optional selected date
+
+  const TodoSubmissionScreen({Key? key, this.selectedDate}) : super(key: key);
   @override
   _TodoSubmissionScreenState createState() => _TodoSubmissionScreenState();
 }
 
 class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
-  DateTime selectedDate = DateTime.now();
+  late DateTime selectedDate; // Declare as late because it will be initialized in initState
   List<Todo> todos = [];
   final TextEditingController todoController = TextEditingController();
   bool hideCompletionStatus = false; // 수행 여부 숨김 여부
@@ -20,6 +23,7 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
   @override
   void initState() {
     super.initState();
+    selectedDate = widget.selectedDate ?? DateTime.now();
     _loadTodos(); // 현재 날짜의 투두 리스트 불러오기
   }
 
