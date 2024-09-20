@@ -1,12 +1,14 @@
 // widgets/todo_list_item.dart
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/todo.dart';
+import 'package:todo_with_alarm/providers/goal_provider.dart';
 
 class TodoListItem extends StatelessWidget {
   final Todo todo;
   final Function(Todo) onUpdate;
-  final VoidCallback onDelete;
+  final Function() onDelete;
   final bool hideCompletionStatus;
 
   const TodoListItem({
@@ -19,117 +21,111 @@ class TodoListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 진행률에 따른 색상 설정
-    Color statusColor = _getStatusColor(todo.status);
+    return Consumer<Todo>(
+      builder: (context, todo, child) {
+        // 진행률 표시 위젯
+        Widget progressIndicator = hideCompletionStatus
+            ? SizedBox.shrink()
+            : SizedBox(
+                width: 40,
+                height: 40,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    CircularProgressIndicator(
+                      value: todo.status / 100,
+                      strokeWidth: 4,
+                      backgroundColor: Colors.grey[300],
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                          Theme.of(context).primaryColor),
+                    ),
+                    Center(
+                      child: Text(
+                        '${todo.status.toInt()}%',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ),
+                  ],
+                ),
+              );
 
-    return ListTile(
-      leading: hideCompletionStatus
-          ? null
-          : CircleAvatar(
-              backgroundColor: statusColor,
-              child: Text(
-                '${todo.status.toStringAsFixed(1)}%',
-                style: TextStyle(color: Colors.white, fontSize: 12),
-              ),
-            ),
-      title: Text(todo.title),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (todo.goalId != null && todo.goalId!.isNotEmpty)
-            Text(
-              '목표: ${todo.goalId}',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.blueAccent,
-              ),
-            ),
-          if (!hideCompletionStatus && todo.comment.isNotEmpty)
-            Text('코멘트: ${todo.comment}'),
-        ],
-      ),
-      trailing: IconButton(
-        icon: Icon(Icons.delete, color: Colors.red),
-        onPressed: onDelete,
-      ),
-      onTap: () {
-        // 투두 항목 클릭 시 진행률 업데이트 다이얼로그 표시
-        _showStatusDialog(context);
+        return ListTile(
+          leading: progressIndicator,
+          title: Text(todo.title),
+          subtitle: _buildSubtitle(context),
+          trailing: IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: onDelete,
+          ),
+          onTap: () {
+            // 진행률 업데이트 다이얼로그 표시
+            _showProgressDialog(context);
+          },
+        );
       },
-      isThreeLine: (todo.goalId != null && todo.goalId!.isNotEmpty) ||
-          (!hideCompletionStatus && todo.comment.isNotEmpty),
     );
   }
 
-  // 진행률에 따른 색상 반환 함수
-  Color _getStatusColor(double status) {
-    if (status >= 80.0) {
-      return Colors.green;
-    } else if (status >= 50.0) {
-      return Colors.orange;
+  Widget? _buildSubtitle(BuildContext context) {
+    // 목표 이름 가져오기
+    String? goalName;
+    if (todo.goalId != null) {
+      final goalProvider = Provider.of<GoalProvider>(context, listen: false);
+      final matchingGoals = goalProvider.goals.where((goal) => goal.id == todo.goalId);
+      if (matchingGoals.isNotEmpty) {
+        goalName = matchingGoals.first.name;
+      } else {
+        // 목표를 찾지 못한 경우 처리
+        goalName = '목표를 찾을 수 없음';
+      }
+    }
+
+    if (goalName != null) {
+      return Text('목표: $goalName');
     } else {
-      return Colors.red;
+      return null;
     }
   }
 
-  void _showStatusDialog(BuildContext context) {
-    double selectedStatus = todo.status;
-    TextEditingController commentController =
-        TextEditingController(text: todo.comment);
+  // 진행률 업데이트 다이얼로그 메서드
+  void _showProgressDialog(BuildContext context) {
+    double newStatus = todo.status;
 
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('${todo.title} 진행률 업데이트'),
+          title: Text('진행률 업데이트'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // 진행률 슬라이더
-              Text('진행률: ${selectedStatus.toStringAsFixed(1)}%'),
+              Text('진행률: ${newStatus.toInt()}%'),
               Slider(
-                value: selectedStatus,
-                min: 0.0,
-                max: 100.0,
-                divisions: 1000, // 0.1 단위로 나누기
-                label: '${selectedStatus.toStringAsFixed(1)}%',
+                value: newStatus,
+                min: 0,
+                max: 100,
+                divisions: 100,
+                label: '${newStatus.toInt()}%',
                 onChanged: (double value) {
-                  selectedStatus = value;
-                  (context as Element).markNeedsBuild();
+                  newStatus = value;
                 },
-              ),
-              SizedBox(height: 20),
-              // 코멘트 입력 필드
-              TextField(
-                controller: commentController,
-                decoration: InputDecoration(
-                  labelText: '코멘트 입력',
-                  border: OutlineInputBorder(),
-                ),
               ),
             ],
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => Navigator.pop(context),
               child: Text('취소'),
             ),
-            ElevatedButton(
+            TextButton(
               onPressed: () {
-                // 진행률과 코멘트 업데이트
-                Todo updatedTodo = Todo(
-                  title: todo.title,
-                  date: todo.date,
-                  status: selectedStatus,
-                  comment: commentController.text,
-                  goalId: todo.goalId, // 기존 목표 유지
-                  urgency: todo.urgency, // 기존 긴급도 유지
-                  importance: todo.importance, // 기존 중요도 유지
-                );
+                // 진행률 업데이트
+                Todo updatedTodo = todo;
+                updatedTodo.status = newStatus;
                 onUpdate(updatedTodo);
-                Navigator.of(context).pop();
+                Navigator.pop(context);
               },
-              child: Text('확인'),
+              child: Text('저장'),
             ),
           ],
         );

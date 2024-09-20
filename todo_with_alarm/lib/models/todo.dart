@@ -21,6 +21,12 @@ class Todo with ChangeNotifier {
     this.importance = 0.0,
   });
 
+  // 진행률 업데이트 메서드 추가
+  void updateStatus(double newStatus) {
+    status = newStatus;
+    notifyListeners();
+  }
+
   // JSON으로 변환하는 메서드
   Map<String, dynamic> toJson() {
     return {

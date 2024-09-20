@@ -56,94 +56,194 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
             },
           ),
           IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              // 목표 관리 화면으로 이동
-              // 필요에 따라 구현
-            },
+            icon: Icon(Icons.calendar_today),
+            onPressed: _selectDate,
           ),
         ],
       ),
       body: Column(
         children: [
           // 날짜 선택 및 이동 버튼들
-          // 투두 입력 필드
-          TextField(
-            controller: todoController,
-            decoration: InputDecoration(
-              labelText: '투두 항목 입력',
-              border: OutlineInputBorder(),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: _goToPreviousDay,
+                ),
+                TextButton(
+                  onPressed: _selectDate,
+                  child: Text(
+                    formattedDate,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.arrow_forward),
+                  onPressed: _goToNextDay,
+                ),
+              ],
             ),
           ),
-          // 목표 선택 드롭다운
-          DropdownButtonFormField<String>(
-            value: selectedGoalId,
-            decoration: InputDecoration(
-              labelText: '목표 선택 (선택 사항)',
-              border: OutlineInputBorder(),
+          Divider(),
+          // 입력 섹션
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Card(
+              elevation: 2,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 투두 입력 필드
+                    TextField(
+                      controller: todoController,
+                      decoration: InputDecoration(
+                        labelText: '투두 항목 입력',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    // 목표 선택 드롭다운
+                    DropdownButtonFormField<String>(
+                      value: selectedGoalId,
+                      decoration: const InputDecoration(
+                        labelText: '해당하는 목표 선택 (선택 사항)',
+                        border: OutlineInputBorder(),
+                      ),
+                      items: [
+                        const DropdownMenuItem<String>(
+                          value: null,
+                          child: Text('해당 없음'),
+                        ),
+                        ...goalProvider.goals.map((Goal goal) {
+                          return DropdownMenuItem<String>(
+                            value: goal.id,
+                            child: Text(goal.name),
+                          );
+                        }).toList(),
+                      ],
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedGoalId = newValue;
+                        });
+                      },
+                      hint: Text('목표를 선택하세요'),
+                    ),
+                    SizedBox(height: 16),
+                    // 투두 추가 버튼
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _addTodo,
+                        child: Text('투두 추가'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            items: goalProvider.goals.map((Goal goal) {
-              return DropdownMenuItem<String>(
-                value: goal.id,
-                child: Text(goal.name),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                selectedGoalId = newValue;
-              });
-            },
-            hint: Text('목표를 선택하세요'),
           ),
-          // 투두 추가 버튼
-          ElevatedButton(
-            onPressed: () {
-              if (todoController.text.isNotEmpty) {
-                Todo newTodo = Todo(
-                  title: todoController.text,
-                  date: selectedDate,
-                  urgency: 5.0,
-                  importance: 5.0,
-                  goalId: selectedGoalId,
-                  status: 0.0,
-                );
-                todoProvider.addTodoForDate(selectedDate, newTodo);
-                todoController.clear();
-                setState(() {
-                  selectedGoalId = null;
-                });
-              }
-            },
-            child: Text('투두 추가'),
-          ),
+          Divider(),
           // 투두 리스트
           Expanded(
-            child: ListView.builder(
-              itemCount: todos.length,
-              itemBuilder: (context, index) {
-                Todo todo = todos[index];
-                return Dismissible(
-                  key: Key(todo.title + todo.date.toIso8601String()),
-                  background: Container(color: Colors.red),
-                  onDismissed: (direction) {
-                    todoProvider.deleteTodoForDate(selectedDate, todo);
-                  },
-                  child: TodoListItem(
-                    todo: todo,
-                    onUpdate: (updatedTodo) {
-                      todoProvider.updateTodoForDate(selectedDate, updatedTodo);
+            child: todos.isNotEmpty
+                ? ListView.builder(
+                    itemCount: todos.length,
+                    itemBuilder: (context, index) {
+                      Todo todo = todos[index];
+                      return Dismissible(
+                        key: Key(
+                            todo.title + todo.date.toIso8601String()),
+                        background: Container(color: Colors.red),
+                        onDismissed: (direction) {
+                          todoProvider.deleteTodoForDate(selectedDate, todo);
+                        },
+                        child: ChangeNotifierProvider.value(
+                          value: todo,
+                          child: TodoListItem(
+                            todo: todo,
+                            onUpdate: (updatedTodo) {
+                              // 진행률 업데이트 시 저장
+                              todoProvider.updateTodoForDate(selectedDate, updatedTodo);
+                            },
+                            hideCompletionStatus: hideCompletionStatus,
+                            onDelete: () {
+                              todoProvider.deleteTodoForDate(selectedDate, todo);
+                            },
+                          ),
+                        ),
+                      );
                     },
-                    hideCompletionStatus: hideCompletionStatus,
-                    onDelete: () {
-                      todoProvider.deleteTodoForDate(selectedDate, todo);
-                    },
+                  )
+                : const Center(
+                    child: Text(
+                      '할 일이 없습니다.',
+                      style: TextStyle(color: Colors.grey),
+                    ),
                   ),
-                );
-              },
-            ),
           ),
         ],
       ),
     );
+  }
+
+  // 투두 추가 메서드 분리
+  void _addTodo() {
+    if (todoController.text.isNotEmpty) {
+      Todo newTodo = Todo(
+        title: todoController.text,
+        date: selectedDate,
+        urgency: 5.0,
+        importance: 5.0,
+        goalId: selectedGoalId,
+        status: 0.0,
+      );
+      Provider.of<TodoProvider>(context, listen: false)
+          .addTodoForDate(selectedDate, newTodo);
+      todoController.clear();
+      setState(() {
+        selectedGoalId = null;
+      });
+    }
+  }
+
+  // 날짜 선택 함수
+  Future<void> _selectDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
+    );
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+      Provider.of<TodoProvider>(context, listen: false)
+          .loadTodosForDate(selectedDate);
+    }
+  }
+
+  // 다음날로 이동
+  void _goToNextDay() {
+    setState(() {
+      selectedDate = selectedDate.add(Duration(days: 1));
+    });
+    Provider.of<TodoProvider>(context, listen: false)
+        .loadTodosForDate(selectedDate);
+  }
+
+  // 이전날로 이동
+  void _goToPreviousDay() {
+    setState(() {
+      selectedDate = selectedDate.subtract(Duration(days: 1));
+    });
+    Provider.of<TodoProvider>(context, listen: false)
+        .loadTodosForDate(selectedDate);
   }
 }

@@ -18,7 +18,7 @@ class Goal with ChangeNotifier {
     required this.startDate,
     required this.endDate,
     this.isCompleted = false,
-  }) : id = id ?? Uuid().v4(); // UUID 생성
+  }) : id = id ?? const Uuid().v4(); // UUID 생성
 
   // 진행률 업데이트 시 notifyListeners 호출
   void updateProgress(double newProgress) {
