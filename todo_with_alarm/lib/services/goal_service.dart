@@ -48,22 +48,20 @@ class GoalService {
   }
 
   // 목표를 업데이트하는 메서드
-  static Future<void> updateGoal(int index, Goal goal) async {
+  static Future<void> updateGoal(Goal updatedGoal) async {
     List<Goal> goals = await loadGoals();
-    if (index < 0 || index >= goals.length) {
-      throw Exception('유효하지 않은 목표 인덱스입니다.');
+    int index = goals.indexWhere((goal) => goal.id == updatedGoal.id);
+    if (index == -1) {
+      throw Exception('업데이트할 목표를 찾을 수 없습니다.');
     }
-    goals[index] = goal;
+    goals[index] = updatedGoal;
     await saveGoals(goals);
   }
 
   // 목표를 삭제하는 메서드
-  static Future<void> deleteGoal(int index) async {
+  static Future<void> deleteGoal(String id) async {
     List<Goal> goals = await loadGoals();
-    if (index < 0 || index >= goals.length) {
-      throw Exception('유효하지 않은 목표 인덱스입니다.');
-    }
-    goals.removeAt(index);
+    goals.removeWhere((goal) => goal.id == id);
     await saveGoals(goals);
   }
 

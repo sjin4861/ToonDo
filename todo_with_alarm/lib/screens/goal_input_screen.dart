@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_with_alarm/models/goal.dart';
 import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart'; // UUID 생성용 패키지 추가
 
 class GoalInputScreen extends StatefulWidget {
   final Function(Goal) onGoalSet; // 목표를 설정한 후 전달할 콜백
@@ -63,6 +64,7 @@ class _GoalInputScreenState extends State<GoalInputScreen> {
     }
 
     final newGoal = Goal(
+      id: Uuid().v4(), // UUID로 고유 ID 생성
       name: goalNameController.text,
       startDate: startDate!,
       endDate: endDate!,

@@ -2,7 +2,8 @@
 
 class Todo {
   String title; // 투두 제목
-  String status; // 'O', 'X', 'U' 중 하나
+  String? goalId; // 연계된 목표의 ID (null 가능)
+  double status; // 0.0 ~ 100.0 사이의 값
   String comment; // 코멘트
   DateTime date; // 투두의 날짜
   double urgency; // 긴급도 (0.0 ~ 10.0)
@@ -11,7 +12,8 @@ class Todo {
   Todo({
     required this.title,
     required this.date,
-    this.status = '', // 기본값은 빈 문자열
+    this.goalId, // 목표 필드 추가
+    this.status = 0.0, // 기본값은 0.0
     this.comment = '', // 기본값은 빈 문자열
     this.urgency = 0.0, // 기본값 설정
     this.importance = 0.0, // 기본값 설정
@@ -21,6 +23,7 @@ class Todo {
   Map<String, dynamic> toJson() {
     return {
       'title': title,
+      'goalId': goalId, // 목표 필드 추가
       'status': status,
       'comment': comment,
       'date': date.toIso8601String(),
@@ -34,7 +37,8 @@ class Todo {
     return Todo(
       title: json['title'],
       date: DateTime.parse(json['date']),
-      status: json['status'],
+      goalId: json['goalId'], // 목표 필드 추가
+      status: (json['status'] as num).toDouble(),
       comment: json['comment'],
       urgency: (json['urgency'] as num).toDouble(),
       importance: (json['importance'] as num).toDouble(),

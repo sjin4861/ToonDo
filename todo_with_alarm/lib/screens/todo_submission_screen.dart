@@ -2,7 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:todo_with_alarm/models/todo.dart';
+import 'package:todo_with_alarm/models/goal.dart';
 import 'package:todo_with_alarm/services/todo_service.dart';
+import 'package:todo_with_alarm/services/goal_service.dart';
 import 'package:todo_with_alarm/widgets/todo_list_item.dart';
 import 'package:intl/intl.dart';
 
@@ -10,6 +12,7 @@ class TodoSubmissionScreen extends StatefulWidget {
   final DateTime? selectedDate; // Optional selected date
 
   const TodoSubmissionScreen({Key? key, this.selectedDate}) : super(key: key);
+  
   @override
   _TodoSubmissionScreenState createState() => _TodoSubmissionScreenState();
 }
@@ -17,14 +20,17 @@ class TodoSubmissionScreen extends StatefulWidget {
 class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
   late DateTime selectedDate; // Declare as late because it will be initialized in initState
   List<Todo> todos = [];
+  List<Goal> goals = []; // 목표 목록 추가
   final TextEditingController todoController = TextEditingController();
   bool hideCompletionStatus = false; // 수행 여부 숨김 여부
+  String? selectedGoalId; // 선택된 목표 ID
 
   @override
   void initState() {
     super.initState();
     selectedDate = widget.selectedDate ?? DateTime.now();
     _loadTodos(); // 현재 날짜의 투두 리스트 불러오기
+    _loadGoals(); // 목표 리스트 불러오기
   }
 
   @override
@@ -41,12 +47,38 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
     });
   }
 
+  // 목표 리스트 불러오기
+  Future<void> _loadGoals() async {
+    List<Goal> loadedGoals = await GoalService.loadGoals();
+    setState(() {
+      goals = loadedGoals;
+    });
+  }
+
+  // 목표 이름을 ID로 변환하여 저장
+  String? _getGoalNameById(String? id) {
+    if (id == null) return null;
+    final goal = goals.firstWhere(
+      (goal) => goal.name == id,
+      orElse: () => Goal(name: 'Unknown', startDate: DateTime.now(), endDate: DateTime.now()),
+    );
+    return goal.name;
+  }
+
   // 투두 항목 추가
   void _addTodo() {
     if (todoController.text.isNotEmpty) {
       setState(() {
-        todos.add(Todo(title: todoController.text, date: selectedDate));
+        todos.add(Todo(
+          title: todoController.text,
+          date: selectedDate,
+          urgency: 5.0, // 기본값 설정
+          importance: 5.0, // 기본값 설정
+          goalId: selectedGoalId, // 선택된 목표 ID 할당
+          status: 0.0, // 초기 진행률은 0.0%
+        ));
         todoController.clear();
+        selectedGoalId = null; // 선택 초기화
       });
       TodoService.saveTodos(selectedDate, todos); // 저장
     }
@@ -110,6 +142,12 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
     });
   }
 
+  // 목표 관리 화면으로 이동
+  void _navigateToGoalManagement() async {
+    await Navigator.pushNamed(context, '/goals');
+    _loadGoals(); // 목표가 변경되었을 때 다시 로드
+  }
+
   @override
   Widget build(BuildContext context) {
     String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
@@ -123,6 +161,11 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
               hideCompletionStatus ? Icons.visibility_off : Icons.visibility,
             ),
             onPressed: _toggleHideCompletionStatus,
+          ),
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: _navigateToGoalManagement,
+            tooltip: '목표 관리',
           ),
         ],
       ),
@@ -148,6 +191,7 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
                 ),
               ],
             ),
+            SizedBox(height: 10),
             // 투두 입력 필드
             TextField(
               controller: todoController,
@@ -155,6 +199,27 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
                 labelText: '투두 항목 입력',
                 border: OutlineInputBorder(),
               ),
+            ),
+            SizedBox(height: 10),
+            // 목표 선택 드롭다운
+            DropdownButtonFormField<String>(
+              value: selectedGoalId,
+              decoration: InputDecoration(
+                labelText: '목표 선택 (선택 사항)',
+                border: OutlineInputBorder(),
+              ),
+              items: goals.map((Goal goal) {
+                return DropdownMenuItem<String>(
+                  value: goal.name, // 목표의 이름을 ID로 사용
+                  child: Text(goal.name),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                setState(() {
+                  selectedGoalId = newValue;
+                });
+              },
+              hint: Text('목표를 선택하세요'),
             ),
             SizedBox(height: 10),
             // 투두 추가 버튼
