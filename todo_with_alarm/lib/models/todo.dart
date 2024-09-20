@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 
 class Todo with ChangeNotifier {
   String title; // 투두 제목
-  String? goalId; // 연계된 목표의 ID (null 가능)
+  String? goalId; // 연계된 목표의 ID (null 가능)updateStatus
   double status; // 0.0 ~ 100.0 사이의 값
   String comment; // 코멘트
   DateTime date; // 투두의 날짜

@@ -34,12 +34,12 @@ class QuadrantWidget extends StatelessWidget {
           decoration: BoxDecoration(
             color: color.withOpacity(0.1),
             border: Border.all(color: color, width: 2.0),
-            borderRadius: BorderRadius.circular(5.0),
+            borderRadius: BorderRadius.circular(20.0),
           ),
           child: Column(
             children: [
               Container(
-                padding: EdgeInsets.all(5.0),
+                padding: EdgeInsets.all(20.0),
                 color: color,
                 width: double.infinity,
                 child: Text(

@@ -71,7 +71,8 @@ class TodoListItem extends StatelessWidget {
     String? goalName;
     if (todo.goalId != null) {
       final goalProvider = Provider.of<GoalProvider>(context, listen: false);
-      final matchingGoals = goalProvider.goals.where((goal) => goal.id == todo.goalId);
+      final matchingGoals =
+          goalProvider.goals.where((goal) => goal.id == todo.goalId);
       if (matchingGoals.isNotEmpty) {
         goalName = matchingGoals.first.name;
       } else {
@@ -94,40 +95,45 @@ class TodoListItem extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text('진행률 업데이트'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('진행률: ${newStatus.toInt()}%'),
-              Slider(
-                value: newStatus,
-                min: 0,
-                max: 100,
-                divisions: 100,
-                label: '${newStatus.toInt()}%',
-                onChanged: (double value) {
-                  newStatus = value;
-                },
+        return StatefulBuilder(
+          builder: (context, setStateDialog) {
+            return AlertDialog(
+              title: Text('진행률 업데이트'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('진행률: ${newStatus.toInt()}%'),
+                  Slider(
+                    value: newStatus,
+                    min: 0,
+                    max: 100,
+                    divisions: 100,
+                    label: '${newStatus.toInt()}%',
+                    onChanged: (double value) {
+                      setStateDialog(() {
+                        newStatus = value;
+                      });
+                    },
+                  ),
+                ],
               ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('취소'),
-            ),
-            TextButton(
-              onPressed: () {
-                // 진행률 업데이트
-                Todo updatedTodo = todo;
-                updatedTodo.status = newStatus;
-                onUpdate(updatedTodo);
-                Navigator.pop(context);
-              },
-              child: Text('저장'),
-            ),
-          ],
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('취소'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    // 진행률 업데이트
+                    todo.updateStatus(newStatus);
+                    onUpdate(todo);
+                    Navigator.pop(context);
+                  },
+                  child: Text('저장'),
+                ),
+              ],
+            );
+          },
         );
       },
     );

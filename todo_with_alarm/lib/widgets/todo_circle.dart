@@ -12,7 +12,7 @@ class TodoCircle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
-      radius: 5,
+      radius: 20,
       backgroundColor: getColor(todo),
       child: Text(
         todo.title.isNotEmpty ? todo.title[0].toUpperCase() : 'T',
