@@ -1,14 +1,23 @@
 // main.dart
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_with_alarm/providers/goal_provider.dart';
+import 'package:todo_with_alarm/providers/todo_provider.dart';
 import 'package:todo_with_alarm/app/router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:todo_with_alarm/services/notification_service.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  runApp(MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => GoalProvider()),
+        ChangeNotifierProvider(create: (_) => TodoProvider()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {

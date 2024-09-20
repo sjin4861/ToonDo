@@ -3,21 +3,9 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_with_alarm/models/goal.dart';
-import 'package:todo_with_alarm/models/todo.dart';
-import 'package:todo_with_alarm/services/todo_service.dart';
 
 class GoalService {
   static const String goalsKey = 'goals_data';
-
-  // 목표 업데이트 메서드 추가
-  static Future<void> updateGoal(Goal updatedGoal) async {
-    List<Goal> goals = await loadGoals();
-    int index = goals.indexWhere((goal) => goal.id == updatedGoal.id);
-    if (index != -1) {
-      goals[index] = updatedGoal;
-      await saveGoals(goals);
-    }
-  }
 
   // 목표 리스트를 저장하는 메서드
   static Future<void> saveGoals(List<Goal> goals) async {
@@ -49,40 +37,9 @@ class GoalService {
     return goals;
   }
 
-  // 목표를 추가하는 메서드
-  static Future<void> addGoal(Goal goal) async {
-    List<Goal> goals = await loadGoals();
-    if (goals.length >= 3) {
-      throw Exception('목표는 최대 3개까지 설정할 수 있습니다.');
-    }
-    goals.add(goal);
-    await saveGoals(goals);
-  }
-
-  // 목표를 삭제하는 메서드
-  static Future<void> deleteGoal(String id) async {
-    List<Goal> goals = await loadGoals();
-    goals.removeWhere((goal) => goal.id == id);
-    await saveGoals(goals);
-  }
-
-  // 모든 목표를 삭제하는 메서드
+  // 모든 목표를 삭제하는 메서드 (필요 시)
   static Future<void> clearGoals() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove(goalsKey);
-  }
-
-  static Future<double> calculateGoalProgress(Goal goal) async {
-    List<Todo> allTodos = await TodoService.loadAllTodos(); // 모든 투두 항목 로드
-    List<Todo> goalTodos = allTodos.where((todo) => todo.goalId == goal.id).toList();
-
-    if (goalTodos.isEmpty) {
-      return 0.0;
-    }
-
-    double totalProgress = goalTodos.fold(0.0, (sum, todo) => sum + todo.status);
-    double averageProgress = totalProgress / goalTodos.length;
-
-    return averageProgress;
   }
 }

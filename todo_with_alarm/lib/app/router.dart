@@ -10,9 +10,9 @@ class AppRouter {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) => const HomeScreen());
+        return MaterialPageRoute(builder: (_) => HomeScreen());
       case '/progress':
-        return MaterialPageRoute(builder: (_) => const GoalProgressScreen());
+        return MaterialPageRoute(builder: (_) => GoalProgressScreen());
       case '/todo':
         return MaterialPageRoute(builder: (_) => TodoSubmissionScreen());
       case '/eisenhower':

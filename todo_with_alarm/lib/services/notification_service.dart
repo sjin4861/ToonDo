@@ -1,8 +1,9 @@
 // services/notification_service.dart
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:todo_with_alarm/models/notification.dart';
+// ignore: depend_on_referenced_packages
 import 'package:timezone/timezone.dart' as tz;
+// ignore: depend_on_referenced_packages
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:flutter/material.dart'; // 화면 전환을 위해 필요
 

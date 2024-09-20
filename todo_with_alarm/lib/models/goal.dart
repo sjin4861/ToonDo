@@ -1,14 +1,15 @@
 // models/goal.dart
 
+import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
-class Goal {
+class Goal with ChangeNotifier {
   String? id; // 고유 식별자 추가
   String name; // 목표 이름
   double progress; // 목표 진행률 (0.0 ~ 100.0)
-  DateTime startDate; // 목표 설정 시작일
-  DateTime endDate; // 목표 설정 종료일
-  bool isCompleted; // 목표 성취 여부
+  DateTime startDate; // 목표 시작일
+  DateTime endDate; // 목표 종료일
+  bool isCompleted; // 목표 완료 여부
 
   Goal({
     String? id,
@@ -18,6 +19,17 @@ class Goal {
     required this.endDate,
     this.isCompleted = false,
   }) : id = id ?? Uuid().v4(); // UUID 생성
+
+  // 진행률 업데이트 시 notifyListeners 호출
+  void updateProgress(double newProgress) {
+    if (newProgress >= 0.0 && newProgress <= 100.0) {
+      progress = newProgress;
+      if (progress == 100.0) {
+        isCompleted = true;
+      }
+      notifyListeners(); // 상태 변경 알림
+    }
+  }
 
   // 기대 목표 진행률 계산 메서드
   double getExpectedProgress() {
@@ -64,26 +76,19 @@ class Goal {
     );
   }
 
-  // 목표 진행률을 업데이트하는 함수
-  void updateProgress(double newProgress) {
-    if (newProgress >= 0.0 && newProgress <= 100.0) {
-      progress = newProgress;
-      if (progress == 100.0) {
-        isCompleted = true;
-      }
-    }
-  }
-
   // 목표를 완료 처리하는 함수
   void markAsCompleted() {
     isCompleted = true;
     progress = 100.0;
+    notifyListeners(); // 상태 변경 알림
+
   }
 
   // 목표 기간을 업데이트하는 함수
   void updateDuration(DateTime newStartDate, DateTime newEndDate) {
     startDate = newStartDate;
     endDate = newEndDate;
+    notifyListeners(); // 상태 변경 알림
   }
 
   // 목표의 남은 기간 계산 함수

@@ -1,87 +1,73 @@
 // screens/eisenhower_matrix_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/todo.dart';
-import 'package:todo_with_alarm/services/todo_service.dart';
+import 'package:todo_with_alarm/providers/todo_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_with_alarm/widgets/quadrant_widget.dart';
-import 'package:todo_with_alarm/utils/color_utils.dart'; // 추가
+import 'package:todo_with_alarm/utils/color_utils.dart';
 
 class EisenhowerMatrixScreen extends StatefulWidget {
   const EisenhowerMatrixScreen({Key? key}) : super(key: key);
 
   @override
-  _EisenhowerMatrixScreenState createState() =>
-      _EisenhowerMatrixScreenState();
+  _EisenhowerMatrixScreenState createState() => _EisenhowerMatrixScreenState();
 }
 
 class _EisenhowerMatrixScreenState extends State<EisenhowerMatrixScreen> {
-  final TodoService _todoService = TodoService();
   DateTime selectedDate = DateTime.now();
-  List<Todo> _todos = [];
 
   @override
   void initState() {
     super.initState();
-    _loadTodosForDate(selectedDate);
+    // 초기 투두 리스트 로드
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<TodoProvider>(context, listen: false)
+          .loadTodosForDate(selectedDate);
+    });
   }
 
-  // 특정 날짜의 투두 리스트 불러오기
-  Future<void> _loadTodosForDate(DateTime date) async {
-    List<Todo> todos = await TodoService.loadTodos(date);
-    setState(() {
-      _todos = todos;
-    });
+  // 특정 날짜의 투두 리스트 로드
+  void _loadTodosForDate(DateTime date) {
+    Provider.of<TodoProvider>(context, listen: false).loadTodosForDate(date);
   }
 
   // 분류된 투두 리스트
-  List<Todo> get urgentImportant => _todos
-      .where((todo) =>
-          todo.urgency >= 5.0 &&
-          todo.importance >= 5.0)
-      .toList()
-    ..sort((a, b) {
-      if (a.importance != b.importance) {
-        return b.importance.compareTo(a.importance); // 중요도가 높을수록 먼저
-      }
-      return b.urgency.compareTo(a.urgency); // 긴급도가 높을수록 먼저
-    });
+  List<Todo> getTodosByQuadrant(List<Todo> todos, String quadrant) {
+    switch (quadrant) {
+      case 'urgentImportant':
+        return todos
+            .where((todo) => todo.urgency >= 5.0 && todo.importance >= 5.0)
+            .toList()
+          ..sort(_sortTodos);
+      case 'notUrgentImportant':
+        return todos
+            .where((todo) => todo.urgency < 5.0 && todo.importance >= 5.0)
+            .toList()
+          ..sort(_sortTodos);
+      case 'urgentNotImportant':
+        return todos
+            .where((todo) => todo.urgency >= 5.0 && todo.importance < 5.0)
+            .toList()
+          ..sort(_sortTodos);
+      case 'notUrgentNotImportant':
+        return todos
+            .where((todo) => todo.urgency < 5.0 && todo.importance < 5.0)
+            .toList()
+          ..sort(_sortTodos);
+      default:
+        return [];
+    }
+  }
 
-  List<Todo> get notUrgentImportant => _todos
-      .where((todo) =>
-          todo.urgency < 5.0 &&
-          todo.importance >= 5.0)
-      .toList()
-    ..sort((a, b) {
-      if (a.importance != b.importance) {
-        return b.importance.compareTo(a.importance);
-      }
-      return b.urgency.compareTo(a.urgency);
-    });
-
-  List<Todo> get urgentNotImportant => _todos
-      .where((todo) =>
-          todo.urgency >= 5.0 &&
-          todo.importance < 5.0)
-      .toList()
-    ..sort((a, b) {
-      if (a.importance != b.importance) {
-        return b.importance.compareTo(a.importance);
-      }
-      return b.urgency.compareTo(a.urgency);
-    });
-
-  List<Todo> get notUrgentNotImportant => _todos
-      .where((todo) =>
-          todo.urgency < 5.0 &&
-          todo.importance < 5.0)
-      .toList()
-    ..sort((a, b) {
-      if (a.importance != b.importance) {
-        return b.importance.compareTo(a.importance);
-      }
-      return b.urgency.compareTo(a.urgency);
-    });
+  // 투두 정렬 함수
+  int _sortTodos(Todo a, Todo b) {
+    if (a.importance != b.importance) {
+      return b.importance.compareTo(a.importance); // 중요도가 높을수록 먼저
+    }
+    return b.urgency.compareTo(a.urgency); // 긴급도가 높을수록 먼저
+  }
 
   // 카테고리에 따른 최소값 설정
   Map<String, double> getMinValues(String quadrant) {
@@ -101,7 +87,6 @@ class _EisenhowerMatrixScreenState extends State<EisenhowerMatrixScreen> {
 
   // Todo 이동 처리
   void _moveTodo(Todo todo, String quadrant) async {
-    // 새로운 긴급도와 중요도를 입력받기 위한 다이얼로그 표시
     Map<String, double> minValues = getMinValues(quadrant);
     double initialUrgency = minValues['urgency']!;
     double initialImportance = minValues['importance']!;
@@ -124,11 +109,13 @@ class _EisenhowerMatrixScreenState extends State<EisenhowerMatrixScreen> {
                     value: newUrgency,
                     min: minValues['urgency']!,
                     max: 10.0,
-                    divisions: ((10.0 - minValues['urgency']!) * 10).round(),
+                    divisions:
+                        ((10.0 - minValues['urgency']!) * 10).round(),
                     label: newUrgency.toStringAsFixed(1),
                     onChanged: (double value) {
                       setStateDialog(() {
-                        newUrgency = double.parse(value.toStringAsFixed(1));
+                        newUrgency =
+                            double.parse(value.toStringAsFixed(1));
                       });
                     },
                   ),
@@ -139,11 +126,13 @@ class _EisenhowerMatrixScreenState extends State<EisenhowerMatrixScreen> {
                     value: newImportance,
                     min: minValues['importance']!,
                     max: 10.0,
-                    divisions: ((10.0 - minValues['importance']!) * 10).round(),
+                    divisions:
+                        ((10.0 - minValues['importance']!) * 10).round(),
                     label: newImportance.toStringAsFixed(1),
                     onChanged: (double value) {
                       setStateDialog(() {
-                        newImportance = double.parse(value.toStringAsFixed(1));
+                        newImportance =
+                            double.parse(value.toStringAsFixed(1));
                       });
                     },
                   ),
@@ -157,13 +146,11 @@ class _EisenhowerMatrixScreenState extends State<EisenhowerMatrixScreen> {
                 TextButton(
                   onPressed: () async {
                     // Todo 업데이트
-                    setState(() {
-                      todo.urgency = newUrgency;
-                      todo.importance = newImportance;
-                    });
-                    await TodoService.saveTodos(todo.date, _todos);
+                    todo.urgency = newUrgency;
+                    todo.importance = newImportance;
+                    await Provider.of<TodoProvider>(context, listen: false)
+                        .updateTodoForDate(selectedDate, todo);
                     Navigator.pop(context);
-                    _loadTodosForDate(selectedDate); // 즉각적으로 반영
                   },
                   child: Text('저장'),
                 ),
@@ -254,11 +241,12 @@ class _EisenhowerMatrixScreenState extends State<EisenhowerMatrixScreen> {
                     value: newUrgency,
                     min: 0.0,
                     max: 10.0,
-                    divisions: 100, // 0.1 단위로 나누기
+                    divisions: 100, // 0.1 단위
                     label: newUrgency.toStringAsFixed(1),
                     onChanged: (double value) {
                       setStateDialog(() {
-                        newUrgency = double.parse(value.toStringAsFixed(1));
+                        newUrgency =
+                            double.parse(value.toStringAsFixed(1));
                       });
                     },
                   ),
@@ -269,11 +257,12 @@ class _EisenhowerMatrixScreenState extends State<EisenhowerMatrixScreen> {
                     value: newImportance,
                     min: 0.0,
                     max: 10.0,
-                    divisions: 100, // 0.1 단위로 나누기
+                    divisions: 100, // 0.1 단위
                     label: newImportance.toStringAsFixed(1),
                     onChanged: (double value) {
                       setStateDialog(() {
-                        newImportance = double.parse(value.toStringAsFixed(1));
+                        newImportance =
+                            double.parse(value.toStringAsFixed(1));
                       });
                     },
                   ),
@@ -287,13 +276,11 @@ class _EisenhowerMatrixScreenState extends State<EisenhowerMatrixScreen> {
                 TextButton(
                   onPressed: () async {
                     // Todo 업데이트
-                    setState(() {
-                      todo.urgency = newUrgency;
-                      todo.importance = newImportance;
-                    });
-                    await TodoService.saveTodos(todo.date, _todos);
+                    todo.urgency = newUrgency;
+                    todo.importance = newImportance;
+                    await Provider.of<TodoProvider>(context, listen: false)
+                        .updateTodoForDate(selectedDate, todo);
                     Navigator.pop(context);
-                    _loadTodosForDate(selectedDate); // 즉각적으로 반영
                   },
                   child: Text('저장'),
                 ),
@@ -331,9 +318,13 @@ class _EisenhowerMatrixScreenState extends State<EisenhowerMatrixScreen> {
   Widget build(BuildContext context) {
     String dateLabel = getDateLabel(selectedDate);
 
+    // Provider에서 투두 리스트 가져오기
+    final todos =
+        Provider.of<TodoProvider>(context).getTodosForDate(selectedDate);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(dateLabel), // 제목을 날짜만 표시하도록 수정
+        title: Text(dateLabel),
         actions: [
           IconButton(
             icon: Icon(Icons.calendar_today),
@@ -367,7 +358,8 @@ class _EisenhowerMatrixScreenState extends State<EisenhowerMatrixScreen> {
                   // 왼쪽 상단: 긴급하지 않지만 중요한 일
                   QuadrantWidget(
                     title: '긴급하지 않지만 중요한 일',
-                    todos: notUrgentImportant,
+                    todos:
+                        getTodosByQuadrant(todos, 'notUrgentImportant'),
                     color: Colors.orangeAccent,
                     quadrant: 'notUrgentImportant',
                     onMoveTodo: _moveTodo,
@@ -376,7 +368,7 @@ class _EisenhowerMatrixScreenState extends State<EisenhowerMatrixScreen> {
                   // 오른쪽 상단: 긴급하고 중요한 일
                   QuadrantWidget(
                     title: '긴급하고 중요한 일',
-                    todos: urgentImportant,
+                    todos: getTodosByQuadrant(todos, 'urgentImportant'),
                     color: Colors.redAccent,
                     quadrant: 'urgentImportant',
                     onMoveTodo: _moveTodo,
@@ -385,7 +377,8 @@ class _EisenhowerMatrixScreenState extends State<EisenhowerMatrixScreen> {
                   // 왼쪽 하단: 긴급하지도 중요하지도 않은 일
                   QuadrantWidget(
                     title: '긴급하지도 중요하지도 않은 일',
-                    todos: notUrgentNotImportant,
+                    todos:
+                        getTodosByQuadrant(todos, 'notUrgentNotImportant'),
                     color: Colors.greenAccent,
                     quadrant: 'notUrgentNotImportant',
                     onMoveTodo: _moveTodo,
@@ -394,7 +387,8 @@ class _EisenhowerMatrixScreenState extends State<EisenhowerMatrixScreen> {
                   // 오른쪽 하단: 긴급하지만 중요하지 않은 일
                   QuadrantWidget(
                     title: '긴급하지만 중요하지 않은 일',
-                    todos: urgentNotImportant,
+                    todos:
+                        getTodosByQuadrant(todos, 'urgentNotImportant'),
                     color: Colors.lightBlueAccent,
                     quadrant: 'urgentNotImportant',
                     onMoveTodo: _moveTodo,
@@ -412,14 +406,15 @@ class _EisenhowerMatrixScreenState extends State<EisenhowerMatrixScreen> {
               children: [
                 Text(
                   '모든 Todo 목록',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Expanded(
-                  child: _todos.isNotEmpty
+                  child: todos.isNotEmpty
                       ? ListView.builder(
-                          itemCount: _todos.length,
+                          itemCount: todos.length,
                           itemBuilder: (context, index) {
-                            Todo todo = _todos[index];
+                            Todo todo = todos[index];
                             return ListTile(
                               leading: CircleAvatar(
                                 backgroundColor: getColor(todo),
@@ -464,6 +459,7 @@ class _EisenhowerMatrixScreenState extends State<EisenhowerMatrixScreen> {
             '/todo',
             arguments: selectedDate, // 현재 선택된 날짜 전달
           ).then((_) {
+            // 투두 리스트를 다시 로드하여 변경 사항 반영
             _loadTodosForDate(selectedDate);
           });
         },

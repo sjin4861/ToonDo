@@ -1,6 +1,8 @@
 // models/todo.dart
 
-class Todo {
+import 'package:flutter/foundation.dart';
+
+class Todo with ChangeNotifier {
   String title; // 투두 제목
   String? goalId; // 연계된 목표의 ID (null 가능)
   double status; // 0.0 ~ 100.0 사이의 값
@@ -12,11 +14,11 @@ class Todo {
   Todo({
     required this.title,
     required this.date,
-    this.goalId, // 목표 필드 추가
-    this.status = 0.0, // 기본값은 0.0
-    this.comment = '', // 기본값은 빈 문자열
-    this.urgency = 0.0, // 기본값 설정
-    this.importance = 0.0, // 기본값 설정
+    this.goalId,
+    this.status = 0.0,
+    this.comment = '',
+    this.urgency = 0.0,
+    this.importance = 0.0,
   });
 
   // JSON으로 변환하는 메서드
