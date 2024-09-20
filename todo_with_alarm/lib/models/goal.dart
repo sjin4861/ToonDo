@@ -3,7 +3,7 @@
 import 'package:uuid/uuid.dart';
 
 class Goal {
-  String id; // 고유 식별자 추가
+  String? id; // 고유 식별자 추가
   String name; // 목표 이름
   double progress; // 목표 진행률 (0.0 ~ 100.0)
   DateTime startDate; // 목표 설정 시작일
@@ -18,6 +18,27 @@ class Goal {
     required this.endDate,
     this.isCompleted = false,
   }) : id = id ?? Uuid().v4(); // UUID 생성
+
+  // 기대 목표 진행률 계산 메서드
+  double getExpectedProgress() {
+    final totalDuration = endDate.difference(startDate).inSeconds;
+    final elapsedDuration = DateTime.now().difference(startDate).inSeconds;
+
+    if (totalDuration <= 0) {
+      return 0.0;
+    }
+
+    double expectedProgress = (elapsedDuration / totalDuration) * 100;
+
+    // 진행률은 0%에서 100% 사이로 제한
+    if (expectedProgress < 0) {
+      return 0.0;
+    } else if (expectedProgress > 100) {
+      return 100.0;
+    } else {
+      return expectedProgress;
+    }
+  }
 
   // JSON으로 변환하는 메서드
   Map<String, dynamic> toJson() {

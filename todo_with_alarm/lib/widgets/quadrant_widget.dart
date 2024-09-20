@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:todo_with_alarm/models/todo.dart';
-import 'package:todo_with_alarm/utils/color_utils.dart'; // 추가
 import 'todo_circle.dart';
 
 class QuadrantWidget extends StatelessWidget {

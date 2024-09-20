@@ -26,4 +26,22 @@ class TodoService {
       return [];
     }
   }
+  static Future<List<Todo>> loadAllTodos() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<Todo> allTodos = [];
+
+    Set<String> keys = prefs.getKeys();
+    for (String key in keys) {
+      if (key.startsWith('todos_')) {
+        String? todosString = prefs.getString(key);
+        if (todosString != null) {
+          List<dynamic> todosJson = jsonDecode(todosString);
+          List<Todo> todos = todosJson.map((json) => Todo.fromJson(json)).toList();
+          allTodos.addAll(todos);
+        }
+      }
+    }
+
+    return allTodos;
+  }
 }
