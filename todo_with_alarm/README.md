@@ -95,11 +95,11 @@ flowchart TD
     CheckAuth -- No --> AuthScreen[Login / Signup Screen]
     AuthScreen --> HomeScreen
     HomeScreen -->|Set Goals| GoalInputScreen[Goal Input Screen]
-    HomeScreen -->|View Todos| TodoListScreen[Todo List Screen]
+    HomeScreen -->|Write Todos| TodoSubmissionScreen[Todo List Screen]
     HomeScreen -->|Settings| SettingsScreen[Settings Screen]
     SettingsScreen -->|Set Reminder Time| NotificationService[Update Notification Schedule]
     HomeScreen -->|View Progress| ProgressScreen[Goal Progress Screen]
-    HomeScreen -->|Eisenhower Matrix| Placeholder[Coming Soon]
-    HomeScreen -->|ToonDo Character| Placeholder
+    HomeScreen -->|Eisenhower Matrix| EisenhowerMatrixScreen[Eisenhower Matrix Screen]
+    HomeScreen -->|ToonDo Character| Placeholder[Comming Soon]
     HomeScreen -->|Logout| AuthScreen
 ```
