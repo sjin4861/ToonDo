@@ -52,8 +52,8 @@
     ```
 
 3.	**Firebase 설정 (인증에 Firebase를 사용하는 경우)**:
-	•	Android: android/app/ 디렉토리에 google-services.json 파일을 추가하세요.
-	•	iOS: Xcode의 Runner 프로젝트에 GoogleService-Info.plist 파일을 추가하세요.
+- Android: android/app/ 디렉토리에 google-services.json 파일을 추가하세요.
+- iOS: Xcode의 Runner 프로젝트에 GoogleService-Info.plist 파일을 추가하세요.
 
 4.	**앱 실행**:
     앱을 실행하려면 다음 명령어를 사용하세요:
@@ -64,13 +64,13 @@
 ### Development Information
 
 **사용된 기술**
-	•	Flutter: 사용자 인터페이스를 구축하고 상태 관리를 처리하기 위한 기본 프레임워크.
-	•	Dart: Flutter와 함께 사용되는 프로그래밍 언어.
-	•	Firebase Authentication: 사용자 등록, 로그인 및 인증을 위해 사용.
-	•	Flutter Local Notifications: 작업 알림을 예약하고 보내기 위한 패키지.
-	•	SharedPreferences: 사용자 설정 및 선호도를 로컬로 저장하는 데 사용.
-	•	Timezone 패키지: 사용자의 시간대를 기반으로 알림 스케줄링을 관리하기 위해 사용.
-	•	Provider: 목표와 투두 등 앱 전반의 상태 관리를 위해 사용.
+- Flutter: 사용자 인터페이스를 구축하고 상태 관리를 처리하기 위한 기본 프레임워크.
+- Dart: Flutter와 함께 사용되는 프로그래밍 언어.
+- Firebase Authentication: 사용자 등록, 로그인 및 인증을 위해 사용.
+- Flutter Local Notifications: 작업 알림을 예약하고 보내기 위한 패키지.
+- SharedPreferences: 사용자 설정 및 선호도를 로컬로 저장하는 데 사용.
+- Timezone 패키지: 사용자의 시간대를 기반으로 알림 스케줄링을 관리하기 위해 사용.
+- Provider: 목표와 투두 등 앱 전반의 상태 관리를 위해 사용.
 
 **프로젝트 구조**
 ```bash
@@ -99,7 +99,7 @@ flowchart TD
     HomeScreen -->|Settings| SettingsScreen[Settings Screen]
     SettingsScreen -->|Set Reminder Time| NotificationService[Update Notification Schedule]
     HomeScreen -->|View Progress| ProgressScreen[Goal Progress Screen]
-    HomeScreen -->|Eisenhower Matrix (Not Implemented)| Placeholder[Coming Soon]
-    HomeScreen -->|ToonDo Character (Not Implemented)| Placeholder
+    HomeScreen -->|Eisenhower Matrix| Placeholder[Coming Soon]
+    HomeScreen -->|ToonDo Character| Placeholder
     HomeScreen -->|Logout| AuthScreen
 ```
