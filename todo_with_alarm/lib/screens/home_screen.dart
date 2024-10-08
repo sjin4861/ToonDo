@@ -8,10 +8,12 @@ import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/goal.dart';
 import 'package:todo_with_alarm/providers/goal_provider.dart';
 import 'package:todo_with_alarm/widgets/goal_list_item.dart';
+import 'package:todo_with_alarm/widgets/image_shadow.dart';
 import 'goal_input_screen.dart';
 import 'goal_progress_screen.dart';
 import 'todo_submission_screen.dart';
 import 'eisenhower_matrix_screen.dart';
+import 'dart:math';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -32,7 +34,7 @@ class HomeScreen extends StatelessWidget {
             child: Text(
               'ToonDo',
               style: TextStyle(
-                fontSize: 30,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -138,16 +140,26 @@ class HomeScreen extends StatelessWidget {
                         child: SizedBox(
                           width: 150,
                           height: 150,
-                          child: Image.asset(
-                            'assets/images/main_character.png',
-                            fit: BoxFit.contain,
-                          ),
+                          child: ImageShadow(
+                            opacity: 0.3, // 그림자 투명도
+                            sigma: 6, // 블러 정도
+                            color: Colors.black, // 그림자 색상
+                            offset: const Offset(0, 150), // 그림자를 아래로 이동
+                            transform: Matrix4.identity()
+                              ..setEntry(3, 1, -0.001) // 원근감 추가
+                              ..rotateX(pi / 4) // X축으로 45도 회전하여 찌그러뜨림
+                              ..scale(0.8, 0.5), // 세로로 축소하여 그림자 모양 조정
+                            child: Image.asset(
+                              'assets/images/main_character.png',
+                              fit: BoxFit.contain,
+                            ),
+                          ), //ImageShadow로 이미지 그림자 추가
                         ),
                       ),
                       // 말풍선
                       Positioned(
                         left: MediaQuery.of(context).size.width / 2 - 100,
-                        bottom: 200, // 캐릭터 이미지 위쪽에 위치
+                        bottom: 220, // 캐릭터 이미지 위쪽에 위치
                         child: SizedBox(
                           width: 200,
                           height: 50,
