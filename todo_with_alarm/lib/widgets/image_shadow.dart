@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'dart:math'; // 추가: pi 값을 사용하기 위해 필요
 import 'package:flutter/material.dart';
 
 class ImageShadow extends StatelessWidget {
@@ -7,6 +8,7 @@ class ImageShadow extends StatelessWidget {
   final double sigma;
   final Color color;
   final Offset offset;
+  final Matrix4? transform; // 추가된 속성
 
   const ImageShadow({
     super.key,
@@ -15,27 +17,36 @@ class ImageShadow extends StatelessWidget {
     this.sigma = 2,
     this.color = Colors.black,
     this.offset = const Offset(2, 2),
+    this.transform, // 추가된 속성
   });
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        // 그림자 효과를 가진 위젯
-        Transform.translate(
-          offset: offset,
-          child: ImageFiltered(
-            imageFilter: ImageFilter.blur(sigmaY: sigma, sigmaX: sigma),
-            child: Opacity(
-              opacity: opacity,
-              child: ColorFiltered(
-                colorFilter: ColorFilter.mode(color, BlendMode.srcATop),
-                child: child,
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final width = constraints.maxWidth;
+            final height = constraints.maxHeight;
+            return Transform(
+              transform: transform ?? Matrix4.identity(),
+              origin: Offset(width / 2, height / 2), // 변형의 기준점을 이미지의 중심으로 설정
+              child: Transform.translate(
+                offset: offset,
+                child: ImageFiltered(
+                  imageFilter: ImageFilter.blur(sigmaY: sigma, sigmaX: sigma),
+                  child: Opacity(
+                    opacity: opacity,
+                    child: ColorFiltered(
+                      colorFilter: ColorFilter.mode(color, BlendMode.srcATop),
+                      child: child,
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
-        // 원본 이미지
         child,
       ],
     );
