@@ -119,6 +119,23 @@ class HomeScreen extends StatelessWidget {
                   flex: 3, // 화면의 30%를 캐릭터와 말풍선에 할당
                   child: Stack(
                     children: [
+                      // 왼쪽 수풀 이미지
+                      Positioned(
+                        left: 0,
+                        bottom: 20,
+                        child: SvgPicture.asset(
+                          'assets/icons/group-2.svg', // 왼쪽에 배치할 SVG 이미지 경로
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Positioned(
+                        right: 0,
+                        bottom: 20,
+                        child: SvgPicture.asset(
+                          'assets/icons/group-3.svg', // 왼쪽에 배치할 SVG 이미지 경로
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                       // 갈색 배경
                       Positioned(
                         left: 0,
@@ -168,10 +185,10 @@ class HomeScreen extends StatelessWidget {
                       // 말풍선
                       Positioned(
                         left: MediaQuery.of(context).size.width / 2 - 100,
-                        bottom: 220, // 캐릭터 이미지 위쪽에 위치
+                        bottom: 230, // 캐릭터 이미지 위쪽에 위치
                         child: SizedBox(
                           width: 200,
-                          height: 50,
+                          height: 45,
                           child: GestureDetector(
                             onTap: () =>
                                 ScaffoldMessenger.of(context).showSnackBar(
