@@ -145,19 +145,19 @@ class HomeScreen extends StatelessWidget {
                       Positioned(
                         left: MediaQuery.of(context).size.width / 2 -
                             75, // 화면 중앙에 위치
-                        bottom: 60, // 갈색 배경 위에 위치하도록 설정
+                        bottom: 80, // 갈색 배경 위에 위치하도록 설정
                         child: SizedBox(
                           width: 150,
                           height: 150,
                           child: ImageShadow(
-                            opacity: 0.3, // 그림자 투명도
-                            sigma: 6, // 블러 정도
+                            opacity: 0.2, // 그림자 투명도
+                            sigma: 7, // 블러 정도
                             color: Colors.black, // 그림자 색상
-                            offset: const Offset(0, 150), // 그림자를 아래로 이동
+                            offset: const Offset(0, 300), // 그림자를 아래로 이동
                             transform: Matrix4.identity()
                               ..setEntry(3, 1, -0.001) // 원근감 추가
                               ..rotateX(pi / 4) // X축으로 45도 회전하여 찌그러뜨림
-                              ..scale(0.8, 0.5), // 세로로 축소하여 그림자 모양 조정
+                              ..scale(0.7, 0.3), // 세로로 축소하여 그림자 모양 조정
                             child: Image.asset(
                               'assets/images/main_character.png',
                               fit: BoxFit.contain,
