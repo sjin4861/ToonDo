@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'dart:math'; // 추가: pi 값을 사용하기 위해 필요
 import 'package:flutter/material.dart';
 
 class ImageShadow extends StatelessWidget {
