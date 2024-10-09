@@ -127,8 +127,17 @@ class HomeScreen extends StatelessWidget {
                         child: Container(
                           width: double.infinity,
                           height: 110, // 원하는 높이로 설정
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFECDFBB), // 갈색 배경색 (#ECDFBB)
+                          color: const Color(0xFFECDFBB), // 갈색 배경색 (#ECDFBB)
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: List.generate(3, (index) {
+                              //선 2개 생성
+                              return Container(
+                                width: double.infinity,
+                                height: 2, // 선의 두께
+                                color: Colors.white, // 선의 색상
+                              );
+                            }),
                           ),
                         ),
                       ),
