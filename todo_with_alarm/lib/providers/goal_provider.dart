@@ -40,19 +40,4 @@ class GoalProvider with ChangeNotifier {
     await GoalService.saveGoals(_goals);
     notifyListeners();
   }
-
-  // 목표 진행률 계산 메서드 이동
-  // Future<double> calculateGoalProgress(Goal goal) async{
-  //   List<Todo> allTodos = await TodoService.loadAllTodos(); // 모든 투두 항목 로드
-  //   List<Todo> goalTodos = allTodos.where((todo) => todo.goalId == goal.id).toList();
-
-  //   if (goalTodos.isEmpty) {
-  //     return 0.0;
-  //   }
-
-  //   double totalProgress = goalTodos.fold(0.0, (sum, todo) => sum + todo.status);
-  //   double averageProgress = totalProgress / goalTodos.length;
-
-  //   return averageProgress;
-  // }
 }
