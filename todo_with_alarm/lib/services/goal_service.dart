@@ -7,6 +7,20 @@ import 'package:todo_with_alarm/models/goal.dart';
 class GoalService {
   static const String goalsKey = 'goals_data';
 
+  // 목표 시작일과 종료일을 검증하는 메서드
+  static String? validateGoalDates(DateTime? startDate, DateTime? endDate) {
+    if (startDate == null) {
+      return '시작일을 선택하세요.';
+    }
+    if (endDate == null) {
+      return '종료일을 선택하세요.';
+    }
+    if (startDate.isAfter(endDate)) {
+      return '시작일은 종료일 이전이어야 합니다.';
+    }
+    return null; // 유효한 경우 null 반환
+  }
+  
   // 목표 리스트를 저장하는 메서드
   static Future<void> saveGoals(List<Goal> goals) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();

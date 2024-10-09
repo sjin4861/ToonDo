@@ -8,12 +8,16 @@ import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/goal.dart';
 import 'package:todo_with_alarm/providers/goal_provider.dart';
 import 'package:todo_with_alarm/widgets/goal_list_item.dart';
+import 'package:todo_with_alarm/widgets/image_shadow.dart';
 import 'goal_input_screen.dart';
 import 'goal_progress_screen.dart';
 import 'todo_submission_screen.dart';
 import 'eisenhower_matrix_screen.dart';
+import 'dart:math';
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final goalProvider = Provider.of<GoalProvider>(context);
@@ -45,8 +49,8 @@ class HomeScreen extends StatelessWidget {
             child: IconButton(
               icon: const Icon(Icons.login, size: 24),
               onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('로그인 기능은 추후에 제공될 예정입니다.')),
-                ),
+                const SnackBar(content: Text('로그인 기능은 추후에 제공될 예정입니다.')),
+              ),
             ),
           ),
         ],
@@ -73,7 +77,8 @@ class HomeScreen extends StatelessWidget {
                 Expanded(
                   flex: 4, // 화면의 40%를 목표 리스트에 할당
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: goalProvider.goals.isNotEmpty
                         ? ListView.builder(
                             itemCount: goalProvider.goals.length,
@@ -86,10 +91,7 @@ class HomeScreen extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => GoalInputScreen(
-                                        existingGoal: goal,
-                                        onGoalSet: (updatedGoal) {
-                                          goalProvider.updateGoal(updatedGoal);
-                                        },
+                                        targetGoal: goal,
                                       ),
                                     ),
                                   );
@@ -103,7 +105,8 @@ class HomeScreen extends StatelessWidget {
                         : const Center(
                             child: Text(
                               '설정된 목표가 없습니다. 목표를 추가해보세요!',
-                              style: TextStyle(fontSize: 16, color: Colors.grey),
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.grey),
                             ),
                           ),
                   ),
@@ -113,6 +116,24 @@ class HomeScreen extends StatelessWidget {
                   flex: 3, // 화면의 30%를 캐릭터와 말풍선에 할당
                   child: Stack(
                     children: [
+                      // 왼쪽 수풀 이미지
+                      Positioned(
+                        left: 0,
+                        bottom: 20,
+                        child: SvgPicture.asset(
+                          'assets/icons/group-2.svg',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      // 오른쪽 수풀 이미지
+                      Positioned(
+                        right: 0,
+                        bottom: 20,
+                        child: SvgPicture.asset(
+                          'assets/icons/group-3.svg',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                       // 갈색 배경
                       Positioned(
                         left: 0,
@@ -121,55 +142,75 @@ class HomeScreen extends StatelessWidget {
                         child: Container(
                           width: double.infinity,
                           height: 110, // 원하는 높이로 설정
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFECDFBB), // 갈색 배경색 (#ECDFBB)
+                          color: const Color(0xFFECDFBB), // 갈색 배경색 (#ECDFBB)
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: List.generate(3, (index) {
+                              //선 2개 생성
+                              return Container(
+                                width: double.infinity,
+                                height: 2, // 선의 두께
+                                color: const Color.fromARGB(
+                                    255, 248, 238, 226), // 선의 색상
+                              );
+                            }),
                           ),
                         ),
                       ),
                       // 메인 캐릭터 이미지
                       Positioned(
-                        left: MediaQuery.of(context).size.width / 2 - 75, // 화면 중앙에 위치
-                        bottom: 60, // 갈색 배경 위에 위치하도록 설정
+                        left: MediaQuery.of(context).size.width / 2 -
+                            75, // 화면 중앙에 위치
+                        bottom: 80, // 갈색 배경 위에 위치하도록 설정
                         child: SizedBox(
                           width: 150,
                           height: 150,
-                          child: Image.asset(
-                            'assets/images/main_character.png',
-                            fit: BoxFit.contain,
-                          ),
+                          child: ImageShadow(
+                            opacity: 0.2, // 그림자 투명도
+                            sigma: 7, // 블러 정도
+                            color: Colors.black, // 그림자 색상
+                            offset: const Offset(0, 300), // 그림자를 아래로 이동
+                            transform: Matrix4.identity()
+                              ..setEntry(3, 1, -0.001) // 원근감 추가
+                              ..rotateX(pi / 4) // X축으로 45도 회전하여 찌그러뜨림
+                              ..scale(0.7, 0.3), // 세로로 축소하여 그림자 모양 조정
+                            child: Image.asset(
+                              'assets/images/main_character.png',
+                              fit: BoxFit.contain,
+                            ),
+                          ), //ImageShadow로 이미지 그림자 추가
                         ),
                       ),
                       // 말풍선
                       Positioned(
-                        left: MediaQuery.of(context).size.width / 2 - 100,
-                        bottom: 200, // 캐릭터 이미지 위쪽에 위치
-                        child: SizedBox(
-                          width: 200,
-                          height: 50,
-                          child: GestureDetector(
-                            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('말풍선이 클릭되었습니다!')),
+                        left: MediaQuery.of(context).size.width / 2 -
+                            125, // 화면 중앙에 위치
+                        bottom: 230, // 캐릭터 이미지 위쪽에 위치
+                        child: GestureDetector(
+                          onTap: () =>
+                              ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('말풍선이 클릭되었습니다!')),
+                          ),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                'assets/icons/speech_bubble.svg',
+                                width: 200,
+                                height: 45,
                               ),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.8),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.grey),
-                              ),
-                              child: const Center(
-                                child: Text(
-                                  '오늘은 어떤 멋진 하루를 보낼까?',
-                                  style: TextStyle(
-                                    color: Color(0xFF605956),
-                                    fontSize: 12,
-                                    fontFamily: 'Nanum Pen Script',
-                                    fontWeight: FontWeight.w400,
-                                    letterSpacing: 0.12,
-                                  ),
-                                  textAlign: TextAlign.center,
+                              const Text(
+                                '오늘은 어떤 멋진 하루를 보낼까?',
+                                style: TextStyle(
+                                  color: Color(0xFF605956),
+                                  fontSize: 12,
+                                  fontFamily: 'Nanum Pen Script',
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: 0.12,
                                 ),
+                                textAlign: TextAlign.center,
                               ),
-                            ),
+                            ],
                           ),
                         ),
                       ),
@@ -200,7 +241,8 @@ class HomeScreen extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const TodoSubmissionScreen(), // 'todo' 화면으로 이동
+              builder: (context) =>
+                  const TodoSubmissionScreen(), // 'todo' 화면으로 이동
             ),
           );
         },
@@ -211,12 +253,13 @@ class HomeScreen extends StatelessWidget {
           decoration: ShapeDecoration(
             color: Colors.white, // 변경: 배경색 흰색
             shape: RoundedRectangleBorder(
-              side: const BorderSide(width: 0.5, color: Color(0x3F1B1C1B)), // 변경: 테두리
+              side: const BorderSide(
+                  width: 0.5, color: Color(0x3F1B1C1B)), // 변경: 테두리
               borderRadius: BorderRadius.circular(20), // 변경: borderRadius 20
             ),
           ),
           child: Center(
-            child: Container(
+            child: SizedBox(
               width: 20,
               height: 20,
               // clipBehavior: Clip.antiAlias, // 제거: 오류의 원인
@@ -230,7 +273,8 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked, // 가운데 위치
+      floatingActionButtonLocation:
+          FloatingActionButtonLocation.centerDocked, // 가운데 위치
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         notchMargin: 10,
@@ -238,7 +282,8 @@ class HomeScreen extends StatelessWidget {
         child: SizedBox(
           height: 60, // 네비게이션 바 높이 설정
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround, // 네비게이션 바 버튼을 균등 분배
+            mainAxisAlignment:
+                MainAxisAlignment.spaceAround, // 네비게이션 바 버튼을 균등 분배
             children: [
               IconButton(
                 icon: SvgPicture.asset(
@@ -258,11 +303,8 @@ class HomeScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => GoalInputScreen(
-                        onGoalSet: (newGoal) {
-                          goalProvider.addGoal(newGoal);
-                        },
-                      ), // 'goal_input' 화면으로 이동
+                      builder: (context) =>
+                          GoalInputScreen(), // 'goal_input' 화면으로 이동
                     ),
                   );
                 },

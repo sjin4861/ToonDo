@@ -1,189 +1,144 @@
 // screens/goal_input_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/goal.dart';
-import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
+import 'package:todo_with_alarm/widgets/date_picker_field.dart';
+import 'package:todo_with_alarm/providers/goal_provider.dart';
+import 'package:todo_with_alarm/services/goal_service.dart'; // GoalService 임포트
 
 class GoalInputScreen extends StatefulWidget {
-  final Function(Goal) onGoalSet;
-  final Goal? existingGoal;
+  final Goal? targetGoal;
 
-  const GoalInputScreen({Key? key, required this.onGoalSet, this.existingGoal})
-      : super(key: key);
+  GoalInputScreen({Key? key, this.targetGoal}) : super(key: key);
 
   @override
   _GoalInputScreenState createState() => _GoalInputScreenState();
 }
 
 class _GoalInputScreenState extends State<GoalInputScreen> {
-  final TextEditingController goalNameController = TextEditingController();
-  DateTime? startDate;
-  DateTime? endDate;
+  final TextEditingController _goalNameController = TextEditingController();
+  DateTime? _startDate;
+  DateTime? _endDate;
+  final _formKey = GlobalKey<FormState>(); // Form의 상태를 관리하기 위한 키
 
   @override
   void initState() {
     super.initState();
 
-    if (widget.existingGoal != null) {
-      goalNameController.text = widget.existingGoal!.name;
-      startDate = widget.existingGoal!.startDate;
-      endDate = widget.existingGoal!.endDate;
+    if (widget.targetGoal != null) {
+      _goalNameController.text = widget.targetGoal!.name;
+      _startDate = widget.targetGoal!.startDate;
+      _endDate = widget.targetGoal!.endDate;
     }
-  }
-
-  // 목표 저장 함수
-  void _saveGoal() {
-    if (goalNameController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('목표 이름을 입력하세요.')),
-      );
-      return;
-    }
-
-    if (startDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('시작일을 선택하세요.')),
-      );
-      return;
-    }
-
-    if (endDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('종료일을 선택하세요.')),
-      );
-      return;
-    }
-
-    if (startDate!.isAfter(endDate!)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('시작일은 종료일 이전이어야 합니다.')),
-      );
-      return;
-    }
-
-    final newGoal = Goal(
-      id: widget.existingGoal?.id ?? Uuid().v4(), // 기존 ID 유지
-      name: goalNameController.text,
-      startDate: startDate!,
-      endDate: endDate!,
-      progress: widget.existingGoal?.progress ?? 0.0,
-    );
-
-    widget.onGoalSet(newGoal);
-    Navigator.pop(context);
   }
 
   @override
   void dispose() {
-    goalNameController.dispose();
+    _goalNameController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    bool isEditing = widget.existingGoal != null;
+    bool isUpdating = widget.targetGoal != null;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(isEditing ? '목표 수정' : '목표 설정'),
+        title: Text(isUpdating ? '목표 수정' : '목표 설정'),
       ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              // 목표 이름 입력 필드
-              TextField(
-                controller: goalNameController,
-                decoration: const InputDecoration(
-                  labelText: '목표 이름',
-                  border: OutlineInputBorder(),
+          child: Form(
+            key: _formKey, // Form 위젯에 키 설정
+            child: Column(
+              children: [
+                // 목표 이름 입력 필드
+                TextFormField(
+                  controller: _goalNameController,
+                  decoration: const InputDecoration(
+                    labelText: '목표 이름',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return '목표 이름을 입력하세요.';
+                    }
+                    return null;
+                  },
                 ),
-              ),
-              const SizedBox(height: 16),
-              // 시작일 선택
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      startDate == null
-                          ? '시작일을 선택하세요'
-                          : '시작일: ${DateFormat('yyyy-MM-dd').format(startDate!)}',
-                      style: TextStyle(fontSize: 16),
+                const SizedBox(height: 16),
+                // 시작일 선택
+                DatePickerField(
+                  label: '시작일',
+                  selectedDate: _startDate,
+                  onSelectDate: (pickedDate) {
+                    setState(() {
+                      _startDate = pickedDate;
+                    });
+                  },
+                ),
+                const SizedBox(height: 16),
+                // 종료일 선택
+                DatePickerField(
+                  label: '종료일',
+                  selectedDate: _endDate,
+                  onSelectDate: (pickedDate) {
+                    setState(() {
+                      _endDate = pickedDate;
+                    });
+                  }
+                ),
+                const SizedBox(height: 32),
+                // 입력 버튼
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () => _setGoal(isUpdating),
+                    icon: const Icon(Icons.save),
+                    label: Text(isUpdating ? '목표 수정 완료' : '목표 설정 완료'),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 50),
                     ),
                   ),
-                  ElevatedButton(
-                    onPressed: _selectStartDate,
-                    child: Text('시작일 선택'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              // 종료일 선택
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      endDate == null
-                          ? '종료일을 선택하세요'
-                          : '종료일: ${DateFormat('yyyy-MM-dd').format(endDate!)}',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: _selectEndDate,
-                    child: Text('종료일 선택'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 32),
-              // 저장 버튼
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: _saveGoal,
-                  icon: Icon(Icons.save),
-                  label: Text(isEditing ? '목표 수정 완료' : '목표 설정 완료'),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: Size(double.infinity, 50),
-                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+  
+  void _setGoal(bool isUpdating) async{
+    if (_formKey.currentState!.validate()) {
+      // GoalService를 사용하여 날짜 유효성 검사
+      String? dateError = GoalService.validateGoalDates(_startDate, _endDate);
+      if (dateError != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(dateError)),
+        );
+        return;
+      }
+      final newGoal = Goal(
+        id: widget.targetGoal?.id ?? Uuid().v4(), // 기존 ID 유지 또는 새 ID 생성
+        name: _goalNameController.text,
+        startDate: _startDate!,
+        endDate: _endDate!,
+        progress: widget.targetGoal?.progress ?? 0.0,
+      );
 
-  // 시작일 선택 함수
-  Future<void> _selectStartDate() async {
-    final selectedDate = await showDatePicker(
-      context: context,
-      initialDate: startDate ?? DateTime.now(),
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
-    );
-    if (selectedDate != null) {
-      setState(() {
-        startDate = selectedDate;
-      });
-    }
-  }
+      final goalProvider = Provider.of<GoalProvider>(context, listen: false);
 
-  // 종료일 선택 함수
-  Future<void> _selectEndDate() async {
-    final selectedDate = await showDatePicker(
-      context: context,
-      initialDate: endDate ?? DateTime.now().add(const Duration(days: 30)),
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
-    );
-    if (selectedDate != null) {
-      setState(() {
-        endDate = selectedDate;
-      });
+      if (isUpdating) {
+        await goalProvider.updateGoal(newGoal);
+      } else {
+        await goalProvider.addGoal(newGoal);
+      }
+
+      Navigator.pop(context);
     }
   }
 }
