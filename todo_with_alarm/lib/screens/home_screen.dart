@@ -86,10 +86,7 @@ class HomeScreen extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => GoalInputScreen(
-                                        existingGoal: goal,
-                                        onGoalSet: (updatedGoal) {
-                                          goalProvider.updateGoal(updatedGoal);
-                                        },
+                                        targetGoal: goal,
                                       ),
                                     ),
                                   );
@@ -258,11 +255,7 @@ class HomeScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => GoalInputScreen(
-                        onGoalSet: (newGoal) {
-                          goalProvider.addGoal(newGoal);
-                        },
-                      ), // 'goal_input' 화면으로 이동
+                      builder: (context) => GoalInputScreen(), // 'goal_input' 화면으로 이동
                     ),
                   );
                 },
