@@ -14,7 +14,7 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => HomeScreen());
       case '/goal_input':
         // ignore: non_constant_identifier_names
-        return MaterialPageRoute(builder: (_) => GoalInputScreen(onGoalSet: (Goal ) {  },));
+        return MaterialPageRoute(builder: (_) => GoalInputScreen());
       case '/progress':
         return MaterialPageRoute(builder: (_) => GoalProgressScreen());
       case '/todo':
