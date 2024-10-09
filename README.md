@@ -2,7 +2,7 @@
 
 **Home Screen**
 
-<img width="330" alt="홈" src="https://github.com/user-attachments/assets/0c51e95e-0cd8-4d06-a30d-79bd788ea896">
+<img width="317" alt="홈" src="https://github.com/user-attachments/assets/b7530a45-88dd-41f7-916e-38b67cf3bee6">
 
 **Goal Input Screen**
 
