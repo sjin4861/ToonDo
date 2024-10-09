@@ -125,6 +125,7 @@ class HomeScreen extends StatelessWidget {
                           fit: BoxFit.cover,
                         ),
                       ),
+                      // 오른쪽 수풀 이미지
                       Positioned(
                         right: 0,
                         bottom: 20,
@@ -302,7 +303,8 @@ class HomeScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => GoalInputScreen(), // 'goal_input' 화면으로 이동
+                      builder: (context) =>
+                          GoalInputScreen(), // 'goal_input' 화면으로 이동
                     ),
                   );
                 },
