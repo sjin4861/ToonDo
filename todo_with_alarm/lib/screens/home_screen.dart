@@ -124,7 +124,7 @@ class HomeScreen extends StatelessWidget {
                         left: 0,
                         bottom: 20,
                         child: SvgPicture.asset(
-                          'assets/icons/group-2.svg', // 왼쪽에 배치할 SVG 이미지 경로
+                          'assets/icons/group-2.svg',
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -132,7 +132,7 @@ class HomeScreen extends StatelessWidget {
                         right: 0,
                         bottom: 20,
                         child: SvgPicture.asset(
-                          'assets/icons/group-3.svg', // 왼쪽에 배치할 SVG 이미지 경로
+                          'assets/icons/group-3.svg',
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -184,36 +184,34 @@ class HomeScreen extends StatelessWidget {
                       ),
                       // 말풍선
                       Positioned(
-                        left: MediaQuery.of(context).size.width / 2 - 100,
+                        left: MediaQuery.of(context).size.width / 2 -
+                            125, // 화면 중앙에 위치
                         bottom: 230, // 캐릭터 이미지 위쪽에 위치
-                        child: SizedBox(
-                          width: 200,
-                          height: 45,
-                          child: GestureDetector(
-                            onTap: () =>
-                                ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('말풍선이 클릭되었습니다!')),
-                            ),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.8),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.grey),
+                        child: GestureDetector(
+                          onTap: () =>
+                              ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('말풍선이 클릭되었습니다!')),
+                          ),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                'assets/icons/speech_bubble.svg', // SVG 이미지 경로
+                                width: 200,
+                                height: 45,
                               ),
-                              child: const Center(
-                                child: Text(
-                                  '오늘은 어떤 멋진 하루를 보낼까?',
-                                  style: TextStyle(
-                                    color: Color(0xFF605956),
-                                    fontSize: 12,
-                                    fontFamily: 'Nanum Pen Script',
-                                    fontWeight: FontWeight.w400,
-                                    letterSpacing: 0.12,
-                                  ),
-                                  textAlign: TextAlign.center,
+                              const Text(
+                                '오늘은 어떤 멋진 하루를 보낼까?',
+                                style: TextStyle(
+                                  color: Color(0xFF605956),
+                                  fontSize: 12,
+                                  fontFamily: 'Nanum Pen Script',
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: 0.12,
                                 ),
+                                textAlign: TextAlign.center,
                               ),
-                            ),
+                            ],
                           ),
                         ),
                       ),
