@@ -152,7 +152,8 @@ class HomeScreen extends StatelessWidget {
                               return Container(
                                 width: double.infinity,
                                 height: 2, // 선의 두께
-                                color: Colors.white, // 선의 색상
+                                color: const Color.fromARGB(
+                                    255, 248, 238, 226), // 선의 색상
                               );
                             }),
                           ),
@@ -196,7 +197,7 @@ class HomeScreen extends StatelessWidget {
                             alignment: Alignment.center,
                             children: [
                               SvgPicture.asset(
-                                'assets/icons/speech_bubble.svg', // SVG 이미지 경로
+                                'assets/icons/speech_bubble.svg',
                                 width: 200,
                                 height: 45,
                               ),
