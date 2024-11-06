@@ -4,51 +4,49 @@ import 'package:flutter/foundation.dart';
 import 'package:todo_with_alarm/models/todo.dart';
 import 'package:todo_with_alarm/services/todo_service.dart';
 
-// providers/todo_provider.dart
-
 class TodoProvider with ChangeNotifier {
-  Map<String, List<Todo>> _todosByDate = {};
+  List<Todo> _todos = [];
 
+  // 모든 투두 리스트를 가져오는 메서드
+  List<Todo> getAllTodos() {
+    return _todos;
+  }
+
+  // 특정 날짜에 해당하는 투두 리스트를 가져오는 메서드
   List<Todo> getTodosForDate(DateTime date) {
-    String dateKey = date.toIso8601String().substring(0, 10);
-    return _todosByDate[dateKey] ?? [];
+    return _todos.where((todo) {
+      return (todo.startDate.isBefore(date) || todo.startDate.isAtSameMomentAs(date)) &&
+          (todo.endDate.isAfter(date) || todo.endDate.isAtSameMomentAs(date));
+    }).toList();
   }
 
-  Future<void> loadTodosForDate(DateTime date) async {
-    List<Todo> todos = await TodoService.loadTodosForDate(date);
-    String dateKey = date.toIso8601String().substring(0, 10);
-    _todosByDate[dateKey] = todos;
+  // 모든 투두를 로드하는 메서드
+  Future<void> loadTodos() async {
+    _todos = await TodoService.loadAllTodos();
     notifyListeners();
   }
 
-  Future<void> addTodoForDate(DateTime date, Todo todo) async {
-    String dateKey = date.toIso8601String().substring(0, 10);
-    _todosByDate.putIfAbsent(dateKey, () => []);
-    _todosByDate[dateKey]!.add(todo);
-    await TodoService.saveTodosForDate(date, _todosByDate[dateKey]!);
+  // 투두를 추가하는 메서드
+  Future<void> addTodo(Todo todo) async {
+    _todos.add(todo);
+    await TodoService.saveAllTodos(_todos);
     notifyListeners();
   }
 
-  Future<void> updateTodoForDate(DateTime date, Todo updatedTodo) async {
-    String dateKey = date.toIso8601String().substring(0, 10);
-    List<Todo>? todos = _todosByDate[dateKey];
-    if (todos != null) {
-      int index = todos.indexWhere((todo) => todo.title == updatedTodo.title);
-      if (index != -1) {
-        todos[index] = updatedTodo;
-        await TodoService.saveTodosForDate(date, todos);
-        notifyListeners();
-      }
-    }
-  }
-
-  Future<void> deleteTodoForDate(DateTime date, Todo todo) async {
-    String dateKey = date.toIso8601String().substring(0, 10);
-    List<Todo>? todos = _todosByDate[dateKey];
-    if (todos != null) {
-      todos.removeWhere((t) => t.title == todo.title);
-      await TodoService.saveTodosForDate(date, todos);
+  // 투두를 업데이트하는 메서드
+  Future<void> updateTodo(Todo updatedTodo) async {
+    int index = _todos.indexWhere((todo) => todo.id == updatedTodo.id);
+    if (index != -1) {
+      _todos[index] = updatedTodo;
+      await TodoService.saveAllTodos(_todos);
       notifyListeners();
     }
+  }
+
+  // 투두를 삭제하는 메서드
+  Future<void> deleteTodo(Todo todo) async {
+    _todos.removeWhere((t) => t.id == todo.id);
+    await TodoService.saveAllTodos(_todos);
+    notifyListeners();
   }
 }
