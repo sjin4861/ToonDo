@@ -49,4 +49,10 @@ class TodoProvider with ChangeNotifier {
     await TodoService.saveAllTodos(_todos);
     notifyListeners();
   }
+  // 투두 ID로 삭제하는 메서드 추가
+  Future<void> deleteTodoById(String id) async {
+    _todos.removeWhere((todo) => todo.id == id);
+    await TodoService.saveAllTodos(_todos);
+    notifyListeners();
+  }
 }
