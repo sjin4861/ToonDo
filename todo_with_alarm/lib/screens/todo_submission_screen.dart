@@ -6,6 +6,9 @@ import 'package:todo_with_alarm/providers/todo_provider.dart';
 import 'package:todo_with_alarm/providers/goal_provider.dart';
 import 'package:intl/intl.dart';
 import 'todo_input_screen.dart'; // TodoInputScreen 임포트
+import 'package:todo_with_alarm/widgets/Calendar.dart'; // Calendar 위젯 임포트
+import 'package:todo_with_alarm/widgets/todo_edit_bottom_sheet.dart'; // ToDoEditBottomSheet 임포트
+
 
 class TodoSubmissionScreen extends StatefulWidget {
   final DateTime? selectedDate;
@@ -35,24 +38,49 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
 
   void loadTodos() {
     final todoProvider = Provider.of<TodoProvider>(context, listen: false);
-    todos = todoProvider.getAllTodos();
 
-    // D-Day 투두와 Daily 투두 분류
-    dDayTodos = todos.where((todo) {
-      final duration = todo.endDate.difference(todo.startDate).inDays;
-      return duration >= 1; // 2일 이상 지속되는 투두
+    // 모든 투두 가져오기
+    List<Todo> allTodos = todoProvider.getAllTodos();
+    DateTime selectedDateOnly = DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
+
+
+    // 선택된 날짜에 해당하는 투두 필터링
+    List<Todo> todosForSelectedDate = allTodos.where((todo) {
+      DateTime todoStartDate = DateTime(todo.startDate.year, todo.startDate.month, todo.startDate.day);
+      DateTime todoEndDate = DateTime(todo.endDate.year, todo.endDate.month, todo.endDate.day);
+
+      return (todoStartDate.isBefore(selectedDateOnly) || todoStartDate.isAtSameMomentAs(selectedDateOnly)) &&
+            (todoEndDate.isAfter(selectedDateOnly) || todoEndDate.isAtSameMomentAs(selectedDateOnly));
     }).toList();
 
-    dailyTodos = todos.where((todo) {
-      final duration = todo.endDate.difference(todo.startDate).inDays;
-      return duration == 0; // 하루짜리 투두
+    
+    // D-Day 투두와 데일리 투두 분류
+    dDayTodos = todosForSelectedDate.where((todo) {
+      DateTime todoStartDate = DateTime(todo.startDate.year, todo.startDate.month, todo.startDate.day);
+      DateTime todoEndDate = DateTime(todo.endDate.year, todo.endDate.month, todo.endDate.day);
+      final duration = todoEndDate.difference(todoStartDate).inDays;
+      return duration >= 1; // D-Day 투두
     }).toList();
 
-    // 정렬
-    dDayTodos.sort((a, b) => a.endDate.compareTo(b.endDate));
+    dailyTodos = todosForSelectedDate.where((todo) {
+      DateTime todoStartDate = DateTime(todo.startDate.year, todo.startDate.month, todo.startDate.day);
+      DateTime todoEndDate = DateTime(todo.endDate.year, todo.endDate.month, todo.endDate.day);
+      final duration = todoEndDate.difference(todoStartDate).inDays;
+      return duration == 0; // 데일리 투두
+    }).toList();
+
+    // D-Day 투두 정렬 (D-Day 값 기준)
+    dDayTodos.sort((a, b) {
+      DateTime aEndDate = DateTime(a.endDate.year, a.endDate.month, a.endDate.day);
+      DateTime bEndDate = DateTime(b.endDate.year, b.endDate.month, b.endDate.day);
+      int aDDay = aEndDate.difference(selectedDateOnly).inDays;
+      int bDDay = bEndDate.difference(selectedDateOnly).inDays;
+      return aDDay.compareTo(bDDay);
+    });
+
+    // 데일리 투두 정렬 (중요도 기준)
     dailyTodos.sort((a, b) => b.importance.compareTo(a.importance));
   }
-
   @override
   Widget build(BuildContext context) {
     final goalProvider = Provider.of<GoalProvider>(context);
@@ -70,7 +98,15 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
       ),
       body: Column(
         children: [
-          _buildWeeklyCalendar(),
+          Calendar(
+            selectedDate: selectedDate,
+            onDateSelected: (date) {
+              setState(() {
+                selectedDate = date;
+                loadTodos();
+              });
+            },
+          ),
           _buildGoalMenuBar(goals),
           Expanded(
             child: SingleChildScrollView(
@@ -86,85 +122,6 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
         ],
       ),
     );
-  }
-
-  Widget _buildWeeklyCalendar() {
-    List<DateTime> weekDates = List.generate(7, (index) => currentWeekStartDate.add(Duration(days: index)));
-    List<String> weekDays = ['월', '화', '수', '목', '금', '토', '일'];
-
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: _goToPreviousWeek,
-          ),
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: List.generate(7, (index) {
-                DateTime date = weekDates[index];
-                String dayLabel = weekDays[index];
-                bool isSelected = dateFormat.format(date) == dateFormat.format(selectedDate);
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedDate = date;
-                      // 선택된 날짜의 투두를 다시 로드
-                      loadTodos();
-                    });
-                  },
-                  child: Column(
-                    children: [
-                      Text(
-                        dayLabel,
-                        style: TextStyle(
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                        ),
-                      ),
-                      SizedBox(height: 4),
-                      Container(
-                        width: 32,
-                        height: 32,
-                        decoration: BoxDecoration(
-                          color: isSelected ? Colors.grey[400] : Colors.grey[300],
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: Text(
-                            date.day.toString(),
-                            style: TextStyle(
-                              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }),
-            ),
-          ),
-          IconButton(
-            icon: Icon(Icons.arrow_forward),
-            onPressed: _goToNextWeek,
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _goToPreviousWeek() {
-    setState(() {
-      currentWeekStartDate = currentWeekStartDate.subtract(Duration(days: 7));
-    });
-  }
-
-  void _goToNextWeek() {
-    setState(() {
-      currentWeekStartDate = currentWeekStartDate.add(Duration(days: 7));
-    });
   }
 
   Widget _buildGoalMenuBar(List<Goal> goals) {
@@ -288,7 +245,7 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
                   itemCount: filteredTodos.length,
                   itemBuilder: (context, index) {
                     Todo todo = filteredTodos[index];
-                    return _buildTodoItem(todo);
+                    return _buildTodoItem(todo, isDDay: isDDay);
                   },
                 )
               : Text('투두가 없습니다.', style: TextStyle(color: Colors.grey)),
@@ -296,35 +253,115 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
       ),
     );
   }
+  Widget _buildTodoItem(Todo todo, {required bool isDDay}) {
+    // 날짜만 비교하기 위해 시간 정보 제거
+    DateTime todoEndDate = DateTime(todo.endDate.year, todo.endDate.month, todo.endDate.day);
+    DateTime selectedDateOnly = DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
 
-  Widget _buildTodoItem(Todo todo) {
+    // D-Day 계산
+    int dDay = todo.endDate.difference(selectedDateOnly).inDays;
+
+    // D-Day 문자열 포맷팅
+    String dDayString;
+    if (dDay > 0) {
+      dDayString = 'D-$dDay';
+    } else if (dDay == 0) {
+      dDayString = 'D-Day';
+    } else {
+      dDayString = 'D+${-dDay}';
+    }
+
+    // 중요도에 따른 색상 설정
+    Color importanceColor = _getImportanceColor(todo.importance);
+
+    // 목표 아이콘 설정
+    IconData goalIcon = _getGoalIcon(todo.goalId);
+
     return GestureDetector(
       onTap: () {
-        // 투두 수정 화면으로 이동
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TodoInputScreen(
-              isDDayTodo: todo.endDate.difference(todo.startDate).inDays >= 1,
-              todo: todo,
-            ),
-          ),
-        ).then((_) {
-          // 투두 수정 후 돌아왔을 때 투두 리스트를 다시 로드
-          setState(() {
-            loadTodos();
-          });
-        });
+        _showTodoOptionsDialog(todo);
       },
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 4),
         padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(8),
+        decoration: ShapeDecoration(
+          color: Color(0xFFF1F1F1),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            // 좌측: 목표 아이콘 및 투두 정보
+            Row(
+              children: [
+                // 목표 아이콘 및 중요도 색상 표시
+                Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: importanceColor.withOpacity(0.5),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    goalIcon,
+                    size: 16,
+                    color: importanceColor,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                // 투두 제목 및 D-Day 정보
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      todo.title,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.18,
+                        decoration: todo.status >= 100 ? TextDecoration.lineThrough : null,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    if (isDDay)
+                      Row(
+                        children: [
+                          Text(
+                            '${DateFormat('yy.MM.dd').format(todo.startDate)} ~ ${DateFormat('yy.MM.dd').format(todo.endDate)}',
+                            style: TextStyle(
+                              color: Colors.black.withOpacity(0.5),
+                              fontSize: 9,
+                              fontWeight: FontWeight.w400,
+                              letterSpacing: 0.14,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Container(
+                            width: 2,
+                            height: 2,
+                            decoration: ShapeDecoration(
+                              color: Color(0xFFD9D9D9),
+                              shape: OvalBorder(),
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            dDayString,
+                            style: TextStyle(
+                              color: Colors.black.withOpacity(0.75),
+                              fontSize: 9,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.14,
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+              ],
+            ),
+            // 우측: 체크박스
             Checkbox(
               value: todo.status >= 100,
               onChanged: (value) {
@@ -333,26 +370,82 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
                 });
               },
             ),
-            SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                todo.title,
-                style: TextStyle(
-                  decoration: todo.status >= 100 ? TextDecoration.lineThrough : null,
-                  color: _getImportanceColor(todo.importance),
-                ),
-              ),
-            ),
-            Icon(Icons.arrow_forward_ios, size: 16),
           ],
         ),
       ),
     );
   }
 
+  // 중요도에 따른 색상 반환 메서드
   Color _getImportanceColor(double importance) {
-    if (importance >= 7) return Colors.red;
-    if (importance >= 4) return Colors.orange;
-    return Colors.green;
+    if (importance >= 3) return Colors.red; // 중요도 3
+    if (importance >= 2) return Colors.orange; // 중요도 2
+    if (importance >= 1) return Colors.green; // 중요도 1
+    return Colors.grey; // 중요도 미설정
+  }
+
+  // 목표 아이콘 반환 메서드 (임시 코드임)
+  IconData _getGoalIcon(String? goalId) {
+    switch (goalId) {
+      case 'goal1':
+        return Icons.school;
+      case 'goal2':
+        return Icons.work;
+      case 'goal3':
+        return Icons.fitness_center;
+      default:
+        return Icons.flag;
+    }
+  }
+
+  void _showTodoOptionsDialog(Todo todo) {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+        ),
+      ),
+      builder: (context) {
+        return ToDoEditBottomSheet(
+          todo: todo,
+          onUpdate: () {
+            Navigator.pop(context);
+            // 투두 수정 화면으로 이동
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TodoInputScreen(
+                  isDDayTodo: todo.endDate.difference(todo.startDate).inDays >= 1,
+                  todo: todo,
+                ),
+              ),
+            ).then((_) {
+              setState(() {
+                loadTodos();
+              });
+            });
+          },
+          onDelete: () {
+            Navigator.pop(context);
+            // 투두 삭제
+            Provider.of<TodoProvider>(context, listen: false).deleteTodoById(todo.id);
+            setState(() {
+              loadTodos();
+            });
+          },
+          onPostpone: () {
+            Navigator.pop(context);
+            // 투두를 내일로 미룸
+            setState(() {
+              todo.startDate = todo.startDate.add(Duration(days: 1));
+              todo.endDate = todo.endDate.add(Duration(days: 1));
+              loadTodos();
+            });
+          },
+        );
+      },
+    );
   }
 }
