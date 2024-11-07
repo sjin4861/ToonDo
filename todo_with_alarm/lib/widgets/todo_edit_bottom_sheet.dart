@@ -54,16 +54,19 @@ class ToDoEditBottomSheet extends StatelessWidget {
           // 투두 정보
           Positioned(
             left: MediaQuery.of(context).size.width / 2 - 100,
-            top: 56,
+            top: 59,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // 목표 아이콘 및 중요도 색상 표시
                 Container(
                   width: 24,
                   height: 24,
-                  decoration: BoxDecoration(
+                  decoration: ShapeDecoration(
                     color: importanceColor.withOpacity(0.5),
-                    shape: BoxShape.circle,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                   child: Icon(
                     goalIcon,
@@ -74,10 +77,13 @@ class ToDoEditBottomSheet extends StatelessWidget {
                 SizedBox(width: 8),
                 Text(
                   todo.title,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
+                    color: Color(0xFF111111),
+                    fontSize: 18,
+                    fontFamily: 'Pretendard Variable',
                     fontWeight: FontWeight.w700,
+                    letterSpacing: 0.27,
                     decoration: todo.status >= 100 ? TextDecoration.lineThrough : null,
                   ),
                 ),
@@ -92,18 +98,25 @@ class ToDoEditBottomSheet extends StatelessWidget {
               onTap: onUpdate,
               child: Container(
                 width: 212,
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                decoration: BoxDecoration(color: Color(0xFFD9D9D9)),
+                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                decoration: ShapeDecoration(
+                  color: Color(0xFF78B545),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
                 child: Row(
                   children: [
-                    Icon(Icons.edit, size: 24),
-                    SizedBox(width: 16),
+                    Icon(Icons.edit, size: 24, color: Colors.white),
+                    SizedBox(width: 8),
                     Text(
                       '수정하기',
                       style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 12,
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontFamily: 'Pretendard Variable',
                         fontWeight: FontWeight.w700,
+                        letterSpacing: 0.24,
                       ),
                     ),
                   ],
@@ -119,18 +132,25 @@ class ToDoEditBottomSheet extends StatelessWidget {
               onTap: onDelete,
               child: Container(
                 width: 212,
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                decoration: BoxDecoration(color: Color(0xFFD9D9D9)),
+                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                decoration: ShapeDecoration(
+                  color: Color(0xFF78B545),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
                 child: Row(
                   children: [
-                    Icon(Icons.delete, size: 24),
-                    SizedBox(width: 16),
+                    Icon(Icons.delete, size: 24, color: Colors.white),
+                    SizedBox(width: 8),
                     Text(
                       '삭제하기',
                       style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 12,
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontFamily: 'Pretendard Variable',
                         fontWeight: FontWeight.w700,
+                        letterSpacing: 0.24,
                       ),
                     ),
                   ],
@@ -146,18 +166,25 @@ class ToDoEditBottomSheet extends StatelessWidget {
               onTap: onPostpone,
               child: Container(
                 width: 212,
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                decoration: BoxDecoration(color: Color(0xFFD9D9D9)),
+                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                decoration: ShapeDecoration(
+                  color: Color(0xFF78B545),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
                 child: Row(
                   children: [
-                    Icon(Icons.arrow_forward, size: 24),
-                    SizedBox(width: 16),
+                    Icon(Icons.arrow_forward, size: 24, color: Colors.white),
+                    SizedBox(width: 8),
                     Text(
-                      '내일로 미루기',
+                      '내일하기',
                       style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 12,
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontFamily: 'Pretendard Variable',
                         fontWeight: FontWeight.w700,
+                        letterSpacing: 0.24,
                       ),
                     ),
                   ],

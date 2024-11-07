@@ -9,7 +9,6 @@ import 'todo_input_screen.dart'; // TodoInputScreen 임포트
 import 'package:todo_with_alarm/widgets/Calendar.dart'; // Calendar 위젯 임포트
 import 'package:todo_with_alarm/widgets/todo_edit_bottom_sheet.dart'; // ToDoEditBottomSheet 임포트
 
-
 class TodoSubmissionScreen extends StatefulWidget {
   final DateTime? selectedDate;
 
@@ -43,27 +42,30 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
     List<Todo> allTodos = todoProvider.getAllTodos();
     DateTime selectedDateOnly = DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
 
-
     // 선택된 날짜에 해당하는 투두 필터링
     List<Todo> todosForSelectedDate = allTodos.where((todo) {
-      DateTime todoStartDate = DateTime(todo.startDate.year, todo.startDate.month, todo.startDate.day);
+      DateTime todoStartDate =
+          DateTime(todo.startDate.year, todo.startDate.month, todo.startDate.day);
       DateTime todoEndDate = DateTime(todo.endDate.year, todo.endDate.month, todo.endDate.day);
 
-      return (todoStartDate.isBefore(selectedDateOnly) || todoStartDate.isAtSameMomentAs(selectedDateOnly)) &&
-            (todoEndDate.isAfter(selectedDateOnly) || todoEndDate.isAtSameMomentAs(selectedDateOnly));
+      return (todoStartDate.isBefore(selectedDateOnly) ||
+              todoStartDate.isAtSameMomentAs(selectedDateOnly)) &&
+          (todoEndDate.isAfter(selectedDateOnly) ||
+              todoEndDate.isAtSameMomentAs(selectedDateOnly));
     }).toList();
 
-    
     // D-Day 투두와 데일리 투두 분류
     dDayTodos = todosForSelectedDate.where((todo) {
-      DateTime todoStartDate = DateTime(todo.startDate.year, todo.startDate.month, todo.startDate.day);
+      DateTime todoStartDate =
+          DateTime(todo.startDate.year, todo.startDate.month, todo.startDate.day);
       DateTime todoEndDate = DateTime(todo.endDate.year, todo.endDate.month, todo.endDate.day);
       final duration = todoEndDate.difference(todoStartDate).inDays;
       return duration >= 1; // D-Day 투두
     }).toList();
 
     dailyTodos = todosForSelectedDate.where((todo) {
-      DateTime todoStartDate = DateTime(todo.startDate.year, todo.startDate.month, todo.startDate.day);
+      DateTime todoStartDate =
+          DateTime(todo.startDate.year, todo.startDate.month, todo.startDate.day);
       DateTime todoEndDate = DateTime(todo.endDate.year, todo.endDate.month, todo.endDate.day);
       final duration = todoEndDate.difference(todoStartDate).inDays;
       return duration == 0; // 데일리 투두
@@ -81,23 +83,36 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
     // 데일리 투두 정렬 (중요도 기준)
     dailyTodos.sort((a, b) => b.importance.compareTo(a.importance));
   }
+
   @override
   Widget build(BuildContext context) {
     final goalProvider = Provider.of<GoalProvider>(context);
     List<Goal> goals = goalProvider.goals;
 
     return Scaffold(
+      backgroundColor: Colors.white, // 전체 배경색 설정
       appBar: AppBar(
+        backgroundColor: Color(0xFFF1F1F1),
+        elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: Color(0xFF535353)),
           onPressed: () {
             Navigator.pop(context); // 메인 페이지로 돌아가기
           },
         ),
-        title: Text('투두리스트'),
+        title: Text(
+          '투두리스트',
+          style: TextStyle(
+            color: Color(0xFF535353),
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 0.24,
+          ),
+        ),
       ),
       body: Column(
         children: [
+          // 캘린더 위젯
           Calendar(
             selectedDate: selectedDate,
             onDateSelected: (date) {
@@ -107,6 +122,21 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
               });
             },
           ),
+          // 월 표시
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+            alignment: Alignment.centerLeft,
+            child: Text(
+              '${selectedDate.month}월',
+              style: TextStyle(
+                color: Color(0xFF111111),
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.24,
+              ),
+            ),
+          ),
+          // 목표 메뉴 바
           _buildGoalMenuBar(goals),
           Expanded(
             child: SingleChildScrollView(
@@ -118,7 +148,12 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
               ),
             ),
           ),
-          // Tab Bar는 모든 페이지 완성 후 추가 예정
+          // 탭 바 자리
+          Container(
+            height: 64,
+            color: Color(0xFFDAEBCB),
+            // 필요한 위젯 추가
+          ),
         ],
       ),
     );
@@ -127,7 +162,7 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
   Widget _buildGoalMenuBar(List<Goal> goals) {
     return Container(
       height: 40,
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: 28),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: goals.length + 1,
@@ -175,22 +210,31 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 12),
+        height: 40,
+        padding: EdgeInsets.symmetric(horizontal: 16),
         margin: EdgeInsets.symmetric(horizontal: 4),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.grey[400] : Colors.grey[300],
-          borderRadius: BorderRadius.circular(20),
+          color: isSelected ? Color(0xFF78B545) : Colors.transparent,
+          borderRadius: BorderRadius.circular(10),
+          border: isSelected ? null : Border.all(color: Colors.black),
         ),
         child: Row(
           children: [
-            Icon(icon, size: 16),
-            SizedBox(width: isSelected ? 8 : 0),
-            isSelected
-                ? Text(
-                    label,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  )
-                : SizedBox.shrink(),
+            Icon(
+              icon,
+              size: 16,
+              color: isSelected ? Colors.white : Colors.black,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              label,
+              style: TextStyle(
+                color: isSelected ? Colors.white : Colors.black,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.21,
+              ),
+            ),
           ],
         ),
       ),
@@ -204,8 +248,10 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
         : todos.where((todo) => todo.goalId == selectedGoalId).toList();
 
     return Container(
-      padding: EdgeInsets.all(16),
-      color: Colors.grey[400],
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      // 섹션별 배경색 설정 (필요에 따라 조정)
+      color: Colors.transparent,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -215,10 +261,15 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
             children: [
               Text(
                 title,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.21,
+                ),
               ),
               IconButton(
-                icon: Icon(Icons.add),
+                icon: Icon(Icons.add, color: Colors.black),
                 onPressed: () {
                   // 투두 추가 화면으로 이동
                   Navigator.push(
@@ -236,7 +287,7 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
               ),
             ],
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           // 투두 리스트
           filteredTodos.isNotEmpty
               ? ListView.builder(
@@ -253,6 +304,7 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
       ),
     );
   }
+
   Widget _buildTodoItem(Todo todo, {required bool isDDay}) {
     // 날짜만 비교하기 위해 시간 정보 제거
     DateTime todoEndDate = DateTime(todo.endDate.year, todo.endDate.month, todo.endDate.day);
@@ -277,6 +329,9 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
     // 목표 아이콘 설정
     IconData goalIcon = _getGoalIcon(todo.goalId);
 
+    // 완료된 투두인지 여부
+    bool isCompleted = todo.status >= 100;
+
     return GestureDetector(
       onTap: () {
         _showTodoOptionsDialog(todo);
@@ -285,8 +340,13 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
         margin: EdgeInsets.symmetric(vertical: 4),
         padding: EdgeInsets.all(12),
         decoration: ShapeDecoration(
-          color: Color(0xFFF1F1F1),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          color: isCompleted ? Color(0x3FF1F1F1) : Color(0xFFF1F1F1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+            side: isCompleted
+                ? BorderSide(width: 1, color: Color(0x7F111111))
+                : BorderSide.none,
+          ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -316,11 +376,11 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
                     Text(
                       todo.title,
                       style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 12,
+                        color: isCompleted ? Color(0x4C111111) : Colors.black,
+                        fontSize: 14,
                         fontWeight: FontWeight.w700,
-                        letterSpacing: 0.18,
-                        decoration: todo.status >= 100 ? TextDecoration.lineThrough : null,
+                        letterSpacing: 0.21,
+                        decoration: isCompleted ? TextDecoration.lineThrough : null,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -331,9 +391,9 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
                             '${DateFormat('yy.MM.dd').format(todo.startDate)} ~ ${DateFormat('yy.MM.dd').format(todo.endDate)}',
                             style: TextStyle(
                               color: Colors.black.withOpacity(0.5),
-                              fontSize: 9,
+                              fontSize: 8,
                               fontWeight: FontWeight.w400,
-                              letterSpacing: 0.14,
+                              letterSpacing: 0.12,
                             ),
                           ),
                           const SizedBox(width: 4),
@@ -349,10 +409,10 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
                           Text(
                             dDayString,
                             style: TextStyle(
-                              color: Colors.black.withOpacity(0.75),
-                              fontSize: 9,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.14,
+                              color: Colors.black.withOpacity(0.5),
+                              fontSize: 8,
+                              fontWeight: FontWeight.w400,
+                              letterSpacing: 0.12,
                             ),
                           ),
                         ],
@@ -363,7 +423,7 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
             ),
             // 우측: 체크박스
             Checkbox(
-              value: todo.status >= 100,
+              value: isCompleted,
               onChanged: (value) {
                 setState(() {
                   todo.updateStatus(value! ? 100 : 0);
@@ -448,5 +508,4 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
       },
     );
   }
-
 }

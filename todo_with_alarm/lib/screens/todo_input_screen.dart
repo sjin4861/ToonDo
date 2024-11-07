@@ -40,8 +40,7 @@ class _TodoInputScreenState extends State<TodoInputScreen> {
       _endDate = widget.todo!.endDate;
       _priority = widget.todo!.importance.toInt();
       _isDailyTodo = widget.todo!.startDate == widget.todo!.endDate;
-    }
-    else {
+    } else {
       // 새로 추가 모드
       _isDailyTodo = !widget.isDDayTodo; // isDDayTodo가 false이면 데일리 투두이므로, _isDailyTodo를 true로 설정
       if (_isDailyTodo) {
@@ -59,18 +58,34 @@ class _TodoInputScreenState extends State<TodoInputScreen> {
     final todoProvider = Provider.of<TodoProvider>(context, listen: false);
 
     return Scaffold(
+      backgroundColor: Colors.white, // 전체 배경색 설정
       appBar: AppBar(
-        title: Text(
-          widget.todo != null
-              ? '투두 수정'
-              : (widget.isDDayTodo ? '디데이 투두 작성' : '데일리 투두 작성'),
+        backgroundColor: Color(0xFFF1F1F1),
+        elevation: 0,
+        title: Row(
+          children: [
+            IconButton(
+              icon: Icon(Icons.arrow_back, color: Color(0xFF535353)),
+              onPressed: () {
+                Navigator.pop(context); // 이전 페이지로 이동
+              },
+            ),
+            SizedBox(width: 8),
+            Text(
+              widget.todo != null
+                  ? '투두 수정'
+                  : (widget.isDDayTodo ? '디데이 투두 작성' : '데일리 투두 작성'),
+              style: TextStyle(
+                color: Color(0xFF535353),
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0.24,
+                fontFamily: 'Pretendard Variable',
+              ),
+            ),
+          ],
         ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context); // 이전 페이지로 이동
-          },
-        ),
+        automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24),
@@ -82,19 +97,45 @@ class _TodoInputScreenState extends State<TodoInputScreen> {
               // 투두 이름
               Text(
                 '투두 이름',
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w400),
+                style: TextStyle(
+                  color: Color(0xFF111111),
+                  fontSize: 10,
+                  fontWeight: FontWeight.w400,
+                  letterSpacing: 0.15,
+                  fontFamily: 'Pretendard Variable',
+                ),
               ),
-              SizedBox(height: 8),
+              SizedBox(height: 4),
               Container(
-                decoration: BoxDecoration(color: Color(0xFFD9D9D9)),
+                height: 49,
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                decoration: ShapeDecoration(
+                  color: Color(0xFFF1F1F1),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
                 child: TextFormField(
                   controller: _titleController,
                   maxLength: 20,
                   decoration: InputDecoration(
                     counterText: '',
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12),
                     border: InputBorder.none,
                     hintText: '투두의 이름을 입력하세요.',
+                    hintStyle: TextStyle(
+                      color: Color(0xFFB2B2B2),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 0.21,
+                      fontFamily: 'Pretendard Variable',
+                    ),
+                  ),
+                  style: TextStyle(
+                    color: Color(0xFF111111),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.21,
+                    fontFamily: 'Pretendard Variable',
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
@@ -107,13 +148,19 @@ class _TodoInputScreenState extends State<TodoInputScreen> {
                   },
                 ),
               ),
-              SizedBox(height: 24),
+              SizedBox(height: 22),
               // 목표 선택
               Text(
                 '목표',
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w400),
+                style: TextStyle(
+                  color: Color(0xFF111111),
+                  fontSize: 10,
+                  fontWeight: FontWeight.w400,
+                  letterSpacing: 0.15,
+                  fontFamily: 'Pretendard Variable',
+                ),
               ),
-              SizedBox(height: 8),
+              SizedBox(height: 4),
               GestureDetector(
                 onTap: () {
                   setState(() {
@@ -121,12 +168,13 @@ class _TodoInputScreenState extends State<TodoInputScreen> {
                   });
                 },
                 child: Container(
+                  height: 40,
                   padding: EdgeInsets.symmetric(horizontal: 12),
                   decoration: BoxDecoration(
-                    color: Color(0xFFD9D9D9),
+                    color: Color(0xFFDAEBCB),
+                    borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: Colors.black.withOpacity(0.5)),
                   ),
-                  height: 40,
                   child: Row(
                     children: [
                       Expanded(
@@ -136,10 +184,16 @@ class _TodoInputScreenState extends State<TodoInputScreen> {
                                   .firstWhere((goal) => goal.id == _selectedGoalId)
                                   .name
                               : '목표를 선택하세요.',
-                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                          style: TextStyle(
+                            color: Color(0xFF111111),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            letterSpacing: 0.18,
+                            fontFamily: 'Pretendard Variable',
+                          ),
                         ),
                       ),
-                      Icon(Icons.arrow_drop_down),
+                      Icon(Icons.arrow_drop_down, color: Colors.black),
                     ],
                   ),
                 ),
@@ -148,7 +202,7 @@ class _TodoInputScreenState extends State<TodoInputScreen> {
               if (_showGoalDropdown)
                 Container(
                   decoration: BoxDecoration(
-                    color: Color(0xFFD9D9D9),
+                    color: Color(0xFFDAEBCB),
                     border: Border.all(color: Colors.black.withOpacity(0.5)),
                   ),
                   height: 240,
@@ -162,52 +216,104 @@ class _TodoInputScreenState extends State<TodoInputScreen> {
                     ],
                   ),
                 ),
-              SizedBox(height: 24),
+              SizedBox(height: 22),
               // 시작일 및 마감일
-              Text(
-                '시작일',
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w400),
-              ),
-              SizedBox(height: 8),
-              GestureDetector(
-                onTap: () => _selectDate(isStartDate: true),
-                child: Container(
-                  height: 40,
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(color: Color(0xFFD9D9D9)),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      _startDate != null
-                          ? _dateFormat.format(_startDate!)
-                          : '시작일을 선택하세요.',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '시작일',
+                          style: TextStyle(
+                            color: Color(0xFF111111),
+                            fontSize: 10,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 0.15,
+                            fontFamily: 'Pretendard Variable',
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        GestureDetector(
+                          onTap: () => _selectDate(isStartDate: true),
+                          child: Container(
+                            height: 40,
+                            padding: EdgeInsets.symmetric(horizontal: 12),
+                            decoration: ShapeDecoration(
+                              color: Color(0xFFF1F1F1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                _startDate != null
+                                    ? _dateFormat.format(_startDate!)
+                                    : '시작일을 선택하세요.',
+                                style: TextStyle(
+                                  color: Color(0xFF111111),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: 0.18,
+                                  fontFamily: 'Pretendard Variable',
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ),
-              SizedBox(height: 16),
-              Text(
-                '마감일',
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w400),
-              ),
-              SizedBox(height: 8),
-              GestureDetector(
-                onTap: () => _selectDate(isStartDate: false),
-                child: Container(
-                  height: 40,
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(color: Color(0xFFD9D9D9)),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      _endDate != null
-                          ? _dateFormat.format(_endDate!)
-                          : '마감일을 선택하세요.',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '마감일',
+                          style: TextStyle(
+                            color: Color(0xFF111111),
+                            fontSize: 10,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 0.15,
+                            fontFamily: 'Pretendard Variable',
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        GestureDetector(
+                          onTap: () => _selectDate(isStartDate: false),
+                          child: Container(
+                            height: 40,
+                            padding: EdgeInsets.symmetric(horizontal: 12),
+                            decoration: ShapeDecoration(
+                              color: Color(0xFFF1F1F1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                _endDate != null
+                                    ? _dateFormat.format(_endDate!)
+                                    : '마감일을 선택하세요.',
+                                style: TextStyle(
+                                  color: Color(0xFF111111),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: 0.18,
+                                  fontFamily: 'Pretendard Variable',
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
+                ],
               ),
               SizedBox(height: 16),
               // 데일리 투두 설정
@@ -216,7 +322,13 @@ class _TodoInputScreenState extends State<TodoInputScreen> {
                 children: [
                   Text(
                     '데일리 투두로 설정',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+                    style: TextStyle(
+                      color: Color(0xFF111111),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: 0.18,
+                      fontFamily: 'Pretendard Variable',
+                    ),
                   ),
                   SizedBox(width: 8),
                   Checkbox(
@@ -225,25 +337,33 @@ class _TodoInputScreenState extends State<TodoInputScreen> {
                       setState(() {
                         _isDailyTodo = value!;
                         if (_isDailyTodo) {
-                          _startDate = DateTime.now();
-                          _endDate = DateTime.now();
+                          DateTime today = DateTime.now();
+                          _startDate = DateTime(today.year, today.month, today.day);
+                          _endDate = DateTime(today.year, today.month, today.day);
                         } else {
                           _startDate = null;
                           _endDate = null;
                         }
                       });
                     },
+                    activeColor: Color(0xFF78B545),
                   ),
                 ],
               ),
-              SizedBox(height: 24),
+              SizedBox(height: 22),
               // 중요도 선택
               Center(
                 child: Column(
                   children: [
                     Text(
                       '중요도',
-                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.w400),
+                      style: TextStyle(
+                        color: Color(0xFF111111),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: 0.15,
+                        fontFamily: 'Pretendard Variable',
+                      ),
                     ),
                     SizedBox(height: 8),
                     Row(
@@ -254,7 +374,9 @@ class _TodoInputScreenState extends State<TodoInputScreen> {
                           iconSize: 40,
                           icon: Icon(
                             Icons.star,
-                            color: _priority >= starIndex ? _getPriorityColor(starIndex) : Colors.grey,
+                            color: _priority >= starIndex
+                                ? _getPriorityColor(starIndex)
+                                : Colors.grey,
                             size: 40,
                           ),
                           onPressed: () {
@@ -271,15 +393,16 @@ class _TodoInputScreenState extends State<TodoInputScreen> {
               SizedBox(height: 24),
               // 작성하기 버튼
               Center(
-                child: ElevatedButton(
-                  onPressed: () {
+                child: GestureDetector(
+                  onTap: () {
                     if (_formKey.currentState!.validate()) {
                       _formKey.currentState!.save();
                       // 투두 생성 또는 업데이트
                       Todo newTodo = Todo(
                         id: widget.todo?.id, // 기존 투두의 ID 유지
                         title: _title,
-                        startDate: _isDailyTodo ? DateTime.now() : _startDate ?? DateTime.now(),
+                        startDate:
+                            _isDailyTodo ? DateTime.now() : _startDate ?? DateTime.now(),
                         endDate: _isDailyTodo ? DateTime.now() : _endDate ?? DateTime.now(),
                         goalId: _selectedGoalId,
                         importance: _priority.toDouble(),
@@ -295,7 +418,29 @@ class _TodoInputScreenState extends State<TodoInputScreen> {
                       Navigator.pop(context); // 투두 페이지로 돌아가기
                     }
                   },
-                  child: Text(widget.todo != null ? '수정하기' : '작성하기'),
+                  child: Container(
+                    width: 326,
+                    height: 56,
+                    padding: EdgeInsets.symmetric(vertical: 17),
+                    decoration: ShapeDecoration(
+                      color: Color(0xFF78B545),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        widget.todo != null ? '수정하기' : '작성하기',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.3,
+                          fontFamily: 'Pretendard Variable',
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
               SizedBox(height: 24),
@@ -319,7 +464,7 @@ class _TodoInputScreenState extends State<TodoInputScreen> {
         height: 40,
         padding: EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
-          color: Color(0xFFD9D9D9),
+          color: Color(0x4CDAEBCB),
           border: Border(
             bottom: BorderSide(color: Colors.black.withOpacity(0.5), width: 0.5),
           ),
@@ -329,7 +474,13 @@ class _TodoInputScreenState extends State<TodoInputScreen> {
             Expanded(
               child: Text(
                 goalName,
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                  color: Color(0xFF111111),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 0.18,
+                  fontFamily: 'Pretendard Variable',
+                ),
               ),
             ),
           ],
