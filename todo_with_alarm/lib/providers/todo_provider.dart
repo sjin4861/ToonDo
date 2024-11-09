@@ -12,11 +12,19 @@ class TodoProvider with ChangeNotifier {
     return _todos;
   }
 
+  void setTodos(List<Todo> todos) {
+    _todos = todos;
+    notifyListeners();
+  }
+
   // 특정 날짜에 해당하는 투두 리스트를 가져오는 메서드
   List<Todo> getTodosForDate(DateTime date) {
+    DateTime dateOnly = DateTime(date.year, date.month, date.day);
     return _todos.where((todo) {
-      return (todo.startDate.isBefore(date) || todo.startDate.isAtSameMomentAs(date)) &&
-          (todo.endDate.isAfter(date) || todo.endDate.isAtSameMomentAs(date));
+      DateTime startDateOnly = DateTime(todo.startDate.year, todo.startDate.month, todo.startDate.day);
+      DateTime endDateOnly = DateTime(todo.endDate.year, todo.endDate.month, todo.endDate.day);
+      return (startDateOnly.isBefore(dateOnly) || startDateOnly.isAtSameMomentAs(dateOnly)) &&
+          (endDateOnly.isAfter(dateOnly) || endDateOnly.isAtSameMomentAs(dateOnly));
     }).toList();
   }
 
@@ -24,6 +32,11 @@ class TodoProvider with ChangeNotifier {
   Future<void> loadTodos() async {
     _todos = await TodoService.loadAllTodos();
     notifyListeners();
+  }
+
+  // 투두 저장 메서드
+  Future<void> saveTodos() async {
+    await TodoService.saveAllTodos(_todos);
   }
 
   // 투두를 추가하는 메서드
@@ -39,6 +52,16 @@ class TodoProvider with ChangeNotifier {
     if (index != -1) {
       _todos[index] = updatedTodo;
       await TodoService.saveAllTodos(_todos);
+      notifyListeners();
+    }
+  }
+
+  // 투두 상태 업데이트 메서드
+  void updateTodoStatus(String todoId, double status) {
+    int index = _todos.indexWhere((todo) => todo.id == todoId);
+    if (index != -1) {
+      _todos[index].status = status;
+      saveTodos();
       notifyListeners();
     }
   }
