@@ -7,13 +7,18 @@ import 'package:todo_with_alarm/providers/todo_provider.dart';
 import 'package:todo_with_alarm/app/router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:todo_with_alarm/services/notification_service.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => GoalProvider()),
-        ChangeNotifierProvider(create: (_) => TodoProvider()),
+        ChangeNotifierProvider(create: (_) {
+          TodoProvider todoProvider = TodoProvider();
+          todoProvider.loadTodos(); // 투두 로드
+          return todoProvider;
+        }),
       ],
       child: MyApp(),
     ),
