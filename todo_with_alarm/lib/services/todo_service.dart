@@ -4,6 +4,8 @@ import 'package:todo_with_alarm/models/todo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
+enum FilterOption { all, goal, importance }
+
 class TodoService {
   // 모든 투두 리스트를 저장하는 메서드
   static Future<void> saveAllTodos(List<Todo> todos) async {
@@ -22,6 +24,37 @@ class TodoService {
           .toList();
     } else {
       return [];
+    }
+  }
+
+  // 선택된 날짜에 해당하는 투두 필터링 메서드
+  static List<Todo> filterTodosByDate(
+      List<Todo> todos, DateTime selectedDate) {
+    DateTime selectedDateOnly =
+        DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
+
+    return todos.where((todo) {
+      DateTime todoStartDate = DateTime(
+          todo.startDate.year, todo.startDate.month, todo.startDate.day);
+      DateTime todoEndDate =
+          DateTime(todo.endDate.year, todo.endDate.month, todo.endDate.day);
+
+      return (todoStartDate.isBefore(selectedDateOnly) ||
+              todoStartDate.isAtSameMomentAs(selectedDateOnly)) &&
+          (todoEndDate.isAfter(selectedDateOnly) ||
+              todoEndDate.isAtSameMomentAs(selectedDateOnly));
+    }).toList();
+  }
+
+  // 투두 필터링 메서드 (필터 옵션 적용)
+  static List<Todo> applyFilter(
+      List<Todo> todos, FilterOption selectedFilter, String? selectedGoalId) {
+    if (selectedFilter == FilterOption.goal && selectedGoalId != null) {
+      return todos.where((todo) => todo.goalId == selectedGoalId).toList();
+    } else if (selectedFilter == FilterOption.importance) {
+      return todos.where((todo) => todo.importance >= 3).toList();
+    } else {
+      return todos;
     }
   }
 }
