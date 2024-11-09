@@ -17,8 +17,13 @@ class ToDoEditBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 중요도에 따른 색상 설정
-    Color importanceColor = _getImportanceColor(todo.importance);
+    // 중요도와 긴급도 추출
+    Map<String, int> importanceAndUrgency = _getImportanceAndUrgency(todo.importance);
+    int importance = importanceAndUrgency['importance']!;
+    int urgency = importanceAndUrgency['urgency']!;
+
+    // 중요도와 긴급도에 따른 색상 설정
+    Color importanceColor = _getBorderColor(importance, urgency);
 
     // 목표 아이콘 설정
     IconData goalIcon = _getGoalIcon(todo.goalId);
@@ -39,12 +44,12 @@ class ToDoEditBottomSheet extends StatelessWidget {
           // 상단 바
           Positioned(
             left: MediaQuery.of(context).size.width / 2 - 63,
-            top: 16,
+            top: 22,
             child: Container(
               width: 126,
               height: 8,
               decoration: ShapeDecoration(
-                color: Color(0xFFD9D9D9),
+                color: Color(0xFFDAEBCB),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(1000),
                 ),
@@ -84,7 +89,8 @@ class ToDoEditBottomSheet extends StatelessWidget {
                     fontFamily: 'Pretendard Variable',
                     fontWeight: FontWeight.w700,
                     letterSpacing: 0.27,
-                    decoration: todo.status >= 100 ? TextDecoration.lineThrough : null,
+                    decoration:
+                        todo.status >= 100 ? TextDecoration.lineThrough : null,
                   ),
                 ),
               ],
@@ -106,6 +112,7 @@ class ToDoEditBottomSheet extends StatelessWidget {
                   ),
                 ),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.edit, size: 24, color: Colors.white),
                     SizedBox(width: 8),
@@ -134,19 +141,20 @@ class ToDoEditBottomSheet extends StatelessWidget {
                 width: 212,
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                 decoration: ShapeDecoration(
-                  color: Color(0xFF78B545),
                   shape: RoundedRectangleBorder(
+                    side: BorderSide(width: 1, color: Color(0xFF78B545)),
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.delete, size: 24, color: Colors.white),
+                    Icon(Icons.delete, size: 24, color: Color(0xFF78B545)),
                     SizedBox(width: 8),
                     Text(
                       '삭제하기',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Color(0xFF78B545),
                         fontSize: 16,
                         fontFamily: 'Pretendard Variable',
                         fontWeight: FontWeight.w700,
@@ -168,19 +176,21 @@ class ToDoEditBottomSheet extends StatelessWidget {
                 width: 212,
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                 decoration: ShapeDecoration(
-                  color: Color(0xFF78B545),
                   shape: RoundedRectangleBorder(
+                    side: BorderSide(width: 1, color: Color(0xFF78B545)),
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.arrow_forward, size: 24, color: Colors.white),
+                    Icon(Icons.arrow_forward,
+                        size: 24, color: Color(0xFF78B545)),
                     SizedBox(width: 8),
                     Text(
                       '내일하기',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Color(0xFF78B545),
                         fontSize: 16,
                         fontFamily: 'Pretendard Variable',
                         fontWeight: FontWeight.w700,
@@ -197,12 +207,47 @@ class ToDoEditBottomSheet extends StatelessWidget {
     );
   }
 
-  // 중요도에 따른 색상 반환 메서드
-  Color _getImportanceColor(double importance) {
-    if (importance >= 3) return Colors.red; // 중요도 3
-    if (importance >= 2) return Colors.orange; // 중요도 2
-    if (importance >= 1) return Colors.green; // 중요도 1
-    return Colors.grey; // 중요도 미설정
+  // 중요도와 긴급도 추출 메서드
+  Map<String, int> _getImportanceAndUrgency(double importanceValue) {
+    int importance = 0;
+    int urgency = 0;
+
+    int value = importanceValue.toInt();
+    switch (value) {
+      case 0:
+        importance = 0;
+        urgency = 0;
+        break;
+      case 1:
+        importance = 0;
+        urgency = 1;
+        break;
+      case 2:
+        importance = 1;
+        urgency = 0;
+        break;
+      case 3:
+        importance = 1;
+        urgency = 1;
+        break;
+      default:
+        importance = 0;
+        urgency = 0;
+    }
+    return {'importance': importance, 'urgency': urgency};
+  }
+
+  // 테두리 색상 반환 메서드
+  Color _getBorderColor(int importance, int urgency) {
+    if (importance == 1 && urgency == 1) {
+      return Colors.red; // 중요도 1, 긴급도 1
+    } else if (importance == 1 && urgency == 0) {
+      return Colors.blue; // 중요도 1, 긴급도 0
+    } else if (importance == 0 && urgency == 1) {
+      return Colors.yellow; // 중요도 0, 긴급도 1
+    } else {
+      return Colors.black; // 중요도 0, 긴급도 0
+    }
   }
 
   // 목표 아이콘 반환 메서드
