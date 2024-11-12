@@ -1,7 +1,6 @@
 // models/todo.dart
 
 import 'dart:ui';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
@@ -28,6 +27,15 @@ class Todo with ChangeNotifier {
     this.urgency = 0,
     this.importance = 0,
   }) : this.id = id ?? Uuid().v4();
+
+  bool isDDayTodo() {
+    // 시작 날짜와 종료 날짜의 차이를 계산해서 2 이상이면 True
+    return endDate.difference(startDate).inDays <= 2;
+  }
+
+  bool isFinished() {
+    return status == 100.0;
+  }
 
   // 진행률 업데이트 메서드
   void updateStatus(double newStatus) {
@@ -76,4 +84,6 @@ class Todo with ChangeNotifier {
       return Colors.black; // 중요도 0, 긴급도 0
     }
   }
+
+  
 }
