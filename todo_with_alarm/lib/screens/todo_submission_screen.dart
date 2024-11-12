@@ -64,25 +64,17 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
           .toList();
     } else if (selectedFilter == FilterOption.importance) {
       todosForSelectedDate = todosForSelectedDate
-          .where((todo) => todo.importance == 1) // 중요도가 3 이상인 투두 필터링
+          .where((todo) => todo.importance == 1) // 중요도가 1인 투두 필터링
           .toList();
     }
 
     // D-Day 투두와 데일리 투두 분류
     dDayTodos = todosForSelectedDate.where((todo) {
-      DateTime todoStartDate =
-          DateTime(todo.startDate.year, todo.startDate.month, todo.startDate.day);
-      DateTime todoEndDate = DateTime(todo.endDate.year, todo.endDate.month, todo.endDate.day);
-      final duration = todoEndDate.difference(todoStartDate).inDays;
-      return duration >= 1; // D-Day 투두
+      return todo.isDDayTodo(); // D-Day 투두
     }).toList();
 
     dailyTodos = todosForSelectedDate.where((todo) {
-      DateTime todoStartDate =
-          DateTime(todo.startDate.year, todo.startDate.month, todo.startDate.day);
-      DateTime todoEndDate = DateTime(todo.endDate.year, todo.endDate.month, todo.endDate.day);
-      final duration = todoEndDate.difference(todoStartDate).inDays;
-      return duration == 0; // 데일리 투두
+      return !todo.isDDayTodo(); // 데일리 투두
     }).toList();
 
     // D-Day 투두 정렬 (D-Day 값 기준)
@@ -114,7 +106,7 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
             Navigator.pop(context); // 메인 페이지로 돌아가기
           },
         ),
-        title: Text(
+        title: const Text(
           '투두리스트',
           style: TextStyle(
             color: Color(0xFF1C1D1B),
@@ -158,13 +150,10 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
               builder: (context, todoProvider, child) {
                 // 모든 투두 가져오기
                 List<Todo> allTodos = todoProvider.getAllTodos();
-
                 // 선택된 날짜에 해당하는 투두 필터링
                 List<Todo> todosForSelectedDate = _filterTodosByDate(allTodos);
-
                 // 선택된 필터에 따라 추가 필터링 적용
                 todosForSelectedDate = _applyFilter(todosForSelectedDate);
-
                 // D-Day 투두와 데일리 투두 분류 및 정렬
                 _categorizeAndSortTodos(todosForSelectedDate);
 
@@ -182,7 +171,7 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
           // 탭 바 자리
           Container(
             height: 64,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Color(0xFFFCFCFC),
               border: Border(
                 top: BorderSide(width: 1, color: Color(0x3F1C1D1B)),
@@ -532,18 +521,6 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
         },
       ),
     );
-  }
-
-  Color _getBorderColor(int importance, int urgency) {
-    if (importance == 1 && urgency == 1) {
-      return Colors.red; // 중요도 1, 긴급도 1
-    } else if (importance == 1 && urgency == 0) {
-      return Colors.blue; // 중요도 1, 긴급도 0
-    } else if (importance == 0 && urgency == 1) {
-      return Colors.yellow; // 중요도 0, 긴급도 1
-    } else {
-      return Colors.black; // 중요도 0, 긴급도 0
-    }
   }
   // 목표 아이콘 반환 메서드 (임시 코드임)
   IconData _getGoalIcon(String? goalId) {
