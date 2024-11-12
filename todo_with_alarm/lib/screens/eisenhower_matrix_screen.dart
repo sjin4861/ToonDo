@@ -136,8 +136,8 @@ class _EisenhowerMatrixScreenState extends State<EisenhowerMatrixScreen> {
                 TextButton(
                   onPressed: () async {
                     // Todo 업데이트
-                    todo.urgency = newUrgency;
-                    todo.importance = newImportance;
+                    todo.urgency = newUrgency as int;
+                    todo.importance = newImportance as int;
                     await Provider.of<TodoProvider>(context, listen: false)
                         .updateTodo(todo);
                     Navigator.pop(context);
@@ -213,8 +213,8 @@ class _EisenhowerMatrixScreenState extends State<EisenhowerMatrixScreen> {
     showDialog(
       context: context,
       builder: (context) {
-        int newUrgency = todo.urgency;
-        int newImportance = todo.importance;
+        double newUrgency = todo.urgency.toDouble();
+        double newImportance = todo.importance.toDouble();
         return StatefulBuilder(
           builder: (context, setStateDialog) {
             return AlertDialog(
@@ -261,8 +261,8 @@ class _EisenhowerMatrixScreenState extends State<EisenhowerMatrixScreen> {
                 TextButton(
                   onPressed: () async {
                     // Todo 업데이트
-                    todo.urgency = newUrgency;
-                    todo.importance = newImportance;
+                    todo.urgency = newUrgency as int;
+                    todo.importance = newImportance as int;
                     await Provider.of<TodoProvider>(context, listen: false)
                         .updateTodo(todo);
                     Navigator.pop(context);
