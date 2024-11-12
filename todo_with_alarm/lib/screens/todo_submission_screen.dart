@@ -64,7 +64,7 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
           .toList();
     } else if (selectedFilter == FilterOption.importance) {
       todosForSelectedDate = todosForSelectedDate
-          .where((todo) => todo.importance >= 3) // 중요도가 3 이상인 투두 필터링
+          .where((todo) => todo.importance == 1) // 중요도가 3 이상인 투두 필터링
           .toList();
     }
 
@@ -442,9 +442,9 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
     DateTime selectedDateOnly = DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
     int dDay = todo.endDate.difference(selectedDateOnly).inDays;
     String dDayString = dDay > 0 ? 'D-$dDay' : dDay == 0 ? 'D-Day' : 'D+${-dDay}';
-    Map<String, int> importanceAndUrgency = _getImportanceAndUrgency(todo.importance);
-    int importance = importanceAndUrgency['importance']!;
-    int urgency = importanceAndUrgency['urgency']!;
+    
+    int importance = todo.importance;
+    int urgency = todo.urgency;
     Color borderColor = _getBorderColor(importance, urgency);
     bool isCompleted = todo.status >= 100;
 
@@ -533,44 +533,7 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
       ),
     );
   }
-  
-  // 중요도에 따른 색상 반환 메서드
-  Color _getImportanceColor(double importance) {
-    if (importance >= 3) return Color(0xFFFAEA9C); // 중요도 3 (노란색 계열)
-    if (importance >= 2) return Color(0xFFAFDEFB); // 중요도 2 (파란색 계열)
-    if (importance >= 1) return Color(0xFFC5C0BD); // 중요도 1 (회색 계열)
-    return Color(0x7FDDDDDD); // 중요도 미설정
-  }
 
-  Map<String, int> _getImportanceAndUrgency(double importanceValue) {
-    int importance = 0;
-    int urgency = 0;
-
-    int value = importanceValue.toInt();
-    switch (value) {
-      case 0:
-        importance = 0;
-        urgency = 0;
-        break;
-      case 1:
-        importance = 0;
-        urgency = 1;
-        break;
-      case 2:
-        importance = 1;
-        urgency = 0;
-        break;
-      case 3:
-        importance = 1;
-        urgency = 1;
-        break;
-      default:
-        importance = 0;
-        urgency = 0;
-    }
-    return {'importance': importance, 'urgency': urgency};
-  }
-  
   Color _getBorderColor(int importance, int urgency) {
     if (importance == 1 && urgency == 1) {
       return Colors.red; // 중요도 1, 긴급도 1

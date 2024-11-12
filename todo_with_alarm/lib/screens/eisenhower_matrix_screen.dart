@@ -213,8 +213,8 @@ class _EisenhowerMatrixScreenState extends State<EisenhowerMatrixScreen> {
     showDialog(
       context: context,
       builder: (context) {
-        double newUrgency = todo.urgency;
-        double newImportance = todo.importance;
+        int newUrgency = todo.urgency;
+        int newImportance = todo.importance;
         return StatefulBuilder(
           builder: (context, setStateDialog) {
             return AlertDialog(

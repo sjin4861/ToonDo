@@ -11,8 +11,8 @@ class Todo with ChangeNotifier {
   String comment; // 코멘트
   DateTime startDate; // 투두의 시작 날짜
   DateTime endDate; // 투두의 종료 날짜
-  double urgency; // 긴급도 (0.0 ~ 10.0)
-  double importance; // 중요도 (0.0 ~ 10.0)
+  int urgency; // 긴급도 (0 또는 1)
+  int importance; // 중요도 (0 또는 1)
 
   Todo({
     String? id,
@@ -22,8 +22,8 @@ class Todo with ChangeNotifier {
     this.goalId,
     this.status = 0.0,
     this.comment = '',
-    this.urgency = 0.0,
-    this.importance = 0.0,
+    this.urgency = 0,
+    this.importance = 0,
   }) : this.id = id ?? Uuid().v4();
 
   // 진행률 업데이트 메서드
@@ -57,8 +57,8 @@ class Todo with ChangeNotifier {
       goalId: json['goalId'],
       status: (json['status'] as num).toDouble(),
       comment: json['comment'],
-      urgency: (json['urgency'] as num).toDouble(),
-      importance: (json['importance'] as num).toDouble(),
+      urgency: (json['urgency'] as num).toInt(),
+      importance: (json['importance'] as num).toInt(),
     );
   }
 }

@@ -543,7 +543,8 @@ class _TodoInputScreenState extends State<TodoInputScreen> {
                         startDate: _isDailyTodo ? DateTime.now() : (_startDate ?? DateTime.now()),
                         endDate: _isDailyTodo ? DateTime.now() : (_endDate ?? DateTime.now()),
                         goalId: _selectedGoalId,
-                        importance: _eisenhowerType.toDouble(), // 아이젠하워 타입 저장
+                        
+                        importance: _eisenhowerType.toInt(), // 아이젠하워 타입 저장
                         // 기타 필요한 필드 설정
                       );
                       if (widget.todo != null) {

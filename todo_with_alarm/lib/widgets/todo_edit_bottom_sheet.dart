@@ -18,9 +18,8 @@ class ToDoEditBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 중요도와 긴급도 추출
-    Map<String, int> importanceAndUrgency = _getImportanceAndUrgency(todo.importance);
-    int importance = importanceAndUrgency['importance']!;
-    int urgency = importanceAndUrgency['urgency']!;
+    int importance = todo.importance;
+    int urgency = todo.urgency;
 
     // 중요도와 긴급도에 따른 색상 설정
     Color importanceColor = _getBorderColor(importance, urgency);
