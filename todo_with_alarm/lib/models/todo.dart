@@ -1,6 +1,9 @@
 // models/todo.dart
 
+import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 class Todo with ChangeNotifier {
@@ -60,5 +63,17 @@ class Todo with ChangeNotifier {
       urgency: (json['urgency'] as num).toInt(),
       importance: (json['importance'] as num).toInt(),
     );
+  }
+
+  Color getBorderColor() {
+    if (importance == 1 && urgency == 1) {
+      return Colors.red; // 중요도 1, 긴급도 1
+    } else if (importance == 1 && urgency == 0) {
+      return Colors.blue; // 중요도 1, 긴급도 0
+    } else if (importance == 0 && urgency == 1) {
+      return Colors.yellow; // 중요도 0, 긴급도 1
+    } else {
+      return Colors.black; // 중요도 0, 긴급도 0
+    }
   }
 }

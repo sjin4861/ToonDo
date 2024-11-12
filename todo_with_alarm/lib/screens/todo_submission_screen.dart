@@ -445,7 +445,7 @@ class _TodoSubmissionScreenState extends State<TodoSubmissionScreen> {
     
     int importance = todo.importance;
     int urgency = todo.urgency;
-    Color borderColor = _getBorderColor(importance, urgency);
+    Color borderColor = todo.getBorderColor();
     bool isCompleted = todo.status >= 100;
 
     return Container(
