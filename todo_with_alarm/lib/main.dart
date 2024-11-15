@@ -3,7 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/providers/goal_provider.dart';
-import 'package:todo_with_alarm/providers/todo_provider.dart';
+import 'package:todo_with_alarm/services/todo_service.dart';
+import 'package:todo_with_alarm/viewmodels/todo_viewmodel.dart';
 import 'package:todo_with_alarm/app/router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:todo_with_alarm/services/notification_service.dart';
@@ -14,11 +15,9 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => GoalProvider()),
-        ChangeNotifierProvider(create: (_) {
-          TodoProvider todoProvider = TodoProvider();
-          todoProvider.loadTodos(); // 투두 로드
-          return todoProvider;
-        }),
+        ChangeNotifierProvider(
+          create: (_) => TodoViewModel(TodoService())..loadTodos(),
+        ),
       ],
       child: MyApp(),
     ),
