@@ -1,5 +1,3 @@
-// widgets/Calendar.dart
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -121,81 +119,94 @@ class _CalendarState extends State<Calendar> {
         List.generate(7, (index) => weekStartDate.add(Duration(days: index)));
     List<String> weekDays = ['일', '월', '화', '수', '목', '금', '토'];
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        children: [
-          // 요일 및 날짜 표시
-          Row(
-            children: List.generate(7, (index) {
-              DateTime date = weekDates[index];
-              String dayLabel = weekDays[index];
-              bool isSelected = DateFormat('yyyy-MM-dd').format(date) ==
-                  DateFormat('yyyy-MM-dd').format(widget.selectedDate);
-              bool isCurrentMonth = date.month == currentDate.month;
+    return GestureDetector(
+      onHorizontalDragEnd: (details) {
+        if (details.primaryVelocity == null) return;
+        if (details.primaryVelocity! < 0) {
+          // 왼쪽으로 스와이프 (다음 주)
+          _goToNextPeriod();
+        } else if (details.primaryVelocity! > 0) {
+          // 오른쪽으로 스와이프 (이전 주)
+          _goToPreviousPeriod();
+        }
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          children: [
+            // 요일 및 날짜 표시
+            Row(
+              children: List.generate(7, (index) {
+                DateTime date = weekDates[index];
+                String dayLabel = weekDays[index];
+                bool isSelected = DateFormat('yyyy-MM-dd').format(date) ==
+                    DateFormat('yyyy-MM-dd').format(widget.selectedDate);
+                bool isCurrentMonth = date.month == currentDate.month;
 
-              return Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    widget.onDateSelected(date);
-                  },
-                  child: Column(
-                    children: [
-                      // 요일
-                      Text(
-                        dayLabel,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Color(0xFF1C1D1B),
-                          fontSize: 10,
-                          fontFamily: 'Pretendard Variable',
-                          fontWeight: index == (DateTime.now().weekday % 7)
-                              ? FontWeight.w700
-                              : FontWeight.w400,
-                          letterSpacing: 0.15,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      // 날짜
-                      Container(
-                        width: 32,
-                        height: 32,
-                        decoration: ShapeDecoration(
-                          color: isSelected
-                              ? Color(0xFF78B545)
-                              : isCurrentMonth
-                                  ? Color(0x7FE4F0D9)
-                                  : Color(0x7FEEEEEE),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(1000),
+                return Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      widget.onDateSelected(date);
+                    },
+                    child: Column(
+                      children: [
+                        // 요일
+                        Text(
+                          dayLabel,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Color(0xFF1C1D1B),
+                            fontSize: 10,
+                            fontFamily: 'Pretendard Variable',
+                            fontWeight: index == (DateTime.now().weekday % 7)
+                                ? FontWeight.w700
+                                : FontWeight.w400,
+                            letterSpacing: 0.15,
                           ),
                         ),
-                        child: Center(
-                          child: Text(
-                            date.day.toString(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: isSelected
-                                  ? Colors.white
-                                  : isCurrentMonth
-                                      ? Color(0xFF535353)
-                                      : Color(0xBF535353),
-                              fontSize: 10,
-                              fontFamily: 'Pretendard Variable',
-                              fontWeight:
-                                  isSelected ? FontWeight.w600 : FontWeight.w400,
-                              letterSpacing: 0.15,
+                        const SizedBox(height: 4),
+                        // 날짜
+                        Container(
+                          width: 32,
+                          height: 32,
+                          decoration: ShapeDecoration(
+                            color: isSelected
+                                ? Color(0xFF78B545)
+                                : isCurrentMonth
+                                    ? Color(0x7FE4F0D9)
+                                    : Color(0x7FEEEEEE),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(1000),
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              date.day.toString(),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: isSelected
+                                    ? Colors.white
+                                    : isCurrentMonth
+                                        ? Color(0xFF535353)
+                                        : Color(0xBF535353),
+                                fontSize: 10,
+                                fontFamily: 'Pretendard Variable',
+                                fontWeight: isSelected
+                                    ? FontWeight.w600
+                                    : FontWeight.w400,
+                                letterSpacing: 0.15,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              );
-            }),
-          ),
-        ],
+                );
+              }),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -251,10 +262,11 @@ class _CalendarState extends State<Calendar> {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween, // 날짜들 사이에 공간을 추가
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween, // 날짜들 사이에 공간 추가
                   children: List.generate(7, (dayIndex) {
                     int daysToAdd = weekIndex * 7 + dayIndex;
-                    DateTime date = calendarStartDate.add(Duration(days: daysToAdd));
+                    DateTime date =
+                        calendarStartDate.add(Duration(days: daysToAdd));
                     bool isCurrentMonth = date.month == month;
                     bool isSelected = DateFormat('yyyy-MM-dd').format(date) ==
                         DateFormat('yyyy-MM-dd').format(widget.selectedDate);
@@ -289,8 +301,9 @@ class _CalendarState extends State<Calendar> {
                                       : Color(0xBF535353),
                               fontSize: 10,
                               fontFamily: 'Pretendard Variable',
-                              fontWeight:
-                                  isSelected ? FontWeight.w600 : FontWeight.w400,
+                              fontWeight: isSelected
+                                  ? FontWeight.w600
+                                  : FontWeight.w400,
                               letterSpacing: 0.15,
                             ),
                           ),
@@ -301,7 +314,7 @@ class _CalendarState extends State<Calendar> {
                 ),
               );
             }),
-          ),  
+          ),
         ],
       ),
     );
