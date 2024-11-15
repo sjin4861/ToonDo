@@ -29,8 +29,7 @@ class Todo with ChangeNotifier {
   }) : this.id = id ?? Uuid().v4();
 
   bool isDDayTodo() {
-    // 시작 날짜와 종료 날짜의 차이를 계산해서 2 이상이면 True
-    return endDate.difference(startDate).inDays <= 2;
+    return startDate != endDate;
   }
 
   bool isFinished() {
