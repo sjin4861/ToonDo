@@ -14,10 +14,13 @@ class SignupViewModel extends ChangeNotifier {
   String password = '';
   String username = '';
 
+
   // 에러 메시지 관리
   String? phoneError;
   String? passwordError;
   String? usernameError;
+
+  bool isSignupComplete = false;
 
   // 휴대폰 번호 검증 및 다음 단계로 이동
   void validatePhoneNumber() {
@@ -45,7 +48,6 @@ class SignupViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // 닉네임 검증 및 회원가입 완료
   void validateUsername() {
     usernameError = Validators.validateUsername(username);
     if (usernameError == null) {
@@ -55,10 +57,10 @@ class SignupViewModel extends ChangeNotifier {
         password: password,
         username: username,
       ));
-      // 메인 화면으로 이동 또는 추가 단계 진행
-      currentStep = 4; // 다음 단계로 이동
+      // 회원가입 완료 상태 업데이트
+      isSignupComplete = true;
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   // 뒤로가기
