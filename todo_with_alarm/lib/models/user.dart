@@ -6,6 +6,6 @@ class User {
   User({
     required this.phoneNumber,
     required this.password,
-    required this.username,
+    this.username = "",
   });
 }
