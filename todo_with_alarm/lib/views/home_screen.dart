@@ -7,11 +7,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/goal.dart';
 import 'package:todo_with_alarm/providers/goal_provider.dart';
+import 'package:todo_with_alarm/views/auth/login_screen.dart';
 import 'package:todo_with_alarm/widgets/goal_list_item.dart';
 import 'package:todo_with_alarm/widgets/image_shadow.dart';
-import 'goal_input_screen.dart';
-import 'goal_progress_screen.dart';
-import 'todo_submission_screen.dart';
+import 'goal/goal_input_screen.dart';
+import 'goal/goal_progress_screen.dart';
+import 'todo/todo_submission_screen.dart';
 // import 'eisenhower_matrix_screen.dart';
 import 'dart:math';
 
@@ -48,9 +49,12 @@ class HomeScreen extends StatelessWidget {
             height: 50, // 아이콘 버튼의 높이 지정
             child: IconButton(
               icon: const Icon(Icons.login, size: 24),
-              onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('로그인 기능은 추후에 제공될 예정입니다.')),
-              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                );
+              },
             ),
           ),
         ],

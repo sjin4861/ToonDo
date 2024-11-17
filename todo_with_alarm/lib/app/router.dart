@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:todo_with_alarm/views/goal_input_screen.dart';
+import 'package:todo_with_alarm/views/goal/goal_input_screen.dart';
 import 'package:todo_with_alarm/views/home_screen.dart';
-import 'package:todo_with_alarm/views/goal_progress_screen.dart';
-import 'package:todo_with_alarm/views/todo_submission_screen.dart';
+import 'package:todo_with_alarm/views/goal/goal_progress_screen.dart';
+import 'package:todo_with_alarm/views/todo/todo_submission_screen.dart';
 import 'package:todo_with_alarm/views/eisenhower_matrix_screen.dart';
 import 'package:todo_with_alarm/views/welcome/welcome_screen.dart';
 import 'package:todo_with_alarm/views/auth/signup_screen.dart';
