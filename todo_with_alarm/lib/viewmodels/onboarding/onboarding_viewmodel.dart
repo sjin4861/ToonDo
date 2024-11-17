@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 
 class OnboardingViewModel extends ChangeNotifier {
-  // 필요한 로직이 있다면 여기에 추가합니다.
+  String nickname = '';
+
+  void saveNickname() {
+    // 닉네임을 저장하는 로직 구현 (예: 서버에 저장하거나 로컬에 저장)
+    // ...
+    notifyListeners();
+  }
 }
