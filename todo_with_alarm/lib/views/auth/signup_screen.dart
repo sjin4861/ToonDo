@@ -4,7 +4,6 @@ import 'package:todo_with_alarm/viewmodels/auth/signup_viewmodel.dart';
 import 'package:todo_with_alarm/views/onboarding/onboarding_screen.dart';
 import 'signup_step1.dart';
 import 'signup_step2.dart';
-import 'signup_step3.dart';
 
 class SignupScreen extends StatelessWidget {
   @override
@@ -29,9 +28,6 @@ class SignupScreen extends StatelessWidget {
               break;
             case 2:
               currentStepWidget = SignupStep2();
-              break;
-            case 3:
-              currentStepWidget = SignupStep3();
               break;
             default:
               currentStepWidget = Container();
