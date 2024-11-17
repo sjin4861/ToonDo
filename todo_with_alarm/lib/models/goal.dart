@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 class Goal with ChangeNotifier {
   String? id; // 고유 식별자 추가
   String name; // 목표 이름
+  String? icon; // 아이콘 속성 추가
   double progress; // 목표 진행률 (0.0 ~ 100.0)
   DateTime startDate; // 목표 시작일
   DateTime endDate; // 목표 종료일
@@ -14,6 +15,7 @@ class Goal with ChangeNotifier {
   Goal({
     String? id,
     required this.name,
+    this.icon, // 아이콘 초기화
     this.progress = 0.0,
     required this.startDate,
     required this.endDate,
@@ -57,6 +59,7 @@ class Goal with ChangeNotifier {
     return {
       'id': id,
       'name': name,
+      'icon': icon, // 아이콘 추가
       'progress': progress,
       'startDate': startDate.toIso8601String(),
       'endDate': endDate.toIso8601String(),
@@ -69,6 +72,7 @@ class Goal with ChangeNotifier {
     return Goal(
       id: json['id'],
       name: json['name'],
+      icon: json['icon'], // 아이콘 추가
       progress: json['progress'],
       startDate: DateTime.parse(json['startDate']),
       endDate: DateTime.parse(json['endDate']),
@@ -81,7 +85,6 @@ class Goal with ChangeNotifier {
     isCompleted = true;
     progress = 100.0;
     notifyListeners(); // 상태 변경 알림
-
   }
 
   // 목표 기간을 업데이트하는 함수
@@ -99,6 +102,6 @@ class Goal with ChangeNotifier {
   // 목표 정보 출력 (디버깅 또는 UI 용)
   @override
   String toString() {
-    return 'Goal(name: $name, progress: $progress%, start: $startDate, end: $endDate, completed: $isCompleted)';
+    return 'Goal(name: $name, icon: $icon, progress: $progress%, start: $startDate, end: $endDate, completed: $isCompleted)';
   }
 }
