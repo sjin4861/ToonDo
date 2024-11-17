@@ -144,7 +144,7 @@ class WelcomeScreen extends StatelessWidget {
                           label: '휴대폰 번호로 계속하기',
                           color: Color(0xFFC9E1B4),
                           textColor: Color(0xFF1C1D1B),
-                          iconPath: 'assets/icons/phone.svg',
+                          iconPath: 'assets/images/phone.png',
                           onPressed: () {
                             viewModel.continueWithPhoneNumber(context);
                           },
