@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:todo_with_alarm/services/auth_service.dart';
-import 'package:todo_with_alarm/models/user.dart';
-import 'package:todo_with_alarm/utils/validators.dart';
+import '../../services/auth_service.dart';
+import '../../models/user.dart';
+import '../../utils/validators.dart';
 
 class SignupViewModel extends ChangeNotifier {
   final AuthService _authService = AuthService();
@@ -12,17 +12,21 @@ class SignupViewModel extends ChangeNotifier {
   // 입력된 데이터 저장
   String phoneNumber = '';
   String password = '';
-  String username = '';
-
 
   // 에러 메시지 관리
   String? phoneError;
   String? passwordError;
-  String? usernameError;
+  bool isSignupComplete = false; // 회원가입 완료 상태
 
-  bool isSignupComplete = false;
+  // 로그인 페이지로 이동하는 콜백 함수
+  VoidCallback? navigateToLogin;
 
-  // 휴대폰 번호 검증 및 다음 단계로 이동
+  // 로그인 페이지로 이동 설정
+  void setNavigateToLogin(VoidCallback callback) {
+    navigateToLogin = callback;
+  }
+
+  // 휴대폰 번호 검증 및 다음 단계로 이동 또는 로그인 페이지로 이동
   void validatePhoneNumber() {
     phoneError = Validators.validatePhoneNumber(phoneNumber);
     if (phoneError == null) {
@@ -30,40 +34,35 @@ class SignupViewModel extends ChangeNotifier {
       final existingUser = _authService.findUserByPhoneNumber(phoneNumber);
       if (existingUser != null) {
         // 로그인 페이지로 이동
-        currentStep = -1; // 로그인 페이지를 -1로 가정
+        if (navigateToLogin != null) {
+          navigateToLogin!();
+        }
       } else {
         // 다음 단계로 이동
         currentStep = 2;
+        notifyListeners();
       }
-    }
-    notifyListeners();
-  }
-
-  // 비밀번호 검증 및 다음 단계로 이동
-  void validatePassword() {
-    passwordError = Validators.validatePassword(password);
-    if (passwordError == null) {
-      currentStep = 3;
-    }
-    notifyListeners();
-  }
-
-  void validateUsername() {
-    usernameError = Validators.validateUsername(username);
-    if (usernameError == null) {
-      // 사용자 등록
-      _authService.registerUser(User(
-        phoneNumber: phoneNumber,
-        password: password,
-        username: username,
-      ));
-      // 회원가입 완료 상태 업데이트
-      isSignupComplete = true;
+    } else {
       notifyListeners();
     }
   }
 
-  // 뒤로가기
+  // 비밀번호 검증 및 회원가입 완료 상태 업데이트
+  void validatePassword() {
+    passwordError = Validators.validatePassword(password);
+    if (passwordError == null) {
+      // 회원가입 로직 수행 (예: 서버에 사용자 정보 저장)
+      // ...
+
+      // 회원가입 완료 상태 업데이트
+      isSignupComplete = true;
+      notifyListeners();
+    } else {
+      notifyListeners();
+    }
+  }
+
+  // 이전 단계로 이동
   void goBack() {
     if (currentStep > 1) {
       currentStep--;
