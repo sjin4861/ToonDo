@@ -1,19 +1,25 @@
-// app/router.dart
-
 import 'package:flutter/material.dart';
 import 'package:todo_with_alarm/views/goal_input_screen.dart';
 import 'package:todo_with_alarm/views/home_screen.dart';
 import 'package:todo_with_alarm/views/goal_progress_screen.dart';
 import 'package:todo_with_alarm/views/todo_submission_screen.dart';
 import 'package:todo_with_alarm/views/eisenhower_matrix_screen.dart';
+import 'package:todo_with_alarm/views/welcome/welcome_screen.dart';
+import 'package:todo_with_alarm/views/auth/signup_screen.dart';
+import 'package:todo_with_alarm/views/onboarding/onboarding_screen.dart';
 
 class AppRouter {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/':
+        return MaterialPageRoute(builder: (_) => WelcomeScreen());
+      case '/signup':
+        return MaterialPageRoute(builder: (_) => SignupScreen());
+      case '/onboarding':
+        return MaterialPageRoute(builder: (_) => OnboardingScreen());
+      case '/home':
         return MaterialPageRoute(builder: (_) => HomeScreen());
       case '/goal_input':
-        // ignore: non_constant_identifier_names
         return MaterialPageRoute(builder: (_) => GoalInputScreen());
       case '/progress':
         return MaterialPageRoute(builder: (_) => GoalProgressScreen());
@@ -21,9 +27,14 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => TodoSubmissionScreen());
       // case '/eisenhower':
       //   return MaterialPageRoute(builder: (_) => EisenhowerMatrixScreen());
-      // 필요한 경우 추가 라우트 설정
       default:
-        return null;
+        return MaterialPageRoute(
+          builder: (_) => Scaffold(
+            body: Center(
+              child: Text('404: ${settings.name} 라우트를 찾을 수 없습니다.'),
+            ),
+          ),
+        );
     }
   }
 }
