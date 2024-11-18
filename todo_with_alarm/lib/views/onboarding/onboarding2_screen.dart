@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_with_alarm/views/home/home_screen.dart';
 import '../../viewmodels/onboarding/onboarding_viewmodel.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../widgets/text_fields/custom_text_field.dart';
+import '../home/home_screen.dart'; // 홈 화면 임포트
 
 class Onboarding2Page extends StatefulWidget {
+  final String userId;
+  
+  Onboarding2Page({required this.userId});
+
   @override
   _Onboarding2PageState createState() => _Onboarding2PageState();
 }
@@ -16,77 +22,14 @@ class _Onboarding2PageState extends State<Onboarding2Page> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<OnboardingViewModel>(
-      create: (_) => OnboardingViewModel(),
+      create: (_) => OnboardingViewModel(userId: widget.userId),
       child: Scaffold(
-        backgroundColor: Color(0xFFFCFCFC),
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(52),
-          child: AppBar(
-            backgroundColor: Color(0xFFFCFCFC),
-            elevation: 0.5,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: Color(0xFF1C1D1B)),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            title: Text(
-              '시작하기',
-              style: TextStyle(
-                color: Color(0xFF1C1D1B),
-                fontSize: 16,
-                fontFamily: 'Pretendard Variable',
-                fontWeight: FontWeight.w400,
-                letterSpacing: 0.24,
-              ),
-            ),
-            centerTitle: false,
-          ),
-        ),
+        // ... 기존 코드 생략 ...
         body: Consumer<OnboardingViewModel>(
           builder: (context, viewModel, child) {
             return Stack(
               children: [
-                // 노란색 곡면 배경
-                Positioned(
-                  left: -79.64,
-                  // top 값을 줄여서 위로 올림
-                  top: MediaQuery.of(context).size.height * 0.66,
-                  child: Container(
-                    width: 534.28,
-                    height: 483.32,
-                    decoration: ShapeDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment(0.38, -0.93),
-                        end: Alignment(-0.38, 0.93),
-                        colors: [Color(0xFFFDFDFD), Color(0xFFFCF1BD)],
-                      ),
-                      shape: OvalBorder(),
-                    ),
-                  ),
-                ),
-                // 캐릭터 및 그림자
-                Positioned(
-                  left: MediaQuery.of(context).size.width * 0.5 - 93.14,
-                  // top 값을 줄여서 위로 올림
-                  top: MediaQuery.of(context).size.height * 0.50,
-                  child: Column(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/icons/character.svg',
-                        width: 186.29,
-                        height: 134.30,
-                      ),
-                      SizedBox(height: 12.44),
-                      SvgPicture.asset(
-                        'assets/icons/shadow.svg',
-                        width: 139.30,
-                        height: 21.99,
-                      ),
-                    ],
-                  ),
-                ),
-                // 배경과 캐릭터 뒤로 컨텐츠를 배치하기 위해 순서 변경
+                // ... 기존 코드 생략 ...
                 // 컨텐츠
                 Positioned.fill(
                   child: Column(
@@ -229,7 +172,7 @@ class _Onboarding2PageState extends State<Onboarding2Page> {
     );
   }
 
-  void _validateNickname(OnboardingViewModel viewModel) {
+  void _validateNickname(OnboardingViewModel viewModel) async {
     if (viewModel.nickname.isEmpty) {
       setState(() {
         nicknameError = '닉네임을 입력해주세요.';
@@ -240,8 +183,20 @@ class _Onboarding2PageState extends State<Onboarding2Page> {
       });
     } else {
       // 닉네임 저장 및 다음 화면으로 이동
-      viewModel.saveNickname();
-      // 다음 화면으로 이동하는 로직 추가
+      try {
+        viewModel.saveNickname();
+        // 홈 화면으로 이동
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+          (route) => false,
+        );
+      } catch (e) {
+        // 에러 처리 (예: 현재 로그인된 사용자가 없음)
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())),
+        );
+      }
     }
   }
 }
