@@ -3,10 +3,10 @@ import 'package:todo_with_alarm/views/goal/goal_input_screen.dart';
 import 'package:todo_with_alarm/views/home/home_screen.dart';
 import 'package:todo_with_alarm/views/goal/goal_progress_screen.dart';
 import 'package:todo_with_alarm/views/todo/todo_submission_screen.dart';
-import 'package:todo_with_alarm/views/eisenhower_matrix_screen.dart';
+// import 'package:todo_with_alarm/views/eisenhower_matrix_screen.dart';
 import 'package:todo_with_alarm/views/welcome/welcome_screen.dart';
 import 'package:todo_with_alarm/views/auth/signup_screen.dart';
-import 'package:todo_with_alarm/views/onboarding/onboarding_screen.dart';
+// import 'package:todo_with_alarm/views/onboarding/onboarding_screen.dart';
 
 class AppRouter {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
@@ -15,8 +15,6 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => WelcomeScreen());
       case '/signup':
         return MaterialPageRoute(builder: (_) => SignupScreen());
-      case '/onboarding':
-        return MaterialPageRoute(builder: (_) => OnboardingScreen());
       case '/home':
         return MaterialPageRoute(builder: (_) => HomeScreen());
       case '/goal_input':
@@ -25,8 +23,6 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => GoalProgressScreen());
       case '/todo':
         return MaterialPageRoute(builder: (_) => TodoSubmissionScreen());
-      // case '/eisenhower':
-      //   return MaterialPageRoute(builder: (_) => EisenhowerMatrixScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(
