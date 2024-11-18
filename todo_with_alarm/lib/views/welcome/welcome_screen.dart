@@ -149,6 +149,17 @@ class WelcomeScreen extends StatelessWidget {
                             viewModel.continueWithPhoneNumber(context);
                           },
                         ),
+                        SizedBox(height: 16),
+                        _buildSocialButton(
+                          context,
+                          label: '로그인 없이 계속하기',
+                          color: Color(0xFFC9E1B4),
+                          textColor: Color(0xFF1C1D1B),
+                          iconPath: 'assets/images/phone.png',
+                          onPressed: () {
+                            viewModel.continueWithoutLogin(context);
+                          },
+                        ),
                       ],
                     ),
                   ),
