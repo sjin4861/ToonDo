@@ -1,72 +1,82 @@
 import 'package:flutter/material.dart';
+import 'package:todo_with_alarm/models/user.dart';
 import '../../services/auth_service.dart';
-import '../../models/user.dart';
-import '../../utils/validators.dart';
 
 class SignupViewModel extends ChangeNotifier {
-  final AuthService _authService = AuthService();
-
-  // 회원가입 단계 관리
-  int currentStep = 1;
-
-  // 입력된 데이터 저장
   String phoneNumber = '';
-  String password = '';
-
-  // 에러 메시지 관리
   String? phoneError;
+  String password = '';
   String? passwordError;
-  bool isSignupComplete = false; // 회원가입 완료 상태
+  bool isSignupComplete = false;
+  String? userId;
+  int currentStep = 1; // currentStep 변수 추가
 
-  // 로그인 페이지로 이동하는 콜백 함수
   VoidCallback? navigateToLogin;
-
-  // 로그인 페이지로 이동 설정
   void setNavigateToLogin(VoidCallback callback) {
     navigateToLogin = callback;
   }
-
-  // 휴대폰 번호 검증 및 다음 단계로 이동 또는 로그인 페이지로 이동
   void validatePhoneNumber() {
-    phoneError = Validators.validatePhoneNumber(phoneNumber);
-    if (phoneError == null) {
-      // 휴대폰 번호 존재 여부 확인
-      final existingUser = _authService.findUserByPhoneNumber(phoneNumber);
-      if (existingUser != null) {
-        // 로그인 페이지로 이동
-        if (navigateToLogin != null) {
-          navigateToLogin!();
-        }
-      } else {
-        // 다음 단계로 이동
-        currentStep = 2;
-        notifyListeners();
-      }
-    } else {
+    // 휴대폰 번호 유효성 검사 로직 추가
+    if (phoneNumber.isEmpty || !RegExp(r'^\d{10,11}$').hasMatch(phoneNumber)) {
+      phoneError = '유효한 휴대폰 번호를 입력해주세요.';
       notifyListeners();
+    } else {
+      phoneError = null;
+      notifyListeners();
+      nextStep();
     }
   }
 
-  // 비밀번호 검증 및 회원가입 완료 상태 업데이트
-  void validatePassword() {
-    passwordError = Validators.validatePassword(password);
-    if (passwordError == null) {
-      // 회원가입 로직 수행 (예: 서버에 사용자 정보 저장)
-      // ...
-
-      // 회원가입 완료 상태 업데이트
+  Future<void> signUp() async {
+    try {
+      AuthService authService = AuthService();
+      User newUser = await authService.registerUser(phoneNumber, password);
+      userId = newUser.id; // userId 저장
       isSignupComplete = true;
       notifyListeners();
+    } catch (e) {
+      // 에러 처리
+      throw Exception('회원가입에 실패했습니다: ${e.toString()}');
+    }
+  }
+  
+
+  void setPhoneNumber(String number) {
+    phoneNumber = number;
+    notifyListeners();
+  }
+
+  void setPassword(String pwd) {
+    password = pwd;
+    notifyListeners();
+  }
+
+  Future<void> validatePassword() async {
+    if (password.length >= 8 && password.length <= 20) {
+      passwordError = null;
+      notifyListeners();
+      await signUp();
     } else {
+      passwordError = '비밀번호는 8자 이상 20자 이하여야 합니다.';
       notifyListeners();
     }
   }
 
-  // 이전 단계로 이동
   void goBack() {
     if (currentStep > 1) {
       currentStep--;
       notifyListeners();
+    }
+  }
+
+  void nextStep() {
+    currentStep++;
+    notifyListeners();
+  }
+  
+  void goToLogin() {
+    if (navigateToLogin != null) {
+      navigateToLogin!();
     }
   }
 }
