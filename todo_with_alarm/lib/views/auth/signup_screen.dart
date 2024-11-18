@@ -14,10 +14,12 @@ class SignupScreen extends StatelessWidget {
         builder: (context, viewModel, child) {
           if (viewModel.isSignupComplete) {
             // Onboarding 페이지로 이동
-            Future.microtask(() {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => OnboardingScreen()),
+                MaterialPageRoute(
+                  builder: (context) => OnboardingScreen(userId: viewModel.userId!),
+                ),
               );
             });
           }
