@@ -22,18 +22,12 @@ class LoginViewModel extends ChangeNotifier {
     }
 
     try {
-      // AuthService를 사용하여 로그인 로직 수행
       AuthService authService = AuthService();
-      bool success = await authService.login(phoneNumber!, password);
-      if (success) {
-        return true;
-      } else {
-        loginError = '비밀번호를 다시 확인해주세요.';
-        notifyListeners();
-        return false;
-      }
+      await authService.login(phoneNumber!, password);
+      // 로그인 성공 후 추가 작업 (예: 사용자 정보 로드)
+      return true;
     } catch (e) {
-      loginError = '로그인 중 오류가 발생했습니다.';
+      loginError = e.toString();
       notifyListeners();
       return false;
     }
