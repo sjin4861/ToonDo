@@ -32,11 +32,13 @@ class _SignupStep2State extends State<SignupStep2> {
     if (viewModel!.isSignupComplete) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => OnboardingScreen()),
+        MaterialPageRoute(
+          builder: (context) => OnboardingScreen(userId: viewModel!.userId!),
+        ),
       );
     }
   }
-
+  
   @override
   Widget build(BuildContext context) {
     viewModel = Provider.of<SignupViewModel>(context);
