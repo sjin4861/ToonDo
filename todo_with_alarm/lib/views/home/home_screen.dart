@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/goal.dart';
-import 'package:todo_with_alarm/providers/goal_provider.dart';
+import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:todo_with_alarm/views/auth/login_screen.dart';
 import 'package:todo_with_alarm/widgets/goal_list_item.dart';
 import 'package:todo_with_alarm/widgets/image_shadow.dart';
@@ -21,7 +21,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final goalProvider = Provider.of<GoalProvider>(context);
+    final goalViewmodel = Provider.of<GoalViewModel>(context);
 
     return Scaffold(
       extendBody: true, // Scaffold의 body가 BottomAppBar 뒤로 확장되도록 설정
@@ -83,11 +83,11 @@ class HomeScreen extends StatelessWidget {
                   child: Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: goalProvider.goals.isNotEmpty
+                    child: goalViewmodel.goals.isNotEmpty
                         ? ListView.builder(
-                            itemCount: goalProvider.goals.length,
+                            itemCount: goalViewmodel.goals.length,
                             itemBuilder: (context, index) {
-                              Goal goal = goalProvider.goals[index];
+                              Goal goal = goalViewmodel.goals[index];
                               return GoalListItem(
                                 goal: goal,
                                 onEdit: () {
@@ -101,7 +101,7 @@ class HomeScreen extends StatelessWidget {
                                   );
                                 },
                                 onDelete: () {
-                                  goalProvider.deleteGoal(goal.id!);
+                                  goalViewmodel.deleteGoal(goal.id!);
                                 },
                               );
                             },
@@ -298,7 +298,7 @@ class HomeScreen extends StatelessWidget {
                   color: Colors.grey,
                 ),
                 onPressed: () {
-                  if (goalProvider.goals.length >= 3) {
+                  if (goalViewmodel.goals.length >= 3) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('목표는 최대 3개까지 설정할 수 있습니다.')),
                     );

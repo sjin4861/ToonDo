@@ -3,8 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/todo.dart';
-import 'package:todo_with_alarm/providers/goal_provider.dart';
-
+import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 class TodoListItem extends StatelessWidget {
   final Todo todo;
   final Function(Todo) onUpdate;
@@ -70,9 +69,9 @@ class TodoListItem extends StatelessWidget {
     // 목표 이름 가져오기
     String? goalName;
     if (todo.goalId != null) {
-      final goalProvider = Provider.of<GoalProvider>(context, listen: false);
+      final goalViewmodel = Provider.of<GoalViewModel>(context, listen: false);
       final matchingGoals =
-          goalProvider.goals.where((goal) => goal.id == todo.goalId);
+          goalViewmodel.goals.where((goal) => goal.id == todo.goalId);
       if (matchingGoals.isNotEmpty) {
         goalName = matchingGoals.first.name;
       } else {
