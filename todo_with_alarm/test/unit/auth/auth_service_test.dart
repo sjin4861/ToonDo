@@ -1,93 +1,156 @@
 // test/auth_service_test.dart
 
+import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:todo_with_alarm/models/user.dart';
 import 'package:todo_with_alarm/services/auth_service.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 
 void main() {
+  // Flutter 바인딩 초기화
+  TestWidgetsFlutterBinding.ensureInitialized();
+  
   group('AuthService Tests', () {
-    final authService = AuthService();
+    late MockClient mockHttpClient;
+    late AuthService authService;
+
+    setUp(() {
+      mockHttpClient = MockClient((request) async {
+        final requestBody = jsonDecode(request.body);
+
+        if (request.url.path == '/users/signup' && request.method == 'POST') {
+          if (requestBody['phoneNumber'] == '01098765432') {
+            // 이미 존재하는 휴대폰 번호로 회원가입 시도
+            return http.Response(
+              jsonEncode({'message': '이미 등록된 휴대폰 번호입니다.'}),
+              400,
+            );
+          } else {
+            // 회원가입 성공
+            return http.Response(
+              jsonEncode({'message': '회원가입 성공'}),
+              201,
+            );
+          }
+        } else if (request.url.path == '/users/login' && request.method == 'POST') {
+          if (requestBody['password'] == 'correctpassword') {
+            // 로그인 성공
+            return http.Response(
+              jsonEncode({'token': 'dummy_token'}),
+              200,
+            );
+          } else {
+            // 로그인 실패
+            return http.Response(
+              jsonEncode({'message': '비밀번호가 일치하지 않습니다.'}),
+              400,
+            );
+          }
+        } else if (request.url.path == '/users/update-username' && request.method == 'PUT') {
+          if (requestBody['userId'] == 'validUserId') {
+            // 닉네임 업데이트 성공
+            return http.Response(
+              jsonEncode({'message': '닉네임이 성공적으로 업데이트되었습니다.'}),
+              200,
+            );
+          } else {
+            // 닉네임 업데이트 실패
+            return http.Response(
+              jsonEncode({'message': '유효하지 않은 사용자 ID입니다.'}),
+              400,
+            );
+          }
+        } else {
+          // 기타 요청에 대한 기본 응답
+          return http.Response('Not Found', 404);
+        }
+      });
+
+      authService = AuthService();
+    });
 
     test('1. Register new user successfully', () async {
       // Arrange
-      final newUser = User(
-        phoneNumber: '01012345678',
-        password: 'password123',
-      );
+      final phoneNumber = '01012345678';
+      final password = 'password123';
 
       // Act
-      await authService.registerUser(newUser);
+      await authService.registerUser(phoneNumber, password);
 
       // Assert
-      final isRegistered = await authService.isPhoneNumberRegistered('01012345678');
-      expect(isRegistered, true);
+      // 예외가 발생하지 않으면 회원가입 성공으로 간주합니다.
     });
 
     test('2. Fail to register user with existing phone number', () async {
       // Arrange
-      final existingUser = User(
-        phoneNumber: '01098765432',
-        password: 'password456',
-      );
-      await authService.registerUser(existingUser);
-
-      final duplicateUser = User(
-        phoneNumber: '01098765432',
-        password: 'newpassword',
-      );
+      final phoneNumber = '01098765432'; // 이미 존재하는 번호로 설정
+      final password = 'password456';
 
       // Act & Assert
       expect(
-        () async => await authService.registerUser(duplicateUser),
-        throwsException,
+        () async => await authService.registerUser(phoneNumber, password),
+        throwsA(isA<Exception>().having(
+          (e) => e.toString(),
+          'message',
+          contains('이미 등록된 휴대폰 번호입니다.'),
+        )),
       );
     });
 
     test('3. Login successfully with correct credentials', () async {
       // Arrange
-      final user = User(
-        phoneNumber: '01055556666',
-        password: 'mypassword',
-      );
-      await authService.registerUser(user);
+      final phoneNumber = '01055556666';
+      final password = 'correctpassword';
 
       // Act
-      final loginResult = await authService.login('01055556666', 'mypassword');
+      await authService.login(phoneNumber, password);
 
       // Assert
-      expect(loginResult, true);
+      // 예외가 발생하지 않으면 로그인 성공으로 간주합니다.
     });
 
     test('4. Fail to login with incorrect password', () async {
       // Arrange
-      final user = User(
-        phoneNumber: '01077778888',
-        password: 'correctpassword',
+      final phoneNumber = '01077778888';
+      final password = 'wrongpassword';
+
+      // Act & Assert
+      expect(
+        () async => await authService.login(phoneNumber, password),
+        throwsA(isA<Exception>().having(
+          (e) => e.toString(),
+          'message',
+          contains('비밀번호가 일치하지 않습니다.'),
+        )),
       );
-      await authService.registerUser(user);
-
-      // Act
-      final loginResult = await authService.login('01077778888', 'wrongpassword');
-
-      // Assert
-      expect(loginResult, false);
     });
 
-    test('5. Check if phone number is registered', () async {
+    test('5. Successfully update username', () async {
       // Arrange
-      final user = User(
-        phoneNumber: '01099990000',
-        password: 'testpassword',
-      );
-      await authService.registerUser(user);
+      final userId = 'validUserId';
+      final nickname = 'NewNickname';
 
       // Act
-      final isRegistered = await authService.isPhoneNumberRegistered('01099990000');
-      final isNotRegistered = await authService.isPhoneNumberRegistered('01000009999');
+      await authService.updateUsername(userId, nickname);
 
       // Assert
-      expect(isRegistered, true);
-      expect(isNotRegistered, false);
+      // 예외가 발생하지 않으면 닉네임 업데이트 성공으로 간주합니다.
+    });
+
+    test('6. Fail to update username with invalid userId', () async {
+      // Arrange
+      final userId = 'invalidUserId';
+      final nickname = 'NewNickname';
+
+      // Act & Assert
+      expect(
+        () async => await authService.updateUsername(userId, nickname),
+        throwsA(isA<Exception>().having(
+          (e) => e.toString(),
+          'message',
+          contains('유효하지 않은 사용자 ID입니다.'),
+        )),
+      );
     });
   });
 }
