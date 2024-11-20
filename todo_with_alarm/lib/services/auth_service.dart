@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/user.dart';
+import 'package:todo_with_alarm/constants.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthService {
@@ -10,7 +11,7 @@ class AuthService {
   factory AuthService() => _instance;
   AuthService._internal();
 
-  static const String baseUrl = 'http://localhost:8080'; // 백엔드 서버 주소
+  static const String baseUrl = Constants.baseUrl;
 
   final _storage = FlutterSecureStorage();
 
