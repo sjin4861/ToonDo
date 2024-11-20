@@ -3,8 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/goal.dart';
-import 'package:todo_with_alarm/providers/goal_provider.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_input_viewmodel.dart';
+import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:todo_with_alarm/widgets/calendar_bottom_sheet.dart';
 import 'package:todo_with_alarm/widgets/goal_icon_bottom_sheet.dart';
 
@@ -388,15 +388,13 @@ class GoalInputScreen extends StatelessWidget {
   }
 
   void _setGoal(BuildContext context, GoalInputViewModel viewModel) async {
-    final goal = viewModel.saveGoal();
-    if (goal != null) {
-      final goalProvider = Provider.of<GoalProvider>(context, listen: false);
-      if (viewModel.targetGoal != null) {
-        await goalProvider.updateGoal(goal);
-      } else {
-        await goalProvider.addGoal(goal);
-      }
-      Navigator.pop(context);
+    viewModel.saveGoal();
+    final goalViewmodel = Provider.of<GoalViewModel>(context, listen: false);
+    if (viewModel.targetGoal != null) {
+      await goalViewmodel.updateGoal(viewModel.targetGoal!);
+    } else {
+      await goalViewmodel.addGoal(viewModel.targetGoal!);
     }
+    Navigator.pop(context);
   }
 }
