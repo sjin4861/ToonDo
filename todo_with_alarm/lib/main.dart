@@ -2,7 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_with_alarm/providers/goal_provider.dart';
+import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
+import 'package:todo_with_alarm/services/goal_service.dart';
 import 'package:todo_with_alarm/services/todo_service.dart';
 import 'package:todo_with_alarm/viewmodels/todo/todo_viewmodel.dart';
 import 'package:todo_with_alarm/app/router.dart';
@@ -14,7 +15,9 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => GoalProvider()),
+        ChangeNotifierProvider(
+          create: (_) => GoalViewModel(goalService: GoalService())..loadGoals(),
+        ),
         ChangeNotifierProvider(
           create: (_) => TodoViewModel(TodoService())..loadTodos(),
         ),
