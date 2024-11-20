@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_with_alarm/models/goal.dart';
 import 'package:todo_with_alarm/models/todo.dart';
-import 'package:todo_with_alarm/providers/goal_provider.dart';
+import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:todo_with_alarm/viewmodels/todo/todo_input_viewmodel.dart';
 import 'package:todo_with_alarm/widgets/calendar_bottom_sheet.dart';
 
@@ -51,7 +51,7 @@ class TodoInputScreen extends StatelessWidget {
         ),
         body: Consumer<TodoInputViewModel>(
           builder: (context, viewModel, child) {
-            final goalProvider = Provider.of<GoalProvider>(context);
+            final goalViewmodel = Provider.of<GoalViewModel>(context);
 
             return SingleChildScrollView(
               child: Padding(
@@ -240,7 +240,7 @@ class TodoInputScreen extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 viewModel.selectedGoalId != null
-                                    ? goalProvider.goals
+                                    ? goalViewmodel.goals
                                         .firstWhere((goal) =>
                                             goal.id ==
                                             viewModel.selectedGoalId)
@@ -278,7 +278,7 @@ class TodoInputScreen extends StatelessWidget {
                           child: Column(
                             children: [
                               _buildGoalItem(context, '목표 미설정', null, viewModel),
-                              ...goalProvider.goals.map((goal) {
+                              ...goalViewmodel.goals.map((goal) {
                                 return _buildGoalItem(
                                     context, goal.name, goal.id, viewModel);
                               }).toList(),
