@@ -1,59 +1,77 @@
-// services/goal_service.dart
+// lib/services/goal_service.dart
 
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 import 'package:todo_with_alarm/models/goal.dart';
+import 'package:todo_with_alarm/constants.dart'; // constants.dart 임포트
 
 class GoalService {
-  static const String goalsKey = 'goals_data';
+  final String baseUrl = Constants.baseUrl; // constants.dart에서 baseUrl 가져오기
+  final http.Client httpClient = http.Client(); // httpClient를 내부에서 인스턴스화
 
-  // 목표 시작일과 종료일을 검증하는 메서드
-  static String? validateGoalDates(DateTime? startDate, DateTime? endDate) {
-    if (startDate == null) {
-      return '시작일을 선택하세요.';
-    }
-    if (endDate == null) {
-      return '종료일을 선택하세요.';
-    }
-    if (startDate.isAfter(endDate)) {
-      return '시작일은 종료일 이전이어야 합니다.';
-    }
-    return null; // 유효한 경우 null 반환
-  }
-  
-  // 목표 리스트를 저장하는 메서드
-  static Future<void> saveGoals(List<Goal> goals) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+  GoalService(); // 생성자에서 파라미터 제거
 
-    // Goal 객체 리스트를 JSON 문자열로 변환
-    List<String> goalsJson = goals.map((goal) => jsonEncode(goal.toJson())).toList();
+  Future<List<Goal>> loadGoals() async {
+    final url = Uri.parse('$baseUrl/todos');
+    final response = await httpClient.get(url);
 
-    // SharedPreferences에 저장
-    await prefs.setStringList(goalsKey, goalsJson);
+    if (response.statusCode == 200) {
+      List<dynamic> body = jsonDecode(response.body);
+      List<Goal> goals = body.map((dynamic item) => Goal.fromJson(item)).toList();
+      return goals;
+    } else {
+      throw Exception('Failed to load goals');
+    }
   }
 
-  // 목표 리스트를 불러오는 메서드
-  static Future<List<Goal>> loadGoals() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+  Future<void> saveGoals(List<Goal> goals) async {
+    // 전체 데이터를 한 번에 저장하려면 PUT 메서드를 사용할 수 있습니다.
+    final url = Uri.parse('$baseUrl/todos');
+    final response = await httpClient.put(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(goals.map((goal) => goal.toJson()).toList()),
+    );
 
-    // 저장된 목표 데이터가 없을 경우 빈 리스트 반환
-    List<String>? goalsJson = prefs.getStringList(goalsKey);
-    if (goalsJson == null) {
-      return [];
+    if (response.statusCode != 200) {
+      throw Exception('Failed to save goals');
     }
-
-    // JSON 문자열 리스트를 Goal 객체 리스트로 변환
-    List<Goal> goals = goalsJson.map((goalStr) {
-      Map<String, dynamic> goalMap = jsonDecode(goalStr);
-      return Goal.fromJson(goalMap);
-    }).toList();
-
-    return goals;
   }
 
-  // 모든 목표를 삭제하는 메서드 (필요 시)
-  static Future<void> clearGoals() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove(goalsKey);
+  Future<Goal> createGoal(Goal goal) async {
+    final url = Uri.parse('$baseUrl/todos');
+    final response = await httpClient.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(goal.toJson()),
+    );
+
+    if (response.statusCode == 201) {
+      return Goal.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to create goal');
+    }
+  }
+
+  Future<void> updateGoal(Goal goal) async {
+    final url = Uri.parse('$baseUrl/todos/${goal.id}');
+    final response = await httpClient.put(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(goal.toJson()),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update goal');
+    }
+  }
+
+  Future<void> deleteGoal(String id) async {
+    final url = Uri.parse('$baseUrl/todos/$id');
+    final response = await httpClient.delete(url);
+
+    if (response.statusCode != 204) {
+      throw Exception('Failed to delete goal');
+    }
   }
 }

@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/goal.dart';
 import 'package:todo_with_alarm/models/todo.dart';
-import 'package:todo_with_alarm/providers/goal_provider.dart';
-import 'package:todo_with_alarm/viewmodels/todo_submission_viewmodel.dart';
+import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
+import 'package:todo_with_alarm/viewmodels/todo/todo_submission_viewmodel.dart';
 import 'package:todo_with_alarm/services/todo_service.dart';
-import 'package:todo_with_alarm/viewmodels/todo_viewmodel.dart';
+import 'package:todo_with_alarm/viewmodels/todo/todo_viewmodel.dart';
 import 'package:intl/intl.dart';
 import 'todo_input_screen.dart'; // TodoInputScreen 임포트
 import 'package:todo_with_alarm/widgets/Calendar.dart'; // Calendar 위젯 임포트
@@ -53,8 +53,8 @@ class TodoSubmissionScreen extends StatelessWidget {
         ),
         body: Consumer<TodoSubmissionViewModel>(
           builder: (context, viewModel, child) {
-            final goalProvider = Provider.of<GoalProvider>(context);
-            List<Goal> goals = goalProvider.goals;
+            final goalViewmodel = Provider.of<GoalViewModel>(context);
+            List<Goal> goals = goalViewmodel.goals;
 
             return Column(
               children: [

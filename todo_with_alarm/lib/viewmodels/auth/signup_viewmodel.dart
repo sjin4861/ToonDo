@@ -1,71 +1,82 @@
 import 'package:flutter/material.dart';
-import 'package:todo_with_alarm/services/auth_service.dart';
 import 'package:todo_with_alarm/models/user.dart';
-import 'package:todo_with_alarm/utils/validators.dart';
+import '../../services/auth_service.dart';
 
 class SignupViewModel extends ChangeNotifier {
-  final AuthService _authService = AuthService();
-
-  // 회원가입 단계 관리
-  int currentStep = 1;
-
-  // 입력된 데이터 저장
   String phoneNumber = '';
-  String password = '';
-  String username = '';
-
-  // 에러 메시지 관리
   String? phoneError;
+  String password = '';
   String? passwordError;
-  String? usernameError;
+  bool isSignupComplete = false;
+  String? userId;
+  int currentStep = 1; // currentStep 변수 추가
 
-  // 휴대폰 번호 검증 및 다음 단계로 이동
+  VoidCallback? navigateToLogin;
+  void setNavigateToLogin(VoidCallback callback) {
+    navigateToLogin = callback;
+  }
   void validatePhoneNumber() {
-    phoneError = Validators.validatePhoneNumber(phoneNumber);
-    if (phoneError == null) {
-      // 휴대폰 번호 존재 여부 확인
-      final existingUser = _authService.findUserByPhoneNumber(phoneNumber);
-      if (existingUser != null) {
-        // 로그인 페이지로 이동
-        currentStep = -1; // 로그인 페이지를 -1로 가정
-      } else {
-        // 다음 단계로 이동
-        currentStep = 2;
-      }
+    // 휴대폰 번호 유효성 검사 로직 추가
+    if (phoneNumber.isEmpty || !RegExp(r'^\d{10,11}$').hasMatch(phoneNumber)) {
+      phoneError = '유효한 휴대폰 번호를 입력해주세요.';
+      notifyListeners();
+    } else {
+      phoneError = null;
+      notifyListeners();
+      nextStep();
     }
+  }
+
+  Future<void> signUp() async {
+    try {
+      AuthService authService = AuthService();
+      User newUser = await authService.registerUser(phoneNumber, password);
+      userId = newUser.id; // userId 저장
+      isSignupComplete = true;
+      notifyListeners();
+    } catch (e) {
+      // 에러 처리
+      throw Exception('회원가입에 실패했습니다: ${e.toString()}');
+    }
+  }
+  
+
+  void setPhoneNumber(String number) {
+    phoneNumber = number;
     notifyListeners();
   }
 
-  // 비밀번호 검증 및 다음 단계로 이동
-  void validatePassword() {
-    passwordError = Validators.validatePassword(password);
-    if (passwordError == null) {
-      currentStep = 3;
-    }
+  void setPassword(String pwd) {
+    password = pwd;
     notifyListeners();
   }
 
-  // 닉네임 검증 및 회원가입 완료
-  void validateUsername() {
-    usernameError = Validators.validateUsername(username);
-    if (usernameError == null) {
-      // 사용자 등록
-      _authService.registerUser(User(
-        phoneNumber: phoneNumber,
-        password: password,
-        username: username,
-      ));
-      // 메인 화면으로 이동 또는 추가 단계 진행
-      currentStep = 4; // 다음 단계로 이동
+  Future<void> validatePassword() async {
+    if (password.length >= 8 && password.length <= 20) {
+      passwordError = null;
+      notifyListeners();
+      await signUp();
+    } else {
+      passwordError = '비밀번호는 8자 이상 20자 이하여야 합니다.';
+      notifyListeners();
     }
-    notifyListeners();
   }
 
-  // 뒤로가기
   void goBack() {
     if (currentStep > 1) {
       currentStep--;
       notifyListeners();
+    }
+  }
+
+  void nextStep() {
+    currentStep++;
+    notifyListeners();
+  }
+  
+  void goToLogin() {
+    if (navigateToLogin != null) {
+      navigateToLogin!();
     }
   }
 }

@@ -3,13 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/goal.dart';
-import 'package:todo_with_alarm/providers/goal_provider.dart';
+import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:intl/intl.dart';
 
 class GoalProgressScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final goalProvider = Provider.of<GoalProvider>(context);
+    final goalProvider = Provider.of<GoalViewModel>(context);
 
     return Scaffold(
       appBar: AppBar(

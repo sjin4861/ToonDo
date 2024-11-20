@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_with_alarm/models/todo.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_with_alarm/viewmodels/todo_viewmodel.dart';
+import 'package:todo_with_alarm/viewmodels/todo/todo_viewmodel.dart';
 import 'package:todo_with_alarm/widgets/calendar_bottom_sheet.dart';
 
 class TodoInputViewModel extends ChangeNotifier {
