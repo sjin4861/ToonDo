@@ -18,6 +18,8 @@ linux
 ios
 android
 
+lib/constants.dart
+
 # IntelliJ related
 *.iml
 *.ipr
