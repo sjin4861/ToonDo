@@ -1,3 +1,5 @@
+// lib/widgets/todo_edit_bottom_sheet.dart
+
 import 'package:flutter/material.dart';
 import 'package:todo_with_alarm/models/todo.dart';
 
@@ -6,6 +8,7 @@ class ToDoEditBottomSheet extends StatelessWidget {
   final VoidCallback onUpdate;
   final VoidCallback onDelete;
   final VoidCallback onPostpone;
+  final Function(double) onStatusUpdate; // onStatusUpdate 속성 추가
 
   const ToDoEditBottomSheet({
     Key? key,
@@ -13,6 +16,7 @@ class ToDoEditBottomSheet extends StatelessWidget {
     required this.onUpdate,
     required this.onDelete,
     required this.onPostpone,
+    required this.onStatusUpdate, // 생성자에 추가
   }) : super(key: key);
 
   @override
@@ -26,6 +30,8 @@ class ToDoEditBottomSheet extends StatelessWidget {
 
     // 목표 아이콘 설정
     IconData goalIcon = _getGoalIcon(todo.goalId);
+
+    bool isDDay = todo.isDDayTodo();
 
     return Container(
       height: 320,
@@ -100,7 +106,9 @@ class ToDoEditBottomSheet extends StatelessWidget {
             left: MediaQuery.of(context).size.width / 2 - 106,
             top: 112,
             child: GestureDetector(
-              onTap: onUpdate,
+              onTap: () {
+                  onUpdate();
+              },
               child: Container(
                 width: 212,
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
@@ -113,7 +121,11 @@ class ToDoEditBottomSheet extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.edit, size: 24, color: Colors.white),
+                    Icon(
+                      Icons.edit,
+                      size: 24,
+                      color: Colors.white,
+                    ),
                     SizedBox(width: 8),
                     Text(
                       '수정하기',
@@ -165,75 +177,147 @@ class ToDoEditBottomSheet extends StatelessWidget {
               ),
             ),
           ),
-          // 내일로 미루기 버튼
-          Positioned(
-            left: MediaQuery.of(context).size.width / 2 - 106,
-            top: 240,
-            child: GestureDetector(
-              onTap: onPostpone,
-              child: Container(
-                width: 212,
-                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-                decoration: ShapeDecoration(
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(width: 1, color: Color(0xFF78B545)),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.arrow_forward,
-                        size: 24, color: Color(0xFF78B545)),
-                    SizedBox(width: 8),
-                    Text(
-                      '내일하기',
-                      style: TextStyle(
-                        color: Color(0xFF78B545),
-                        fontSize: 16,
-                        fontFamily: 'Pretendard Variable',
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.24,
-                      ),
+          // 내일로 미루기 버튼 (디데이 투두가 아닌 경우에만 표시)
+          if (!isDDay)
+            Positioned(
+              left: MediaQuery.of(context).size.width / 2 - 106,
+              top: 240,
+              child: GestureDetector(
+                onTap: onPostpone,
+                child: Container(
+                  width: 212,
+                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                  decoration: ShapeDecoration(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(width: 1, color: Color(0xFF78B545)),
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                  ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.arrow_forward,
+                          size: 24, color: Color(0xFF78B545)),
+                      SizedBox(width: 8),
+                      Text(
+                        '내일하기',
+                        style: TextStyle(
+                          color: Color(0xFF78B545),
+                          fontSize: 16,
+                          fontFamily: 'Pretendard Variable',
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.24,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
+          // 진행률 수정 버튼 (디데이 투두인 경우)
+          if (isDDay)
+            Positioned(
+              left: MediaQuery.of(context).size.width / 2 - 106,
+              top: 240,
+              child: GestureDetector(
+                onTap: () {
+                  _showProgressUpdateDialog(context);
+                },
+                child: Container(
+                  width: 212,
+                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                  decoration: ShapeDecoration(
+                    color: Color(0xFF78B545),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.edit, size: 24, color: Colors.white),
+                      SizedBox(width: 8),
+                      Text(
+                        '진행률 수정',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontFamily: 'Pretendard Variable',
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.24,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
   }
 
-  // 중요도와 긴급도 추출 메서드
-  Map<String, int> _getImportanceAndUrgency(double importanceValue) {
-    int importance = 0;
-    int urgency = 0;
+  // 진행률 업데이트 다이얼로그 메서드
+  void _showProgressUpdateDialog(BuildContext context) {
+    double newStatus = todo.status;
 
-    int value = importanceValue.toInt();
-    switch (value) {
-      case 0:
-        importance = 0;
-        urgency = 0;
-        break;
-      case 1:
-        importance = 0;
-        urgency = 1;
-        break;
-      case 2:
-        importance = 1;
-        urgency = 0;
-        break;
-      case 3:
-        importance = 1;
-        urgency = 1;
-        break;
-      default:
-        importance = 0;
-        urgency = 0;
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setStateDialog) {
+            return AlertDialog(
+              title: Text('진행률 수정'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('진행률: ${newStatus.toInt()}%'),
+                  Slider(
+                    value: newStatus,
+                    min: 0,
+                    max: 100,
+                    divisions: 100,
+                    label: '${newStatus.toInt()}%',
+                    onChanged: (double value) {
+                      setStateDialog(() {
+                        newStatus = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('취소'),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    // 진행률 업데이트
+                    await _updateTodoStatus(context, newStatus);
+                    Navigator.pop(context);
+                  },
+                  child: Text('저장'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _updateTodoStatus(BuildContext context, double newStatus) async {
+    try {
+      // 진행률 업데이트 콜백 호출
+      onStatusUpdate(newStatus);
+    } catch (e) {
+      // 에러 처리 로직 추가 (예: 로그 기록, 사용자 알림 등)
+      print('Error updating todo status: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('진행률 업데이트에 실패했습니다.')),
+      );
     }
-    return {'importance': importance, 'urgency': urgency};
   }
 
   // 테두리 색상 반환 메서드

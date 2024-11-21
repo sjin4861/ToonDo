@@ -1,4 +1,4 @@
-// view/todo_submission_screen.dart
+// lib/views/todo/todo_submission_screen.dart
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +12,8 @@ import 'package:intl/intl.dart';
 import 'todo_input_screen.dart'; // TodoInputScreen 임포트
 import 'package:todo_with_alarm/widgets/Calendar.dart'; // Calendar 위젯 임포트
 import 'package:todo_with_alarm/widgets/todo_edit_bottom_sheet.dart'; // ToDoEditBottomSheet 임포트
+import 'package:todo_with_alarm/widgets/todo_list_item.dart'; // TodoListItem 임포트
+
 
 class TodoSubmissionScreen extends StatelessWidget {
   final DateTime? selectedDate;
@@ -20,8 +22,14 @@ class TodoSubmissionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TodoService 인스턴스를 Provider로부터 가져옵니다.
+    final TodoService todoService = Provider.of<TodoService>(context, listen: false);
+
     return ChangeNotifierProvider<TodoSubmissionViewModel>(
-      create: (_) => TodoSubmissionViewModel(initialDate: selectedDate)..loadTodos(),
+      create: (_) => TodoSubmissionViewModel(
+        todoService: todoService,
+        initialDate: selectedDate,
+      )..loadTodos(),
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -309,87 +317,13 @@ class TodoSubmissionScreen extends StatelessWidget {
     Color borderColor = todo.getBorderColor();
     bool isCompleted = todo.status >= 100;
 
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 4),
-      decoration: ShapeDecoration(
-        color: isCompleted ? Color(0xFFEEEEEE) : Colors.transparent,
-        shape: RoundedRectangleBorder(
-          side: BorderSide(
-            width: isCompleted ? 1 : 1.5,
-            color: isCompleted ? Color(0x7FDDDDDD) : borderColor,
-          ),
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-      child: ListTile(
-        contentPadding: EdgeInsets.symmetric(horizontal: 12),
-        leading: Container(
-          width: 24,
-          height: 24,
-          padding: EdgeInsets.all(4),
-          decoration: ShapeDecoration(
-            color: borderColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-          child: Icon(
-            _getGoalIcon(todo.goalId),
-            size: 16,
-            color: Colors.white,
-          ),
-        ),
-        title: Text(
-          todo.title,
-          style: TextStyle(
-            color: isCompleted ? Color(0x4C111111) : Color(0xFF1C1D1B),
-            fontSize: 13,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 0.20,
-            fontFamily: 'Pretendard Variable',
-            decoration: isCompleted ? TextDecoration.lineThrough : null,
-          ),
-        ),
-        subtitle: isDDay
-            ? Row(
-                children: [
-                  Text(
-                    '${DateFormat('yy.MM.dd').format(todo.startDate)} ~ ${DateFormat('yy.MM.dd').format(todo.endDate)}',
-                    style: TextStyle(
-                      color: Color(0x7F1C1D1B),
-                      fontSize: 8,
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: 0.12,
-                      fontFamily: 'Pretendard Variable',
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    dDayString,
-                    style: TextStyle(
-                      color: Color(0x7F1C1D1B),
-                      fontSize: 8,
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: 0.12,
-                      fontFamily: 'Pretendard Variable',
-                    ),
-                  ),
-                ],
-              )
-            : null,
-        trailing: Checkbox(
-          value: isCompleted,
-          onChanged: (bool? value) {
-            if (value != null) {
-              viewModel.updateTodoStatus(todo, value ? 100 : 0);
-            }
-          },
-          activeColor: borderColor,
-        ),
-        onTap: () {
-          _showTodoOptionsDialog(context, todo, viewModel);
-        },
-      ),
+    return TodoListItem(
+      todo: todo,
+      onStatusUpdate: (Todo updatedTodo, double newStatus) {
+        viewModel.updateTodoStatus(updatedTodo, newStatus);
+      },
+      onDelete: () => viewModel.deleteTodoById(todo.id),
+      hideCompletionStatus: isDDay, // D-Day 투두에서는 진행률을 숨기지 않음
     );
   }
 
@@ -449,6 +383,9 @@ class TodoSubmissionScreen extends StatelessWidget {
             DateTime newStartDate = todo.startDate.add(Duration(days: 1));
             DateTime newEndDate = todo.endDate.add(Duration(days: 1));
             viewModel.updateTodoDates(todo, newStartDate, newEndDate);
+          },
+          onStatusUpdate: (double newStatus) {
+            viewModel.updateTodoStatus(todo, newStatus);
           },
         );
       },

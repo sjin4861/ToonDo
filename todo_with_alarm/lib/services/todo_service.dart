@@ -1,61 +1,102 @@
-// services/todo_service.dart
+// lib/services/todo_service.dart
 
+import 'package:hive/hive.dart';
 import 'package:todo_with_alarm/models/todo.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
 
 class TodoService {
-  // 투두 저장 메서드
+  final Box<Todo> _todoBox;
+
+  /// 생성자를 통해 Hive 박스를 주입받습니다.
+  TodoService(this._todoBox);
+
+  /// 모든 투두를 저장하는 메서드
+  /// 기존 데이터를 모두 삭제한 후 새로운 투두 리스트를 저장합니다.
   Future<void> saveTodoList(List<Todo> todos) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> todoStrings =
-        todos.map((todo) => jsonEncode(todo.toJson())).toList();
-    await prefs.setStringList('all_todos', todoStrings);
+    try {
+      await _todoBox.clear(); // 기존 데이터를 모두 삭제
+
+      // todo.id를 키로 사용하여 여러 개의 투두를 한 번에 저장
+      final Map<String, Todo> todoMap = {for (var todo in todos) todo.id: todo};
+      await _todoBox.putAll(todoMap);
+    } catch (e) {
+      print('Error saving todo list: $e');
+      rethrow; // 에러를 다시 던져 호출자에게 전달
+    }
   }
 
-  // 투두 로드 메서드
+  /// 모든 투두를 로드하는 메서드
   Future<List<Todo>> loadTodoList() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? todoStrings = prefs.getStringList('all_todos');
-    if (todoStrings != null) {
-      return todoStrings
-          .map((todoString) => Todo.fromJson(jsonDecode(todoString)))
-          .toList();
-    } else {
-      return [];
+    try {
+      return _todoBox.values.toList();
+    } catch (e) {
+      print('Error loading todo list: $e');
+      rethrow;
     }
   }
 
+  /// 특정 투두의 상태를 업데이트하는 메서드
   Future<void> updateTodoStatus(String todoId, double status) async {
-    // 투두 리스트 로드
-    List<Todo> todos = await loadTodoList();
-    // 해당 투두 찾기
-    int index = todos.indexWhere((todo) => todo.id == todoId);
-    if (index != -1) {
-      todos[index].status = status;
-      // 투두 리스트 저장
-      await saveTodoList(todos);
+    try {
+      Todo? todo = _todoBox.get(todoId);
+      if (todo != null) {
+        todo.status = status;
+        await todo.save(); // HiveObject의 save 메서드 사용
+      } else {
+        print('Todo with id $todoId not found.');
+      }
+    } catch (e) {
+      print('Error updating todo status: $e');
+      rethrow;
     }
   }
 
+  /// 특정 투두를 삭제하는 메서드
   Future<void> deleteTodoById(String id) async {
-    // 투두 리스트 로드
-    List<Todo> todos = await loadTodoList();
-    // 해당 투두 삭제
-    todos.removeWhere((todo) => todo.id == id);
-    // 투두 리스트 저장
-    await saveTodoList(todos);
+    try {
+      await _todoBox.delete(id);
+    } catch (e) {
+      print('Error deleting todo with id $id: $e');
+      rethrow;
+    }
   }
 
+  /// 특정 투두의 날짜를 업데이트하는 메서드
   Future<void> updateTodoDates(Todo todo) async {
-    // 투두 리스트 로드
-    List<Todo> todos = await loadTodoList();
-    // 해당 투두 업데이트
-    int index = todos.indexWhere((t) => t.id == todo.id);
-    if (index != -1) {
-      todos[index] = todo;
-      // 투두 리스트 저장
-      await saveTodoList(todos);
+    try {
+      await todo.save();
+    } catch (e) {
+      print('Error updating todo dates: $e');
+      rethrow;
+    }
+  }
+
+  /// 투두를 추가하는 메서드
+  Future<void> addTodo(Todo todo) async {
+    try {
+      await _todoBox.put(todo.id, todo);
+    } catch (e) {
+      print('Error adding todo: $e');
+      rethrow;
+    }
+  }
+
+  /// 특정 투두를 가져오는 메서드
+  Todo? getTodoById(String id) {
+    try {
+      return _todoBox.get(id);
+    } catch (e) {
+      print('Error getting todo with id $id: $e');
+      return null;
+    }
+  }
+
+  /// 투두 박스를 닫는 메서드 (필요 시 사용)
+  Future<void> closeBox() async {
+    try {
+      await _todoBox.close();
+    } catch (e) {
+      print('Error closing todo box: $e');
+      rethrow;
     }
   }
 }

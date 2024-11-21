@@ -113,15 +113,49 @@ class GoalListItem extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(width: 12),
             // 삭제 버튼
             SizedBox(
               width: 24,
               height: 24,
               child: IconButton(
                 icon: const Icon(Icons.delete, size: 20, color: Colors.red),
-                onPressed: onDelete,
+                onPressed: () async {
+                  // 삭제 확인 다이얼로그 표시
+                  bool? confirmDelete = await showDialog<bool>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('삭제 확인'),
+                      content: const Text('정말 이 목표를 삭제하시겠습니까?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: const Text('취소'),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: const Text('삭제'),
+                        ),
+                      ],
+                    ),
+                  );
+
+                  // 사용자가 삭제를 확인한 경우
+                  if (confirmDelete != null && confirmDelete) {
+                    try {
+                      await goal.delete(); // Hive에서 Goal 삭제
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('목표가 삭제되었습니다.')),
+                      );
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('삭제 중 오류가 발생했습니다: $e')),
+                      );
+                    }
+                  }
+                },
               ),
-            ),
+            ),           
           ],
         ),
       ),

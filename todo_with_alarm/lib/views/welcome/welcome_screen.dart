@@ -32,9 +32,12 @@ class WelcomeScreen extends StatelessWidget {
                       height: 870,
                       decoration: ShapeDecoration(
                         gradient: LinearGradient(
-                          begin: Alignment(0.38, -0.93),
-                          end: Alignment(-0.38, 0.93),
-                          colors: [Color(0xFFFDFDFD), Color(0xFFFCF1BD)],
+                          begin: Alignment.topCenter, // 시작점 설정 (참고한 코드의 .top)
+                          end: Alignment.bottomCenter, // 끝점 설정 (참고한 코드의 .bottom)
+                          colors: [
+                            Color.fromRGBO(252, 252, 252, 1), // Color(red: 0.99, green: 0.99, blue: 0.99)
+                            Color.fromRGBO(252, 242, 189, 1), // Color(red: 0.99, green: 0.95, blue: 0.74)
+                          ],
                         ),
                         shape: OvalBorder(),
                       ),
@@ -135,7 +138,7 @@ class WelcomeScreen extends StatelessWidget {
                           textColor: Color(0xFF1C1D1B),
                           iconPath: 'assets/images/kakao.png',
                           onPressed: () {
-                            viewModel.continueWithKakao();
+                            viewModel.continueWithoutLogin(context);
                           },
                         ),
                         SizedBox(height: 16),
@@ -147,17 +150,6 @@ class WelcomeScreen extends StatelessWidget {
                           iconPath: 'assets/images/phone.png',
                           onPressed: () {
                             viewModel.continueWithPhoneNumber(context);
-                          },
-                        ),
-                        SizedBox(height: 16),
-                        _buildSocialButton(
-                          context,
-                          label: '로그인 없이 계속하기',
-                          color: Color(0xFFC9E1B4),
-                          textColor: Color(0xFF1C1D1B),
-                          iconPath: 'assets/images/phone.png',
-                          onPressed: () {
-                            viewModel.continueWithoutLogin(context);
                           },
                         ),
                       ],

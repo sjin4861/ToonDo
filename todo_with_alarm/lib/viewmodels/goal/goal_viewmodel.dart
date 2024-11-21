@@ -63,6 +63,19 @@ class GoalViewModel extends ChangeNotifier {
       throw e;
     }
   }
+  /// 목표 진행률 업데이트
+  Future<void> updateGoalProgress(String id, double newProgress) async {
+    try {
+      Goal? goal = goals.firstWhere((g) => g.id == id);
+      if (goal != null) {
+        goal.updateProgress(newProgress);
+        await updateGoal(goal);
+      }
+    } catch (e) {
+      print('Error updating goal progress: $e');
+      // 에러 처리 로직 추가 가능
+    }
+  }
 
   // 특정 목표 가져오기
   Goal? getGoalById(String id) {

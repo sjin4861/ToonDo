@@ -1,3 +1,5 @@
+// lib/views/todo/todo_input_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart'; // SVG 아이콘 사용을 위해 추가
 import 'package:provider/provider.dart';
@@ -7,6 +9,7 @@ import 'package:todo_with_alarm/models/todo.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:todo_with_alarm/viewmodels/todo/todo_input_viewmodel.dart';
 import 'package:todo_with_alarm/widgets/calendar_bottom_sheet.dart';
+import 'package:todo_with_alarm/widgets/eisenhower_button.dart'; // 새로 추가된 위젯
 
 class TodoInputScreen extends StatelessWidget {
   final bool isDDayTodo;
@@ -18,8 +21,7 @@ class TodoInputScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<TodoInputViewModel>(
-      create: (_) =>
-          TodoInputViewModel(todo: todo, isDDayTodo: isDDayTodo),
+      create: (_) => TodoInputViewModel(todo: todo, isDDayTodo: isDDayTodo),
       child: Scaffold(
         backgroundColor: Color(0xFFFCFCFC),
         appBar: AppBar(
@@ -163,13 +165,13 @@ class TodoInputScreen extends StatelessWidget {
                         padding: EdgeInsets.symmetric(horizontal: 12),
                         decoration: ShapeDecoration(
                           shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
                             side: BorderSide(
                               width: 1,
                               color: viewModel.isTitleNotEmpty
-                                  ? Color(0xFF78B545)
-                                  : Color(0xFFDDDDDD),
+                                  ? Color(0xFF78B545) // 초록색 테두리
+                                  : Color(0xFFDDDDDD), // 기본 회색 테두리
                             ),
-                            borderRadius: BorderRadius.circular(8),
                           ),
                         ),
                         child: TextFormField(
@@ -205,6 +207,22 @@ class TodoInputScreen extends StatelessWidget {
                           },
                         ),
                       ),
+                      if (viewModel.goalNameError != null) ...[
+                        SizedBox(height: 4),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            viewModel.goalNameError!,
+                            style: TextStyle(
+                              color: Color(0xFFEE0F12),
+                              fontSize: 10,
+                              fontFamily: 'Pretendard Variable',
+                              fontWeight: FontWeight.w400,
+                              letterSpacing: 0.15,
+                            ),
+                          ),
+                        ),
+                      ],
                       SizedBox(height: 24),
                       // 목표 선택
                       Align(
@@ -230,8 +248,8 @@ class TodoInputScreen extends StatelessWidget {
                             side: BorderSide(
                               width: 1,
                               color: viewModel.selectedGoalId != null
-                                  ? Color(0xFF78B545)
-                                  : Color(0xFFDDDDDD),
+                                  ? Color(0xFF78B545) // 초록색 테두리
+                                  : Color(0xFFDDDDDD), // 기본 회색 테두리
                             ),
                           ),
                         ),
@@ -241,9 +259,8 @@ class TodoInputScreen extends StatelessWidget {
                               child: Text(
                                 viewModel.selectedGoalId != null
                                     ? goalViewmodel.goals
-                                        .firstWhere((goal) =>
-                                            goal.id ==
-                                            viewModel.selectedGoalId)
+                                        .firstWhere(
+                                            (goal) => goal.id == viewModel.selectedGoalId)
                                         .name
                                     : '목표를 선택하세요.',
                                 style: TextStyle(
@@ -277,7 +294,8 @@ class TodoInputScreen extends StatelessWidget {
                           ),
                           child: Column(
                             children: [
-                              _buildGoalItem(context, '목표 미설정', null, viewModel),
+                              _buildGoalItem(
+                                  context, '목표 미설정', null, viewModel),
                               ...goalViewmodel.goals.map((goal) {
                                 return _buildGoalItem(
                                     context, goal.name, goal.id, viewModel);
@@ -442,53 +460,106 @@ class TodoInputScreen extends StatelessWidget {
                           Row(
                             mainAxisAlignment:
                                 MainAxisAlignment.spaceAround,
-                            children: List.generate(4, (index) {
-                              return GestureDetector(
+                            children: [
+                              // 각 아이젠하워 매트릭스 버튼
+                              EisenhowerButton(
+                                index: 0,
+                                label: '중요하거나\n급하지 않아',
+                                isSelected:
+                                    viewModel.selectedEisenhowerIndex == 0,
+                                selectedBackgroundColor: Color(0x7FE2DFDE),
+                                selectedBorderColor: Color(0x7FE2DFDE),
+                                selectedTextColor: Color(0xFF423B36),
+                                unselectedTextColor: Color(0x7F1C1D1B),
+                                iconPath: 'assets/icons/face0.svg',
                                 onTap: () {
-                                  viewModel.setEisenhower(index);
+                                  viewModel.setEisenhower(0);
                                 },
-                                child: Column(
-                                  children: [
-                                    SvgPicture.asset(
-                                      'assets/icons/face$index.svg',
-                                      width: 32,
-                                      height: 32,
-                                      colorFilter: ColorFilter.mode(
-                                        viewModel.selectedEisenhowerIndex ==
-                                                index
-                                            ? Colors.black
-                                            : Colors.grey,
-                                        BlendMode.srcIn,
-                                      ),
-                                    ),
-                                    SizedBox(height: 4),
-                                    Text(
-                                      _getEisenhowerLabel(index),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: viewModel
-                                                    .selectedEisenhowerIndex ==
-                                                index
-                                            ? Colors.black
-                                            : Colors.grey,
-                                        fontSize: 8,
-                                        fontFamily: 'Pretendard Variable',
-                                        fontWeight: viewModel
-                                                    .selectedEisenhowerIndex ==
-                                                index
-                                            ? FontWeight.w700
-                                            : FontWeight.w400,
-                                        letterSpacing: 0.12,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }),
+                              ),
+                              EisenhowerButton(
+                                index: 1,
+                                label: '중요하지만\n급하지는 않아',
+                                isSelected:
+                                    viewModel.selectedEisenhowerIndex == 1,
+                                selectedBackgroundColor: Color(0x7FE5F4FE),
+                                selectedBorderColor: Color(0x7FE5F4FE),
+                                selectedTextColor: Color(0xFF497895),
+                                unselectedTextColor: Color(0x7F1C1D1B),
+                                iconPath: 'assets/icons/face1.svg',
+                                onTap: () {
+                                  viewModel.setEisenhower(1);
+                                },
+                              ),
+                              EisenhowerButton(
+                                index: 2,
+                                label: '급하지만\n중요하지 않아',
+                                isSelected:
+                                    viewModel.selectedEisenhowerIndex == 2,
+                                selectedBackgroundColor: Color(0x7FFDF8DE),
+                                selectedBorderColor: Color(0x7FFDF8DE),
+                                selectedTextColor: Color(0xFF948436),
+                                unselectedTextColor: Color(0x7F1C1D1B),
+                                iconPath: 'assets/icons/face2.svg',
+                                onTap: () {
+                                  viewModel.setEisenhower(2);
+                                },
+                              ),
+                              EisenhowerButton(
+                                index: 3,
+                                label: '중요하고\n급한일이야!',
+                                isSelected:
+                                    viewModel.selectedEisenhowerIndex == 3,
+                                selectedBackgroundColor: Color(0x7FFCE9EA),
+                                selectedBorderColor: Color(0x7FFCE9EA), // 테두리 색상 맞춤
+                                selectedTextColor: Color(0xFF91595A), // 텍스트 색상 변경
+                                unselectedTextColor: Color.fromARGB(126, 1, 1, 0),
+                                iconPath: 'assets/icons/face3.svg',
+                                onTap: () {
+                                  viewModel.setEisenhower(3);
+                                },
+                              ),
+                            ],
                           ),
                         ],
                       ),
                       SizedBox(height: 24),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 16),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'TIP',
+                                style: TextStyle(
+                                  color: Color(0xFF78B545), // 초록색
+                                  fontSize: 10,
+                                  fontFamily: 'Pretendard Variable',
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 0.15,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  '아이젠하워는 긴급도와 중요도에 따라 할 일을 정리하는 방법이에요.\n'
+                                  '앞으로 툰두가 아이젠하워에 따라 가장 중요한 일부터 알려줄게요!',
+                                  style: TextStyle(
+                                    color: Color(0xBF1C1D1B), // 회색
+                                    fontSize: 10,
+                                    fontFamily: 'Pretendard Variable',
+                                    fontWeight: FontWeight.w400,
+                                    letterSpacing: 0.15,
+                                    height: 1.4, // 줄 간격 조정
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 24),
+                        ],
+                      ),
                       // 작성하기/수정하기 버튼
                       GestureDetector(
                         onTap: () {
@@ -554,8 +625,7 @@ class TodoInputScreen extends StatelessWidget {
               width: 24,
               height: 24,
               decoration: ShapeDecoration(
-                color:
-                    isSelected ? Color(0x7FAED28F) : Color(0x7FDDDDDD),
+                color: isSelected ? Color(0x7FAED28F) : Color(0x7FDDDDDD),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -581,21 +651,5 @@ class TodoInputScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  // 아이젠하워 매트릭스 라벨 반환 메서드
-  String _getEisenhowerLabel(int index) {
-    switch (index) {
-      case 0:
-        return '중요하지도\n급하지도 않음';
-      case 1:
-        return '중요하지만\n급하지 않음';
-      case 2:
-        return '급하지만\n중요하지 않음';
-      case 3:
-        return '중요하고\n급함';
-      default:
-        return '';
-    }
   }
 }

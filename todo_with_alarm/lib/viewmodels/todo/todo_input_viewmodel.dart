@@ -46,6 +46,8 @@ class TodoInputViewModel extends ChangeNotifier {
     titleController.addListener(_onTitleChanged);
   }
 
+  get goalNameError => null;
+
   void _onTitleChanged() {
     isTitleNotEmpty = titleController.text.isNotEmpty;
     notifyListeners();
@@ -142,29 +144,34 @@ class TodoInputViewModel extends ChangeNotifier {
   Future<void> saveTodo(BuildContext context) async {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
-      // 투두 생성 또는 업데이트
-      Todo newTodo = Todo(
-        id: todo?.id,
-        title: title,
-        startDate: isDailyTodo ? DateTime.now() : (startDate ?? DateTime.now()),
-        endDate: isDailyTodo ? DateTime.now() : (endDate ?? DateTime.now()),
-        goalId: selectedGoalId,
-        importance: importance.toInt(), // 중요도 저장
-        urgency: urgency.toInt(),       // 긴급도 저장
-        // 기타 필요한 필드 설정
-      );
-      final todoViewModel = Provider.of<TodoViewModel>(context, listen: false);
-      if (todo != null) {
-        // 수정 모드
-        await todoViewModel.updateTodo(newTodo);
-      } else {
-        // 새로 추가
-        await todoViewModel.addTodo(newTodo);
+      try {
+        // 투두 생성 또는 업데이트
+        Todo newTodo = Todo(
+          id: todo?.id,
+          title: title,
+          startDate: isDailyTodo ? DateTime.now() : (startDate ?? DateTime.now()),
+          endDate: isDailyTodo ? DateTime.now() : (endDate ?? DateTime.now()),
+          goalId: selectedGoalId,
+          importance: importance.toInt(), // 중요도 저장
+          urgency: urgency.toInt(),       // 긴급도 저장
+          // 기타 필요한 필드 설정
+        );
+        final todoViewModel = Provider.of<TodoViewModel>(context, listen: false);
+        if (todo != null) {
+          // 수정 모드
+          await todoViewModel.updateTodo(newTodo);
+        } else {
+          // 새로 추가
+          await todoViewModel.addTodo(newTodo);
+        }
+        Navigator.pop(context); // 투두 페이지로 돌아가기
+      } catch (e) {
+        // 에러 처리 로직 추가 (예: 로그 기록, 사용자 알림 등)
+        print('Error saving todo: $e');
       }
-      Navigator.pop(context); // 투두 페이지로 돌아가기
     }
   }
-
+  
   @override
   void dispose() {
     titleController.removeListener(_onTitleChanged);

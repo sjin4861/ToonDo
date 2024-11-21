@@ -163,8 +163,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                       // 메인 캐릭터 이미지
                       Positioned(
-                        left: MediaQuery.of(context).size.width / 2 -
-                            75, // 화면 중앙에 위치
+                        left: MediaQuery.of(context).size.width / 2 - 75, // 화면 중앙에 위치
                         bottom: 80, // 갈색 배경 위에 위치하도록 설정
                         child: SizedBox(
                           width: 150,
@@ -178,11 +177,13 @@ class HomeScreen extends StatelessWidget {
                               ..setEntry(3, 1, -0.001) // 원근감 추가
                               ..rotateX(pi / 4) // X축으로 45도 회전하여 찌그러뜨림
                               ..scale(0.7, 0.3), // 세로로 축소하여 그림자 모양 조정
-                            child: Image.asset(
-                              'assets/images/main_character.png',
-                              fit: BoxFit.contain,
+                            child: SvgPicture.asset(
+                              'assets/icons/character.svg', // SVG 파일 경로
+                              width: 150, // SVG 파일 너비
+                              height: 150, // SVG 파일 높이
+                              fit: BoxFit.contain, // SVG의 적합 방식
                             ),
-                          ), //ImageShadow로 이미지 그림자 추가
+                          ),
                         ),
                       ),
                       // 말풍선
