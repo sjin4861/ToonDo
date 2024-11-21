@@ -1,5 +1,3 @@
-// viewmodels/todo_viewmodel.dart
-
 import 'package:flutter/material.dart';
 import 'package:todo_with_alarm/models/todo.dart';
 import 'package:todo_with_alarm/services/todo_service.dart';
@@ -13,12 +11,6 @@ class TodoViewModel extends ChangeNotifier {
 
   // 모든 투두 리스트를 가져오는 메서드
   List<Todo> get allTodos => _todos;
-
-  // 투두 리스트 설정 메서드
-  void setTodos(List<Todo> todos) {
-    _todos = todos;
-    notifyListeners();
-  }
 
   // 특정 날짜에 해당하는 투두 리스트를 가져오는 메서드
   List<Todo> getTodosForDate(DateTime date) {
@@ -37,44 +29,56 @@ class TodoViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // 투두 저장 메서드
-  Future<void> saveTodos() async {
-    await _todoService.saveTodoList(_todos);
-  }
-
   // 투두를 추가하는 메서드
   Future<void> addTodo(Todo todo) async {
-    _todos.add(todo);
-    await saveTodos();
-    notifyListeners();
+    try {
+      await _todoService.addTodo(todo);
+      _todos.add(todo);
+      notifyListeners();
+    } catch (e) {
+      print('Error adding todo: $e');
+      // 추가적인 에러 처리 로직을 여기에 작성할 수 있습니다.
+    }
   }
-
+  
   // 투두를 업데이트하는 메서드
   Future<void> updateTodo(Todo updatedTodo) async {
-    int index = _todos.indexWhere((todo) => todo.id == updatedTodo.id);
-    if (index != -1) {
-      _todos[index] = updatedTodo;
-      await saveTodos();
-      notifyListeners();
+    try {
+      await _todoService.updateTodoStatus(updatedTodo.id, updatedTodo.status);
+      int index = _todos.indexWhere((todo) => todo.id == updatedTodo.id);
+      if (index != -1) {
+        _todos[index] = updatedTodo;
+        notifyListeners();
+      }
+    } catch (e) {
+      print('Error updating todo: $e');
+      // 추가적인 에러 처리 로직을 여기에 작성할 수 있습니다.
     }
   }
 
   // 투두 상태 업데이트 메서드
   Future<void> updateTodoStatus(String todoId, double status) async {
-    int index = _todos.indexWhere((todo) => todo.id == todoId);
-    if (index != -1) {
-      _todos[index].status = status;
-      await saveTodos();
-      notifyListeners();
-    }
+    await _todoService.updateTodoStatus(todoId, status);
+    await loadTodos();
   }
 
   // 투두를 삭제하는 메서드
   Future<void> deleteTodoById(String id) async {
-    _todos.removeWhere((todo) => todo.id == id);
-    await saveTodos();
-    notifyListeners();
+    try {
+      await _todoService.deleteTodoById(id);
+      _todos.removeWhere((todo) => todo.id == id);
+      notifyListeners();
+    } catch (e) {
+      print('Error deleting todo with id $id: $e');
+      // 추가적인 에러 처리 로직을 여기에 작성할 수 있습니다.
+    }
   }
 
-  // 기타 필요한 메서드 추가...
+  // 투두 날짜 업데이트 메서드
+  Future<void> updateTodoDates(Todo todo, DateTime newStartDate, DateTime newEndDate) async {
+    todo.startDate = newStartDate;
+    todo.endDate = newEndDate;
+    await _todoService.updateTodoDates(todo);
+    await loadTodos();
+  }
 }

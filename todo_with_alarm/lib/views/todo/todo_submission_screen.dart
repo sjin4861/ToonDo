@@ -1,4 +1,4 @@
-// view/todo_submission_screen.dart
+// lib/views/todo/todo_submission_screen.dart
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +12,8 @@ import 'package:intl/intl.dart';
 import 'todo_input_screen.dart'; // TodoInputScreen 임포트
 import 'package:todo_with_alarm/widgets/Calendar.dart'; // Calendar 위젯 임포트
 import 'package:todo_with_alarm/widgets/todo_edit_bottom_sheet.dart'; // ToDoEditBottomSheet 임포트
+import 'package:todo_with_alarm/widgets/todo_list_item.dart'; // TodoListItem 임포트
+
 
 class TodoSubmissionScreen extends StatelessWidget {
   final DateTime? selectedDate;
@@ -20,8 +22,14 @@ class TodoSubmissionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TodoService 인스턴스를 Provider로부터 가져옵니다.
+    final TodoService todoService = Provider.of<TodoService>(context, listen: false);
+
     return ChangeNotifierProvider<TodoSubmissionViewModel>(
-      create: (_) => TodoSubmissionViewModel(initialDate: selectedDate)..loadTodos(),
+      create: (_) => TodoSubmissionViewModel(
+        todoService: todoService,
+        initialDate: selectedDate,
+      )..loadTodos(),
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -449,6 +457,9 @@ class TodoSubmissionScreen extends StatelessWidget {
             DateTime newStartDate = todo.startDate.add(Duration(days: 1));
             DateTime newEndDate = todo.endDate.add(Duration(days: 1));
             viewModel.updateTodoDates(todo, newStartDate, newEndDate);
+          },
+          onStatusUpdate: (double newStatus) {
+            viewModel.updateTodoStatus(todo, newStatus);
           },
         );
       },

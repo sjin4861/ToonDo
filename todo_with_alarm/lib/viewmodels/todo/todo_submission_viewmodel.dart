@@ -1,4 +1,4 @@
-// viewmodels/todo_submission_viewmodel.dart
+// lib/viewmodels/todo/todo_submission_viewmodel.dart
 
 import 'package:flutter/material.dart';
 import 'package:todo_with_alarm/models/todo.dart';
@@ -7,8 +7,8 @@ import 'package:todo_with_alarm/services/todo_service.dart';
 enum FilterOption { all, goal, importance }
 
 class TodoSubmissionViewModel extends ChangeNotifier {
-  final TodoService _todoService = TodoService();
-
+  final TodoService _todoService;
+  
   DateTime selectedDate;
   FilterOption selectedFilter = FilterOption.all;
   String? selectedGoalId;
@@ -17,8 +17,11 @@ class TodoSubmissionViewModel extends ChangeNotifier {
   List<Todo> dDayTodos = [];
   List<Todo> dailyTodos = [];
 
-  TodoSubmissionViewModel({DateTime? initialDate})
-      : selectedDate = initialDate ?? DateTime.now();
+  TodoSubmissionViewModel({
+    required TodoService todoService,
+    DateTime? initialDate,
+  })  : _todoService = todoService,
+        selectedDate = initialDate ?? DateTime.now();
 
   Future<void> loadTodos() async {
     allTodos = await _todoService.loadTodoList();
@@ -52,6 +55,14 @@ class TodoSubmissionViewModel extends ChangeNotifier {
               todoEndDate.isAtSameMomentAs(selectedDateOnly));
     }).toList();
 
+    // print("Filtered Todos for selected date: ${todosForSelectedDate.length}");
+    // todosForSelectedDate.forEach((todo) {
+    //   print("Todo: ${todo.title}, isDDay: ${todo.isDDayTodo()}");
+    //   // 날짜 데이터 확인해보기
+    //   print("Todo Start Date: ${todo.startDate}");
+    //   print("Todo End Date: ${todo.endDate}");
+    // });
+
     // 선택된 필터에 따라 추가 필터링 적용
     if (selectedFilter == FilterOption.goal && selectedGoalId != null) {
       todosForSelectedDate = todosForSelectedDate.where((todo) => todo.goalId == selectedGoalId).toList();
@@ -78,24 +89,44 @@ class TodoSubmissionViewModel extends ChangeNotifier {
 
   // 투두 상태 업데이트 메서드
   Future<void> updateTodoStatus(Todo todo, double status) async {
-    todo.status = status;
-    await _todoService.updateTodoStatus(todo.id, status);
-    notifyListeners();
+    try {
+      todo.status = status;
+      await _todoService.updateTodoStatus(todo.id, status);
+      // 특정 Todo만 업데이트
+      int index = allTodos.indexWhere((t) => t.id == todo.id);
+      if (index != -1) {
+        allTodos[index] = todo;
+        _filterAndCategorizeTodos();
+      }
+    } catch (e) {
+      print('Error updating todo status: $e');
+      // 추가적인 에러 처리 로직을 여기에 작성할 수 있습니다.
+    }
   }
 
   // 투두 삭제 메서드
   Future<void> deleteTodoById(String id) async {
-    await _todoService.deleteTodoById(id);
-    await loadTodos();
-    notifyListeners();
+    try {
+      await _todoService.deleteTodoById(id);
+      await loadTodos();
+      notifyListeners();
+    } catch (e) {
+      print('Error deleting todo: $e');
+      // 추가적인 에러 처리 로직을 여기에 작성할 수 있습니다.
+    }
   }
 
   // 투두 날짜 업데이트 메서드
   Future<void> updateTodoDates(Todo todo, DateTime newStartDate, DateTime newEndDate) async {
-    todo.startDate = newStartDate;
-    todo.endDate = newEndDate;
-    await _todoService.updateTodoDates(todo);
-    await loadTodos();
-    notifyListeners();
+    try {
+      todo.startDate = newStartDate;
+      todo.endDate = newEndDate;
+      await _todoService.updateTodoDates(todo);
+      await loadTodos();
+      notifyListeners();
+    } catch (e) {
+      print('Error updating todo dates: $e');
+      // 추가적인 에러 처리 로직을 여기에 작성할 수 있습니다.
+    }
   }
 }
