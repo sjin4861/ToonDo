@@ -1,12 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart'; // SVG 사용을 위해 추가
 
 class GoalIconBottomSheet extends StatelessWidget {
   final Map<String, List<String>> iconCategories = {
-    '수업/과제': ['assets/icons/icon1.png', 'assets/icons/icon2.png', 'assets/icons/icon3.png'],
-    '공부': ['assets/icons/icon4.png', 'assets/icons/icon5.png', 'assets/icons/icon6.png'],
-    '운동/건강': ['assets/icons/icon7.png', 'assets/icons/icon8.png', 'assets/icons/icon9.png'],
-    '취미/자기계발': ['assets/icons/icon10.png', 'assets/icons/icon11.png', 'assets/icons/icon12.png'],
-    '기타': ['assets/icons/icon13.png', 'assets/icons/icon14.png', 'assets/icons/icon15.png'],
+    '수업/과제': [
+      'assets/icons/100point.svg',
+      'assets/icons/100point.svg',
+      'assets/icons/100point.svg'
+    ],
+    '공부': [
+      'assets/icons/100point.svg',
+      'assets/icons/100point.svg',
+      'assets/icons/100point.svg'
+    ],
+    '운동/건강': [
+      'assets/icons/100point.svg',
+      'assets/icons/100point.svg',
+      'assets/icons/100point.svg'
+    ],
+    '취미/자기계발': [
+      'assets/icons/100point.svg',
+      'assets/icons/100point.svg',
+      'assets/icons/100point.svg'
+    ],
+    '기타': [
+      'assets/icons/100point.svg',
+      'assets/icons/100point.svg',
+      'assets/icons/100point.svg'
+    ],
   };
 
   @override
@@ -74,11 +95,12 @@ class GoalIconBottomSheet extends StatelessWidget {
                               padding: const EdgeInsets.all(4),
                               decoration: ShapeDecoration(
                                 shape: RoundedRectangleBorder(
-                                  side: BorderSide(width: 1, color: Color(0xFFDDDDDD)),
+                                  side: BorderSide(
+                                      width: 1, color: Color(0xFFDDDDDD)),
                                   borderRadius: BorderRadius.circular(1000),
                                 ),
                               ),
-                              child: Image.asset(
+                              child: SvgPicture.asset( // SVG 렌더링으로 변경
                                 iconPath,
                                 width: 24,
                                 height: 24,

@@ -1,6 +1,7 @@
 // lib/views/goal/goal_input_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/goal.dart';
 import 'package:todo_with_alarm/services/goal_service.dart';
@@ -116,7 +117,7 @@ class GoalInputScreen extends StatelessWidget {
                               ),
                             ),
                             child: viewModel.selectedIcon != null
-                                ? Image.asset(
+                                ? SvgPicture.asset(
                                     viewModel.selectedIcon!,
                                     width: 24,
                                     height: 24,
