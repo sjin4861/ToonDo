@@ -1,8 +1,9 @@
-// views/goal/goal_input_screen.dart
+// lib/views/goal/goal_input_screen.dart
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/goal.dart';
+import 'package:todo_with_alarm/services/goal_service.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_input_viewmodel.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:todo_with_alarm/widgets/calendar_bottom_sheet.dart';
@@ -16,7 +17,10 @@ class GoalInputScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<GoalInputViewModel>(
-      create: (_) => GoalInputViewModel(targetGoal: targetGoal),
+      create: (context) => GoalInputViewModel(
+        goalService: Provider.of<GoalService>(context, listen: false),
+        targetGoal: targetGoal,
+      ),
       child: Scaffold(
         backgroundColor: Color(0xFFFCFCFC),
         appBar: AppBar(
@@ -102,7 +106,12 @@ class GoalInputScreen extends StatelessWidget {
                             padding: const EdgeInsets.all(4),
                             decoration: ShapeDecoration(
                               shape: RoundedRectangleBorder(
-                                side: BorderSide(width: 1, color: Color(0xFFDDDDDD)),
+                                side: BorderSide(
+                                  width: 1,
+                                  color: viewModel.selectedIcon != null
+                                      ? Color(0xFF78B545) // 선택된 경우 초록색
+                                      : Color(0xFFDDDDDD),
+                                ),
                                 borderRadius: BorderRadius.circular(1000),
                               ),
                             ),
@@ -123,9 +132,22 @@ class GoalInputScreen extends StatelessWidget {
                             decoration: InputDecoration(
                               hintText: '목표 이름을 입력해주세요.',
                               contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                              border: OutlineInputBorder(
+                              enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(1000),
-                                borderSide: BorderSide(color: Color(0xFFDDDDDD)),
+                                borderSide: BorderSide(
+                                  color: viewModel.goalNameController.text.isNotEmpty
+                                      ? Color(0xFF78B545) // 텍스트 입력 시 초록색
+                                      : Color(0xFFDDDDDD), // 입력 없을 시 기본 회색
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(1000),
+                                borderSide: BorderSide(
+                                  color: viewModel.goalNameController.text.isNotEmpty
+                                      ? Color(0xFF78B545) // 텍스트 입력 시 초록색
+                                      : Color(0xFFDDDDDD),
+                                  width: 2.0,
+                                ),
                               ),
                               errorText: viewModel.goalNameError,
                             ),
@@ -197,7 +219,9 @@ class GoalInputScreen extends StatelessWidget {
                                               ? '${viewModel.startDate!.year}년 ${viewModel.startDate!.month}월 ${viewModel.startDate!.day}일'
                                               : '시작일을 선택하세요',
                                           style: TextStyle(
-                                            color: viewModel.startDate != null ? Color(0xFF1C1D1B) : Color(0x3F1C1D1B),
+                                            color: viewModel.startDate != null
+                                                ? Color(0xFF1C1D1B)
+                                                : Color(0x3F1C1D1B),
                                             fontSize: 10,
                                             fontFamily: 'Pretendard Variable',
                                             fontWeight: FontWeight.w400,
@@ -248,7 +272,9 @@ class GoalInputScreen extends StatelessWidget {
                                     shape: RoundedRectangleBorder(
                                       side: BorderSide(
                                         width: 1,
-                                        color: viewModel.endDate != null ? Color(0xFF78B545) : Color(0xFFDDDDDD),
+                                        color: viewModel.endDate != null
+                                            ? Color(0xFF78B545) // 마감일 선택 시 초록색
+                                            : Color(0xFFDDDDDD),
                                       ),
                                       borderRadius: BorderRadius.circular(1000),
                                     ),
@@ -263,7 +289,9 @@ class GoalInputScreen extends StatelessWidget {
                                               ? '${viewModel.endDate!.year}년 ${viewModel.endDate!.month}월 ${viewModel.endDate!.day}일'
                                               : '마감일을 선택하세요',
                                           style: TextStyle(
-                                            color: viewModel.endDate != null ? Color(0xFF1C1D1B) : Color(0x3F1C1D1B),
+                                            color: viewModel.endDate != null
+                                                ? Color(0xFF1C1D1B)
+                                                : Color(0x3F1C1D1B),
                                             fontSize: 10,
                                             fontFamily: 'Pretendard Variable',
                                             fontWeight: FontWeight.w400,
@@ -388,13 +416,7 @@ class GoalInputScreen extends StatelessWidget {
   }
 
   void _setGoal(BuildContext context, GoalInputViewModel viewModel) async {
-    viewModel.saveGoal();
-    final goalViewmodel = Provider.of<GoalViewModel>(context, listen: false);
-    if (viewModel.targetGoal != null) {
-      await goalViewmodel.updateGoal(viewModel.targetGoal!);
-    } else {
-      await goalViewmodel.addGoal(viewModel.targetGoal!);
-    }
+    await viewModel.saveGoal(context);
     Navigator.pop(context);
   }
 }
