@@ -137,7 +137,7 @@ class NotificationService {
         ),
       ),
       payload: notification.type.toString(),
-      androidAllowWhileIdle: true,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       // 반복 설정이 필요하면 추가 설정
