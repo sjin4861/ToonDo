@@ -46,6 +46,8 @@ class TodoInputViewModel extends ChangeNotifier {
     titleController.addListener(_onTitleChanged);
   }
 
+  get goalNameError => null;
+
   void _onTitleChanged() {
     isTitleNotEmpty = titleController.text.isNotEmpty;
     notifyListeners();
