@@ -5,7 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/todo.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:intl/intl.dart';
-import 'package:todo_with_alarm/views/todo/todo_submission_screen.dart'; // 필요한 경우 추가
+import 'package:todo_with_alarm/viewmodels/todo/todo_submission_viewmodel.dart';
+import 'package:todo_with_alarm/views/todo/todo_input_screen.dart';
+import 'package:todo_with_alarm/widgets/todo_edit_bottom_sheet.dart';
 
 class TodoListItem extends StatelessWidget {
   final Todo todo;
@@ -37,28 +39,28 @@ class TodoListItem extends StatelessWidget {
                 onStatusUpdate(todo, value ? 100 : 0);
               }
             },
-            activeColor: Theme.of(context).primaryColor,
+            activeColor: todo.getBorderColor(),
           );
 
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 4),
+      margin: const EdgeInsets.symmetric(vertical: 4),
       decoration: ShapeDecoration(
-        color: isCompleted ? Color(0xFFEEEEEE) : Colors.transparent,
+        color: isCompleted ? const Color(0xFFEEEEEE) : Colors.transparent,
         shape: RoundedRectangleBorder(
           side: BorderSide(
             width: isCompleted ? 1 : 1.5,
-            color: isCompleted ? Color(0x7FDDDDDD) : todo.getBorderColor(),
+            color: isCompleted ? const Color(0x7FDDDDDD) : todo.getBorderColor(),
           ),
           borderRadius: BorderRadius.circular(8),
         ),
       ),
       child: ListTile(
-        contentPadding: EdgeInsets.symmetric(horizontal: 12),
-        leading: _buildLeading(context, isDDay),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        leading: _buildLeading(context),
         title: Text(
           todo.title,
           style: TextStyle(
-            color: isCompleted ? Color(0x4C111111) : Color(0xFF1C1D1B),
+            color: isCompleted ? const Color(0x4C111111) : const Color(0xFF1C1D1B),
             fontSize: 13,
             fontWeight: FontWeight.w700,
             letterSpacing: 0.20,
@@ -71,7 +73,7 @@ class TodoListItem extends StatelessWidget {
                 children: [
                   Text(
                     '${DateFormat('yy.MM.dd').format(todo.startDate)} ~ ${DateFormat('yy.MM.dd').format(todo.endDate)}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Color(0x7F1C1D1B),
                       fontSize: 8,
                       fontWeight: FontWeight.w400,
@@ -82,7 +84,7 @@ class TodoListItem extends StatelessWidget {
                   const SizedBox(width: 4),
                   Text(
                     _getDDayString(),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Color(0x7F1C1D1B),
                       fontSize: 8,
                       fontWeight: FontWeight.w400,
@@ -101,34 +103,22 @@ class TodoListItem extends StatelessWidget {
     );
   }
 
-  Widget _buildLeading(BuildContext context, bool isDDay) {
-    // 진행률 표시 위젯
-    Widget progressIndicator = hideCompletionStatus
-        ? SizedBox.shrink()
-        : SizedBox(
-            width: 40,
-            height: 40,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                CircularProgressIndicator(
-                  value: todo.status / 100,
-                  strokeWidth: 4,
-                  backgroundColor: Colors.grey[300],
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                      Theme.of(context).primaryColor),
-                ),
-                Center(
-                  child: Text(
-                    '${todo.status.toInt()}%',
-                    style: TextStyle(fontSize: 12),
-                  ),
-                ),
-              ],
-            ),
-          );
-
-    return progressIndicator;
+  Widget _buildLeading(BuildContext context) {
+    // 목표 아이콘 표시
+    return Container(
+      width: 24,
+      height: 24,
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: todo.getBorderColor().withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Icon(
+        _getGoalIcon(todo.goalId),
+        size: 16,
+        color: todo.getBorderColor(),
+      ),
+    );
   }
 
   Widget? _buildSubtitle(BuildContext context) {
@@ -136,8 +126,7 @@ class TodoListItem extends StatelessWidget {
     String? goalName;
     if (todo.goalId != null) {
       final goalViewmodel = Provider.of<GoalViewModel>(context, listen: false);
-      final matchingGoals =
-          goalViewmodel.goals.where((goal) => goal.id == todo.goalId);
+      final matchingGoals = goalViewmodel.goals.where((goal) => goal.id == todo.goalId);
       if (matchingGoals.isNotEmpty) {
         goalName = matchingGoals.first.name;
       } else {
@@ -147,7 +136,16 @@ class TodoListItem extends StatelessWidget {
     }
 
     if (goalName != null) {
-      return Text('목표: $goalName');
+      return Text(
+        '목표: $goalName',
+        style: const TextStyle(
+          color: Color(0x7F1C1D1B),
+          fontSize: 8,
+          fontWeight: FontWeight.w400,
+          letterSpacing: 0.12,
+          fontFamily: 'Pretendard Variable',
+        ),
+      );
     } else {
       return null;
     }
@@ -176,13 +174,13 @@ class TodoListItem extends StatelessWidget {
             child: LinearProgressIndicator(
               value: todo.status / 100,
               backgroundColor: Colors.grey[300],
-              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF78B545)),
+              valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF78B545)),
             ),
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Text(
             '${todo.status.toInt()}%',
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,
               color: Color(0xFF1C1D1B),
@@ -194,7 +192,66 @@ class TodoListItem extends StatelessWidget {
   }
 
   void _showTodoOptionsDialog(BuildContext context, Todo todo) {
-    // ToDoEditBottomSheet는 여기서 사용되지 않습니다.
-    // 대신, ListTile의 onTap에서 직접 상태 업데이트를 처리합니다.
+    // ToDoEditBottomSheet를 호출합니다.
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+        ),
+      ),
+      builder: (context) {
+        return ToDoEditBottomSheet(
+          todo: todo,
+          onUpdate: () {
+            Navigator.pop(context);
+            // 투두 수정 화면으로 이동
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TodoInputScreen(
+                  isDDayTodo: todo.isDDayTodo(),
+                  todo: todo,
+                ),
+              ),
+            ).then((_) {
+              // 투두 목록 갱신
+              Provider.of<TodoSubmissionViewModel>(context, listen: false).loadTodos();
+            });
+          },
+          onDelete: () {
+            Navigator.pop(context);
+            // 투두 삭제
+            onDelete();
+          },
+          onPostpone: () {
+            Navigator.pop(context);
+            // 투두를 내일로 미룸
+            DateTime newStartDate = todo.startDate.add(const Duration(days: 1));
+            DateTime newEndDate = todo.endDate.add(const Duration(days: 1));
+            Provider.of<TodoSubmissionViewModel>(context, listen: false)
+                .updateTodoDates(todo, newStartDate, newEndDate);
+          },
+          onStatusUpdate: (double newStatus) {
+            onStatusUpdate(todo, newStatus);
+          },
+        );
+      },
+    );
+  }
+
+  // 목표 아이콘 반환 메서드
+  IconData _getGoalIcon(String? goalId) {
+    switch (goalId) {
+      case 'goal1':
+        return Icons.school;
+      case 'goal2':
+        return Icons.work;
+      case 'goal3':
+        return Icons.fitness_center;
+      default:
+        return Icons.flag;
+    }
   }
 }

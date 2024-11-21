@@ -317,87 +317,13 @@ class TodoSubmissionScreen extends StatelessWidget {
     Color borderColor = todo.getBorderColor();
     bool isCompleted = todo.status >= 100;
 
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 4),
-      decoration: ShapeDecoration(
-        color: isCompleted ? Color(0xFFEEEEEE) : Colors.transparent,
-        shape: RoundedRectangleBorder(
-          side: BorderSide(
-            width: isCompleted ? 1 : 1.5,
-            color: isCompleted ? Color(0x7FDDDDDD) : borderColor,
-          ),
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-      child: ListTile(
-        contentPadding: EdgeInsets.symmetric(horizontal: 12),
-        leading: Container(
-          width: 24,
-          height: 24,
-          padding: EdgeInsets.all(4),
-          decoration: ShapeDecoration(
-            color: borderColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-          child: Icon(
-            _getGoalIcon(todo.goalId),
-            size: 16,
-            color: Colors.white,
-          ),
-        ),
-        title: Text(
-          todo.title,
-          style: TextStyle(
-            color: isCompleted ? Color(0x4C111111) : Color(0xFF1C1D1B),
-            fontSize: 13,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 0.20,
-            fontFamily: 'Pretendard Variable',
-            decoration: isCompleted ? TextDecoration.lineThrough : null,
-          ),
-        ),
-        subtitle: isDDay
-            ? Row(
-                children: [
-                  Text(
-                    '${DateFormat('yy.MM.dd').format(todo.startDate)} ~ ${DateFormat('yy.MM.dd').format(todo.endDate)}',
-                    style: TextStyle(
-                      color: Color(0x7F1C1D1B),
-                      fontSize: 8,
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: 0.12,
-                      fontFamily: 'Pretendard Variable',
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    dDayString,
-                    style: TextStyle(
-                      color: Color(0x7F1C1D1B),
-                      fontSize: 8,
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: 0.12,
-                      fontFamily: 'Pretendard Variable',
-                    ),
-                  ),
-                ],
-              )
-            : null,
-        trailing: Checkbox(
-          value: isCompleted,
-          onChanged: (bool? value) {
-            if (value != null) {
-              viewModel.updateTodoStatus(todo, value ? 100 : 0);
-            }
-          },
-          activeColor: borderColor,
-        ),
-        onTap: () {
-          _showTodoOptionsDialog(context, todo, viewModel);
-        },
-      ),
+    return TodoListItem(
+      todo: todo,
+      onStatusUpdate: (Todo updatedTodo, double newStatus) {
+        viewModel.updateTodoStatus(updatedTodo, newStatus);
+      },
+      onDelete: () => viewModel.deleteTodoById(todo.id),
+      hideCompletionStatus: isDDay, // D-Day 투두에서는 진행률을 숨기지 않음
     );
   }
 
