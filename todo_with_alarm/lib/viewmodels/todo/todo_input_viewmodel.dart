@@ -19,7 +19,7 @@ class TodoInputViewModel extends ChangeNotifier {
   int urgency = 0;    // 긴급도 (0 또는 1)
   bool isTitleNotEmpty = false;
   bool showGoalDropdown = false;
-  int selectedEisenhowerIndex = 0;
+  int selectedEisenhowerIndex = -1;
 
   Todo? todo;
   bool isDDayTodo;
@@ -104,6 +104,10 @@ class TodoInputViewModel extends ChangeNotifier {
       case 3:
         importance = 1;
         urgency = 1;
+        break;
+      default:
+        importance = 0;
+        urgency = 0;
         break;
     }
     notifyListeners();
