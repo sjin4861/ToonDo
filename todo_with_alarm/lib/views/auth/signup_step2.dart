@@ -118,7 +118,7 @@ class _SignupStep2State extends State<SignupStep2> {
                   viewModel!.password = value;
                 });
               },
-              errorText: viewModel!.passwordError,
+              // errorText: viewModel!.passwordError,
               isValid: viewModel!.password.isNotEmpty,
               borderColor: viewModel!.password.isNotEmpty
                   ? Color(0xFF78B545)
