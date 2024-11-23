@@ -7,6 +7,7 @@ import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:todo_with_alarm/viewmodels/todo/todo_input_viewmodel.dart';
 import 'package:todo_with_alarm/widgets/bottom_button/edit_update_button.dart';
 import 'package:todo_with_alarm/widgets/eisenhower_button.dart';
+import 'package:todo_with_alarm/widgets/text_fields/custom_text_field.dart';
 import 'package:todo_with_alarm/widgets/todo/date_field.dart'; // 새로 추가된 위젯
 
 class TodoInputScreen extends StatelessWidget {
@@ -51,7 +52,7 @@ class TodoInputScreen extends StatelessWidget {
         body: Consumer<TodoInputViewModel>(
           builder: (context, viewModel, child) {
             final goalViewmodel = Provider.of<GoalViewModel>(context);
-
+            
             return SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 24),
@@ -430,7 +431,11 @@ class TodoInputScreen extends StatelessWidget {
                         ],
                       ),
                       // 작성하기/수정하기 버튼
-                      EditUpdateButton(viewModel: viewModel, todo: todo),
+                      Row(
+                        children: [
+                          Expanded(child: EditUpdateButton(viewModel: viewModel, todo: todo)),
+                        ],
+                      ),
                       SizedBox(height: 24),
                     ],
                   ),
