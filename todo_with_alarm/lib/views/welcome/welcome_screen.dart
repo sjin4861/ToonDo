@@ -35,8 +35,8 @@ class WelcomeScreen extends StatelessWidget {
                           begin: Alignment.topCenter, // 시작점 설정 (참고한 코드의 .top)
                           end: Alignment.bottomCenter, // 끝점 설정 (참고한 코드의 .bottom)
                           colors: [
-                            Color.fromRGBO(252, 252, 252, 1), // Color(red: 0.99, green: 0.99, blue: 0.99)
-                            Color.fromRGBO(252, 242, 189, 1), // Color(red: 0.99, green: 0.95, blue: 0.74)
+                            Color.fromRGBO(252, 241, 190, 1), // Color(red: 0.99, green: 0.99, blue: 0.99)
+                            Color.fromRGBO(249, 228, 123, 1), // Color(red: 0.99, green: 0.95, blue: 0.74)
                           ],
                         ),
                         shape: OvalBorder(),
@@ -127,7 +127,7 @@ class WelcomeScreen extends StatelessWidget {
                           borderColor: Color(0xFFDDDDDD),
                           iconPath: 'assets/images/google.png',
                           onPressed: () {
-                            viewModel.continueWithGoogle();
+                            viewModel.navigateToOnboarding(context);
                           },
                         ),
                         SizedBox(height: 16),
