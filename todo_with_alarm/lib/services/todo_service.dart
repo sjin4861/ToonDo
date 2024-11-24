@@ -34,7 +34,17 @@ class TodoService {
     }
   }
 
-  /// 특정 투두의 상태를 업데이트하는 메서드
+  // 특정 투두를 수정하는 메서드
+  Future<void> updateTodo(Todo updatedTodo) async {
+    try {
+      await updatedTodo.save(); // HiveObject의 save 메서드 사용
+    } catch (e) {
+      print('Error updating todo: $e');
+      rethrow;
+    }
+  }
+
+  /// 특정 투두의 진행률을 업데이트하는 메서드
   Future<void> updateTodoStatus(String todoId, double status) async {
     try {
       Todo? todo = _todoBox.get(todoId);
