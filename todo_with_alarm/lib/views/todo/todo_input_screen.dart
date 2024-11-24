@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/todo.dart';
+import 'package:todo_with_alarm/services/todo_service.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:todo_with_alarm/viewmodels/todo/todo_input_viewmodel.dart';
 import 'package:todo_with_alarm/widgets/bottom_button/edit_update_button.dart';
@@ -16,10 +17,13 @@ class TodoInputScreen extends StatelessWidget {
 
   const TodoInputScreen({super.key, this.isDDayTodo = true, this.todo});
 
+
   @override
   Widget build(BuildContext context) {
+    final TodoService todoService = Provider.of<TodoService>(context, listen: false);
+
     return ChangeNotifierProvider<TodoInputViewModel>(
-      create: (_) => TodoInputViewModel(todo: todo, isDDayTodo: isDDayTodo),
+      create: (_) => TodoInputViewModel(todo: todo, isDDayTodo: isDDayTodo, todoService: todoService),
       child: Scaffold(
         backgroundColor: Color(0xFFFCFCFC),
         appBar: AppBar(
@@ -173,6 +177,7 @@ class TodoInputScreen extends StatelessWidget {
                           ),
                         ),
                         child: TextFormField(
+                          key: Key('todoTitleField'),
                           controller: viewModel.titleController,
                           maxLength: 20,
                           decoration: InputDecoration(
@@ -433,7 +438,8 @@ class TodoInputScreen extends StatelessWidget {
                       // 작성하기/수정하기 버튼
                       Row(
                         children: [
-                          Expanded(child: EditUpdateButton(viewModel: viewModel, todo: todo)),
+                          Expanded(
+                            child: EditUpdateButton(viewModel: viewModel, todo: todo)),
                         ],
                       ),
                       SizedBox(height: 24),

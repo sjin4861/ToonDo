@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_with_alarm/models/todo.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_with_alarm/services/todo_service.dart';
 import 'package:todo_with_alarm/viewmodels/todo/todo_viewmodel.dart';
 import 'package:todo_with_alarm/widgets/calendar_bottom_sheet.dart';
 
@@ -23,8 +24,10 @@ class TodoInputViewModel extends ChangeNotifier {
 
   Todo? todo;
   bool isDDayTodo;
+  late TodoService _todoService;
 
-  TodoInputViewModel({required this.todo, required this.isDDayTodo}) {
+  TodoInputViewModel({required this.todo, required this.isDDayTodo, required TodoService todoService}) {
+    _todoService = todoService;
     if (todo != null) {
       // 수정 모드
       titleController.text = todo!.title;
@@ -160,13 +163,16 @@ class TodoInputViewModel extends ChangeNotifier {
           urgency: urgency.toInt(),       // 긴급도 저장
           // 기타 필요한 필드 설정
         );
-        final todoViewModel = Provider.of<TodoViewModel>(context, listen: false);
         if (todo != null) {
-          // 수정 모드
-          await todoViewModel.updateTodo(newTodo);
+          // 수정 모드이면 new todo의 id를 제외한 모든 성질을 todo로 복사
+          todo!.updateFrom(newTodo);
+          await _todoService.updateTodo(todo!);
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   SnackBar(content: Text('투두가 성공적으로 수정되었습니다.')),
+          // );
         } else {
           // 새로 추가
-          await todoViewModel.addTodo(newTodo);
+          await _todoService.addTodo(newTodo);
         }
         Navigator.pop(context); // 투두 페이지로 돌아가기
       } catch (e) {
