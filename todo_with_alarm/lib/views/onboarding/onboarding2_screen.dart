@@ -1,14 +1,15 @@
+// lib/views/onboarding/onboarding2_screen.dart
+
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:todo_with_alarm/views/home/home_screen.dart';
-import '../../viewmodels/onboarding/onboarding_viewmodel.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import '../../viewmodels/onboarding/onboarding_viewmodel.dart';
 import '../../widgets/text_fields/custom_text_field.dart';
-import '../home/home_screen.dart'; // 홈 화면 임포트
+import '../home/home_screen.dart';
 
 class Onboarding2Page extends StatefulWidget {
   final String userId;
-  
+
   Onboarding2Page({required this.userId});
 
   @override
@@ -20,61 +21,114 @@ class _Onboarding2PageState extends State<Onboarding2Page> {
   String? nicknameError;
 
   @override
+  void dispose() {
+    _nicknameController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<OnboardingViewModel>(
       create: (_) => OnboardingViewModel(userId: widget.userId),
       child: Scaffold(
-        // ... 기존 코드 생략 ...
-        body: Consumer<OnboardingViewModel>(
-          builder: (context, viewModel, child) {
-            return Stack(
-              children: [
-                // ... 기존 코드 생략 ...
-                // 컨텐츠
-                Positioned.fill(
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: Padding(
-                            padding: EdgeInsets.fromLTRB(24, 32, 24, 0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // 상단 안내 문구
-                                SizedBox(height: 84),
-                                Text(
-                                  '당신의 이름도 저에게 알려 주실래요?',
-                                  style: TextStyle(
-                                    color: Color(0xFF78B545),
-                                    fontSize: 16,
-                                    fontFamily: 'Pretendard Variable',
-                                    fontWeight: FontWeight.w700,
-                                    letterSpacing: 0.24,
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Text(
-                                  '툰두에서 사용하고 싶은 닉네임을 적어주세요',
-                                  style: TextStyle(
-                                    color: Color(0xBF1C1D1B),
-                                    fontSize: 10,
-                                    fontFamily: 'Pretendard Variable',
-                                    fontWeight: FontWeight.w400,
-                                    letterSpacing: 0.15,
-                                  ),
-                                ),
-                                SizedBox(height: 32),
-                                // 닉네임 입력란
-                                CustomTextField(
+        backgroundColor: Color(0xFFFCFCFC),
+        appBar: AppBar(
+          backgroundColor: Color(0xFFFCFCFC),
+          elevation: 0.5,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: Color(0xFF1C1D1B),
+              size: 16,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          title: Text(
+            '시작하기',
+            style: TextStyle(
+              color: Color(0xFF1C1D1B),
+              fontSize: 16,
+              fontFamily: 'Pretendard Variable',
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.24,
+            ),
+          ),
+          centerTitle: false,
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(0.5),
+            child: Container(
+              color: Color(0x3F1C1D1B),
+              height: 0.5,
+            ),
+          ),
+        ),
+        body: Stack(
+            children: [
+              // 배경 타원
+              Positioned(
+                left: -100,
+                bottom: -280,
+                child: Container(
+                  width: 600,
+                  height: 600,
+                  decoration: ShapeDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color.fromRGBO(252, 241, 190, 1),
+                        Color.fromRGBO(249, 228, 123, 1),
+                      ],
+                    ),
+                    shape: OvalBorder(),
+                  ),
+                ),
+              ),
+              // 메인 콘텐츠
+              Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 60),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '당신의 이름도 저에게 알려 주실래요?',
+                              style: TextStyle(
+                                color: Color(0xFF78B545),
+                                fontSize: 16,
+                                fontFamily: 'Pretendard Variable',
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.24,
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              '툰두에서 사용하고 싶은 닉네임을 적어주세요',
+                              style: TextStyle(
+                                color: Color(0xBF1C1D1B),
+                                fontSize: 10,
+                                fontFamily: 'Pretendard Variable',
+                                fontWeight: FontWeight.w400,
+                                letterSpacing: 0.15,
+                              ),
+                            ),
+                            SizedBox(height: 64),
+                            Consumer<OnboardingViewModel>(
+                              builder: (context, viewModel, child) {
+                                return CustomTextField(
                                   label: '닉네임',
                                   hintText: '8자 이내의 닉네임을 입력해주세요',
                                   controller: _nicknameController,
                                   onChanged: (value) {
                                     setState(() {
-                                      viewModel.nickname = value;
                                       nicknameError = null;
                                     });
+                                    viewModel.nickname = value;
                                   },
                                   errorText: nicknameError,
                                   isValid: viewModel.nickname.isNotEmpty,
@@ -82,35 +136,53 @@ class _Onboarding2PageState extends State<Onboarding2Page> {
                                       ? Color(0xFF78B545)
                                       : Color(0xFFDDDDDD),
                                   contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                                ),
-                                if (nicknameError != null) ...[
-                                  SizedBox(height: 4),
-                                  Text(
-                                    nicknameError!,
-                                    style: TextStyle(
-                                      color: Color(0xFFEE0F12),
-                                      fontSize: 10,
-                                      fontFamily: 'Pretendard Variable',
-                                      fontWeight: FontWeight.w400,
-                                      letterSpacing: 0.15,
-                                    ),
-                                  ),
-                                ],
-                                SizedBox(height: 32),
-                              ],
+                                );
+                              },
                             ),
-                          ),
+                            if (nicknameError != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: Text(
+                                  nicknameError!,
+                                  style: TextStyle(
+                                    color: Color(0xFFEE0F12),
+                                    fontSize: 10,
+                                    fontFamily: 'Pretendard Variable',
+                                    fontWeight: FontWeight.w400,
+                                    letterSpacing: 0.15,
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
                       ),
-                      // 버튼들
+                    ),
+                  ),
+                  // 캐릭터 및 그림자
+                  Column(
+                    children: [
+                      SvgPicture.asset(
+                        'assets/icons/character.svg',
+                        width: 186.29,
+                        height: 134.30,
+                      ),
+                      SizedBox(height: 12.44),
+                      SvgPicture.asset(
+                        'assets/icons/shadow.svg',
+                        width: 139.30,
+                        height: 21.99,
+                      ),
+                      SizedBox(height: 180),
+                      // 버튼 배치
                       Padding(
-                        padding: EdgeInsets.fromLTRB(24, 0, 24, 32),
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
                         child: Row(
                           children: [
                             Expanded(
                               flex: 1,
                               child: ElevatedButton(
                                 onPressed: () {
+                                  // 이전 화면으로 이동
                                   Navigator.pop(context);
                                 },
                                 style: ElevatedButton.styleFrom(
@@ -137,7 +209,8 @@ class _Onboarding2PageState extends State<Onboarding2Page> {
                               flex: 2,
                               child: ElevatedButton(
                                 onPressed: () {
-                                  _validateNickname(viewModel);
+                                  _validateNickname(
+                                      Provider.of<OnboardingViewModel>(context, listen: false));
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Color(0xFF78B545),
@@ -161,30 +234,31 @@ class _Onboarding2PageState extends State<Onboarding2Page> {
                           ],
                         ),
                       ),
+                      SizedBox(height: 32),
                     ],
                   ),
-                ),
-              ],
-            );
-          },
+                ],
+              ),
+            ],
+          ),
         ),
-      ),
     );
   }
 
   void _validateNickname(OnboardingViewModel viewModel) async {
-    if (viewModel.nickname.isEmpty) {
+    final nickname = viewModel.nickname;
+    if (nickname.isEmpty) {
       setState(() {
         nicknameError = '닉네임을 입력해주세요.';
       });
-    } else if (viewModel.nickname.length > 8) {
+    } else if (nickname.length > 8) {
       setState(() {
         nicknameError = '닉네임은 8자 이내로 입력해주세요.';
       });
     } else {
       // 닉네임 저장 및 다음 화면으로 이동
       try {
-        viewModel.saveNickname();
+        await viewModel.saveNickname(); // saveNickname 메서드가 비동기 함수라고 가정
         // 홈 화면으로 이동
         Navigator.pushAndRemoveUntil(
           context,
@@ -194,7 +268,7 @@ class _Onboarding2PageState extends State<Onboarding2Page> {
       } catch (e) {
         // 에러 처리 (예: 현재 로그인된 사용자가 없음)
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
+          SnackBar(content: Text('닉네임 저장 중 오류가 발생했습니다: $e')),
         );
       }
     }

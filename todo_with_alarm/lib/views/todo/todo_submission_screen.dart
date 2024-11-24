@@ -240,6 +240,7 @@ class TodoSubmissionScreen extends StatelessWidget {
         children: [
           // 섹션 헤더
           GestureDetector(
+            key: Key('addTodoButton'),
             onTap: () {
               // 투두 추가 페이지로 이동
               Navigator.push(
@@ -309,8 +310,6 @@ class TodoSubmissionScreen extends StatelessWidget {
       viewModel.selectedDate.month,
       viewModel.selectedDate.day,
     );
-    int dDay = todo.endDate.difference(selectedDateOnly).inDays;
-    String dDayString = dDay > 0 ? 'D-$dDay' : dDay == 0 ? 'D-Day' : 'D+${-dDay}';
 
     int importance = todo.importance;
     int urgency = todo.urgency;
@@ -319,10 +318,30 @@ class TodoSubmissionScreen extends StatelessWidget {
 
     return TodoListItem(
       todo: todo,
+      selectedDate : selectedDateOnly,
+      onUpdate: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TodoInputScreen(
+              isDDayTodo: todo.isDDayTodo(),
+              todo: todo,
+            ),
+          ),
+        ).then((_) {
+          // 투두 목록 갱신
+          viewModel.loadTodos();
+        });
+      },
       onStatusUpdate: (Todo updatedTodo, double newStatus) {
         viewModel.updateTodoStatus(updatedTodo, newStatus);
       },
       onDelete: () => viewModel.deleteTodoById(todo.id),
+      onPostpone : () {
+        DateTime newStartDate = todo.startDate.add(Duration(days: 1));
+        DateTime newEndDate = todo.endDate.add(Duration(days: 1));
+        viewModel.updateTodoDates(todo, newStartDate, newEndDate);
+      },
       hideCompletionStatus: isDDay, // D-Day 투두에서는 진행률을 숨기지 않음
     );
   }
@@ -339,56 +358,5 @@ class TodoSubmissionScreen extends StatelessWidget {
       default:
         return Icons.flag;
     }
-  }
-
-  void _showTodoOptionsDialog(
-    BuildContext context,
-    Todo todo,
-    TodoSubmissionViewModel viewModel,
-  ) {
-    showModalBottomSheet(
-      context: context,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
-        ),
-      ),
-      builder: (context) {
-        return ToDoEditBottomSheet(
-          todo: todo,
-          onUpdate: () {
-            Navigator.pop(context);
-            // 투두 수정 화면으로 이동
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => TodoInputScreen(
-                  isDDayTodo: todo.isDDayTodo(),
-                  todo: todo,
-                ),
-              ),
-            ).then((_) {
-              viewModel.loadTodos();
-            });
-          },
-          onDelete: () {
-            Navigator.pop(context);
-            // 투두 삭제
-            viewModel.deleteTodoById(todo.id);
-          },
-          onPostpone: () {
-            Navigator.pop(context);
-            // 투두를 내일로 미룸
-            DateTime newStartDate = todo.startDate.add(Duration(days: 1));
-            DateTime newEndDate = todo.endDate.add(Duration(days: 1));
-            viewModel.updateTodoDates(todo, newStartDate, newEndDate);
-          },
-          onStatusUpdate: (double newStatus) {
-            viewModel.updateTodoStatus(todo, newStatus);
-          },
-        );
-      },
-    );
   }
 }

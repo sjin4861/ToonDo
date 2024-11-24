@@ -47,7 +47,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   gradient: LinearGradient(
                     begin: Alignment(0.38, -0.93),
                     end: Alignment(-0.38, 0.93),
-                    colors: [Color(0xFFFDFDFD), Color(0xFFFCF1BD)],
+                    colors: [
+                      Color.fromRGBO(252, 241, 190, 1), // Color(red: 0.99, green: 0.99, blue: 0.99)
+                      Color.fromRGBO(249, 228, 123, 1), // Color(red: 0.99, green: 0.95, blue: 0.74)
+                    ],
                   ),
                   shape: OvalBorder(),
                 ),

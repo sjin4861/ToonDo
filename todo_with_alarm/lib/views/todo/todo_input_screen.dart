@@ -1,27 +1,29 @@
 // lib/views/todo/todo_input_screen.dart
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // SVG 아이콘 사용을 위해 추가
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
-import 'package:todo_with_alarm/models/goal.dart';
 import 'package:todo_with_alarm/models/todo.dart';
+import 'package:todo_with_alarm/services/todo_service.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:todo_with_alarm/viewmodels/todo/todo_input_viewmodel.dart';
-import 'package:todo_with_alarm/widgets/calendar_bottom_sheet.dart';
-import 'package:todo_with_alarm/widgets/eisenhower_button.dart'; // 새로 추가된 위젯
+import 'package:todo_with_alarm/widgets/bottom_button/edit_update_button.dart';
+import 'package:todo_with_alarm/widgets/eisenhower_button.dart';
+import 'package:todo_with_alarm/widgets/text_fields/custom_text_field.dart';
+import 'package:todo_with_alarm/widgets/todo/date_field.dart'; // 새로 추가된 위젯
 
 class TodoInputScreen extends StatelessWidget {
   final bool isDDayTodo;
   final Todo? todo;
 
-  const TodoInputScreen({Key? key, this.isDDayTodo = true, this.todo})
-      : super(key: key);
+  const TodoInputScreen({super.key, this.isDDayTodo = true, this.todo});
+
 
   @override
   Widget build(BuildContext context) {
+    final TodoService todoService = Provider.of<TodoService>(context, listen: false);
+
     return ChangeNotifierProvider<TodoInputViewModel>(
-      create: (_) => TodoInputViewModel(todo: todo, isDDayTodo: isDDayTodo),
+      create: (_) => TodoInputViewModel(todo: todo, isDDayTodo: isDDayTodo, todoService: todoService),
       child: Scaffold(
         backgroundColor: Color(0xFFFCFCFC),
         appBar: AppBar(
@@ -54,7 +56,7 @@ class TodoInputScreen extends StatelessWidget {
         body: Consumer<TodoInputViewModel>(
           builder: (context, viewModel, child) {
             final goalViewmodel = Provider.of<GoalViewModel>(context);
-
+            
             return SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 24),
@@ -165,7 +167,7 @@ class TodoInputScreen extends StatelessWidget {
                         padding: EdgeInsets.symmetric(horizontal: 12),
                         decoration: ShapeDecoration(
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(1000),
                             side: BorderSide(
                               width: 1,
                               color: viewModel.isTitleNotEmpty
@@ -175,6 +177,7 @@ class TodoInputScreen extends StatelessWidget {
                           ),
                         ),
                         child: TextFormField(
+                          key: Key('todoTitleField'),
                           controller: viewModel.titleController,
                           maxLength: 20,
                           decoration: InputDecoration(
@@ -244,7 +247,7 @@ class TodoInputScreen extends StatelessWidget {
                         padding: EdgeInsets.symmetric(horizontal: 12),
                         decoration: ShapeDecoration(
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(1000),
                             side: BorderSide(
                               width: 1,
                               color: viewModel.selectedGoalId != null
@@ -289,7 +292,7 @@ class TodoInputScreen extends StatelessWidget {
                       if (viewModel.showGoalDropdown)
                         Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(10),
                             border: Border.all(color: Color(0xFFDDDDDD)),
                           ),
                           child: Column(
@@ -308,137 +311,9 @@ class TodoInputScreen extends StatelessWidget {
                       if (!viewModel.isDailyTodo)
                         Row(
                           children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '시작일',
-                                    style: TextStyle(
-                                      color: Color(0xFF1C1D1B),
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w400,
-                                      letterSpacing: 0.15,
-                                      fontFamily: 'Pretendard Variable',
-                                    ),
-                                  ),
-                                  SizedBox(height: 8),
-                                  GestureDetector(
-                                    onTap: () => viewModel.selectDate(
-                                        context, isStartDate: true),
-                                    child: Container(
-                                      height: 32,
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 12),
-                                      decoration: ShapeDecoration(
-                                        shape: RoundedRectangleBorder(
-                                          side: BorderSide(
-                                              width: 1,
-                                              color: Color(0xFFDDDDDD)),
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Icon(Icons.calendar_today,
-                                              size: 15,
-                                              color: Color(0xFFDDDDDD)),
-                                          SizedBox(width: 8),
-                                          Expanded(
-                                            child: Text(
-                                              viewModel.startDate != null
-                                                  ? viewModel.dateFormat
-                                                      .format(
-                                                          viewModel.startDate!)
-                                                  : '시작일을 선택하세요',
-                                              style: TextStyle(
-                                                color: viewModel.startDate !=
-                                                        null
-                                                    ? Color(0xFF1C1D1B)
-                                                    : Color(0x3F1C1D1B),
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.w500,
-                                                letterSpacing: 0.15,
-                                                fontFamily:
-                                                    'Pretendard Variable',
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            DateField(viewModel: viewModel, label: "시작일"),
                             SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '마감일',
-                                    style: TextStyle(
-                                      color: Color(0xFF1C1D1B),
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w400,
-                                      letterSpacing: 0.15,
-                                      fontFamily: 'Pretendard Variable',
-                                    ),
-                                  ),
-                                  SizedBox(height: 8),
-                                  GestureDetector(
-                                    onTap: () => viewModel.selectDate(
-                                        context, isStartDate: false),
-                                    child: Container(
-                                      height: 32,
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 12),
-                                      decoration: ShapeDecoration(
-                                        shape: RoundedRectangleBorder(
-                                          side: BorderSide(
-                                              width: 1,
-                                              color: Color(0xFFDDDDDD)),
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Icon(Icons.calendar_today,
-                                              size: 15,
-                                              color: Color(0xFFDDDDDD)),
-                                          SizedBox(width: 8),
-                                          Expanded(
-                                            child: Text(
-                                              viewModel.endDate != null
-                                                  ? viewModel.dateFormat
-                                                      .format(
-                                                          viewModel.endDate!)
-                                                  : '마감일을 선택하세요',
-                                              style: TextStyle(
-                                                color: viewModel.endDate !=
-                                                        null
-                                                    ? Color(0xFF1C1D1B)
-                                                    : Color(0x3F1C1D1B),
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.w500,
-                                                letterSpacing: 0.15,
-                                                fontFamily:
-                                                    'Pretendard Variable',
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            DateField(viewModel: viewModel, label: "마감일")
                           ],
                         ),
                       SizedBox(height: 24),
@@ -561,34 +436,11 @@ class TodoInputScreen extends StatelessWidget {
                         ],
                       ),
                       // 작성하기/수정하기 버튼
-                      GestureDetector(
-                        onTap: () {
-                          viewModel.saveTodo(context);
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          height: 56,
-                          margin: EdgeInsets.symmetric(horizontal: 25),
-                          padding: EdgeInsets.symmetric(vertical: 16),
-                          decoration: ShapeDecoration(
-                            color: Color(0xFF78B545),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              todo != null ? '수정하기' : '작성하기',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontFamily: 'Pretendard Variable',
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 0.24,
-                              ),
-                            ),
-                          ),
-                        ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: EditUpdateButton(viewModel: viewModel, todo: todo)),
+                        ],
                       ),
                       SizedBox(height: 24),
                     ],
@@ -627,7 +479,7 @@ class TodoInputScreen extends StatelessWidget {
               decoration: ShapeDecoration(
                 color: isSelected ? Color(0x7FAED28F) : Color(0x7FDDDDDD),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(1000),
                 ),
               ),
               child: Center(

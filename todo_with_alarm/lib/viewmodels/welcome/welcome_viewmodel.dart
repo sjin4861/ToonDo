@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_with_alarm/views/auth/signup_screen.dart';
 import 'package:todo_with_alarm/views/home/home_screen.dart';
+import 'package:todo_with_alarm/views/onboarding/onboarding_screen.dart';
 
 class WelcomeViewModel extends ChangeNotifier {
   // 소셜 로그인 처리 등을 위해 필요한 로직을 여기에 추가할 수 있습니다.
@@ -25,6 +26,15 @@ class WelcomeViewModel extends ChangeNotifier {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => HomeScreen()),
+    );
+  }
+
+  // (테스트용) 온보딩 페이지로 이동하기 로직 추가
+  void navigateToOnboarding(BuildContext context) {
+    // 온보딩 페이지로 이동
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => OnboardingScreen(userId: '',)),
     );
   }
 }

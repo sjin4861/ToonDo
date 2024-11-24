@@ -107,7 +107,7 @@ class ToDoEditBottomSheet extends StatelessWidget {
             top: 112,
             child: GestureDetector(
               onTap: () {
-                  onUpdate();
+                onUpdate();
               },
               child: Container(
                 width: 212,

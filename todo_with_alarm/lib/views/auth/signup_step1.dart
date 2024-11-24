@@ -81,7 +81,7 @@ class _SignupStep1State extends State<SignupStep1> {
                   viewModel.phoneNumber = value;
                 });
               },
-              errorText: viewModel.phoneError,
+              //errorText: viewModel.phoneError,
               isValid: viewModel.phoneNumber.isNotEmpty,
             ),
             if (viewModel.phoneError != null) ...[

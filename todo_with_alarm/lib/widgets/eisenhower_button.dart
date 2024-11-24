@@ -32,8 +32,8 @@ class EisenhowerButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 64,
-        height: 80,
+        width: 80,
+        height: 90,
         padding: const EdgeInsets.all(8),
         decoration: ShapeDecoration(
           color: isSelected ? selectedBackgroundColor : Colors.transparent,
@@ -63,7 +63,7 @@ class EisenhowerButton extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: isSelected ? selectedTextColor : unselectedTextColor,
-                fontSize: 8,
+                fontSize: 10,
                 fontFamily: 'Pretendard Variable',
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
                 height: 1.0,
