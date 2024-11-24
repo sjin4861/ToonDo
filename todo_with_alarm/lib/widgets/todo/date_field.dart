@@ -8,6 +8,11 @@ class DateField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // label에 따라 isStartDate 설정
+    bool isStartDate = label == '시작일';
+    // label에 따라 표시할 날짜 결정
+    DateTime? date = isStartDate ? viewModel.startDate : viewModel.endDate;
+
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -24,12 +29,10 @@ class DateField extends StatelessWidget {
           ),
           SizedBox(height: 8),
           GestureDetector(
-            onTap: () => viewModel.selectDate(
-                context, isStartDate: true),
+            onTap: () => viewModel.selectDate(context, isStartDate: isStartDate),
             child: Container(
               height: 32,
-              padding: EdgeInsets.symmetric(
-                  horizontal: 12),
+              padding: EdgeInsets.symmetric(horizontal: 12),
               decoration: ShapeDecoration(
                 shape: RoundedRectangleBorder(
                   side: BorderSide(
@@ -47,13 +50,11 @@ class DateField extends StatelessWidget {
                   SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      viewModel.startDate != null
-                          ? viewModel.dateFormat
-                              .format(
-                                  viewModel.startDate!)
-                          : '${this.label}을 선택하세요',
+                      date != null
+                          ? viewModel.dateFormat.format(date)
+                          : '${label}을 선택하세요',
                       style: TextStyle(
-                        color: viewModel.startDate != null
+                        color: date != null
                             ? Color(0xFF1C1D1B)
                             : Color(0x3F1C1D1B),
                         fontSize: 10,
