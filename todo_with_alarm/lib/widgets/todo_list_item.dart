@@ -13,13 +13,19 @@ class TodoListItem extends StatelessWidget {
   final Todo todo;
   final Function(Todo, double) onStatusUpdate; // onUpdate를 수정하여 status와 함께 전달
   final Function() onDelete;
+  final Function() onPostpone;
+  final Function() onUpdate;
   final bool hideCompletionStatus;
+  final DateTime selectedDate;
 
   const TodoListItem({
     Key? key,
     required this.todo,
+    required this.selectedDate,
+    required this.onUpdate,
     required this.onStatusUpdate,
     required this.onDelete,
+    required this.onPostpone,
     this.hideCompletionStatus = false,
   }) : super(key: key);
 
@@ -152,7 +158,7 @@ class TodoListItem extends StatelessWidget {
   }
 
   String _getDDayString() {
-    DateTime today = DateTime.now();
+    DateTime today = selectedDate;
     int dDay = todo.endDate.difference(today).inDays;
     if (dDay > 0) {
       return 'D-$dDay';
@@ -207,18 +213,7 @@ class TodoListItem extends StatelessWidget {
           onUpdate: () {
             Navigator.pop(context);
             // 투두 수정 화면으로 이동
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => TodoInputScreen(
-                  isDDayTodo: todo.isDDayTodo(),
-                  todo: todo,
-                ),
-              ),
-            ).then((_) {
-              // 투두 목록 갱신
-              Provider.of<TodoSubmissionViewModel>(context, listen: false).loadTodos();
-            });
+            onUpdate();
           },
           onDelete: () {
             Navigator.pop(context);
@@ -228,10 +223,7 @@ class TodoListItem extends StatelessWidget {
           onPostpone: () {
             Navigator.pop(context);
             // 투두를 내일로 미룸
-            DateTime newStartDate = todo.startDate.add(const Duration(days: 1));
-            DateTime newEndDate = todo.endDate.add(const Duration(days: 1));
-            Provider.of<TodoSubmissionViewModel>(context, listen: false)
-                .updateTodoDates(todo, newStartDate, newEndDate);
+            onPostpone();
           },
           onStatusUpdate: (double newStatus) {
             onStatusUpdate(todo, newStatus);
