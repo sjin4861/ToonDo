@@ -70,6 +70,17 @@ class Todo extends HiveObject {
     };
   }
 
+  void updateFrom(Todo todo) {
+    title = todo.title;
+    goalId = todo.goalId;
+    status = todo.status;
+    comment = todo.comment;
+    startDate = todo.startDate;
+    endDate = todo.endDate;
+    urgency = todo.urgency;
+    importance = todo.importance;
+  }
+
   // JSON에서 객체로 변환하는 메서드
   factory Todo.fromJson(Map<String, dynamic> json) {
     return Todo(
