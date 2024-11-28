@@ -7,7 +7,7 @@ import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_with_alarm/viewmodels/todo/todo_submission_viewmodel.dart';
 import 'package:todo_with_alarm/views/todo/todo_input_screen.dart';
-import 'package:todo_with_alarm/widgets/todo_edit_bottom_sheet.dart';
+import 'package:todo_with_alarm/widgets/todo/todo_edit_bottom_sheet.dart';
 
 class TodoListItem extends StatelessWidget {
   final Todo todo;

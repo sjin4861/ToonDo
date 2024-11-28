@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_with_alarm/models/goal.dart';
 
+// goal 관련 위젯
+
 class GoalListItem extends StatelessWidget {
   final Goal goal;
   final VoidCallback onEdit;
