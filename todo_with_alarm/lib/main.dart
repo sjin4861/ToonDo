@@ -64,6 +64,8 @@ Future<void> main() async {
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   // StatefulWidget으로 변경하여 NotificationService를 초기화
   @override
   _MyAppState createState() => _MyAppState();
