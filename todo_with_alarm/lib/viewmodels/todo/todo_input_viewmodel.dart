@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_with_alarm/models/todo.dart';
-import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/services/todo_service.dart';
-import 'package:todo_with_alarm/viewmodels/todo/todo_viewmodel.dart';
-import 'package:todo_with_alarm/widgets/calendar_bottom_sheet.dart';
+import 'package:todo_with_alarm/widgets/calendar/calendar_bottom_sheet.dart';
 
 class TodoInputViewModel extends ChangeNotifier {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
