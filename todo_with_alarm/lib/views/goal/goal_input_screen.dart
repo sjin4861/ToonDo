@@ -7,9 +7,10 @@ import 'package:todo_with_alarm/models/goal.dart';
 import 'package:todo_with_alarm/services/goal_service.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_input_viewmodel.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
-import 'package:todo_with_alarm/widgets/calendar_bottom_sheet.dart';
-import 'package:todo_with_alarm/widgets/goal_icon_bottom_sheet.dart';
-
+import 'package:todo_with_alarm/widgets/calendar/calendar_bottom_sheet.dart';
+import 'package:todo_with_alarm/widgets/goal/goal_icon_bottom_sheet.dart';
+import 'package:todo_with_alarm/widgets/text_fields/goal_name_input_field.dart';
+import 'package:todo_with_alarm/widgets/goal/goal_input_date_field.dart';
 class GoalInputScreen extends StatelessWidget {
   final Goal? targetGoal;
 
@@ -77,234 +78,27 @@ class GoalInputScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 32),
                     // 목표 이름 입력 필드
-                    Text(
-                      '목표 이름',
-                      style: TextStyle(
-                        color: Color(0xFF1C1D1B),
-                        fontSize: 10,
-                        fontFamily: 'Pretendard Variable',
-                        fontWeight: FontWeight.w400,
-                        letterSpacing: 0.15,
-                      ),
+                    GoalNameInputField(
+                      controller: viewModel.goalNameController,
+                      errorText: viewModel.goalNameError,
                     ),
-                    SizedBox(height: 8),
-                    Row(
-                      children: [
-                        // 아이콘 선택 버튼
-                        GestureDetector(
-                          onTap: () async {
-                            String? selectedIcon = await showModalBottomSheet<String>(
-                              context: context,
-                              builder: (context) => GoalIconBottomSheet(),
-                            );
-                            if (selectedIcon != null) {
-                              viewModel.selectIcon(selectedIcon);
-                            }
-                          },
-                          child: Container(
-                            width: 40,
-                            height: 40,
-                            padding: const EdgeInsets.all(4),
-                            decoration: ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  width: 1,
-                                  color: viewModel.selectedIcon != null
-                                      ? Color(0xFF78B545) // 선택된 경우 초록색
-                                      : Color(0xFFDDDDDD),
-                                ),
-                                borderRadius: BorderRadius.circular(1000),
-                              ),
-                            ),
-                            child: viewModel.selectedIcon != null
-                                ? SvgPicture.asset(
-                                    viewModel.selectedIcon!,
-                                    width: 24,
-                                    height: 24,
-                                  )
-                                : Icon(Icons.add, size: 24, color: Color(0xFFDDDDDD)),
-                          ),
-                        ),
-                        SizedBox(width: 8),
-                        // 목표 이름 입력 필드
-                        Expanded(
-                          child: TextField(
-                            controller: viewModel.goalNameController,
-                            decoration: InputDecoration(
-                              hintText: '목표 이름을 입력해주세요.',
-                              contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(1000),
-                                borderSide: BorderSide(
-                                  color: viewModel.goalNameController.text.isNotEmpty
-                                      ? Color(0xFF78B545) // 텍스트 입력 시 초록색
-                                      : Color(0xFFDDDDDD), // 입력 없을 시 기본 회색
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(1000),
-                                borderSide: BorderSide(
-                                  color: viewModel.goalNameController.text.isNotEmpty
-                                      ? Color(0xFF78B545) // 텍스트 입력 시 초록색
-                                      : Color(0xFFDDDDDD),
-                                  width: 2.0,
-                                ),
-                              ),
-                              errorText: viewModel.goalNameError,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (viewModel.goalNameError != null) ...[
-                      SizedBox(height: 4),
-                      Text(
-                        viewModel.goalNameError!,
-                        style: TextStyle(
-                          color: Color(0xFFEE0F12),
-                          fontSize: 10,
-                          fontFamily: 'Pretendard Variable',
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: 0.15,
-                        ),
-                      ),
-                    ],
                     SizedBox(height: 32),
                     // 시작일과 마감일 선택
                     Row(
                       children: [
                         // 시작일 선택
                         Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '시작일',
-                                style: TextStyle(
-                                  color: Color(0xFF1C1D1B),
-                                  fontSize: 10,
-                                  fontFamily: 'Pretendard Variable',
-                                  fontWeight: FontWeight.w400,
-                                  letterSpacing: 0.15,
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              GestureDetector(
-                                onTap: () async {
-                                  DateTime? pickedDate = await showModalBottomSheet<DateTime>(
-                                    context: context,
-                                    builder: (context) => SelectDateBottomSheet(
-                                      initialDate: viewModel.startDate ?? DateTime.now(),
-                                    ),
-                                  );
-                                  if (pickedDate != null) {
-                                    viewModel.selectStartDate(pickedDate);
-                                  }
-                                },
-                                child: Container(
-                                  height: 40,
-                                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                                  decoration: ShapeDecoration(
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(width: 1, color: Color(0xFFDDDDDD)),
-                                      borderRadius: BorderRadius.circular(1000),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.calendar_today, size: 16, color: Color(0xFFDDDDDD)),
-                                      SizedBox(width: 8),
-                                      Expanded(
-                                        child: Text(
-                                          viewModel.startDate != null
-                                              ? '${viewModel.startDate!.year}년 ${viewModel.startDate!.month}월 ${viewModel.startDate!.day}일'
-                                              : '시작일을 선택하세요',
-                                          style: TextStyle(
-                                            color: viewModel.startDate != null
-                                                ? Color(0xFF1C1D1B)
-                                                : Color(0x3F1C1D1B),
-                                            fontSize: 10,
-                                            fontFamily: 'Pretendard Variable',
-                                            fontWeight: FontWeight.w400,
-                                            letterSpacing: 0.15,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                          child: GoalInputDateField(
+                            viewModel: viewModel,
+                            label: '시작일',
                           ),
                         ),
                         SizedBox(width: 16),
                         // 마감일 선택
                         Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '마감일',
-                                style: TextStyle(
-                                  color: Color(0xFF1C1D1B),
-                                  fontSize: 10,
-                                  fontFamily: 'Pretendard Variable',
-                                  fontWeight: FontWeight.w400,
-                                  letterSpacing: 0.15,
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              GestureDetector(
-                                onTap: () async {
-                                  DateTime? pickedDate = await showModalBottomSheet<DateTime>(
-                                    context: context,
-                                    builder: (context) => SelectDateBottomSheet(
-                                      initialDate: viewModel.endDate ?? DateTime.now(),
-                                    ),
-                                  );
-                                  if (pickedDate != null) {
-                                    viewModel.selectEndDate(pickedDate);
-                                  }
-                                },
-                                child: Container(
-                                  height: 40,
-                                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                                  decoration: ShapeDecoration(
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                        width: 1,
-                                        color: viewModel.endDate != null
-                                            ? Color(0xFF78B545) // 마감일 선택 시 초록색
-                                            : Color(0xFFDDDDDD),
-                                      ),
-                                      borderRadius: BorderRadius.circular(1000),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.calendar_today, size: 16, color: Color(0xFFDDDDDD)),
-                                      SizedBox(width: 8),
-                                      Expanded(
-                                        child: Text(
-                                          viewModel.endDate != null
-                                              ? '${viewModel.endDate!.year}년 ${viewModel.endDate!.month}월 ${viewModel.endDate!.day}일'
-                                              : '마감일을 선택하세요',
-                                          style: TextStyle(
-                                            color: viewModel.endDate != null
-                                                ? Color(0xFF1C1D1B)
-                                                : Color(0x3F1C1D1B),
-                                            fontSize: 10,
-                                            fontFamily: 'Pretendard Variable',
-                                            fontWeight: FontWeight.w400,
-                                            letterSpacing: 0.15,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                          child: GoalInputDateField(
+                            viewModel: viewModel,
+                            label: '마감일',
                           ),
                         ),
                       ],
@@ -417,7 +211,9 @@ class GoalInputScreen extends StatelessWidget {
   }
 
   void _setGoal(BuildContext context, GoalInputViewModel viewModel) async {
-    await viewModel.saveGoal(context);
-    Navigator.pop(context);
-  }
+    bool isSaved = await viewModel.saveGoal(context);
+    if (isSaved) {
+      Navigator.pop(context);
+    }
+  }  
 }

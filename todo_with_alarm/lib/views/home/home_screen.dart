@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/goal.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:todo_with_alarm/views/auth/login_screen.dart';
-import 'package:todo_with_alarm/widgets/goal_list_item.dart';
+import 'package:todo_with_alarm/widgets/goal/goal_list_item.dart';
 import 'package:todo_with_alarm/widgets/image_shadow.dart';
 import '../goal/goal_input_screen.dart';
 import '../goal/goal_progress_screen.dart';

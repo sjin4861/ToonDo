@@ -7,9 +7,9 @@ import 'package:todo_with_alarm/services/todo_service.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:todo_with_alarm/viewmodels/todo/todo_input_viewmodel.dart';
 import 'package:todo_with_alarm/widgets/bottom_button/edit_update_button.dart';
-import 'package:todo_with_alarm/widgets/eisenhower_button.dart';
+import 'package:todo_with_alarm/widgets/todo/eisenhower_button.dart';
 import 'package:todo_with_alarm/widgets/text_fields/custom_text_field.dart';
-import 'package:todo_with_alarm/widgets/todo/date_field.dart'; // 새로 추가된 위젯
+import 'package:todo_with_alarm/widgets/todo/todo_input_date_field.dart'; // 새로 추가된 위젯
 
 class TodoInputScreen extends StatelessWidget {
   final bool isDDayTodo;
