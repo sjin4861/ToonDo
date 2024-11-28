@@ -1,14 +1,17 @@
 // lib/viewmodels/goal/goal_input_viewmodel.dart
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:todo_with_alarm/models/goal.dart';
 import 'package:todo_with_alarm/services/goal_service.dart';
 import 'package:uuid/uuid.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
+import 'package:todo_with_alarm/widgets/calendar/calendar_bottom_sheet.dart';
 
 class GoalInputViewModel extends ChangeNotifier {
   final TextEditingController goalNameController = TextEditingController();
+  final DateFormat dateFormat = DateFormat('yyyy년 M월 d일');
   DateTime? startDate;
   DateTime? endDate;
   String? selectedIcon;
@@ -40,9 +43,13 @@ class GoalInputViewModel extends ChangeNotifier {
   }
 
   // 목표 저장 또는 업데이트 메서드
-  Future<void> saveGoal(BuildContext context) async {
+  Future<bool> saveGoal(BuildContext context) async {
     if (!validateInput()) {
-      return;
+      // 에러 메시지 표시
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('입력한 정보를 확인해주세요.')),
+      );
+      return false; // 저장 실패
     }
 
     final newGoal = Goal(
@@ -79,13 +86,14 @@ class GoalInputViewModel extends ChangeNotifier {
         selectedIcon = null;
         notifyListeners();
       }
+      return true; // 저장 성공
     } catch (e) {
       // 에러 처리: 사용자에게 에러 메시지 표시
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('목표 저장 중 오류가 발생했습니다.')),
       );
       print('Error saving goal: $e');
-      // 추가적인 에러 처리 로직을 여기에 작성할 수 있습니다.
+      return false; // 저장 실패
     }
   }
 
@@ -132,5 +140,37 @@ class GoalInputViewModel extends ChangeNotifier {
   void selectEndDate(DateTime date) {
     endDate = date;
     notifyListeners();
+  }
+
+  // 날짜 선택 메서드
+  Future<void> selectDate(BuildContext context, {required bool isStartDate}) async {
+    DateTime initialDate = DateTime.now();
+    if (isStartDate && startDate != null) {
+      initialDate = startDate!;
+    } else if (!isStartDate && endDate != null) {
+      initialDate = endDate!;
+    }
+
+    DateTime? pickedDate = await showModalBottomSheet<DateTime>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: const Color.fromRGBO(0, 0, 0, 0),
+      builder: (context) => SelectDateBottomSheet(initialDate: initialDate),
+    );
+
+    if (pickedDate != null) {
+      if (isStartDate) {
+        startDate = pickedDate;
+        if (endDate != null && startDate!.isAfter(endDate!)) {
+          endDate = startDate;
+        }
+      } else {
+        endDate = pickedDate;
+        if (startDate != null && endDate!.isBefore(startDate!)) {
+          startDate = endDate;
+        }
+      }
+      notifyListeners();
+    }
   }
 }
