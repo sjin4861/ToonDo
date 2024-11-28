@@ -54,32 +54,37 @@ class GoalService {
     }
   }
 
-  /// 원격 서버에 목표 저장
+  /// 로컬 Hive 박스에 목표 저장 및 원격 서버에 동기화
   Future<void> saveGoals(List<Goal> goals) async {
+    // 로컬 데이터베이스에 먼저 저장
+    await saveLocalGoals(goals);
+
+    // 원격 서버에 동기화
     try {
-      final url = Uri.parse('$baseUrl/goals'); // 엔드포인트 수정
+      final url = Uri.parse('$baseUrl/goals');
       final response = await httpClient.put(
         url,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(goals.map((goal) => goal.toJson()).toList()),
       );
 
-      if (response.statusCode == 200) {
-        // 성공 시 로컬에도 동기화
-        await saveLocalGoals(goals);
-      } else {
+      if (response.statusCode != 200) {
         throw Exception('Failed to save goals to server');
       }
     } catch (e) {
       print('Error saving goals to server: $e');
-      throw Exception('Failed to save goals');
+      // 서버 동기화 실패 시 로컬 데이터는 이미 저장되어 있으므로 추가 조치는 필요 없음
     }
   }
 
-  /// 원격 서버에 새로운 목표 생성 및 로컬 Hive 박스에 저장
+  /// 로컬 Hive 박스에 새로운 목표 생성 및 원격 서버에 동기화
   Future<Goal> createGoal(Goal goal) async {
+    // 로컬 데이터베이스에 먼저 저장
+    await goalBox.put(goal.id, goal);
+
+    // 원격 서버에 동기화
     try {
-      final url = Uri.parse('$baseUrl/goals'); // 엔드포인트 수정
+      final url = Uri.parse('$baseUrl/goals');
       final response = await httpClient.post(
         url,
         headers: {'Content-Type': 'application/json'},
@@ -87,64 +92,56 @@ class GoalService {
       );
 
       if (response.statusCode == 201) {
-        Goal createdGoal = Goal.fromJson(jsonDecode(response.body));
-
-        // 로컬 Hive 박스에 저장
-        await goalBox.put(createdGoal.id, createdGoal);
-
-        return createdGoal;
+        return Goal.fromJson(jsonDecode(response.body));
       } else {
         throw Exception('Failed to create goal on server');
       }
     } catch (e) {
       print('Error creating goal on server: $e');
-      // 서버에서 생성하지 못한 경우 로컬 Hive 박스에만 저장 (오프라인 지원)
-      await goalBox.put(goal.id, goal);
+      // 서버 동기화 실패 시 로컬 데이터는 이미 저장되어 있으므로 추가 조치는 필요 없음
       return goal;
     }
   }
 
-  /// 원격 서버에 목표 업데이트 및 로컬 Hive 박스에 저장
+  /// 로컬 Hive 박스에 목표 업데이트 및 원격 서버에 동기화
   Future<void> updateGoal(Goal goal) async {
+    // 로컬 데이터베이스에 먼저 업데이트
+    await goalBox.put(goal.id, goal);
+
+    // 원격 서버에 동기화
     try {
-      final url = Uri.parse('$baseUrl/goals/${goal.id}'); // 엔드포인트 수정
+      final url = Uri.parse('$baseUrl/goals/${goal.id}');
       final response = await httpClient.put(
         url,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(goal.toJson()),
       );
 
-      if (response.statusCode == 200) {
-        // 성공 시 로컬에도 업데이트
-        await goalBox.put(goal.id, goal);
-      } else {
+      if (response.statusCode != 200) {
         throw Exception('Failed to update goal on server');
       }
     } catch (e) {
       print('Error updating goal on server: $e');
-      // 서버에서 업데이트하지 못한 경우 로컬 Hive 박스에만 업데이트 (오프라인 지원)
-      await goalBox.put(goal.id, goal);
-      throw Exception('Failed to update goal');
+      // 서버 동기화 실패 시 로컬 데이터는 이미 저장되어 있으므로 추가 조치는 필요 없음
     }
   }
 
-  /// 원격 서버에 목표 삭제 및 로컬 Hive 박스에서 삭제
+  /// 로컬 Hive 박스에서 목표 삭제 및 원격 서버에 동기화
   Future<void> deleteGoal(String id) async {
+    // 로컬 데이터베이스에서 먼저 삭제
+    await goalBox.delete(id);
+
+    // 원격 서버에 동기화
     try {
-      final url = Uri.parse('$baseUrl/goals/$id'); // 엔드포인트 수정
+      final url = Uri.parse('$baseUrl/goals/$id');
       final response = await httpClient.delete(url);
 
-      if (response.statusCode == 204) {
-        // 성공 시 로컬에서도 삭제
-        await goalBox.delete(id);
-      } else {
+      if (response.statusCode != 204) {
         throw Exception('Failed to delete goal on server');
       }
     } catch (e) {
       print('Error deleting goal on server: $e');
-      // 서버에서 삭제하지 못한 경우 로컬 Hive 박스에서만 삭제 (오프라인 지원)
-      await goalBox.delete(id);
-      throw Exception('Failed to delete goal');
+      // 서버 동기화 실패 시 로컬 데이터는 이미 삭제되어 있으므로 추가 조치는 필요 없음
     }
   }
 }
