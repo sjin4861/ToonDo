@@ -7,8 +7,9 @@ class EditUpdateButton extends StatelessWidget {
   final TodoInputViewModel viewModel;
   final Todo? todo;
   final Key key;
+  final VoidCallback? onPressed;
 
-  EditUpdateButton({required this.viewModel, this.todo, required this.key});
+  EditUpdateButton({required this.viewModel, this.todo, required this.key, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
