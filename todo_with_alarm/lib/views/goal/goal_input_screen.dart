@@ -11,6 +11,7 @@ import 'package:todo_with_alarm/widgets/calendar/calendar_bottom_sheet.dart';
 import 'package:todo_with_alarm/widgets/goal/goal_icon_bottom_sheet.dart';
 import 'package:todo_with_alarm/widgets/text_fields/goal_name_input_field.dart';
 import 'package:todo_with_alarm/widgets/goal/goal_input_date_field.dart';
+import 'package:todo_with_alarm/widgets/text_fields/tip.dart';
 class GoalInputScreen extends StatelessWidget {
   final Goal? targetGoal;
 
@@ -118,32 +119,9 @@ class GoalInputScreen extends StatelessWidget {
                     ],
                     SizedBox(height: 32),
                     // TIP 문구
-                    Row(
-                      children: [
-                        Text(
-                          'TIP',
-                          style: TextStyle(
-                            color: Color(0xFF78B545),
-                            fontSize: 10,
-                            fontFamily: 'Pretendard Variable',
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.15,
-                          ),
-                        ),
-                        SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            '결과를 측정할 수 있고 달성이 가능한 목표를 세워보세요!',
-                            style: TextStyle(
-                              color: Color(0xBF1C1D1B),
-                              fontSize: 10,
-                              fontFamily: 'Pretendard Variable',
-                              fontWeight: FontWeight.w400,
-                              letterSpacing: 0.15,
-                            ),
-                          ),
-                        ),
-                      ],
+                    TipWidget(
+                      title: 'TIP',
+                      description: '결과를 측정할 수 있고 달성이 가능한 목표를 세워보세요!',
                     ),
                     SizedBox(height: 32),
                     // 버튼들
