@@ -2,14 +2,18 @@
 <img width="318" alt="스크린샷 2024-12-01 오후 3 42 29" src="https://github.com/user-attachments/assets/21d50a98-10ff-4474-be2e-710267f42c6f">
 
 **Home Screen**
+
 <img width="318" alt="스크린샷 2024-12-01 오후 3 42 34" src="https://github.com/user-attachments/assets/f15331e4-094a-48ff-8a62-2a9061ef556a">
 
 **Goal Input Screen**
+
 <img width="318" alt="스크린샷 2024-12-01 오후 3 44 57" src="https://github.com/user-attachments/assets/320541ea-3c24-4fdb-8ec6-24f731fdbe66">
 
 **Todo List Screen**
+
 <img width="318" alt="스크린샷 2024-12-01 오후 3 44 04" src="https://github.com/user-attachments/assets/24c21077-59de-4199-ac89-50fb5775a652">
 <img width="318" alt="스크린샷 2024-12-01 오후 3 44 32" src="https://github.com/user-attachments/assets/738b3e8c-9fcf-4e02-83ca-9f0b3c4ca4be">
+
 <img width="318" alt="스크린샷 2024-12-01 오후 3 44 36" src="https://github.com/user-attachments/assets/396425bc-7e45-4062-842a-6766d280f064">
 
 ## Introduction
