@@ -8,12 +8,12 @@ class EditUpdateButton extends StatelessWidget {
   final TodoInputViewModel viewModel;
   final Todo? todo;
 
-  EditUpdateButton({required this.viewModel, this.todo});
+  EditUpdateButton({required this.viewModel, this.todo, required Key key});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      key: Key('submitTodoButton'),
+      key: key,
       onTap: () {
         viewModel.saveTodo(context);
       },

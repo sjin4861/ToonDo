@@ -10,7 +10,7 @@ import 'package:todo_with_alarm/services/todo_service.dart';
 import 'package:todo_with_alarm/viewmodels/todo/todo_viewmodel.dart';
 import 'package:intl/intl.dart';
 import 'todo_input_screen.dart'; // TodoInputScreen 임포트
-import 'package:todo_with_alarm/widgets/Calendar.dart'; // Calendar 위젯 임포트
+import 'package:todo_with_alarm/widgets/calendar/calendar.dart'; // Calendar 위젯 임포트
 import 'package:todo_with_alarm/widgets/todo/todo_list_item.dart'; // TodoListItem 임포트
 
 

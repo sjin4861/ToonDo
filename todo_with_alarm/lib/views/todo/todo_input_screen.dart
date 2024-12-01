@@ -439,7 +439,7 @@ class TodoInputScreen extends StatelessWidget {
                       Row(
                         children: [
                           Expanded(
-                            child: EditUpdateButton(viewModel: viewModel, todo: todo)),
+                            child: EditUpdateButton(key: Key('editUpdateButton'), viewModel: viewModel, todo: todo)),
                         ],
                       ),
                       SizedBox(height: 24),
