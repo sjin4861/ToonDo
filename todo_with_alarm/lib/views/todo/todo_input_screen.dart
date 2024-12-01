@@ -7,6 +7,7 @@ import 'package:todo_with_alarm/services/todo_service.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:todo_with_alarm/viewmodels/todo/todo_input_viewmodel.dart';
 import 'package:todo_with_alarm/widgets/bottom_button/edit_update_button.dart';
+import 'package:todo_with_alarm/widgets/text_fields/tip.dart';
 import 'package:todo_with_alarm/widgets/todo/eisenhower_button.dart';
 import 'package:todo_with_alarm/widgets/text_fields/custom_text_field.dart';
 import 'package:todo_with_alarm/widgets/todo/todo_input_date_field.dart'; // 새로 추가된 위젯
@@ -402,35 +403,10 @@ class TodoInputScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(height: 16),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'TIP',
-                                style: TextStyle(
-                                  color: Color(0xFF78B545), // 초록색
-                                  fontSize: 10,
-                                  fontFamily: 'Pretendard Variable',
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 0.15,
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Text(
-                                  '아이젠하워는 긴급도와 중요도에 따라 할 일을 정리하는 방법이에요.\n'
-                                  '앞으로 툰두가 아이젠하워에 따라 가장 중요한 일부터 알려줄게요!',
-                                  style: TextStyle(
-                                    color: Color(0xBF1C1D1B), // 회색
-                                    fontSize: 10,
-                                    fontFamily: 'Pretendard Variable',
-                                    fontWeight: FontWeight.w400,
-                                    letterSpacing: 0.15,
-                                    height: 1.4, // 줄 간격 조정
-                                  ),
-                                ),
-                              ),
-                            ],
+                          TipWidget(
+                            title: 'TIP',
+                            description: '아이젠하워는 긴급도와 중요도에 따라 할 일을 정리하는 방법이에요.\n'
+                                '앞으로 툰두가 아이젠하워에 따라 가장 중요한 일부터 알려줄게요!',
                           ),
                           SizedBox(height: 24),
                         ],
