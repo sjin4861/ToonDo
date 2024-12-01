@@ -9,6 +9,7 @@ import 'package:todo_with_alarm/viewmodels/todo/todo_submission_viewmodel.dart';
 import 'package:todo_with_alarm/services/todo_service.dart';
 import 'package:todo_with_alarm/viewmodels/todo/todo_viewmodel.dart';
 import 'package:intl/intl.dart';
+import 'package:todo_with_alarm/widgets/app_bar/custom_app_bar.dart';
 import 'todo_input_screen.dart'; // TodoInputScreen 임포트
 import 'package:todo_with_alarm/widgets/calendar/calendar.dart'; // Calendar 위젯 임포트
 import 'package:todo_with_alarm/widgets/todo/todo_list_item.dart'; // TodoListItem 임포트
@@ -31,33 +32,9 @@ class TodoSubmissionScreen extends StatelessWidget {
       )..loadTodos(),
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Color(0xFFFCFCFC),
-          elevation: 0,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Color(0xFF1C1D1B)),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          title: const Text(
-            '투두리스트',
-            style: TextStyle(
-              color: Color(0xFF1C1D1B),
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
-              letterSpacing: 0.24,
-              fontFamily: 'Pretendard Variable',
-            ),
-          ),
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(0.5),
-            child: Container(
-              color: Color(0x3F1C1D1B),
-              height: 0.5,
-            ),
-          ),
-        ),
+        appBar: CustomAppBar(
+          title: '투두리스트',
+        ),  
         body: Consumer<TodoSubmissionViewModel>(
           builder: (context, viewModel, child) {
             final goalViewmodel = Provider.of<GoalViewModel>(context);
