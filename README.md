@@ -1,25 +1,16 @@
 # ToonDo
+<img width="318" alt="스크린샷 2024-12-01 오후 3 42 29" src="https://github.com/user-attachments/assets/21d50a98-10ff-4474-be2e-710267f42c6f">
 
 **Home Screen**
-
-<img width="317" alt="홈" src="https://github.com/user-attachments/assets/b7530a45-88dd-41f7-916e-38b67cf3bee6">
+<img width="318" alt="스크린샷 2024-12-01 오후 3 42 34" src="https://github.com/user-attachments/assets/f15331e4-094a-48ff-8a62-2a9061ef556a">
 
 **Goal Input Screen**
-
-<img width="330" alt="목표 설정" src="https://github.com/user-attachments/assets/2106bcaf-c82f-450e-b680-f76003016808">
-<img width="330" alt="목표 수정" src="https://github.com/user-attachments/assets/b497bf3b-9e98-40ce-8b8f-407dd1deb473">
+<img width="318" alt="스크린샷 2024-12-01 오후 3 44 57" src="https://github.com/user-attachments/assets/320541ea-3c24-4fdb-8ec6-24f731fdbe66">
 
 **Todo List Screen**
-
-<img width="330" alt="투두리스트" src="https://github.com/user-attachments/assets/fc29cf15-fe0c-457f-8998-5e02ee2f0d57">
-
-**Eisenhower Matrix Screen**
-
-<img width="330" alt="아이젠하워 매트릭스" src="https://github.com/user-attachments/assets/f9be9e07-af1b-40c2-b612-8436649f82d9">
-
-**Goal Progress Screen**
-
-<img width="330" alt="목표 진행률" src="https://github.com/user-attachments/assets/99d18891-8709-4b57-9727-92a15b8cdc52">
+<img width="318" alt="스크린샷 2024-12-01 오후 3 44 04" src="https://github.com/user-attachments/assets/24c21077-59de-4199-ac89-50fb5775a652">
+<img width="318" alt="스크린샷 2024-12-01 오후 3 44 32" src="https://github.com/user-attachments/assets/738b3e8c-9fcf-4e02-83ca-9f0b3c4ca4be">
+<img width="318" alt="스크린샷 2024-12-01 오후 3 44 36" src="https://github.com/user-attachments/assets/396425bc-7e45-4062-842a-6766d280f064">
 
 ## Introduction
 
