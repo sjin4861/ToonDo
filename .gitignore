@@ -77,3 +77,7 @@ lib/generated_plugin_registrant.dart
 # End of https://www.toptal.com/developers/gitignore/api/flutter
 .DS_Store
 *.iml
+
+*.env
+*.venv
+__pycache__/
