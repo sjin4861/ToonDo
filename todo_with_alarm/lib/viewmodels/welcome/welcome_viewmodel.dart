@@ -34,7 +34,7 @@ class WelcomeViewModel extends ChangeNotifier {
     // 온보딩 페이지로 이동
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => OnboardingScreen(userId: '',)),
+      MaterialPageRoute(builder: (context) => OnboardingScreen(userId: 0)),
     );
   }
 }

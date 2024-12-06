@@ -3,7 +3,7 @@ import '../../services/auth_service.dart';
 
 class OnboardingViewModel extends ChangeNotifier {
   String nickname = '';
-  String userId;
+  int userId;
 
   OnboardingViewModel({required this.userId});
 
