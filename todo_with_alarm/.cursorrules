@@ -1,0 +1,73 @@
+# General Principles
+- Write concise, technical Dart code with accurate examples.
+- Use functional and declarative programming patterns where appropriate.
+- Prefer composition over inheritance.
+- Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError).
+- Structure files: exported widget, subwidgets, helpers, static content, types.
+- Design Pattern: MVVM
+
+# Dart/Flutter Guidelines
+- Use const constructors for immutable widgets.
+- Leverage Freezed for immutable state classes and unions.
+- Use arrow syntax for simple functions and methods.
+- Prefer expression bodies for one-line getters and setters.
+- Use trailing commas for better formatting and diffs.
+
+# Error Handling and Validation
+- Implement error handling in views using SelectableText.rich instead of SnackBars.
+- Display errors in SelectableText.rich with red color for visibility.
+- Handle empty states within the displaying screen.
+
+# Provider-Specific Guidelines
+- Use `ChangeNotifier` to manage state and notify listeners.
+- Separate state management logic into independent classes for maintainability.
+- Use `Consumer` widgets for reacting to state changes in specific widgets.
+- Avoid deep widget tree rebuilds by wrapping only necessary parts in `Consumer`.
+
+# Hive-Specific Guidelines
+- Use Hive for lightweight, fast local storage.
+- Register Hive adapters in the main function before running the app.
+- Implement versioning for Hive boxes to manage schema updates.
+- Use type-safe models with Hive by annotating classes with `@HiveType` and fields with `@HiveField`.
+- Use Hive transactions for batch operations and ensure data consistency.
+
+# FastAPI and Spring Boot Integration
+- Use the `http` package for RESTful API communication.
+- Handle API responses with proper error handling using `try-catch`.
+- Implement token storage securely using `flutter_secure_storage` for sensitive data like JWTs.
+- Use environment variables or configuration files to manage API base URLs and credentials.
+
+# Database Conventions
+- Include `createdAt`, `updatedAt`, and `isDeleted` fields in database tables.
+- Sync database schema changes with API models and Flutter classes.
+- Implement migrations for Hive boxes when schema changes occur.
+
+# UI and Styling
+- Use Flutter's built-in widgets and create custom widgets for repetitive patterns.
+- Implement responsive design using `LayoutBuilder` or `MediaQuery`.
+- Use themes for consistent styling across the app.
+- Use `Theme.of(context).textTheme.titleLarge` instead of deprecated styles.
+
+# Performance Optimization
+- Use const widgets to optimize rebuilds.
+- Implement list view optimizations (e.g., `ListView.builder`).
+- Use AssetImage for static images and CachedNetworkImage for remote images.
+
+# Widgets and UI Components
+- Create small, private widget classes instead of private methods.
+- Use `RefreshIndicator` for pull-to-refresh functionality.
+- Always include an errorBuilder when using `Image.network`.
+
+# Code Generation
+- Utilize build_runner for generating Hive adapters, JSON serialization, and more.
+- Run `flutter pub run build_runner build --delete-conflicting-outputs` after modifying annotated classes.
+
+# Best Practices for pubspec.yaml Dependencies
+- Use `flutter_secure_storage` for storing sensitive data like tokens securely.
+- Use `intl` for formatting dates and numbers based on locale.
+- Use `uuid` for generating unique identifiers in the app.
+
+# Miscellaneous
+- Document complex logic and non-obvious code decisions.
+- Use `log` instead of `print` for debugging.
+- Follow official Flutter, Provider, and Hive documentation for best practices.
