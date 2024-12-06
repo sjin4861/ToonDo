@@ -8,23 +8,28 @@ class SignupViewModel extends ChangeNotifier {
   String password = '';
   String? passwordError;
   bool isSignupComplete = false;
-  String? userId;
+  int? userId;
   int currentStep = 1; // currentStep 변수 추가
 
   VoidCallback? navigateToLogin;
   void setNavigateToLogin(VoidCallback callback) {
     navigateToLogin = callback;
   }
-  void validatePhoneNumber() {
-    // 휴대폰 번호 유효성 검사 로직 추가
-    if (phoneNumber.isEmpty || !RegExp(r'^\d{10,11}$').hasMatch(phoneNumber)) {
-      phoneError = '유효한 휴대폰 번호를 입력해주세요.';
-      notifyListeners();
-    } else {
-      phoneError = null;
-      notifyListeners();
-      nextStep();
+  Future<void> validatePhoneNumber() async {
+    AuthService authService = AuthService();
+    try {
+      if (phoneNumber.isEmpty || !RegExp(r'^\d{10,11}$').hasMatch(phoneNumber)) {
+        phoneError = '유효한 휴대폰 번호를 입력해주세요.';
+      } else if (await authService.isPhoneNumberRegistered(phoneNumber)) {
+        goToLogin(); // 로그인 화면으로 이동
+      } else {
+        phoneError = null;
+        nextStep();
+      }
+    } catch (e) {
+      phoneError = '전화번호 확인 중 오류가 발생했습니다.';
     }
+    notifyListeners();
   }
 
   Future<void> signUp() async {
