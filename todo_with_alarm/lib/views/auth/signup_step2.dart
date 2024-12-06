@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_with_alarm/widgets/app_bar/custom_app_bar.dart';
+import 'package:todo_with_alarm/widgets/bottom_button/custom_button.dart';
 import 'package:todo_with_alarm/widgets/text_fields/custom_text_field.dart';
 import '../../viewmodels/auth/signup_viewmodel.dart';
 import '../onboarding/onboarding_screen.dart'; // OnboardingScreen 임포트
@@ -45,29 +47,8 @@ class _SignupStep2State extends State<SignupStep2> {
 
     return Scaffold(
       backgroundColor: Color(0xFFFCFCFC),
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(52),
-        child: AppBar(
-          backgroundColor: Color(0xFFFCFCFC),
-          elevation: 0.5,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Color(0xFF1C1D1B)),
-            onPressed: () {
-              viewModel!.goBack();
-            },
-          ),
-          title: Text(
-            '회원가입',
-            style: TextStyle(
-              color: Color(0xFF1C1D1B),
-              fontSize: 16,
-              fontFamily: 'Pretendard Variable',
-              fontWeight: FontWeight.w400,
-              letterSpacing: 0.24,
-            ),
-          ),
-          centerTitle: false,
-        ),
+      appBar: CustomAppBar(
+        title: '회원가입',
       ),
       body: Padding(
         padding: EdgeInsets.fromLTRB(24, 32, 24, 32),
@@ -155,53 +136,26 @@ class _SignupStep2State extends State<SignupStep2> {
               children: [
                 Expanded(
                   flex: 1,
-                  child: ElevatedButton(
+                  child: CustomButton(
+                    text: '뒤로',
                     onPressed: () {
                       viewModel!.goBack();
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFEEEEEE),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(1000),
-                      ),
-                      padding: EdgeInsets.all(16),
-                    ),
-                    child: Text(
-                      '뒤로',
-                      style: TextStyle(
-                        color: Color(0x7F1C1D1B),
-                        fontSize: 14,
-                        fontFamily: 'Pretendard Variable',
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.21,
-                      ),
-                    ),
+                    backgroundColor: Color(0xFFEEEEEE),
+                    textColor: Color(0x7F1C1D1B),
                   ),
                 ),
                 SizedBox(width: 16),
                 Expanded(
                   flex: 2,
-                  child: ElevatedButton(
+                  child: CustomButton(
+                    text: '다음으로',
                     onPressed: () {
                       viewModel!.validatePassword();
+                      _onSignupComplete();
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF78B545),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(1000),
-                      ),
-                      padding: EdgeInsets.all(16),
-                    ),
-                    child: Text(
-                      '다음으로',
-                      style: TextStyle(
-                        color: Color(0xFFFCFCFC),
-                        fontSize: 14,
-                        fontFamily: 'Pretendard Variable',
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.21,
-                      ),
-                    ),
+                    backgroundColor: Color(0xFF78B545),
+                    textColor: Color(0xFFFCFCFC),
                   ),
                 ),
               ],

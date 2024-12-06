@@ -8,7 +8,7 @@ import '../../widgets/text_fields/custom_text_field.dart';
 import '../home/home_screen.dart';
 
 class Onboarding2Page extends StatefulWidget {
-  final String userId;
+  final int userId;
 
   Onboarding2Page({required this.userId});
 

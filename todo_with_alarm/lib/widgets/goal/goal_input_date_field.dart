@@ -13,8 +13,7 @@ class GoalInputDateField extends StatelessWidget {
     // label에 따라 표시할 날짜 결정
     DateTime? date = isStartDate ? viewModel.startDate : viewModel.endDate;
 
-    return Expanded(
-      child: Column(
+    return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
@@ -69,7 +68,6 @@ class GoalInputDateField extends StatelessWidget {
             ),
           ),
         ],
-      ),
     );
   } // build
 } // DateField

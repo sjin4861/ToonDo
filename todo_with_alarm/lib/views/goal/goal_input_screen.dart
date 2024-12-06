@@ -7,6 +7,8 @@ import 'package:todo_with_alarm/models/goal.dart';
 import 'package:todo_with_alarm/services/goal_service.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_input_viewmodel.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
+import 'package:todo_with_alarm/widgets/app_bar/custom_app_bar.dart';
+import 'package:todo_with_alarm/widgets/bottom_button/custom_button.dart';
 import 'package:todo_with_alarm/widgets/calendar/calendar_bottom_sheet.dart';
 import 'package:todo_with_alarm/widgets/goal/goal_icon_bottom_sheet.dart';
 import 'package:todo_with_alarm/widgets/text_fields/goal_name_input_field.dart';
@@ -26,26 +28,8 @@ class GoalInputScreen extends StatelessWidget {
       ),
       child: Scaffold(
         backgroundColor: Color(0xFFFCFCFC),
-        appBar: AppBar(
-          backgroundColor: Color(0xFFFCFCFC),
-          elevation: 0.5,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Color(0xFF1C1D1B)),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          title: Text(
-            '시작하기',
-            style: TextStyle(
-              color: Color(0xFF1C1D1B),
-              fontSize: 16,
-              fontFamily: 'Pretendard Variable',
-              fontWeight: FontWeight.w400,
-              letterSpacing: 0.24,
-            ),
-          ),
-          centerTitle: false,
+        appBar: CustomAppBar(
+          title: '시작하기',
         ),
         body: Consumer<GoalInputViewModel>(
           builder: (context, viewModel, child) {
@@ -124,60 +108,32 @@ class GoalInputScreen extends StatelessWidget {
                       description: '결과를 측정할 수 있고 달성이 가능한 목표를 세워보세요!',
                     ),
                     SizedBox(height: 32),
-                    // 버튼들
+                    // Edit Button
                     Row(
                       children: [
                         Expanded(
                           flex: 1,
-                          child: ElevatedButton(
+                          child: CustomButton(
+                            text: '뒤로',
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFFEEEEEE),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(1000),
-                              ),
-                              padding: EdgeInsets.all(16),
-                            ),
-                            child: Text(
-                              '뒤로',
-                              style: TextStyle(
-                                color: Color(0x7F1C1D1B),
-                                fontSize: 14,
-                                fontFamily: 'Pretendard Variable',
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 0.21,
-                              ),
-                            ),
+                            backgroundColor: const Color(0xFFEEEEEE),
+                            textColor: const Color(0x7F1C1D1B),
                           ),
                         ),
                         SizedBox(width: 16),
                         Expanded(
                           flex: 2,
-                          child: ElevatedButton(
+                          child: CustomButton(
+                            text: '다음으로',
                             onPressed: () => _setGoal(context, viewModel),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF78B545),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(1000),
-                              ),
-                              padding: EdgeInsets.all(16),
-                            ),
-                            child: Text(
-                              '다음으로',
-                              style: TextStyle(
-                                color: Color(0xFFFCFCFC),
-                                fontSize: 14,
-                                fontFamily: 'Pretendard Variable',
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 0.21,
-                              ),
-                            ),
+                            backgroundColor: const Color(0xFF78B545),
+                            textColor: const Color(0xFFFCFCFC),
                           ),
                         ),
                       ],
-                    ),  
+                    ),
                   ],
                 ),
               ),

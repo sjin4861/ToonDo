@@ -30,7 +30,14 @@ class AuthService {
     if (response.statusCode == 200 || response.statusCode == 201) {
       // 회원가입 성공
       final responseData = jsonDecode(response.body);
-      User newUser = User.fromJson(responseData);
+      // responseData값 실제 출력
+      print(responseData);
+      //responseData의 각 key에 맞게 User 객체 생성
+      User newUser = User(
+        id: responseData['id'],
+        phoneNumber: responseData['phoneNumber'],
+        username: responseData['username'],
+      );
       return newUser;
     } else {
       // 에러 처리
@@ -70,7 +77,7 @@ class AuthService {
     }
   }
   // 닉네임 업데이트 메서드
-  Future<void> updateUsername(String userId, String nickname) async {
+  Future<void> updateUsername(int userId, String nickname) async {
     final url = Uri.parse('$baseUrl/users/update-my');
     final token = await getToken(); // 로그인 시 저장한 토큰을 가져옵니다.
 
@@ -104,5 +111,21 @@ class AuthService {
   // 토큰 가져오기 메서드
   Future<String?> getToken() async {
     return await _storage.read(key: 'token');
+  }
+  // 휴대폰 번호 중복 확인
+  Future<bool> isPhoneNumberRegistered(String phoneNumber) async {
+    final url = Uri.parse('$baseUrl/users/check-phone-number');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'}, // 헤더 추가
+      body: jsonEncode({'phoneNumber': phoneNumber}), // JSON 인코딩
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
+      return responseData['registered'];
+    } else {
+      throw Exception('Failed to check phone number');
+    }
   }
 }

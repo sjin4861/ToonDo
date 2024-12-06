@@ -1,15 +1,13 @@
 // models/user.dart
 
 class User {
-  String id;
+  int id;
   String phoneNumber;
-  String password;
   String? username; // 닉네임 추가
 
   User({
     required this.id,
     required this.phoneNumber,
-    required this.password,
     this.username,
   });
 
@@ -18,7 +16,6 @@ class User {
     return {
       'id': id,
       'phoneNumber': phoneNumber,
-      'password': password,
       'username': username,
     };
   }
@@ -28,7 +25,6 @@ class User {
     return User(
       id: json['id'],
       phoneNumber: json['phoneNumber'],
-      password: json['password'],
       username: json['username'],
     );
   }

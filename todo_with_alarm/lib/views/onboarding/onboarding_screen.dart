@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'onboarding2_screen.dart'; // Onboarding2Page 임포트
 
 class OnboardingScreen extends StatefulWidget {
-  final String userId;
+  final int userId;
 
   OnboardingScreen({required this.userId});
 
