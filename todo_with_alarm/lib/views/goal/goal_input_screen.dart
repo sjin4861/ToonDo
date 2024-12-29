@@ -14,6 +14,7 @@ import 'package:todo_with_alarm/widgets/goal/goal_icon_bottom_sheet.dart';
 import 'package:todo_with_alarm/widgets/text_fields/goal_name_input_field.dart';
 import 'package:todo_with_alarm/widgets/goal/goal_input_date_field.dart';
 import 'package:todo_with_alarm/widgets/text_fields/tip.dart';
+import 'package:todo_with_alarm/widgets/goal/goal_setting_bottom_sheet.dart';
 class GoalInputScreen extends StatelessWidget {
   final Goal? targetGoal;
 
@@ -21,16 +22,11 @@ class GoalInputScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<GoalInputViewModel>(
-      create: (context) => GoalInputViewModel(
-        goalService: Provider.of<GoalService>(context, listen: false),
-        targetGoal: targetGoal,
+    return Scaffold(
+      backgroundColor: const Color(0xFFFCFCFC),
+      appBar: CustomAppBar(
+        title: '목표 설정하기',
       ),
-      child: Scaffold(
-        backgroundColor: Color(0xFFFCFCFC),
-        appBar: CustomAppBar(
-          title: '시작하기',
-        ),
         body: Consumer<GoalInputViewModel>(
           builder: (context, viewModel, child) {
             return SingleChildScrollView(
@@ -62,7 +58,6 @@ class GoalInputScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 32),
-                    // 목표 이름 입력 필드
                     GoalNameInputField(
                       controller: viewModel.goalNameController,
                       errorText: viewModel.goalNameError,
@@ -108,46 +103,39 @@ class GoalInputScreen extends StatelessWidget {
                       description: '결과를 측정할 수 있고 달성이 가능한 목표를 세워보세요!',
                     ),
                     SizedBox(height: 32),
-                    // Edit Button
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: CustomButton(
-                            text: '뒤로',
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            backgroundColor: const Color(0xFFEEEEEE),
-                            textColor: const Color(0x7F1C1D1B),
-                          ),
-                        ),
-                        SizedBox(width: 16),
-                        Expanded(
-                          flex: 2,
-                          child: CustomButton(
-                            text: '다음으로',
-                            onPressed: () => _setGoal(context, viewModel),
-                            backgroundColor: const Color(0xFF78B545),
-                            textColor: const Color(0xFFFCFCFC),
-                          ),
-                        ),
-                      ],
-                    ),
                   ],
                 ),
               ),
             );
           },
         ),
-      ),
-    );
-  }
-
-  void _setGoal(BuildContext context, GoalInputViewModel viewModel) async {
-    bool isSaved = await viewModel.saveGoal(context);
-    if (isSaved) {
-      Navigator.pop(context);
+        // 작성하기 버튼을 Scaffold의 bottomNavigationBar에 배치
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+          child: CustomButton(
+            text: '작성하기',
+            onPressed: () => _setGoal(context),
+            backgroundColor: const Color(0xFF78B545),
+            textColor: const Color(0xFFFCFCFC),
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.24,
+            padding: 16.0,
+            borderRadius: BorderRadius.circular(30),
+          ),
+        ),
+      );
     }
-  }  
+  void _setGoal(BuildContext context) async {
+    final viewModel = Provider.of<GoalInputViewModel>(context, listen: false);
+    Goal? newGoal= await viewModel.saveGoal(context);
+    if (newGoal != null) {
+      // 목표 저장 성공 시 BottomSheet 표시
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (context) => GoalSettingBottomSheet(goal: newGoal),
+      );
+    }
+  } 
 }
