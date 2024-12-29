@@ -28,6 +28,9 @@ class Goal extends HiveObject {
   @HiveField(6)
   bool isCompleted; // 목표 완료 여부
 
+  @HiveField(7)
+  GoalStatus status; // 상태 필드 추가
+
   Goal({
     String? id,
     required this.name,
@@ -36,6 +39,7 @@ class Goal extends HiveObject {
     required this.startDate,
     required this.endDate,
     this.isCompleted = false,
+    this.status = GoalStatus.active, // 기본 상태는 active
   }) : id = id ?? const Uuid().v4(); // UUID 생성
 
   // 기대 목표 진행률 계산 메서드
@@ -69,6 +73,7 @@ class Goal extends HiveObject {
       'startDate': startDate.toIso8601String(),
       'endDate': endDate.toIso8601String(),
       'isCompleted': isCompleted,
+      'status': status.index, // 상태 추가
     };
   }
 
@@ -81,7 +86,8 @@ class Goal extends HiveObject {
       progress: (json['progress'] as num).toDouble(),
       startDate: DateTime.parse(json['startDate']),
       endDate: DateTime.parse(json['endDate']),
-      isCompleted: json['isCompleted'],
+      isCompleted: json['isCompleted'],      
+      status: GoalStatus.values[json['status']], // 상태 추가
     );
   }
 
@@ -110,6 +116,8 @@ class Goal extends HiveObject {
   // 목표 정보 출력 (디버깅 또는 UI 용)
   @override
   String toString() {
-    return 'Goal(name: $name, icon: $icon, progress: $progress%, start: $startDate, end: $endDate, completed: $isCompleted)';
+    return 'Goal(name: $name, icon: $icon, progress: $progress%, start: $startDate, end: $endDate, completed: $isCompleted, status: $status)';
   }
 }
+
+enum GoalStatus { active, completed, givenUp } // 상태 열거형 추가
