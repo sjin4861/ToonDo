@@ -17,7 +17,7 @@ class GoalNameInputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<GoalInputViewModel>(context, listen: false);
-
+    //viewModel.selectIcon("assets/icons/100point.svg");
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
