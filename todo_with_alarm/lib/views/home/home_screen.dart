@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/goal.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:todo_with_alarm/views/auth/login_screen.dart';
+import 'package:todo_with_alarm/views/goal/goal_management_screen.dart';
 import 'package:todo_with_alarm/widgets/goal/goal_list_item.dart';
 import 'package:todo_with_alarm/widgets/image_shadow.dart';
 import '../goal/goal_input_screen.dart';
@@ -82,37 +83,22 @@ class HomeScreen extends StatelessWidget {
                   flex: 4, // 화면의 40%를 목표 리스트에 할당
                   child: Padding(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: goalViewmodel.goals.isNotEmpty
-                        ? ListView.builder(
-                            itemCount: goalViewmodel.goals.length,
-                            itemBuilder: (context, index) {
-                              Goal goal = goalViewmodel.goals[index];
-                              return GoalListItem(
-                                goal: goal,
-                                onEdit: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => GoalInputScreen(
-                                        targetGoal: goal,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                onDelete: () {
-                                  goalViewmodel.deleteGoal(goal.id!);
-                                },
-                              );
-                            },
-                          )
-                        : const Center(
-                            child: Text(
-                              '설정된 목표가 없습니다. 목표를 추가해보세요!',
-                              style:
-                                  TextStyle(fontSize: 16, color: Colors.grey),
-                            ),
+                      ? Column(
+                          children: goalViewmodel.goals.take(3).map((goal) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4),
+                              child: GoalListItem(goal: goal),
+                            );
+                          }).toList(),
+                        )
+                      : const Center(
+                          child: Text(
+                            '설정된 목표가 없습니다. 목표를 추가해보세요!',
+                            style: TextStyle(fontSize: 16, color: Colors.grey),
                           ),
+                        ),
                   ),
                 ),
                 // 캐릭터 이미지와 말풍선 배치
@@ -299,17 +285,11 @@ class HomeScreen extends StatelessWidget {
                   color: Colors.grey,
                 ),
                 onPressed: () {
-                  if (goalViewmodel.goals.length >= 3) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('목표는 최대 3개까지 설정할 수 있습니다.')),
-                    );
-                    return;
-                  }
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
-                          GoalInputScreen(), // 'goal_input' 화면으로 이동
+                        GoalManagementScreen(), // 'goal_input' 화면으로 이동
                     ),
                   );
                 },
