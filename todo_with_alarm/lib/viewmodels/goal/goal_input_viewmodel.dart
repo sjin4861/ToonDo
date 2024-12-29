@@ -8,6 +8,7 @@ import 'package:uuid/uuid.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:todo_with_alarm/widgets/calendar/calendar_bottom_sheet.dart';
+import 'package:todo_with_alarm/viewmodels/goal/goal_management_viewmodel.dart';
 
 class GoalInputViewModel extends ChangeNotifier {
   final TextEditingController goalNameController = TextEditingController();
@@ -43,19 +44,20 @@ class GoalInputViewModel extends ChangeNotifier {
   }
 
   // 목표 저장 또는 업데이트 메서드
-  Future<bool> saveGoal(BuildContext context) async {
+  Future<Goal?> saveGoal(BuildContext context) async {
     if (!validateInput()) {
       // 에러 메시지 표시
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('입력한 정보를 확인해주세요.')),
       );
-      return false; // 저장 실패
+      return null; // 저장 실패
     }
+    const String defaultIconPath = 'assets/icons/100point.svg';
 
     final newGoal = Goal(
       id: targetGoal?.id ?? const Uuid().v4(),
       name: goalNameController.text,
-      icon: selectedIcon,
+      icon: selectedIcon ?? defaultIconPath, // 기본 아이콘 사용
       startDate: startDate!,
       endDate: endDate!,
       progress: targetGoal?.progress ?? 0.0,
@@ -86,14 +88,14 @@ class GoalInputViewModel extends ChangeNotifier {
         selectedIcon = null;
         notifyListeners();
       }
-      return true; // 저장 성공
+      return newGoal; // 저장 성공
     } catch (e) {
       // 에러 처리: 사용자에게 에러 메시지 표시
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('목표 저장 중 오류가 발생했습니다.')),
       );
       print('Error saving goal: $e');
-      return false; // 저장 실패
+      return null; // 저장 실패
     }
   }
 
