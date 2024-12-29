@@ -47,5 +47,8 @@ class GoalManagementViewModel extends ChangeNotifier {
     await goalService.giveUpGoal(goalId);
     await loadGoals(); // 목표 목록 다시 로드
   }
-  // 기타 필요한 메서드 추가
+  Future<void> deleteGoal(String goalId) async {
+    await goalService.deleteGoal(goalId);
+    await loadGoals(); // 목표 목록 다시 로드
+  }
 }
