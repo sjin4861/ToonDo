@@ -10,6 +10,7 @@ import '../../widgets/app_bar/custom_app_bar.dart';
 import '../../widgets/goal/goal_list_item.dart';
 import '../../widgets/bottom_button/custom_button.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_input_viewmodel.dart';
+import 'package:todo_with_alarm/widgets/goal/goal_options_bottom_sheet.dart';
 
 class GoalManagementScreen extends StatelessWidget {
   const GoalManagementScreen({Key? key}) : super(key: key);
@@ -29,7 +30,8 @@ class GoalManagementScreen extends StatelessWidget {
           builder: (context, viewModel, child) {
             return SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -89,15 +91,25 @@ class GoalManagementScreen extends StatelessWidget {
                             itemBuilder: (context, index) {
                               final goal = viewModel.filteredGoals[index];
                               return Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 8),
-                                child: GoalListItem(goal: goal),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8),
+                                child: GoalListItem(
+                                  goal: goal,
+                                  onTap: () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      builder: (context) =>
+                                          GoalOptionsBottomSheet(goal: goal),
+                                    );
+                                  },
+                                ),
                               );
                             },
                           ),
 
                     const SizedBox(height: 32),
-
-                    ],
+                  ],
                 ),
               ),
             );
@@ -111,9 +123,11 @@ class GoalManagementScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ChangeNotifierProvider<GoalInputViewModel>(
+                  builder: (context) =>
+                      ChangeNotifierProvider<GoalInputViewModel>(
                     create: (context) => GoalInputViewModel(
-                      goalService: Provider.of<GoalService>(context, listen: false),
+                      goalService:
+                          Provider.of<GoalService>(context, listen: false),
                     ),
                     child: GoalInputScreen(),
                   ),
@@ -157,7 +171,9 @@ class FilterButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
             side: BorderSide(
-              color: isSelected ? const Color(0xFF78B545) : const Color(0xFFE4F0D9),
+              color: isSelected
+                  ? const Color(0xFF78B545)
+                  : const Color(0xFFE4F0D9),
               width: 1,
             ),
           ),
