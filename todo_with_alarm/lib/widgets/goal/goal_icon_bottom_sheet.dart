@@ -5,8 +5,8 @@ class GoalIconBottomSheet extends StatelessWidget {
   final Map<String, List<String>> iconCategories = {
     '수업/과제': [
       'assets/icons/100point.svg',
-      'assets/icons/100point.svg',
-      'assets/icons/100point.svg'
+      'assets/icons/poo.svg',
+      'assets/icons/bomb.svg'
     ],
     '공부': [
       'assets/icons/100point.svg',
