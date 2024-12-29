@@ -22,11 +22,13 @@ class TodoInputScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TodoService를 Provider로부터 가져옵니다.
-    final TodoService todoService = Provider.of<TodoService>(context, listen: false);
+    final TodoService todoService =
+        Provider.of<TodoService>(context, listen: false);
 
     return ChangeNotifierProvider<TodoInputViewModel>(
       // TodoInputViewModel을 생성하여 Provider로 제공합니다.
-      create: (_) => TodoInputViewModel(todo: todo, isDDayTodo: isDDayTodo, todoService: todoService),
+      create: (_) => TodoInputViewModel(
+          todo: todo, isDDayTodo: isDDayTodo, todoService: todoService),
       child: Scaffold(
         backgroundColor: const Color(0xFFFCFCFC),
         appBar: CustomAppBar(
@@ -44,12 +46,16 @@ class TodoInputScreen extends StatelessWidget {
                       const SizedBox(height: 16),
                       _buildToggleButtons(viewModel), // D-Day와 데일리 토글 버튼
                       const SizedBox(height: 24),
-                      _buildTextField('투두 이름', viewModel.titleController, viewModel.isTitleNotEmpty), // 투두 이름 입력 필드
-                      if (viewModel.goalNameError != null) _buildErrorText(viewModel.goalNameError!), // 목표 이름 에러 메시지
+                      _buildTextField('투두 이름', viewModel.titleController,
+                          viewModel.isTitleNotEmpty), // 투두 이름 입력 필드
+                      if (viewModel.goalNameError != null)
+                        _buildErrorText(
+                            viewModel.goalNameError!), // 목표 이름 에러 메시지
                       const SizedBox(height: 24),
                       _buildGoalSelection(viewModel, context), // 목표 선택 위젯
                       const SizedBox(height: 24),
-                      if (!viewModel.isDailyTodo) _buildDateFields(viewModel), // 날짜 입력 필드 (데일리 투두가 아닐 경우)
+                      if (!viewModel.isDailyTodo)
+                        _buildDateFields(viewModel), // 날짜 입력 필드 (데일리 투두가 아닐 경우)
                       const SizedBox(height: 24),
                       _buildEisenhowerMatrix(viewModel), // 아이젠하워 매트릭스
                       const SizedBox(height: 24),
@@ -59,27 +65,45 @@ class TodoInputScreen extends StatelessWidget {
                             '앞으로 툰두가 아이젠하워에 따라 가장 중요한 일부터 알려줄게요!',
                       ), // 팁 위젯
                       const SizedBox(height: 24),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: EditUpdateButton(
-                              key: const Key('editUpdateButton'),
-                              viewModel: viewModel,
-                              todo: todo,
-                              onPressed: () {
-                                if (viewModel.formKey.currentState!.validate()) {
-                                  // 저장 로직
-                                  viewModel.saveTodo(context);
-                                }
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
+                      // Row(
+                      //   children: [
+                      //     Expanded(
+                      //       child: EditUpdateButton(
+                      //         key: const Key('editUpdateButton'),
+                      //         viewModel: viewModel,
+                      //         todo: todo,
+                      //         onPressed: () {
+                      //           if (viewModel.formKey.currentState!.validate()) {
+                      //             // 저장 로직
+                      //             viewModel.saveTodo(context);
+                      //           }
+                      //         },
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
+                      // const SizedBox(height: 24),
                     ],
                   ),
                 ),
+              ),
+            );
+          },
+        ),
+        bottomNavigationBar: Consumer<TodoInputViewModel>(
+          builder: (context, viewModel, child) {
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+              child: EditUpdateButton(
+                key: const Key('editUpdateButton'),
+                viewModel: viewModel,
+                todo: todo,
+                onPressed: () {
+                  if (viewModel.formKey.currentState!.validate()) {
+                    // 저장 로직
+                    viewModel.saveTodo(context);
+                  }
+                },
               ),
             );
           },
@@ -95,8 +119,10 @@ class TodoInputScreen extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildToggleButton('디데이', !viewModel.isDailyTodo, () => viewModel.setDailyTodoStatus(false)),
-          _buildToggleButton('데일리', viewModel.isDailyTodo, () => viewModel.setDailyTodoStatus(true)),
+          _buildToggleButton('디데이', !viewModel.isDailyTodo,
+              () => viewModel.setDailyTodoStatus(false)),
+          _buildToggleButton('데일리', viewModel.isDailyTodo,
+              () => viewModel.setDailyTodoStatus(true)),
         ],
       ),
     );
@@ -130,7 +156,8 @@ class TodoInputScreen extends StatelessWidget {
   }
 
   // 투두 이름 입력 필드를 생성하는 메서드
-  Widget _buildTextField(String label, TextEditingController controller, bool isNotEmpty) {
+  Widget _buildTextField(
+      String label, TextEditingController controller, bool isNotEmpty) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -153,7 +180,9 @@ class TodoInputScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(1000),
               side: BorderSide(
                 width: 1,
-                color: isNotEmpty ? const Color(0xFF78B545) : const Color(0xFFDDDDDD),
+                color: isNotEmpty
+                    ? const Color(0xFF78B545)
+                    : const Color(0xFFDDDDDD),
               ),
             ),
           ),
@@ -222,7 +251,8 @@ class TodoInputScreen extends StatelessWidget {
   }
 
   // 목표 선택 위젯을 생성하는 메서드
-  Widget _buildGoalSelection(TodoInputViewModel viewModel, BuildContext context) {
+  Widget _buildGoalSelection(
+      TodoInputViewModel viewModel, BuildContext context) {
     final goalViewmodel = Provider.of<GoalViewModel>(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -246,7 +276,9 @@ class TodoInputScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(1000),
               side: BorderSide(
                 width: 1,
-                color: viewModel.selectedGoalId != null ? const Color(0xFF78B545) : const Color(0xFFDDDDDD),
+                color: viewModel.selectedGoalId != null
+                    ? const Color(0xFF78B545)
+                    : const Color(0xFFDDDDDD),
               ),
             ),
           ),
@@ -255,7 +287,10 @@ class TodoInputScreen extends StatelessWidget {
               Expanded(
                 child: Text(
                   viewModel.selectedGoalId != null
-                      ? goalViewmodel.goals.firstWhere((goal) => goal.id == viewModel.selectedGoalId).name
+                      ? goalViewmodel.goals
+                          .firstWhere(
+                              (goal) => goal.id == viewModel.selectedGoalId)
+                          .name
                       : '목표를 선택하세요.',
                   style: const TextStyle(
                     color: Color(0xFF1C1D1B),
@@ -271,7 +306,9 @@ class TodoInputScreen extends StatelessWidget {
                   viewModel.toggleGoalDropdown();
                 },
                 child: Icon(
-                  viewModel.showGoalDropdown ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                  viewModel.showGoalDropdown
+                      ? Icons.arrow_drop_up
+                      : Icons.arrow_drop_down,
                   color: const Color(0xFF1C1D1B),
                 ),
               ),
@@ -346,7 +383,8 @@ class TodoInputScreen extends StatelessWidget {
   }
 
   // 목표 항목을 생성하는 메서드
-  Widget _buildGoalItem(BuildContext context, String goalName, String? goalId, TodoInputViewModel viewModel) {
+  Widget _buildGoalItem(BuildContext context, String goalName, String? goalId,
+      TodoInputViewModel viewModel) {
     bool isSelected = viewModel.selectedGoalId == goalId;
     return GestureDetector(
       onTap: () {
@@ -367,7 +405,9 @@ class TodoInputScreen extends StatelessWidget {
               width: 24,
               height: 24,
               decoration: ShapeDecoration(
-                color: isSelected ? const Color(0x7FAED28F) : const Color(0x7FDDDDDD),
+                color: isSelected
+                    ? const Color(0x7FAED28F)
+                    : const Color(0x7FDDDDDD),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(1000),
                 ),
