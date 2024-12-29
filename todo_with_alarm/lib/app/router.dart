@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_with_alarm/views/goal/goal_input_screen.dart';
+import 'package:todo_with_alarm/views/goal/goal_management_screen.dart';
 import 'package:todo_with_alarm/views/home/home_screen.dart';
 import 'package:todo_with_alarm/views/goal/goal_progress_screen.dart';
 import 'package:todo_with_alarm/views/todo/todo_submission_screen.dart';
@@ -17,6 +18,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => SignupScreen());
       case '/home':
         return MaterialPageRoute(builder: (_) => HomeScreen());
+      case 'goal_manage':
+        return MaterialPageRoute(builder: (_) => GoalManagementScreen());        
       case '/goal_input':
         return MaterialPageRoute(builder: (_) => GoalInputScreen());
       case '/progress':
