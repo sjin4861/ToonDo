@@ -36,8 +36,7 @@ class GoalService {
     } catch (e) {
       print('Error loading goals from server: $e');
       // 서버에서 불러오지 못하면 로컬 Hive 박스에서 불러오기
-      List<Goal> goals = goalBox.values.toList();
-      return goals;
+      return getLocalGoals();
     }
   }
 
@@ -142,6 +141,58 @@ class GoalService {
     } catch (e) {
       print('Error deleting goal on server: $e');
       // 서버 동기화 실패 시 로컬 데이터는 이미 삭제되어 있으므로 추가 조치는 필요 없음
+    }
+  }
+  /// 목표 완료 상태 토글
+  Future<void> toggleGoalCompletion(String id) async {
+    final goal = goalBox.get(id);
+    if (goal != null) {
+      goal.isCompleted = !goal.isCompleted;
+      goal.progress = goal.isCompleted ? 100.0 : goal.getExpectedProgress();
+      //goal.updatedAt = DateTime.now();
+      await goal.save();
+
+      // 원격 서버에 동기화
+      try {
+        final url = Uri.parse('$baseUrl/goals/$id');
+        final response = await httpClient.put(
+          url,
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(goal.toJson()),
+        );
+
+        if (response.statusCode != 200) {
+          throw Exception('Failed to update goal completion on server');
+        }
+      } catch (e) {
+        print('Error updating goal completion on server: $e');
+        // 서버 동기화 실패 시 로컬 데이터는 이미 업데이트되어 있으므로 추가 조치는 필요 없음
+      }
+    }
+  }
+
+  Future<void> giveUpGoal(String goalId) async {
+    final goal = goalBox.get(goalId);
+    if (goal != null) {
+      goal.status = GoalStatus.givenUp; // 상태를 givenUp으로 변경
+      await goal.save();
+
+      // 원격 서버에 동기화
+      try {
+        final url = Uri.parse('$baseUrl/goals/$goalId');
+        final response = await httpClient.put(
+          url,
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(goal.toJson()),
+        );
+
+        if (response.statusCode != 200) {
+          throw Exception('Failed to update goal status on server');
+        }
+      } catch (e) {
+        print('Error updating goal status on server: $e');
+        // 서버 동기화 실패 시 로컬 데이터는 이미 업데이트되어 있으므로 추가 조치는 필요 없음
+      }
     }
   }
 }
