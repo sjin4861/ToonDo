@@ -84,22 +84,29 @@ class HomeScreen extends StatelessWidget {
                   flex: 4, // 화면의 40%를 목표 리스트에 할당
                   child: Padding(
                     padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: goalViewmodel.goals.isNotEmpty
-                      ? Column(
-                          children: goalViewmodel.goals.take(3).map((goal) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 4),
-                              child: GoalListItem(goal: goal),
-                            );
-                          }).toList(),
-                        )
-                      : const Center(
-                          child: Text(
-                            '설정된 목표가 없습니다. 목표를 추가해보세요!',
-                            style: TextStyle(fontSize: 16, color: Colors.grey),
+                        ? Column(
+                            children: goalViewmodel.goals.take(3).map((goal) {
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 4),
+                                child: GoalListItem(
+                                  goal: goal,
+                                  onTap: () {
+                                    // 아무 동작도 하지 않도록 설정, 추후에는 캐릭터와 상호작용하도록 해야할 듯
+                                  },
+                                ),
+                              );
+                            }).toList(),
+                          )
+                        : const Center(
+                            child: Text(
+                              '설정된 목표가 없습니다. 목표를 추가해보세요!',
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.grey),
+                            ),
                           ),
-                        ),
                   ),
                 ),
                 // 캐릭터 이미지와 말풍선 배치
@@ -150,7 +157,8 @@ class HomeScreen extends StatelessWidget {
                       ),
                       // 메인 캐릭터 이미지
                       Positioned(
-                        left: MediaQuery.of(context).size.width / 2 - 75, // 화면 중앙에 위치
+                        left: MediaQuery.of(context).size.width / 2 -
+                            75, // 화면 중앙에 위치
                         bottom: 80, // 갈색 배경 위에 위치하도록 설정
                         child: SizedBox(
                           width: 150,
@@ -290,7 +298,7 @@ class HomeScreen extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
-                        GoalManagementScreen(), // 'goal_input' 화면으로 이동
+                          GoalManagementScreen(), // 'goal_input' 화면으로 이동
                     ),
                   );
                 },
