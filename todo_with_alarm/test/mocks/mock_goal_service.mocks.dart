@@ -162,4 +162,24 @@ class MockGoalService extends _i1.Mock implements _i5.GoalService {
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),
       ) as _i7.Future<void>);
+
+  @override
+  _i7.Future<void> toggleGoalCompletion(String? id) => (super.noSuchMethod(
+        Invocation.method(
+          #toggleGoalCompletion,
+          [id],
+        ),
+        returnValue: _i7.Future<void>.value(),
+        returnValueForMissingStub: _i7.Future<void>.value(),
+      ) as _i7.Future<void>);
+
+  @override
+  _i7.Future<void> giveUpGoal(String? goalId) => (super.noSuchMethod(
+        Invocation.method(
+          #giveUpGoal,
+          [goalId],
+        ),
+        returnValue: _i7.Future<void>.value(),
+        returnValueForMissingStub: _i7.Future<void>.value(),
+      ) as _i7.Future<void>);
 }
