@@ -49,6 +49,7 @@ class HomeScreen extends StatelessWidget {
             width: 50, // 아이콘 버튼의 너비 지정
             height: 50, // 아이콘 버튼의 높이 지정
             child: IconButton(
+              key: const Key('goToLoginButton'),
               icon: const Icon(Icons.login, size: 24),
               onPressed: () {
                 Navigator.push(

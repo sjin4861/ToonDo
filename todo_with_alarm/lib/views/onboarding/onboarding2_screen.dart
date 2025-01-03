@@ -121,6 +121,7 @@ class _Onboarding2PageState extends State<Onboarding2Page> {
                             Consumer<OnboardingViewModel>(
                               builder: (context, viewModel, child) {
                                 return CustomTextField(
+                                  key: const Key('onboarding2_nicknameTextField'), // ★ 추가
                                   label: '닉네임',
                                   hintText: '8자 이내의 닉네임을 입력해주세요',
                                   controller: _nicknameController,
@@ -208,6 +209,7 @@ class _Onboarding2PageState extends State<Onboarding2Page> {
                             Expanded(
                               flex: 2,
                               child: ElevatedButton(
+                                key: const Key('onboarding2_nextButton'), // ★ 추가
                                 onPressed: () {
                                   _validateNickname(
                                       Provider.of<OnboardingViewModel>(context, listen: false));

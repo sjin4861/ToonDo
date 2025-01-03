@@ -74,6 +74,7 @@ class _SignupStep1State extends State<SignupStep1> {
             ),
             SizedBox(height: 32),
             CustomTextField(
+              key: const Key('signupStep1_phoneNumberField'), // ★ 추가
               label: '휴대폰 번호',
               hintText: '01012345678',
               onChanged: (value) {
@@ -103,6 +104,7 @@ class _SignupStep1State extends State<SignupStep1> {
                 Expanded(
                   flex: 1,
                   child: ElevatedButton(
+                    key: const Key('signupStep1_backButton'), // ★ 추가
                     onPressed: () {
                       // 이전 화면으로 이동
                       Navigator.pop(context);
@@ -130,6 +132,7 @@ class _SignupStep1State extends State<SignupStep1> {
                 Expanded(
                   flex: 2,
                   child: ElevatedButton(
+                    key: const Key('signupStep1_nextButton'), // ★ 추가
                     onPressed: () {
                       viewModel.validatePhoneNumber();
                     },

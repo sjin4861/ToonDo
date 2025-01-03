@@ -80,6 +80,7 @@ class _SignupStep2State extends State<SignupStep2> {
             SizedBox(height: 32),
             // 휴대폰 번호 입력란
             CustomTextField(
+              key: const Key('signupStep2_phoneNumberField'), // ★ 추가
               label: '휴대폰 번호',
               hintText: '',
               controller: TextEditingController(text: viewModel!.phoneNumber),
@@ -91,6 +92,7 @@ class _SignupStep2State extends State<SignupStep2> {
             SizedBox(height: 24),
             // 비밀번호 입력란
             CustomTextField(
+              key: const Key('signupStep2_passwordField'), // ★ 추가
               label: '비밀번호',
               hintText: '비밀번호를 입력하세요',
               obscureText: !isPasswordVisible,
@@ -137,6 +139,7 @@ class _SignupStep2State extends State<SignupStep2> {
                 Expanded(
                   flex: 1,
                   child: CustomButton(
+                    key: const Key('signupStep2_backButton'), // ★ 추가
                     text: '뒤로',
                     onPressed: () {
                       viewModel!.goBack();
@@ -149,6 +152,7 @@ class _SignupStep2State extends State<SignupStep2> {
                 Expanded(
                   flex: 2,
                   child: CustomButton(
+                    key: const Key('signupStep2_nextButton'), // ★ 추가
                     text: '다음으로',
                     onPressed: () {
                       viewModel!.validatePassword();

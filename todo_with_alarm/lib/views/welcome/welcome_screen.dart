@@ -120,6 +120,7 @@ class WelcomeScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         _buildSocialButton(
+                          key: const Key('continueWithGoogleButton'), // ★ 추가
                           context,
                           label: '구글로 계속하기',
                           color: Colors.white,
@@ -132,6 +133,7 @@ class WelcomeScreen extends StatelessWidget {
                         ),
                         SizedBox(height: 16),
                         _buildSocialButton(
+                          key: const Key('continueWithoutLoginButton'), // ★ 추가
                           context,
                           label: '카카오로 계속하기',
                           color: Color(0xFFFDDC3F),
@@ -143,6 +145,7 @@ class WelcomeScreen extends StatelessWidget {
                         ),
                         SizedBox(height: 16),
                         _buildSocialButton(
+                          key: const Key('continueWithPhoneNumberButton'), // ★ 추가
                           context,
                           label: '휴대폰 번호로 계속하기',
                           color: Color(0xFFC9E1B4),
@@ -190,8 +193,10 @@ class WelcomeScreen extends StatelessWidget {
     Color? borderColor,
     required String iconPath,
     required VoidCallback onPressed,
+    required Key key,
   }) {
     return ElevatedButton(
+      key: key,
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         foregroundColor: textColor, backgroundColor: color,
