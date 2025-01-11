@@ -28,4 +28,9 @@ class User {
       username: json['username'],
     );
   }
+
+  //user nickname 업데이트 메서드
+  void updateUsername(String nickname) {
+    username = nickname;
+  }
 }
