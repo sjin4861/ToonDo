@@ -4,7 +4,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
 import 'package:todo_with_alarm/models/goal.dart';
-import 'package:todo_with_alarm/constants.dart'; // constants.dart 임포트
+import 'package:todo_with_alarm/constants.dart';
+import 'package:todo_with_alarm/models/goal_status.dart'; // constants.dart 임포트
 
 class GoalService {
   final String baseUrl = Constants.baseUrl; // constants.dart에서 baseUrl 가져오기
