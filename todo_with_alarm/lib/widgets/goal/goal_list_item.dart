@@ -89,20 +89,24 @@ class GoalListItem extends StatelessWidget {
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-          decoration: ShapeDecoration(
+          decoration: BoxDecoration(
             color: goal.isCompleted
                 ? const Color(0xFFE4F0D9)
                 : const Color(0xFFFFFEFB),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            shadows: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                spreadRadius: 2,
-                blurRadius: 5,
-                offset: const Offset(0, 3), // 그림자 위치
-              ),
-            ],
+            border: Border.all(
+              color: const Color(0xFF78B545), // 초록색 경계 추가
+              width: 1.5,
+            ),
+            borderRadius: BorderRadius.circular(8),
+            // 그림자 제거
+            // boxShadow: [ // 제거
+            //   BoxShadow(
+            //     color: Colors.grey.withOpacity(0.1),
+            //     spreadRadius: 2,
+            //     blurRadius: 5,
+            //     offset: const Offset(0, 3), // 그림자 위치
+            //   ),
+            // ],
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -128,12 +132,16 @@ class GoalListItem extends StatelessWidget {
                     // 목표 이름
                     Text(
                       goal.name,
-                      style: const TextStyle(
-                        color: Color(0xFF1C1D1B),
+                      style: TextStyle(
+                        color: goal.isCompleted
+                            ? Colors.grey
+                            : const Color(0xFF1C1D1B),
                         fontSize: 13,
                         fontFamily: 'Pretendard Variable',
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.20,
+                        decoration:
+                            goal.isCompleted ? TextDecoration.lineThrough : null,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -178,8 +186,9 @@ class GoalListItem extends StatelessWidget {
                         value: progress / 100,
                         strokeWidth: 4,
                         backgroundColor: Colors.grey[300],
-                        valueColor: const AlwaysStoppedAnimation<Color>(
-                            Color(0xFF2C221F)),
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          progress < 100 ? const Color(0xFF78B545) : Colors.green,
+                        ),
                       ),
                     ),
                     // 진행률 텍스트
@@ -206,7 +215,12 @@ class GoalListItem extends StatelessWidget {
   }
 
   int _calculateDDay(DateTime endDate) {
-    final difference = endDate.difference(DateTime.now()).inDays;
+    // 디버깅
+    // print('endDate: $endDate');
+    // print('DateTime.now(): ${DateTime.now()}');
+    // 현재 시각에서 년도와 날짜만 endDate에서 빼는 계산
+    var now = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    int difference = endDate.difference(now).inDays;
     return difference >= 0 ? difference : 0;
   }
 }

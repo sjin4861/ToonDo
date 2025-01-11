@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_with_alarm/models/goal_status.dart';
 import '../../viewmodels/goal/goal_management_viewmodel.dart';
 import '../../services/goal_service.dart';
 import '../../models/goal.dart';
@@ -52,20 +53,24 @@ class GoalManagementScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        FilterButton(
-                          label: '전체',
-                          isSelected: viewModel.filter == '전체',
-                          onTap: () {
-                            viewModel.setFilter('전체');
-                          },
+                        Expanded(
+                          child: FilterButton(
+                            label: '전체',
+                            isSelected: viewModel.filter == '전체',
+                            onTap: () {
+                              viewModel.setFilter('전체');
+                            },
+                          ),
                         ),
-                        const SizedBox(width: 16),
-                        FilterButton(
-                          label: '완료',
-                          isSelected: viewModel.filter == '완료',
-                          onTap: () {
-                            viewModel.setFilter('완료');
-                          },
+                        const SizedBox(width: 8), // 탭 간격 줄이기
+                        Expanded(
+                          child: FilterButton(
+                            label: '완료',
+                            isSelected: viewModel.filter == '완료',
+                            onTap: () {
+                              viewModel.setFilter('완료');
+                            },
+                          ),
                         ),
                       ],
                     ),
@@ -84,31 +89,31 @@ class GoalManagementScreen extends StatelessWidget {
                               ),
                             ),
                           )
-                        : ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: viewModel.filteredGoals.length,
-                            itemBuilder: (context, index) {
-                              final goal = viewModel.filteredGoals[index];
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8),
-                                child: GoalListItem(
-                                  goal: goal,
-                                  onTap: () {
-                                    showModalBottomSheet(
-                                      context: context,
-                                      isScrollControlled: true,
-                                      builder: (context) =>
-                                          GoalOptionsBottomSheet(goal: goal),
-                                    );
-                                  },
-                                ),
-                              );
-                            },
-                          ),
-
-                    const SizedBox(height: 32),
+                        : viewModel.filter == '전체'
+                            ? ListView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: viewModel.filteredGoals.length,
+                                itemBuilder: (context, index) {
+                                  final goal = viewModel.filteredGoals[index];
+                                  return Padding(
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 8),
+                                    child: GoalListItem(
+                                      goal: goal,
+                                      onTap: () {
+                                        showModalBottomSheet(
+                                          context: context,
+                                          isScrollControlled: true,
+                                          builder: (context) =>
+                                              GoalOptionsBottomSheet(goal: goal),
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                              )
+                            : _buildCompletedGoalsSection(context, viewModel),
                   ],
                 ),
               ),
@@ -144,6 +149,99 @@ class GoalManagementScreen extends StatelessWidget {
       ),
     );
   }
+
+  // '완료' 탭에서 완료된 목표를 섹션별로 표시하는 위젯
+  Widget _buildCompletedGoalsSection(
+      BuildContext context, GoalManagementViewModel viewModel) {
+    // 'completed'와 'givenUp' 상태의 목표를 각각 필터링
+    List<Goal> completedGoals = viewModel.filteredGoals
+        .where((goal) => goal.status == GoalStatus.completed)
+        .toList();
+    List<Goal> givenUpGoals = viewModel.filteredGoals
+        .where((goal) => goal.status == GoalStatus.givenUp)
+        .toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // '성공' 섹션
+        if (completedGoals.isNotEmpty) ...[
+          Text(
+            '성공',
+            style: const TextStyle(
+              color: Color(0xFF1C1D1B),
+              fontSize: 16,
+              fontFamily: 'Pretendard Variable',
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.16,
+            ),
+          ),
+          const SizedBox(height: 8),
+          ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: completedGoals.length,
+            itemBuilder: (context, index) {
+              final goal = completedGoals[index];
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: GoalListItem(
+                  goal: goal,
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (context) =>
+                          GoalOptionsBottomSheet(goal: goal),
+                    );
+                  },
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 16),
+        ],
+
+        // '포기' 섹션
+        if (givenUpGoals.isNotEmpty) ...[
+          Text(
+            '포기',
+            style: const TextStyle(
+              color: Color(0xFF1C1D1B),
+              fontSize: 16,
+              fontFamily: 'Pretendard Variable',
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.16,
+            ),
+          ),
+          const SizedBox(height: 8),
+          ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: givenUpGoals.length,
+            itemBuilder: (context, index) {
+              final goal = givenUpGoals[index];
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: GoalListItem(
+                  goal: goal,
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (context) =>
+                          GoalOptionsBottomSheet(goal: goal),
+                    );
+                  },
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 16),
+        ],
+      ],
+    );
+  }
 }
 
 class FilterButton extends StatelessWidget {
@@ -163,9 +261,8 @@ class FilterButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 163,
         height: 40,
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: ShapeDecoration(
           color: isSelected ? const Color(0xFF78B545) : Colors.white,
           shape: RoundedRectangleBorder(
