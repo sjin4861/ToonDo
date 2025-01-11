@@ -22,7 +22,7 @@ class AuthService {
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
-        'phoneNumber': phoneNumber,
+        'loginId': phoneNumber,
         'password': password,
       }),
     );
@@ -33,10 +33,17 @@ class AuthService {
       // responseData값 실제 출력
       print(responseData);
       //responseData의 각 key에 맞게 User 객체 생성
+      // 'Bearer ' 접두사를 제거하고 순수한 JWT 토큰 저장
+      String tokenWithBearer = responseData['token'];
+      String token = tokenWithBearer.startsWith('Bearer ')
+          ? tokenWithBearer.substring(7)
+          : tokenWithBearer;
+      await saveToken(token);
+
       User newUser = User(
-        id: responseData['id'],
-        phoneNumber: responseData['phoneNumber'],
-        username: responseData['username'],
+        id: responseData['userId'],
+        phoneNumber: phoneNumber,
+        username: responseData['nickname'],
       );
       return newUser;
     } else {
@@ -52,7 +59,7 @@ class AuthService {
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
-        'phoneNumber': phoneNumber,
+        'loginId': phoneNumber,
         'password': password,
       }),
     );
@@ -62,8 +69,11 @@ class AuthService {
       final responseData = jsonDecode(response.body);
 
       // 토큰 저장 (예: JWT 토큰)
-      String token = responseData['token'];
-      await _storage.write(key: 'token', value: token);
+      String tokenWithBearer = responseData['token'];
+      String token = tokenWithBearer.startsWith('Bearer ')
+          ? tokenWithBearer.substring(7)
+          : tokenWithBearer;
+      await saveToken(token);
 
       // 사용자 정보 저장 (필요한 경우)
       // User user = User.fromJson(responseData['user']);
@@ -77,7 +87,7 @@ class AuthService {
     }
   }
   // 닉네임 업데이트 메서드
-  Future<void> updateUsername(int userId, String nickname) async {
+  Future<User> updateUsername(int userId, String nickname) async {
     final url = Uri.parse('$baseUrl/users/update-my');
     final token = await getToken(); // 로그인 시 저장한 토큰을 가져옵니다.
 
@@ -88,14 +98,28 @@ class AuthService {
         'Authorization': 'Bearer $token', // 토큰을 헤더에 추가
       },
       body: jsonEncode({
-        'userId': userId,
         'username': nickname,
       }),
     );
 
     if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
       // 닉네임 업데이트 성공
       print('닉네임 업데이트 성공');
+      // 'Bearer ' 접두사를 제거하고 순수한 JWT 토큰 저장 (응답에 새로운 토큰이 포함될 경우)
+      String tokenWithBearer = responseData['token'];
+      String newToken = tokenWithBearer.startsWith('Bearer ')
+          ? tokenWithBearer.substring(7)
+          : tokenWithBearer;
+      await saveToken(newToken);
+
+      // 업데이트된 사용자 정보 반환
+      User updatedUser = User(
+        id: responseData['userId'],
+        phoneNumber: responseData['loginId'],
+        username: responseData['nickname'],
+      );
+      return updatedUser;
     } else {
       // 에러 처리
       final responseData = jsonDecode(response.body);
@@ -118,12 +142,13 @@ class AuthService {
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'}, // 헤더 추가
-      body: jsonEncode({'phoneNumber': phoneNumber}), // JSON 인코딩
+      body: jsonEncode({'loginId': phoneNumber}), // JSON 인코딩
     );
+    print(response.body);
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       final responseData = jsonDecode(response.body);
-      return responseData['registered'];
+      return responseData['exists'];
     } else {
       throw Exception('Failed to check phone number');
     }
