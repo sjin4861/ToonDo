@@ -1,7 +1,11 @@
+// lib/views/onboarding/onboarding_screen.dart
+
 import 'dart:async'; // Timer를 사용하기 위해 추가
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart'; // Provider 추가
 import 'onboarding2_screen.dart'; // Onboarding2Page 임포트
+import '../../viewmodels/onboarding/onboarding_viewmodel.dart'; // ViewModel 임포트
 
 class OnboardingScreen extends StatefulWidget {
   final int userId;
@@ -13,18 +17,30 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
+  Timer? _timer; // Timer 변수 선언
+
   @override
   void initState() {
     super.initState();
     // 3초 후에 Onboarding2Page로 이동하면서 userId 전달
-    Timer(Duration(seconds: 3), () {
+    _timer = Timer(Duration(seconds: 3), () {
+      if (!mounted) return; // 위젯이 여전히 mounted 상태인지 확인
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => Onboarding2Page(userId: widget.userId),
+          builder: (context) => ChangeNotifierProvider<OnboardingViewModel>(
+            create: (_) => OnboardingViewModel(userId: widget.userId),
+            child: Onboarding2Page(userId: widget.userId),
+          ),
         ),
       );
     });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel(); // Timer 취소
+    super.dispose();
   }
 
   @override
@@ -48,8 +64,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     begin: Alignment(0.38, -0.93),
                     end: Alignment(-0.38, 0.93),
                     colors: [
-                      Color.fromRGBO(252, 241, 190, 1), // Color(red: 0.99, green: 0.99, blue: 0.99)
-                      Color.fromRGBO(249, 228, 123, 1), // Color(red: 0.99, green: 0.95, blue: 0.74)
+                      Color.fromRGBO(252, 241, 190, 1),
+                      Color.fromRGBO(249, 228, 123, 1),
                     ],
                   ),
                   shape: OvalBorder(),
@@ -58,7 +74,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
             // 텍스트
             Positioned(
-              left: MediaQuery.of(context).size.width * 0.5 - 100, // 화면의 중앙에 텍스트를 배치하기 위해 조정
+              left: MediaQuery.of(context).size.width * 0.5 - 100,
               top: MediaQuery.of(context).size.height * 0.32,
               child: Text(
                 '반가워요!\n제 이름은 슬라임이에요 😄',
@@ -74,7 +90,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
             // 캐릭터 및 그림자
             Positioned(
-              left: MediaQuery.of(context).size.width * 0.5 - 93.14, // 이미지의 절반 너비를 빼서 중앙 정렬
+              left: MediaQuery.of(context).size.width * 0.5 - 93.14,
               top: MediaQuery.of(context).size.height * 0.53,
               child: Column(
                 children: [
