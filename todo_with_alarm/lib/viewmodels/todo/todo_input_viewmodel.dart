@@ -149,6 +149,7 @@ class TodoInputViewModel extends ChangeNotifier {
   Future<void> saveTodo(BuildContext context) async {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
+      title = titleController.text.trim(); // 추가된 부분      
       try {
         // 투두 생성 또는 업데이트
         Todo newTodo = Todo(

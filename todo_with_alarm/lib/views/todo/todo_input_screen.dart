@@ -47,7 +47,7 @@ class TodoInputScreen extends StatelessWidget {
                       _buildToggleButtons(viewModel), // D-Day와 데일리 토글 버튼
                       const SizedBox(height: 24),
                       _buildTextField('투두 이름', viewModel.titleController,
-                          viewModel.isTitleNotEmpty), // 투두 이름 입력 필드
+                          viewModel.isTitleNotEmpty, viewModel), // 투두 이름 입력 필드
                       if (viewModel.goalNameError != null)
                         _buildErrorText(
                             viewModel.goalNameError!), // 목표 이름 에러 메시지
@@ -157,7 +157,7 @@ class TodoInputScreen extends StatelessWidget {
 
   // 투두 이름 입력 필드를 생성하는 메서드
   Widget _buildTextField(
-      String label, TextEditingController controller, bool isNotEmpty) {
+      String label, TextEditingController controller, bool isNotEmpty, TodoInputViewModel viewModel) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -209,7 +209,7 @@ class TodoInputScreen extends StatelessWidget {
               fontFamily: 'Pretendard Variable',
             ),
             onSaved: (value) {
-              controller.text = value!.trim();
+              viewModel.title = value!.trim(); // ViewModel의 title 설정
             },
           ),
         ),
