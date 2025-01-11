@@ -2,6 +2,7 @@
 
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
+import 'goal_status.dart'; // GoalStatus 추가
 
 part 'goal.g.dart'; // TypeAdapter 생성을 위한 부분 파일
 
@@ -119,5 +120,3 @@ class Goal extends HiveObject {
     return 'Goal(name: $name, icon: $icon, progress: $progress%, start: $startDate, end: $endDate, completed: $isCompleted, status: $status)';
   }
 }
-
-enum GoalStatus { active, completed, givenUp } // 상태 열거형 추가

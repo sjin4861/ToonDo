@@ -13,6 +13,7 @@ import 'package:todo_with_alarm/services/notification_service.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:todo_with_alarm/models/todo.dart';
+import 'package:todo_with_alarm/models/goal_status.dart'; // GoalStatus import
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +23,7 @@ Future<void> main() async {
 
   // Hive 어댑터 등록
   Hive.registerAdapter(TodoAdapter());
+  Hive.registerAdapter(GoalStatusAdapter());
   Hive.registerAdapter(GoalAdapter()); // GoalAdapter 등록
   // 다른 모델의 어댑터도 여기에 등록 (예: GoalAdapter())
   // Hive.registerAdapter(GoalAdapter());
