@@ -14,7 +14,6 @@ import 'todo_input_screen.dart'; // TodoInputScreen 임포트
 import 'package:todo_with_alarm/widgets/calendar/calendar.dart'; // Calendar 위젯 임포트
 import 'package:todo_with_alarm/widgets/todo/todo_list_item.dart'; // TodoListItem 임포트
 
-
 class TodoSubmissionScreen extends StatelessWidget {
   final DateTime? selectedDate;
 
@@ -269,7 +268,8 @@ class TodoSubmissionScreen extends StatelessWidget {
                     return _buildTodoItem(context, todo, viewModel, isDDay: isDDay);
                   },
                 )
-              : Text('투두가 없습니다.', style: TextStyle(color: Colors.grey)),
+              : Text('투두가 없습니다.', style: TextStyle(color: Colors.grey))
+,
         ],
       ),
     );
@@ -286,11 +286,6 @@ class TodoSubmissionScreen extends StatelessWidget {
       viewModel.selectedDate.month,
       viewModel.selectedDate.day,
     );
-
-    int importance = todo.importance;
-    int urgency = todo.urgency;
-    Color borderColor = todo.getBorderColor();
-    bool isCompleted = todo.status >= 100;
 
     return TodoListItem(
       todo: todo,
@@ -320,19 +315,5 @@ class TodoSubmissionScreen extends StatelessWidget {
       },
       hideCompletionStatus: isDDay, // D-Day 투두에서는 진행률을 숨기지 않음
     );
-  }
-
-  // 목표 아이콘 반환 메서드 (임시 코드)
-  IconData _getGoalIcon(String? goalId) {
-    switch (goalId) {
-      case 'goal1':
-        return Icons.school;
-      case 'goal2':
-        return Icons.work;
-      case 'goal3':
-        return Icons.fitness_center;
-      default:
-        return Icons.flag;
-    }
   }
 }
