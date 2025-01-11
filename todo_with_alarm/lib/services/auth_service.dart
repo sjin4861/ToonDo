@@ -10,10 +10,19 @@ class AuthService {
   static final AuthService _instance = AuthService._internal();
   factory AuthService() => _instance;
   AuthService._internal();
-
   static const String baseUrl = Constants.baseUrl;
+  final http.Client httpClient = http.Client();
+  final secureStorage = FlutterSecureStorage();
 
-  final _storage = FlutterSecureStorage();
+  /// JWT 토큰 저장
+  Future<void> saveToken(String token) async {
+    await secureStorage.write(key: 'jwt_token', value: token);
+  }
+
+  /// JWT 토큰 불러오기
+  Future<String?> getToken() async {
+    return await secureStorage.read(key: 'jwt_token');
+  }
 
   // 회원가입
   Future<User> registerUser(String phoneNumber, String password) async {
@@ -86,56 +95,38 @@ class AuthService {
       throw Exception(responseData['message'] ?? '로그인 실패');
     }
   }
-  // 닉네임 업데이트 메서드
-  Future<User> updateUsername(int userId, String nickname) async {
-    final url = Uri.parse('$baseUrl/users/update-my');
-    final token = await getToken(); // 로그인 시 저장한 토큰을 가져옵니다.
+  /// 닉네임 업데이트
+  Future<void> updateUsername(int userId, String nickname) async {
+    final token = await getToken();
+    if (token == null) {
+      throw Exception('토큰이 없습니다. 다시 로그인해주세요.');
+    }
 
-    final response = await http.put(
+    final url = Uri.parse('$baseUrl/users/save-nickname');
+    final response = await httpClient.put(
       url,
       headers: {
+        'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token', // 토큰을 헤더에 추가
       },
       body: jsonEncode({
-        'username': nickname,
+        'nickname': nickname,
       }),
     );
 
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
-      // 닉네임 업데이트 성공
-      print('닉네임 업데이트 성공');
-      // 'Bearer ' 접두사를 제거하고 순수한 JWT 토큰 저장 (응답에 새로운 토큰이 포함될 경우)
-      String tokenWithBearer = responseData['token'];
-      String newToken = tokenWithBearer.startsWith('Bearer ')
-          ? tokenWithBearer.substring(7)
-          : tokenWithBearer;
-      await saveToken(newToken);
-
-      // 업데이트된 사용자 정보 반환
-      User updatedUser = User(
-        id: responseData['userId'],
-        phoneNumber: responseData['loginId'],
-        username: responseData['nickname'],
-      );
-      return updatedUser;
+      // 필요한 경우, 새로운 토큰을 저장하거나 사용자 정보를 업데이트
+      if (responseData['token'] != null) {
+        await saveToken(responseData['token']);
+      }
+    } else if (response.statusCode == 401) {
+      throw Exception('닉네임 업데이트 실패: 잘못된 인증 정보입니다.');
     } else {
-      // 에러 처리
-      final responseData = jsonDecode(response.body);
-      throw Exception(responseData['message'] ?? '닉네임 업데이트 실패');
+      throw Exception('닉네임 업데이트 실패: ${response.body}');
     }
   }
 
-  // 토큰 저장 메서드 (로그인 시 사용)
-  Future<void> saveToken(String token) async {
-    await _storage.write(key: 'token', value: token);
-  }
-
-  // 토큰 가져오기 메서드
-  Future<String?> getToken() async {
-    return await _storage.read(key: 'token');
-  }
   // 휴대폰 번호 중복 확인
   Future<bool> isPhoneNumberRegistered(String phoneNumber) async {
     final url = Uri.parse('$baseUrl/users/check-phone-number');
