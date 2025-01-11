@@ -49,12 +49,27 @@ class GoalManagementViewModel extends ChangeNotifier {
   }
 
   Future<void> giveUpGoal(String goalId) async {
-    await goalService.giveUpGoal(goalId);
-    await loadGoals(); // 목표 목록 다시 로드
+    Goal? goal = allGoals.firstWhere((goal) => goal.id == goalId);
+    if (goal != null) {
+      goal.status = GoalStatus.givenUp;
+      await goalService.updateGoal(goal);
+      notifyListeners();
+    }
   }
 
   Future<void> deleteGoal(String goalId) async {
     await goalService.deleteGoal(goalId);
     await loadGoals(); // 목표 목록 다시 로드
+  }
+
+  Future<void> completeGoal(String goalId) async {
+    Goal? goal = allGoals.firstWhere((goal) => goal.id == goalId);
+    if (goal != null) {
+      goal.status = GoalStatus.completed;
+      goal.progress = 100.0;
+      goal.isCompleted = true;
+      await goalService.updateGoal(goal);
+      notifyListeners();
+    }
   }
 }
