@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import '../models/user.dart';
 import 'package:todo_with_alarm/constants.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:hive/hive.dart';
 
 class AuthService {
   static final AuthService _instance = AuthService._internal();
@@ -13,6 +14,9 @@ class AuthService {
   static const String baseUrl = Constants.baseUrl;
   final http.Client httpClient = http.Client();
   final secureStorage = FlutterSecureStorage();
+
+  // main.dart에서 'user' 박스를 열어두었으므로, 여기서 Hive.box<User>('user') 사용
+  final Box<User> userBox = Hive.box<User>('user');
 
   /// JWT 토큰 저장
   Future<void> saveToken(String token) async {
@@ -40,7 +44,7 @@ class AuthService {
       // 회원가입 성공
       final responseData = jsonDecode(response.body);
       // responseData값 실제 출력
-      print(responseData);
+      // print(responseData);
       //responseData의 각 key에 맞게 User 객체 생성
       // 'Bearer ' 접두사를 제거하고 순수한 JWT 토큰 저장
       String tokenWithBearer = responseData['token'];
@@ -54,6 +58,7 @@ class AuthService {
         phoneNumber: phoneNumber,
         username: responseData['nickname'],
       );
+      await userBox.put('currentUser', newUser);
       return newUser;
     } else {
       // 에러 처리
@@ -62,7 +67,7 @@ class AuthService {
     }
   }
   // 로그인
-  Future<void> login(String phoneNumber, String password) async {
+  Future<User> login(String phoneNumber, String password) async {
     final url = Uri.parse('$baseUrl/users/login');
     final response = await http.post(
       url,
@@ -84,11 +89,17 @@ class AuthService {
           : tokenWithBearer;
       await saveToken(token);
 
-      // 사용자 정보 저장 (필요한 경우)
-      // User user = User.fromJson(responseData['user']);
-      // await _storage.write(key: 'userId', value: user.id);
-
-      print('로그인 성공');
+      // 서버 응답에서 닉네임이 null이거나 제공되지 않을 수 있으므로,
+      // User 객체를 생성할 때 이를 고려합니다.
+      User loggedInUser = User(
+        id: responseData['userId'],
+        phoneNumber: phoneNumber,
+        username: responseData['nickname'],
+      );
+      // Hive에 캐싱
+      await userBox.put('currentUser', loggedInUser);
+      print('로그인 성공, currentUser 캐싱 완료');
+      return loggedInUser;
     } else {
       // 에러 처리
       final responseData = jsonDecode(response.body);
@@ -116,9 +127,15 @@ class AuthService {
 
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
-      // 필요한 경우, 새로운 토큰을 저장하거나 사용자 정보를 업데이트
+      // 응답에 새로운 토큰이 제공되면 저장 (예: 동기화용)
       if (responseData['token'] != null) {
         await saveToken(responseData['token']);
+      }
+      // 로컬 Hive에 저장된 User 정보 업데이트
+      User? currentUser = userBox.get('currentUser');
+      if (currentUser != null) {
+        currentUser.updateUsername(nickname);
+        await userBox.put('currentUser', currentUser);
       }
     } else if (response.statusCode == 401) {
       throw Exception('닉네임 업데이트 실패: 잘못된 인증 정보입니다.');

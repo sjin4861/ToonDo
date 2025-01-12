@@ -4,11 +4,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/goal.dart';
+import 'package:todo_with_alarm/models/user.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:todo_with_alarm/views/auth/login_screen.dart';
 import 'package:todo_with_alarm/views/goal/goal_management_screen.dart';
+import 'package:todo_with_alarm/widgets/character/chat_bubble.dart';
 import 'package:todo_with_alarm/widgets/goal/goal_list_item.dart';
 import 'package:todo_with_alarm/widgets/image_shadow.dart';
 import '../goal/goal_input_screen.dart';
@@ -23,6 +26,11 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final goalViewmodel = Provider.of<GoalViewModel>(context);
+    // JWT 토큰을 부여받았다면 백엔드로부터 User정보를 체크할 수 있음.
+    // 이로부터 닉네임을 얻을 예정임
+    final userBox = Hive.box<User>('user');
+    final currentUser = userBox.get('currentUser');
+    final String userNickname = currentUser?.username ?? 'null';
 
     return Scaffold(
       extendBody: true, // Scaffold의 body가 BottomAppBar 뒤로 확장되도록 설정
@@ -183,36 +191,9 @@ class HomeScreen extends StatelessWidget {
                       ),
                       // 말풍선
                       Positioned(
-                        left: MediaQuery.of(context).size.width / 2 -
-                            125, // 화면 중앙에 위치
-                        bottom: 230, // 캐릭터 이미지 위쪽에 위치
-                        child: GestureDetector(
-                          onTap: () =>
-                              ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('말풍선이 클릭되었습니다!')),
-                          ),
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                'assets/icons/speech_bubble.svg',
-                                width: 200,
-                                height: 45,
-                              ),
-                              const Text(
-                                '오늘은 어떤 멋진 하루를 보낼까?',
-                                style: TextStyle(
-                                  color: Color(0xFF605956),
-                                  fontSize: 12,
-                                  fontFamily: 'Nanum Pen Script',
-                                  fontWeight: FontWeight.w400,
-                                  letterSpacing: 0.12,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                        ),
+                        left: MediaQuery.of(context).size.width / 2 - 125,
+                        bottom: 230,
+                        child: ChatBubble(nickname: userNickname),
                       ),
                     ],
                   ),

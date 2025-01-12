@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/goal.dart';
+import 'package:todo_with_alarm/models/user.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:todo_with_alarm/services/goal_service.dart';
 import 'package:todo_with_alarm/services/todo_service.dart';
@@ -25,12 +26,15 @@ Future<void> main() async {
   Hive.registerAdapter(TodoAdapter());
   Hive.registerAdapter(GoalStatusAdapter());
   Hive.registerAdapter(GoalAdapter()); // GoalAdapter 등록
+  Hive.registerAdapter(UserAdapter()); // UserAdapter 등록 (typeId는 User 클래스와 일치해야 함)
+
   // 다른 모델의 어댑터도 여기에 등록 (예: GoalAdapter())
   // Hive.registerAdapter(GoalAdapter());
 
   // Hive 박스 열기
   final Box<Todo> todoBox = await Hive.openBox<Todo>('todos');
   final Box<Goal> goalBox = await Hive.openBox<Goal>('goals');
+  final Box<User> userBox = await Hive.openBox<User>('user');
 
   // 다른 박스도 여기에 열기 (예: goals 박스)
   // final Box<Goal> goalBox = await Hive.openBox<Goal>('goals');
