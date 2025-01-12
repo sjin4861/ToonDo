@@ -196,4 +196,26 @@ class GoalService {
       }
     }
   }
+  Future<int> getUnsyncedGoalsCount() async {
+    return goalBox.values.where((goal) => !goal.isSynced).length;
+  }
+
+  Future<List<Goal>> getUnsyncedGoals() async {
+    return goalBox.values.where((goal) => !goal.isSynced).toList();
+  }
+
+  /// 서버 동기화 예시 함수 (실제 API 호출 구현 필요)
+  Future<void> syncGoal(Goal goal) async {
+    try {
+      // 예시: 서버 API 호출—구현에 맞게 수정
+      await httpClient.post(Uri.parse('$baseUrl/goals/sync'), 
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(goal.toJson()));
+      goal.isSynced = true;
+      await goal.save();
+    } catch (e) {
+      print('Error syncing goal: $e');
+      rethrow;
+    }
+  }
 }

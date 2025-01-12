@@ -22,6 +22,10 @@ Future<void> main() async {
   // Hive 초기화
   await Hive.initFlutter();
 
+  // await Hive.deleteBoxFromDisk('todos');
+  // await Hive.deleteBoxFromDisk('goals');
+  // await Hive.deleteBoxFromDisk('user');
+
   // Hive 어댑터 등록
   Hive.registerAdapter(TodoAdapter());
   Hive.registerAdapter(GoalStatusAdapter());
@@ -35,6 +39,10 @@ Future<void> main() async {
   final Box<Todo> todoBox = await Hive.openBox<Todo>('todos');
   final Box<Goal> goalBox = await Hive.openBox<Goal>('goals');
   final Box<User> userBox = await Hive.openBox<User>('user');
+
+  // await todoBox.clear(); // 기존 데이터를 모두 삭제 (개발 중에만 사용)
+  // await goalBox.clear(); // 기존 데이터를 모두 삭제 (개발 중에만 사용)
+  // await userBox.clear(); // 기존 데이터를 모두 삭제 (개발 중에만 사용)
 
   // 다른 박스도 여기에 열기 (예: goals 박스)
   // final Box<Goal> goalBox = await Hive.openBox<Goal>('goals');

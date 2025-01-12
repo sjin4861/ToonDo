@@ -1,3 +1,4 @@
+// lib/models/todo.dart
 import 'package:hive/hive.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
@@ -33,6 +34,10 @@ class Todo extends HiveObject {
   @HiveField(8)
   int importance; // 중요도 (0 또는 1)
 
+  // 동기화 여부: 서버에 동기화가 완료되었으면 true, 아니면 false.
+  @HiveField(9)
+  bool isSynced;
+
   Todo({
     String? id,
     required this.title,
@@ -43,19 +48,20 @@ class Todo extends HiveObject {
     this.comment = '',
     this.urgency = 0,
     this.importance = 0,
+    this.isSynced = false, // 기본적으로 미동기화 상태
   }) : this.id = id ?? const Uuid().v4();
 
   bool isDDayTodo() {
     return !(startDate.year == endDate.year &&
-          startDate.month == endDate.month &&
-          startDate.day == endDate.day);
+        startDate.month == endDate.month &&
+        startDate.day == endDate.day);
   }
 
   bool isFinished() {
     return status == 100.0;
   }
 
-  // JSON으로 변환하는 메서드
+  // JSON으로 변환하는 메서드 (동기화 관련 정보는 서버와 협의하여 필요하면 포함)
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -67,6 +73,7 @@ class Todo extends HiveObject {
       'endDate': endDate.toIso8601String(),
       'urgency': urgency,
       'importance': importance,
+      // isSynced는 로컬 관리용이므로 보통 서버에는 포함하지 않거나 별도 필드 사용
     };
   }
 
@@ -79,6 +86,7 @@ class Todo extends HiveObject {
     endDate = todo.endDate;
     urgency = todo.urgency;
     importance = todo.importance;
+    isSynced = false; // 수정 시 동기화가 필요하므로 false로 설정
   }
 
   // JSON에서 객체로 변환하는 메서드
@@ -93,18 +101,20 @@ class Todo extends HiveObject {
       comment: json['comment'],
       urgency: (json['urgency'] as num).toInt(),
       importance: (json['importance'] as num).toInt(),
+      // 서버에서 isSynced 값이 오지 않는다면 기본 false 사용
+      isSynced: false,
     );
   }
 
   Color getBorderColor() {
     if (importance == 1 && urgency == 1) {
-      return Colors.red; // 중요도 1, 긴급도 1
+      return Colors.red;
     } else if (importance == 1 && urgency == 0) {
-      return Colors.blue; // 중요도 1, 긴급도 0
+      return Colors.blue;
     } else if (importance == 0 && urgency == 1) {
-      return Colors.yellow; // 중요도 0, 긴급도 1
+      return Colors.yellow;
     } else {
-      return Colors.black; // 중요도 0, 긴급도 0
+      return Colors.black;
     }
   }
 }

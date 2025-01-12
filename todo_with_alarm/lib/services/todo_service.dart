@@ -109,4 +109,28 @@ class TodoService {
       rethrow;
     }
   }
+
+  /// 미동기화된 투두 목록 반환
+  Future<List<Todo>> getUnsyncedTodos() async {
+    return _todoBox.values.where((todo) => !todo.isSynced).toList();
+  }
+
+  /// 미동기화된 투두 개수 반환
+  Future<int> getUnsyncedTodosCount() async {
+    return _todoBox.values.where((todo) => !todo.isSynced).length;
+  }
+
+  /// 서버 동기화 예시 함수 (실제 API 호출 구현 필요)
+  Future<void> syncTodo(Todo todo) async {
+    try {
+      // 예시: 서버 API 호출 (POST/PUT) — 실제 URL, 메서드, 헤더 등을 수정하세요.
+      // 예: final response = await httpClient.post(Uri.parse('YOUR_API_URL'), headers: {...}, body: jsonEncode(todo.toJson()));
+      // 동기화 성공 시
+      todo.isSynced = true;
+      await todo.save();
+    } catch (e) {
+      print('Error syncing todo: $e');
+      rethrow;
+    }
+  }
 }

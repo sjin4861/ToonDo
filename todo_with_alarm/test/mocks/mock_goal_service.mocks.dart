@@ -182,4 +182,32 @@ class MockGoalService extends _i1.Mock implements _i5.GoalService {
         returnValue: _i7.Future<void>.value(),
         returnValueForMissingStub: _i7.Future<void>.value(),
       ) as _i7.Future<void>);
+
+  @override
+  _i7.Future<int> getUnsyncedGoalsCount() => (super.noSuchMethod(
+        Invocation.method(
+          #getUnsyncedGoalsCount,
+          [],
+        ),
+        returnValue: _i7.Future<int>.value(0),
+      ) as _i7.Future<int>);
+
+  @override
+  _i7.Future<List<_i4.Goal>> getUnsyncedGoals() => (super.noSuchMethod(
+        Invocation.method(
+          #getUnsyncedGoals,
+          [],
+        ),
+        returnValue: _i7.Future<List<_i4.Goal>>.value(<_i4.Goal>[]),
+      ) as _i7.Future<List<_i4.Goal>>);
+
+  @override
+  _i7.Future<void> syncGoal(_i4.Goal? goal) => (super.noSuchMethod(
+        Invocation.method(
+          #syncGoal,
+          [goal],
+        ),
+        returnValue: _i7.Future<void>.value(),
+        returnValueForMissingStub: _i7.Future<void>.value(),
+      ) as _i7.Future<void>);
 }

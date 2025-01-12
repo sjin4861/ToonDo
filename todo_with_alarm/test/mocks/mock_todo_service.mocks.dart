@@ -121,4 +121,32 @@ class MockTodoService extends _i1.Mock implements _i2.TodoService {
         returnValue: _i3.Future<void>.value(),
         returnValueForMissingStub: _i3.Future<void>.value(),
       ) as _i3.Future<void>);
+
+  @override
+  _i3.Future<List<_i4.Todo>> getUnsyncedTodos() => (super.noSuchMethod(
+        Invocation.method(
+          #getUnsyncedTodos,
+          [],
+        ),
+        returnValue: _i3.Future<List<_i4.Todo>>.value(<_i4.Todo>[]),
+      ) as _i3.Future<List<_i4.Todo>>);
+
+  @override
+  _i3.Future<int> getUnsyncedTodosCount() => (super.noSuchMethod(
+        Invocation.method(
+          #getUnsyncedTodosCount,
+          [],
+        ),
+        returnValue: _i3.Future<int>.value(0),
+      ) as _i3.Future<int>);
+
+  @override
+  _i3.Future<void> syncTodo(_i4.Todo? todo) => (super.noSuchMethod(
+        Invocation.method(
+          #syncTodo,
+          [todo],
+        ),
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
 }
