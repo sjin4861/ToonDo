@@ -3,6 +3,7 @@ import 'package:todo_with_alarm/views/goal/goal_input_screen.dart';
 import 'package:todo_with_alarm/views/goal/goal_management_screen.dart';
 import 'package:todo_with_alarm/views/home/home_screen.dart';
 import 'package:todo_with_alarm/views/goal/goal_progress_screen.dart';
+import 'package:todo_with_alarm/views/my_page/my_page_screen.dart';
 import 'package:todo_with_alarm/views/todo/todo_submission_screen.dart';
 // import 'package:todo_with_alarm/views/eisenhower_matrix_screen.dart';
 import 'package:todo_with_alarm/views/welcome/welcome_screen.dart';
@@ -26,6 +27,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => GoalProgressScreen());
       case '/todo':
         return MaterialPageRoute(builder: (_) => TodoSubmissionScreen());
+      case '/mypage':
+        return MaterialPageRoute(builder: (_) => const MyPageScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

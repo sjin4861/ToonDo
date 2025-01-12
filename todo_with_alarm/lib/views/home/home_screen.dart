@@ -11,6 +11,7 @@ import 'package:todo_with_alarm/models/user.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:todo_with_alarm/views/auth/login_screen.dart';
 import 'package:todo_with_alarm/views/goal/goal_management_screen.dart';
+import 'package:todo_with_alarm/views/my_page/my_page_screen.dart';
 import 'package:todo_with_alarm/widgets/character/chat_bubble.dart';
 import 'package:todo_with_alarm/widgets/goal/goal_list_item.dart';
 import 'package:todo_with_alarm/widgets/image_shadow.dart';
@@ -323,8 +324,9 @@ class HomeScreen extends StatelessWidget {
                   color: Colors.grey,
                 ),
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('마이페이지는 구현중입니다!')),
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MyPageScreen()),
                   );
                 },
               ),
