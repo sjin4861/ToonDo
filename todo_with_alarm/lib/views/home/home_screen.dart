@@ -38,6 +38,7 @@ class HomeScreen extends StatelessWidget {
       backgroundColor: Colors.transparent, // 배경 색상을 투명하게 설정
       extendBodyBehindAppBar: true, // AppBar가 배경을 덮지 않도록 설정
       appBar: AppBar(
+        automaticallyImplyLeading: false,  // 기본 뒤로가기 버튼 숨김
         title: const SizedBox(
           width: 100, // 원하는 너비 지정
           height: 40, // 원하는 높이 지정

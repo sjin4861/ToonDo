@@ -18,6 +18,7 @@ class LoginScreen extends StatelessWidget {
             appBar: AppBar(
               backgroundColor: Color(0xFFFCFCFC),
               elevation: 0.5,
+              automaticallyImplyLeading: false, // 이 속성으로 기본 뒤로가기 버튼 숨김
               leading: IconButton(
                 icon: Icon(Icons.arrow_back, color: Color(0xFF1C1D1B)),
                 onPressed: () {
