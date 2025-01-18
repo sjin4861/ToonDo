@@ -1,10 +1,20 @@
 // lib/services/todo_service.dart
 
+import 'dart:convert';
+
 import 'package:hive/hive.dart';
+import 'package:todo_with_alarm/constants.dart';
+import 'package:http/http.dart' as http;
 import 'package:todo_with_alarm/models/todo.dart';
+import 'package:todo_with_alarm/services/auth_service.dart';
+import 'package:todo_with_alarm/services/user_service.dart';
 
 class TodoService {
+  final String baseUrl = Constants.baseUrl;
+  final http.Client httpClient = http.Client();
   final Box<Todo> _todoBox;
+  final AuthService authService = AuthService();
+  final UserService userService = UserService();
 
   /// 생성자를 통해 Hive 박스를 주입받습니다.
   TodoService(this._todoBox);
@@ -37,6 +47,7 @@ class TodoService {
   // 특정 투두를 수정하는 메서드
   Future<void> updateTodo(Todo updatedTodo) async {
     try {
+      updatedTodo.isSynced = false; // 동기화되지 않은 상태로 변경
       await updatedTodo.save(); // HiveObject의 save 메서드 사용
     } catch (e) {
       print('Error updating todo: $e');
@@ -61,6 +72,7 @@ class TodoService {
   }
 
   /// 특정 투두를 삭제하는 메서드
+  /// 이렇게 되었을 때 서버에서도 삭제해야할까?? (지윤님과 상의 필요)
   Future<void> deleteTodoById(String id) async {
     try {
       await _todoBox.delete(id);
@@ -73,6 +85,7 @@ class TodoService {
   /// 특정 투두의 날짜를 업데이트하는 메서드
   Future<void> updateTodoDates(Todo todo) async {
     try {
+      todo.isSynced = false; // 동기화되지 않은 상태로 변경
       await todo.save();
     } catch (e) {
       print('Error updating todo dates: $e');
@@ -120,17 +133,76 @@ class TodoService {
     return _todoBox.values.where((todo) => !todo.isSynced).length;
   }
 
-  /// 서버 동기화 예시 함수 (실제 API 호출 구현 필요)
-  Future<void> syncTodo(Todo todo) async {
-    try {
-      // 예시: 서버 API 호출 (POST/PUT) — 실제 URL, 메서드, 헤더 등을 수정하세요.
-      // 예: final response = await httpClient.post(Uri.parse('YOUR_API_URL'), headers: {...}, body: jsonEncode(todo.toJson()));
-      // 동기화 성공 시
-      todo.isSynced = true;
-      await todo.save();
-    } catch (e) {
-      print('Error syncing todo: $e');
-      rethrow;
+  Future<void> fetchTodos() async {
+    final String? token = await authService.getToken();
+    if (token == null) {
+      throw Exception('JWT 토큰이 없습니다. 다시 로그인해주세요.');
+    }
+
+    final url = Uri.parse('$baseUrl/todos/all/fetch');
+    final response = await httpClient.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      List<Todo> todos = data.map((json) => Todo.fromJson(json)).toList();
+
+      // 기존에 저장된 투두들을 초기화하거나 병합합니다.
+      // (여기서는 간단하게 클리어 후 전부 저장)
+      await _todoBox.clear();
+      final Map<String, Todo> todoMap = { for (var todo in todos) todo.id : todo };
+      await _todoBox.putAll(todoMap);
+
+      // 동기화 완료 시 마지막 동기화 시각을 갱신
+      // (예시에서는 Hive의 별도 'sync' 박스에 저장)
+      userService.updateTodoSyncTime(DateTime.now());
+    }
+    else{
+      throw Exception('Failed to fetch todos: ${response.body}');
     }
   }
+
+  /// 서버 동기화 예시 함수 (실제 API 호출 구현 필요)
+  Future<void> commitTodo() async {
+    // 미동기화된 Todo 목록 가져오기
+    final unsyncedTodos = _todoBox.values.where((todo) => !todo.isSynced).toList();
+    final String? token = await authService.getToken();
+
+    // 동기화할 항목이 없다면 함수 종료
+    if (unsyncedTodos.isEmpty) return;
+    
+    // 서버 요청 URL 설정
+    final url = Uri.parse('$baseUrl/todos/all/sync');
+    
+    try {
+      // 미동기화된 Todo들을 JSON 형식으로 변환하여 PUT 방식으로 서버에 전송
+      final response = await httpClient.put(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(unsyncedTodos.map((todo) => todo.toJson()).toList()),
+      );
+      
+      if (response.statusCode == 200) {
+        // 동기화 성공: 각 Todo의 isSynced를 true로 업데이트 후 저장
+        for (var todo in unsyncedTodos) {
+          todo.isSynced = true;
+          await todo.save();
+        }
+        userService.updateTodoSyncTime(DateTime.now());
+      } else {
+        throw Exception('Failed to sync todos: ${response.body}');
+      }
+    } catch (e) {
+      print('Error syncing todos: $e');
+      rethrow;
+    }
+  } 
 }
