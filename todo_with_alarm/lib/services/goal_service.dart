@@ -5,12 +5,16 @@ import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
 import 'package:todo_with_alarm/models/goal.dart';
 import 'package:todo_with_alarm/constants.dart';
-import 'package:todo_with_alarm/models/goal_status.dart'; // constants.dart 임포트
+import 'package:todo_with_alarm/models/goal_status.dart';
+import 'package:todo_with_alarm/services/auth_service.dart';
+import 'package:todo_with_alarm/services/user_service.dart'; // constants.dart 임포트
 
 class GoalService {
   final String baseUrl = Constants.baseUrl; // constants.dart에서 baseUrl 가져오기
   final http.Client httpClient = http.Client(); // httpClient를 내부에서 인스턴스화
   final Box<Goal> goalBox; // Hive 박스 인스턴스
+  final AuthService authService = AuthService();
+  final UserService userService = UserService();
 
   GoalService(this.goalBox); // 생성자에서 goalBox 받기
 
@@ -204,17 +208,82 @@ class GoalService {
     return goalBox.values.where((goal) => !goal.isSynced).toList();
   }
 
-  /// 서버 동기화 예시 함수 (실제 API 호출 구현 필요)
-  Future<void> syncGoal(Goal goal) async {
+  Future<void> fetchGoals() async {
+    // JWT 토큰이 필요하다면
+    final String? token = await authService.getToken();
+    if (token == null) {
+      throw Exception('JWT 토큰이 없습니다. 다시 로그인해주세요.');
+    }
+
+    final url = Uri.parse('$baseUrl/goals/all/fetch');
     try {
-      // 예시: 서버 API 호출—구현에 맞게 수정
-      await httpClient.post(Uri.parse('$baseUrl/goals/sync'), 
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode(goal.toJson()));
-      goal.isSynced = true;
-      await goal.save();
+      final response = await httpClient.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        final List<Goal> goals = data.map((g) => Goal.fromJson(g)).toList();
+
+        // 기존 로컬 Goal 초기화 후 새 Goal 목록 저장
+        await goalBox.clear();
+        final Map<String, Goal> goalMap = {
+          for (var goal in goals) if (goal.id != null) goal.id!: goal
+        };
+        await goalBox.putAll(goalMap);
+
+        // 마지막 동기화 시각 기록
+        await userService.updateGoalSyncTime(DateTime.now());
+      } else {
+        throw Exception('Failed to fetch goals: ${response.body}');
+      }
     } catch (e) {
-      print('Error syncing goal: $e');
+      print('Error fetching goals: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> commitGoal() async {
+    final List<Goal> unsyncedGoals = goalBox.values.where((g) => !g.isSynced).toList();
+    if (unsyncedGoals.isEmpty) {
+      return; // 동기화할 항목이 없으면 종료
+    }
+
+    // JWT 토큰 획득
+    final String? token = await authService.getToken();
+    if (token == null) {
+      throw Exception('JWT 토큰이 없습니다. 다시 로그인해주세요.');
+    }
+
+    // 서버에 PUT 또는 POST 등 원하는 방식으로 일괄 전송
+    final url = Uri.parse('$baseUrl/goals/all/commit');
+    try {
+      final response = await httpClient.put(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(unsyncedGoals.map((goal) => goal.toJson()).toList()),
+      );
+
+      if (response.statusCode == 200) {
+        // 동기화 성공 시 각 Goal의 isSynced = true로 만들고 저장
+        for (var goal in unsyncedGoals) {
+          goal.isSynced = true;
+          await goal.save();
+        }
+        // 동기화 성공 시점 기록
+        await userService.updateGoalSyncTime(DateTime.now());
+      } else {
+        throw Exception('Failed to commit goals: ${response.body}');
+      }
+    } catch (e) {
+      print('Error commit goals: $e');
       rethrow;
     }
   }
