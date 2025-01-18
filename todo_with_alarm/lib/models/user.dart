@@ -13,10 +13,22 @@ class User {
   @HiveField(2)
   String? username; // 닉네임
 
+  @HiveField(3)
+  DateTime? lastTodoSyncTime;   // Todo 동기화 시각
+
+  @HiveField(4)
+  DateTime? lastGoalSyncTime;   // Goal 동기화 시각
+
+  @HiveField(5)
+  List<String>? conversationLog; // 대화 이력 예시 (문자열 리스트)
+
   User({
     required this.id,
     required this.phoneNumber,
     this.username,
+    this.lastTodoSyncTime,
+    this.lastGoalSyncTime,
+    this.conversationLog,
   });
 
   // JSON 변환 메서드 (서버와의 통신에 사용)
@@ -25,6 +37,9 @@ class User {
       'id': id,
       'phoneNumber': phoneNumber,
       'username': username,
+      'lastTodoSyncTime': lastTodoSyncTime?.toIso8601String(),
+      'lastGoalSyncTime': lastGoalSyncTime?.toIso8601String(),
+      'conversationLog': conversationLog,
     };
   }
 
@@ -39,5 +54,50 @@ class User {
 
   void updateUsername(String newUsername) {
     username = newUsername;
+  }
+
+  bool updateTodoSyncTime(DateTime syncTime) {
+    if (lastTodoSyncTime != syncTime) {
+      lastTodoSyncTime = syncTime;
+      return true;
+    }
+    return false;
+  }
+
+  bool updateGoalSyncTime(DateTime syncTime) {
+    if (lastGoalSyncTime != syncTime) {
+      lastGoalSyncTime = syncTime;
+      return true;
+    }
+    return false;
+  }
+
+  void addConversationLog(String log) {
+    conversationLog ??= [];
+    conversationLog!.add(log);
+  }
+
+  void clearConversationLog() {
+    conversationLog = [];
+  }
+
+  @override
+  String toString() {
+    return 'User{id: $id, phoneNumber: $phoneNumber, username: $username}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+  
+    return other is User &&
+      other.id == id &&
+      other.phoneNumber == phoneNumber &&
+      other.username == username;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^ phoneNumber.hashCode ^ username.hashCode;
   }
 }

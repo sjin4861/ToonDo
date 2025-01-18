@@ -20,19 +20,28 @@ class UserAdapter extends TypeAdapter<User> {
       id: fields[0] as int,
       phoneNumber: fields[1] as String,
       username: fields[2] as String?,
+      lastTodoSyncTime: fields[3] as DateTime?,
+      lastGoalSyncTime: fields[4] as DateTime?,
+      conversationLog: (fields[5] as List?)?.cast<String>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.phoneNumber)
       ..writeByte(2)
-      ..write(obj.username);
+      ..write(obj.username)
+      ..writeByte(3)
+      ..write(obj.lastTodoSyncTime)
+      ..writeByte(4)
+      ..write(obj.lastGoalSyncTime)
+      ..writeByte(5)
+      ..write(obj.conversationLog);
   }
 
   @override
