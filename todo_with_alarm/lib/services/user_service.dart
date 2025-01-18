@@ -10,9 +10,21 @@ class UserService {
     await userBox.put('lastTodoSyncTime', syncTime);
   }
   
-  /// 마지막 동기화 시각을 조회하는 메서드 (필요한 경우)
-  DateTime? getLastSyncTime() {
+  /// Goal 동기화 시간 저장 (신규)
+  Future<void> updateGoalSyncTime(DateTime syncTime) async {
+    final Box userBox = Hive.box('user');
+    await userBox.put('lastGoalSyncTime', syncTime);
+  }
+
+  /// 마지막 Todo 동기화 시각 조회
+  DateTime? getLastTodoSyncTime() {
     final Box userBox = Hive.box('user');
     return userBox.get('lastTodoSyncTime');
+  }
+
+  /// (필요하다면) 마지막 Goal 동기화 시각 조회
+  DateTime? getLastGoalSyncTime() {
+    final Box userBox = Hive.box('user');
+    return userBox.get('lastGoalSyncTime');
   }
 }
