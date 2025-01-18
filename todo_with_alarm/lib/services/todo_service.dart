@@ -73,6 +73,7 @@ class TodoService {
 
   /// 특정 투두를 삭제하는 메서드
   /// 이렇게 되었을 때 서버에서도 삭제해야할까?? (지윤님과 상의 필요)
+  /// 내가 편한건 커밋해서 없는 투두는 그냥 삭제하는건데
   Future<void> deleteTodoById(String id) async {
     try {
       await _todoBox.delete(id);
@@ -177,7 +178,7 @@ class TodoService {
     if (unsyncedTodos.isEmpty) return;
     
     // 서버 요청 URL 설정
-    final url = Uri.parse('$baseUrl/todos/all/sync');
+    final url = Uri.parse('$baseUrl/todos/all/commit');
     
     try {
       // 미동기화된 Todo들을 JSON 형식으로 변환하여 PUT 방식으로 서버에 전송
@@ -198,10 +199,10 @@ class TodoService {
         }
         userService.updateTodoSyncTime(DateTime.now());
       } else {
-        throw Exception('Failed to sync todos: ${response.body}');
+        throw Exception('Failed to commit todos: ${response.body}');
       }
     } catch (e) {
-      print('Error syncing todos: $e');
+      print('Error commit todos: $e');
       rethrow;
     }
   } 
