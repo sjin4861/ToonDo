@@ -1,4 +1,5 @@
 // lib/viewmodels/my_page/my_page_viewmodel.dart
+
 import 'package:flutter/material.dart';
 import 'package:todo_with_alarm/models/user.dart';
 import 'package:todo_with_alarm/services/todo_service.dart';
@@ -15,17 +16,29 @@ class MyPageViewModel extends ChangeNotifier {
     required this.goalService,
   });
 
-  Future<void> syncData() async {
-    // 동기화 대상 투두 및 목표 가져오기
-    final unsyncedTodos = await todoService.getUnsyncedTodos();
-    final unsyncedGoals = await goalService.getUnsyncedGoals();
+  /// 1) 로컬 -> 서버: 미동기화 데이터를 서버에 반영(Commit)
+  Future<void> commitData() async {
+    try {
+      // 투두 & 목표 각각 커밋
+      await todoService.commitTodo();
+      await goalService.commitGoal();
+    } catch (e) {
+      print('Error while committing data: $e');
+    } finally {
+      notifyListeners();
+    }
+  }
 
-    for (var todo in unsyncedTodos) {
-      await todoService.syncTodo(todo);
+  /// 2) 서버 -> 로컬: 서버 데이터 전체를 받아와 로컬에 갱신(Fetch)
+  Future<void> fetchData() async {
+    try {
+      // 투두 & 목표 각각 가져오기
+      await todoService.fetchTodos();
+      await goalService.fetchGoals();
+    } catch (e) {
+      print('Error while fetching data: $e');
+    } finally {
+      notifyListeners();
     }
-    for (var goal in unsyncedGoals) {
-      await goalService.syncGoal(goal);
-    }
-    notifyListeners();
   }
 }
