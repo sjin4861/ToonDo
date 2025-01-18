@@ -102,7 +102,7 @@ class Todo extends HiveObject {
       urgency: (json['urgency'] as num).toInt(),
       importance: (json['importance'] as num).toInt(),
       // 서버에서 isSynced 값이 오지 않는다면 기본 false 사용
-      isSynced: false,
+      isSynced: true,
     );
   }
 
