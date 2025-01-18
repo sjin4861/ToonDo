@@ -14,9 +14,9 @@ class GoalService {
   final http.Client httpClient = http.Client(); // httpClient를 내부에서 인스턴스화
   final Box<Goal> goalBox; // Hive 박스 인스턴스
   final AuthService authService = AuthService();
-  final UserService userService = UserService();
+  final UserService userService;
 
-  GoalService(this.goalBox); // 생성자에서 goalBox 받기
+  GoalService(this.goalBox, this.userService); // 생성자에서 goalBox 받기
 
   /// 원격 서버에서 목표를 불러와 로컬 Hive 박스에 저장
   Future<List<Goal>> loadGoals() async {

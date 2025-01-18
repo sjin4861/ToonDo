@@ -14,10 +14,10 @@ class TodoService {
   final http.Client httpClient = http.Client();
   final Box<Todo> _todoBox;
   final AuthService authService = AuthService();
-  final UserService userService = UserService();
+  final UserService userService;
 
   /// 생성자를 통해 Hive 박스를 주입받습니다.
-  TodoService(this._todoBox);
+  TodoService(this._todoBox, this.userService);
 
   /// 모든 투두를 저장하는 메서드
   /// 기존 데이터를 모두 삭제한 후 새로운 투두 리스트를 저장합니다.

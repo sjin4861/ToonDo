@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/goal.dart';
 import 'package:todo_with_alarm/models/user.dart';
+import 'package:todo_with_alarm/services/user_service.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:todo_with_alarm/services/goal_service.dart';
 import 'package:todo_with_alarm/services/todo_service.dart';
@@ -48,8 +49,10 @@ Future<void> main() async {
   // final Box<Goal> goalBox = await Hive.openBox<Goal>('goals');
 
   // TodoService 인스턴스 생성
-  final todoService = TodoService(todoBox);
-  final goalService = GoalService(goalBox);
+  final userService = UserService(userBox);
+  final todoService = TodoService(todoBox, userService);
+  final goalService = GoalService(goalBox, userService); // GoalService 인스턴스 생성
+  
   runApp(
     MultiProvider(
       providers: [
@@ -59,6 +62,9 @@ Future<void> main() async {
         // Provider<GoalService> 등록
         Provider<GoalService>(
           create: (_) => goalService),
+        // Provider<UserService> 등록
+        Provider<UserService>(
+          create: (_) => userService),
         // ChangeNotifierProvider for GoalViewModel
         ChangeNotifierProvider<GoalViewModel>(
           create: (context) => GoalViewModel(
