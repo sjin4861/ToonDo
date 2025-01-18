@@ -3,7 +3,23 @@ import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:todo_with_alarm/viewmodels/welcome/welcome_viewmodel.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
+  @override
+  State<WelcomeScreen> createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    // 화면이 표시된 직후 로그인 여부 확인
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final viewModel = Provider.of<WelcomeViewModel>(context, listen: false);
+      viewModel.checkIfLoggedIn(context);
+    });
+  }
+  
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<WelcomeViewModel>(

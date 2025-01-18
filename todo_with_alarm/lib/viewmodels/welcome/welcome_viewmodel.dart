@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_with_alarm/services/auth_service.dart';
 import 'package:todo_with_alarm/views/auth/signup_screen.dart';
 import 'package:todo_with_alarm/views/home/home_screen.dart';
 import 'package:todo_with_alarm/views/onboarding/onboarding_screen.dart';
@@ -36,5 +37,24 @@ class WelcomeViewModel extends ChangeNotifier {
       context,
       MaterialPageRoute(builder: (context) => OnboardingScreen(userId: 0)),
     );
+  }
+
+  Future<void> checkIfLoggedIn(BuildContext context) async {
+    final authService = AuthService();
+    final token = await authService.getToken();
+    if (token == null || token.isEmpty) {
+      // 토큰이 없으면 로그인 안 된 상태 -> 그냥 WelcomeScreen 계속 보여줌
+      return;
+    }
+
+    final currentUser = authService.userBox.get('currentUser');
+    if (currentUser == null) {
+      // 토큰은 있는데 currentUser가 없으면? 
+      // 보통은 서버로부터 user 정보 다시 불러오거나, 로그인 흐름 유도
+      return;
+    }
+
+    // 여기까지 왔으면 완전히 로그인된 상태
+    Navigator.pushReplacementNamed(context, '/home');
   }
 }
