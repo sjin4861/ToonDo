@@ -1,65 +1,72 @@
 // lib/widgets/character/chat_bubble.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:todo_with_alarm/services/gpt_service.dart';
 
 class ChatBubble extends StatefulWidget {
   final String? nickname; // 사용자의 닉네임
-  const ChatBubble({Key? key, required this.nickname}) : super(key: key);
+  final GptService gptService; // GPT 호출에 필요한 객체
+
+  const ChatBubble({
+    Key? key,
+    required this.nickname,
+    required this.gptService,
+  }) : super(key: key);
 
   @override
   _ChatBubbleState createState() => _ChatBubbleState();
 }
 
 class _ChatBubbleState extends State<ChatBubble> {
-  // 말풍선에 나타날 메시지 리스트
-  late List<String> _messages;
-  int _currentMessageIndex = 0;
+  // 현재 말풍선에 표시될 메시지
+  String _currentMessage = '';
 
   @override
   void initState() {
     super.initState();
-    // 첫 메시지에는 닉네임을 포함한 인사말로 시작
-    _messages = [
-      '안녕, ${widget.nickname}! 오늘 하루 어때?',
-      '무슨 일이 있었어? 이야기해줘!',
-      '내가 도와줄 수 있는 일이 있을까?',
-      '오늘의 할 일은 모두 끝냈어?',
-      '기분 좋은 하루 보내고 있어?',
-    ];
+    // 초기 메시지 (간단한 인사말 등)
+    _currentMessage = '안녕, ${widget.nickname}! 오늘 하루 어때?';
   }
 
-  void _nextMessage() {
-    setState(() {
-      _currentMessageIndex = (_currentMessageIndex + 1) % _messages.length;
-    });
+  // 말풍선 탭 시 GPT 호출
+  Future<void> _handleBubbleTap() async {
+    final gptResponse = await widget.gptService.getSlimeResponse();
+    if (gptResponse != null) {
+      setState(() {
+        _currentMessage = gptResponse.replaceFirst('슬라임: ', '');
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: _nextMessage,
+      onTap: _handleBubbleTap,
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // 말풍선 배경 (SVG 이미지 사용 예)
+          // 말풍선 배경
           SvgPicture.asset(
             'assets/icons/speech_bubble.svg',
             width: 200,
             height: 45,
           ),
-          // 메시지 텍스트
-          Padding(
+          // 텍스트가 길어지면 여러 줄로 표시되도록 Text 위젯을 Wrap하거나 Flexible로 감싸기
+          Container(
+            width: 180, // 약간 여유있게 내부 패딩 고려 (200보다 약간 작게)
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Text(
-              _messages[_currentMessageIndex],
+              _currentMessage,
               style: const TextStyle(
                 color: Color(0xFF605956),
                 fontSize: 12,
-                fontFamily: 'Nanum Pen Script',
                 fontWeight: FontWeight.w400,
                 letterSpacing: 0.12,
               ),
               textAlign: TextAlign.center,
+              maxLines: 2, // 최대 2줄로 표시 (필요에 따라 조절)
+              overflow: TextOverflow.ellipsis, // 내용이 넘으면 줄임표 표시
             ),
           ),
         ],

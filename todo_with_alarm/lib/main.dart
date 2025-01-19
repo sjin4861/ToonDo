@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/goal.dart';
 import 'package:todo_with_alarm/models/user.dart';
+import 'package:todo_with_alarm/services/gpt_service.dart';
 import 'package:todo_with_alarm/services/user_service.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:todo_with_alarm/services/goal_service.dart';
@@ -52,7 +53,8 @@ Future<void> main() async {
   final userService = UserService(userBox);
   final todoService = TodoService(todoBox, userService);
   final goalService = GoalService(goalBox, userService); // GoalService 인스턴스 생성
-  
+  final gptService = GptService(userService: userService);
+
   runApp(
     MultiProvider(
       providers: [
@@ -65,6 +67,8 @@ Future<void> main() async {
         // Provider<UserService> 등록
         Provider<UserService>(
           create: (_) => userService),
+        Provider<GptService>(
+          create: (_) => gptService),
         // ChangeNotifierProvider for GoalViewModel
         ChangeNotifierProvider<GoalViewModel>(
           create: (context) => GoalViewModel(

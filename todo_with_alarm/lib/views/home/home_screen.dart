@@ -8,6 +8,7 @@ import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/goal.dart';
 import 'package:todo_with_alarm/models/user.dart';
+import 'package:todo_with_alarm/services/gpt_service.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:todo_with_alarm/views/auth/login_screen.dart';
 import 'package:todo_with_alarm/views/goal/goal_management_screen.dart';
@@ -32,6 +33,8 @@ class HomeScreen extends StatelessWidget {
     final userBox = Hive.box<User>('user');
     final currentUser = userBox.get('currentUser');
     final String userNickname = currentUser?.username ?? 'null';
+
+    final gptService = Provider.of<GptService>(context, listen: false);
 
     return Scaffold(
       extendBody: true, // Scaffold의 body가 BottomAppBar 뒤로 확장되도록 설정
@@ -193,9 +196,12 @@ class HomeScreen extends StatelessWidget {
                       ),
                       // 말풍선
                       Positioned(
-                        left: MediaQuery.of(context).size.width / 2 - 125,
-                        bottom: 230,
-                        child: ChatBubble(nickname: userNickname),
+                        left: MediaQuery.of(context).size.width / 2 - 125, // 변경: -125에서 -150으로
+                        bottom: 230, // 변경: 230에서 210으로
+                        child: ChatBubble(
+                          nickname: userNickname,
+                          gptService: gptService,
+                        ),
                       ),
                     ],
                   ),

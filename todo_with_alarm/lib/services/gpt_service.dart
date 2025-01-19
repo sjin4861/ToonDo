@@ -25,8 +25,10 @@ class GptService {
     // 1) UserService에서 필요한 정보들을 불러오기
     final user = userService.getCurrentUser();
     final userName = user?.username ?? '사용자'; // 사용자의 닉네임 (없으면 '사용자')
+    // 개발 단계라서 일단 초기화
+    userService.clearConversationLog(); // 대화 내역 초기화 
     final conversationLog = userService.getConversationLog(); // 지금까지의 대화 내역
-
+    
     // (선택) 현재 시각
     final currentTime = DateTime.now();
 
@@ -47,8 +49,10 @@ class GptService {
     }
     userPromptBuffer.writeln('');
     userPromptBuffer.writeln('현재 시간: $currentTime');
-    userPromptBuffer.writeln('지금 너는 슬라임 캐릭터 역할이야. 친근하고 유쾌하게 답변해줘!');
+    userPromptBuffer.writeln('');
 
+    print("userPromptBuffer: ");
+    print(userPromptBuffer.toString());
     // 4) OpenAI ChatCompletion API 요청 Body
     final body = jsonEncode({
       'model': 'gpt-4o',  
@@ -76,11 +80,14 @@ class GptService {
     try {
       final response = await http.post(url, headers: headers, body: body);
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
+        final utf8Body = utf8.decode(response.bodyBytes);
+        final data = jsonDecode(utf8Body);
+        //print(response.headers['content-type']);
         final resultText = data['choices'][0]['message']['content'] as String;
 
         //GPT의 응답을 대화 로그에 추가
         userService.addConversationLine('슬라임: $resultText');
+        print('슬라임 : $resultText');
 
         return resultText;
       } else {
