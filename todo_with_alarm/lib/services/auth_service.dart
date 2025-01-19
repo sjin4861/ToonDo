@@ -28,6 +28,15 @@ class AuthService {
     return await secureStorage.read(key: 'jwt_token');
   }
 
+  /// 로그아웃 메서드
+  Future<void> logout() async {
+    // 토큰 삭제
+    await secureStorage.delete(key: 'jwt_token');
+    // 현재 사용자 정보 삭제
+    await userBox.delete('currentUser');
+    // 필요하다면 추가 정리 작업 수행
+  }
+
   // 회원가입
   Future<User> registerUser(String phoneNumber, String password) async {
     final url = Uri.parse('$baseUrl/users/signup');

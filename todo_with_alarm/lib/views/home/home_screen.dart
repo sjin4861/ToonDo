@@ -8,6 +8,7 @@ import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/goal.dart';
 import 'package:todo_with_alarm/models/user.dart';
+import 'package:todo_with_alarm/services/auth_service.dart';
 import 'package:todo_with_alarm/services/gpt_service.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:todo_with_alarm/views/auth/login_screen.dart';
@@ -58,20 +59,36 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
-          SizedBox(
-            width: 50, // 아이콘 버튼의 너비 지정
-            height: 50, // 아이콘 버튼의 높이 지정
-            child: IconButton(
-              key: const Key('goToLoginButton'),
-              icon: const Icon(Icons.login, size: 24),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                );
-              },
-            ),
+          // 로그아웃 아이콘 추가
+          IconButton(
+            key: const Key('logoutButton'),
+            icon: const Icon(Icons.exit_to_app, size: 24),
+            onPressed: () async {
+              final shouldLogout = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('로그아웃'),
+                  content: const Text('정말 로그아웃 하시겠습니까?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: const Text('취소'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: const Text('로그아웃'),
+                    ),
+                  ],
+                ),
+              );
+              if (shouldLogout == true) {
+                await AuthService().logout();
+                // 로그아웃 후 WelcomeScreen으로 이동 (로그아웃 상태라 뒤로가기 불가하도록 replacement)
+                Navigator.pushReplacementNamed(context, '/');
+              }
+            },
           ),
+          // 기존 로그인 아이콘 (혹은 다른 동작)도 필요하다면 추가 가능
         ],
       ),
       body: Stack(
