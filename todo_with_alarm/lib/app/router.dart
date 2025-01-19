@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_with_alarm/viewmodels/welcome/welcome_viewmodel.dart';
 import 'package:todo_with_alarm/views/goal/goal_input_screen.dart';
 import 'package:todo_with_alarm/views/goal/goal_management_screen.dart';
 import 'package:todo_with_alarm/views/home/home_screen.dart';
@@ -14,7 +16,12 @@ class AppRouter {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) => WelcomeScreen());
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider(
+            create: (_) => WelcomeViewModel(),
+            child: WelcomeScreen(),
+          ),
+        );
       case '/signup':
         return MaterialPageRoute(builder: (_) => SignupScreen());
       case '/home':
