@@ -8,6 +8,8 @@ import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:todo_with_alarm/viewmodels/todo/todo_input_viewmodel.dart';
 import 'package:todo_with_alarm/widgets/app_bar/custom_app_bar.dart';
 import 'package:todo_with_alarm/widgets/bottom_button/edit_update_button.dart';
+import 'package:todo_with_alarm/widgets/goal/goal_list_dropdown.dart';
+import 'package:todo_with_alarm/widgets/todo/dday_daily_chip.dart';
 import 'package:todo_with_alarm/widgets/todo/eisenhower_button.dart';
 import 'package:todo_with_alarm/widgets/text_fields/tip.dart';
 import 'package:todo_with_alarm/widgets/todo/todo_input_date_field.dart';
@@ -65,24 +67,6 @@ class TodoInputScreen extends StatelessWidget {
                             '앞으로 툰두가 아이젠하워에 따라 가장 중요한 일부터 알려줄게요!',
                       ), // 팁 위젯
                       const SizedBox(height: 24),
-                      // Row(
-                      //   children: [
-                      //     Expanded(
-                      //       child: EditUpdateButton(
-                      //         key: const Key('editUpdateButton'),
-                      //         viewModel: viewModel,
-                      //         todo: todo,
-                      //         onPressed: () {
-                      //           if (viewModel.formKey.currentState!.validate()) {
-                      //             // 저장 로직
-                      //             viewModel.saveTodo(context);
-                      //           }
-                      //         },
-                      //       ),
-                      //     ),
-                      //   ],
-                      // ),
-                      // const SizedBox(height: 24),
                     ],
                   ),
                 ),
@@ -116,41 +100,11 @@ class TodoInputScreen extends StatelessWidget {
   Widget _buildToggleButtons(TodoInputViewModel viewModel) {
     return Align(
       alignment: Alignment.centerRight,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildToggleButton('디데이', !viewModel.isDailyTodo,
-              () => viewModel.setDailyTodoStatus(false)),
-          _buildToggleButton('데일리', viewModel.isDailyTodo,
-              () => viewModel.setDailyTodoStatus(true)),
-        ],
-      ),
-    );
-  }
-
-  // 개별 토글 버튼을 생성하는 메서드
-  Widget _buildToggleButton(String label, bool isSelected, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-        decoration: ShapeDecoration(
-          color: isSelected ? const Color(0xFF78B545) : Colors.transparent,
-          shape: RoundedRectangleBorder(
-            side: const BorderSide(width: 1, color: Color(0xFF78B545)),
-            borderRadius: BorderRadius.circular(4),
-          ),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: isSelected ? Colors.white : const Color(0xFF1C1D1B),
-            fontSize: 10,
-            fontFamily: 'Pretendard Variable',
-            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
-            letterSpacing: 0.15,
-          ),
-        ),
+      child: DdayDailyChip(
+        isDailySelected: viewModel.isDailyTodo,
+        onToggle: (isDaily) {
+          viewModel.setDailyTodoStatus(isDaily);
+        },
       ),
     );
   }
@@ -251,86 +205,16 @@ class TodoInputScreen extends StatelessWidget {
   }
 
   // 목표 선택 위젯을 생성하는 메서드
-  Widget _buildGoalSelection(
-      TodoInputViewModel viewModel, BuildContext context) {
-    final goalViewmodel = Provider.of<GoalViewModel>(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          '목표',
-          style: TextStyle(
-            color: Color(0xFF1C1D1B),
-            fontSize: 10,
-            fontWeight: FontWeight.w400,
-            letterSpacing: 0.15,
-            fontFamily: 'Pretendard Variable',
-          ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          height: 40,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: ShapeDecoration(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(1000),
-              side: BorderSide(
-                width: 1,
-                color: viewModel.selectedGoalId != null
-                    ? const Color(0xFF78B545)
-                    : const Color(0xFFDDDDDD),
-              ),
-            ),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  viewModel.selectedGoalId != null
-                      ? goalViewmodel.goals
-                          .firstWhere(
-                              (goal) => goal.id == viewModel.selectedGoalId)
-                          .name
-                      : '목표를 선택하세요.',
-                  style: const TextStyle(
-                    color: Color(0xFF1C1D1B),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 0.18,
-                    fontFamily: 'Pretendard Variable',
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  viewModel.toggleGoalDropdown();
-                },
-                child: Icon(
-                  viewModel.showGoalDropdown
-                      ? Icons.arrow_drop_up
-                      : Icons.arrow_drop_down,
-                  color: const Color(0xFF1C1D1B),
-                ),
-              ),
-            ],
-          ),
-        ),
-        if (viewModel.showGoalDropdown)
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: const Color(0xFFDDDDDD)),
-            ),
-            child: Column(
-              children: [
-                _buildGoalItem(context, '목표 미설정', null, viewModel),
-                ...goalViewmodel.goals.map((goal) {
-                  return _buildGoalItem(context, goal.name, goal.id, viewModel);
-                }).toList(),
-              ],
-            ),
-          ),
-      ],
+  Widget _buildGoalSelection(TodoInputViewModel viewModel, BuildContext context) {
+    final goalViewModel = Provider.of<GoalViewModel>(context);
+    return GoalListDropdown(
+      selectedGoalId: viewModel.selectedGoalId,
+      goals: goalViewModel.goals,
+      isDropdownOpen: viewModel.showGoalDropdown,
+      onGoalSelected: (goalId) {
+        viewModel.selectGoal(goalId);
+      },
+      toggleDropdown: viewModel.toggleGoalDropdown,
     );
   }
 
