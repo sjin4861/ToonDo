@@ -1,84 +1,84 @@
-import 'package:flutter/material.dart';
-import 'package:todo_with_alarm/models/goal_status.dart';
-import '../../models/goal.dart';
-import '../../services/goal_service.dart';
+// lib/viewmodels/goal/goal_management_viewmodel.dart
 
-// (1) 2가지 필터옵션
-enum GoalFilterOption {
-  inProgress,
-  completed,
-}
+import 'package:flutter/material.dart';
+import 'package:todo_with_alarm/models/goal.dart';
+import 'package:todo_with_alarm/models/goal_status.dart';
+import 'package:todo_with_alarm/viewmodels/goal/goal_filter_option.dart';
+import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 
 class GoalManagementViewModel extends ChangeNotifier {
-  final GoalService goalService;
+  final GoalViewModel goalViewModel; // 의존성: CRUD는 여기가 아니라 goalViewModel이 담당
 
-  List<Goal> allGoals = [];
-  List<Goal> filteredGoals = [];
+  // 필터된 결과
+  List<Goal> _filteredGoals = [];
 
-  // 기본 필터: "진행 중"
-  GoalFilterOption filterOption = GoalFilterOption.inProgress;
+  List<Goal> get filteredGoals => _filteredGoals;
 
-  GoalManagementViewModel(this.goalService) {
-    loadGoals();
-  }
+  // 현재 필터 옵션
+  GoalFilterOption _filterOption = GoalFilterOption.inProgress;
+  GoalFilterOption get filterOption => _filterOption;
 
-  Future<void> loadGoals() async {
-    allGoals = await goalService.loadGoals();
+  GoalManagementViewModel({required this.goalViewModel}) {
+    // 초기 로딩: goalViewModel에 리스너 등록
+    // goalViewModel이 notifyListeners() 할 때마다 applyFilter()를 다시 실행
+    goalViewModel.addListener(_onGoalsChanged);
     applyFilter();
   }
 
-  // (2) 필터옵션 변경
+  void _onGoalsChanged() {
+    // goalViewModel이 업데이트되면, filteredGoals 재계산
+    applyFilter();
+  }
+
+  /// 필터 옵션 바꾸기
   void setFilterOption(GoalFilterOption newFilterOption) {
-    filterOption = newFilterOption;
+    _filterOption = newFilterOption;
     applyFilter();
   }
 
-  // (3) Extension으로 GoalStatus를 간단히 분류
+  /// 실제 필터 로직
   void applyFilter() {
-    if (filterOption == GoalFilterOption.inProgress) {
-      // 진행 중: status.isInProgress == true (즉 active)
-      filteredGoals = allGoals.where((goal) => goal.status.isInProgress).toList();
+    final allGoals = goalViewModel.goals; // goalViewModel로부터 전체 목록
+    if (_filterOption == GoalFilterOption.inProgress) {
+      _filteredGoals = allGoals.where((g) => g.status.isInProgress).toList();
     } else {
-      // GoalFilterOption.completed
-      // 진행 완료: status.isCompleted == true (즉 completed or givenUp)
-      filteredGoals = allGoals.where((goal) => goal.status.isCompleted).toList();
+      _filteredGoals = allGoals.where((g) => g.status.isCompleted).toList();
     }
-
     notifyListeners();
   }
 
-  // 이하 목표 진행도 / 포기 / 삭제 / 완료 메서드는 동일
+  /// --------------------------------------------------------
+  /// 아래 로직은, 필요하다면 GoalManagementViewModel에서
+  /// goalViewModel의 CRUD 메서드를 호출하여 "위임"할 수 있음
+  /// --------------------------------------------------------
+
+  // 진행률 업데이트
   Future<void> updateGoalProgress(String goalId, double newProgress) async {
-    final goal = allGoals.firstWhere((g) => g.id == goalId);
-    if (goal != null) {
-      goal.progress = newProgress;
-      await goalService.updateGoal(goal);
-      notifyListeners();
-    }
+    await goalViewModel.updateGoalProgress(goalId, newProgress);
+    // goalViewModel이 notifyListeners() → _onGoalsChanged() → applyFilter()
   }
 
+  // 포기
   Future<void> giveUpGoal(String goalId) async {
-    final goal = allGoals.firstWhere((g) => g.id == goalId);
-    if (goal != null) {
-      goal.status = GoalStatus.givenUp;
-      await goalService.updateGoal(goal);
-      notifyListeners();
-    }
+    await goalViewModel.giveUpGoal(goalId);
   }
 
-  Future<void> deleteGoal(String goalId) async {
-    await goalService.deleteGoal(goalId);
-    await loadGoals(); // 목표 목록 다시 로드
-  }
-
+  // 완료
   Future<void> completeGoal(String goalId) async {
-    final goal = allGoals.firstWhere((g) => g.id == goalId);
-    if (goal != null) {
-      goal.status = GoalStatus.completed;
-      goal.progress = 100.0;
-      goal.isCompleted = true; // 모델에 따라
-      await goalService.updateGoal(goal);
-      notifyListeners();
-    }
+    await goalViewModel.completeGoal(goalId);
+  }
+
+  // 삭제
+  Future<void> deleteGoal(String goalId) async {
+    await goalViewModel.deleteGoal(goalId);
+  }
+  
+  // etc. 필요하다면 CRUD 메서드 모두 위임
+
+  @override
+  void dispose() {
+    // ViewModel 해제 시, goalViewModel 리스너도 제거
+    goalViewModel.removeListener(_onGoalsChanged);
+    super.dispose();
   }
 }
