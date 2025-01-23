@@ -1,6 +1,6 @@
 // lib/widgets/top_menu_bar/menu_bar2.dart
 import 'package:flutter/material.dart';
-import 'package:todo_with_alarm/viewmodels/goal/goal_management_viewmodel.dart';
+import 'package:todo_with_alarm/viewmodels/goal/goal_filter_option.dart';
 
 class TwoMenuBarWidget extends StatelessWidget {
   final GoalFilterOption selectedOption;
