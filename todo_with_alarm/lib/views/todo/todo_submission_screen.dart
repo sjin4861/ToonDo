@@ -10,6 +10,7 @@ import 'package:todo_with_alarm/services/todo_service.dart';
 import 'package:todo_with_alarm/viewmodels/todo/todo_viewmodel.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_with_alarm/widgets/app_bar/custom_app_bar.dart';
+import 'package:todo_with_alarm/widgets/top_menu_bar/menu_bar.dart';
 import 'todo_input_screen.dart'; // TodoInputScreen 임포트
 import 'package:todo_with_alarm/widgets/calendar/calendar.dart'; // Calendar 위젯 임포트
 import 'package:todo_with_alarm/widgets/todo/todo_list_item.dart'; // TodoListItem 임포트
@@ -49,8 +50,18 @@ class TodoSubmissionScreen extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 16),
-                // 목표 메뉴 바
-                _buildGoalMenuBar(viewModel),
+                // 2) MenuBarWidget으로 교체
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 28),
+                  child: MenuBarWidget(
+                    selectedMenu: _filterOptionToMenuOption(viewModel.selectedFilter),
+                    onItemSelected: (option) {
+                      // MenuOption → FilterOption 으로 변환
+                      final filter = _menuOptionToFilterOption(option);
+                      viewModel.updateSelectedFilter(filter);
+                    },
+                  ),
+                ),
                 // 목표 선택 바
                 if (viewModel.selectedFilter == FilterOption.goal)
                   _buildGoalSelectionBar(viewModel, goals),
@@ -82,81 +93,27 @@ class TodoSubmissionScreen extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildGoalMenuBar(TodoSubmissionViewModel viewModel) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 28),
-      decoration: ShapeDecoration(
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          side: BorderSide(width: 1, color: Color(0xFFE4F0D9)),
-          borderRadius: BorderRadius.circular(10),
-        ),
-      ),
-      child: Row(
-        children: [
-          _buildFilterButton(
-            label: '전체',
-            isSelected: viewModel.selectedFilter == FilterOption.all,
-            onTap: () {
-              viewModel.updateSelectedFilter(FilterOption.all);
-            },
-          ),
-          _buildFilterButton(
-            label: '목표',
-            isSelected: viewModel.selectedFilter == FilterOption.goal,
-            onTap: () {
-              viewModel.updateSelectedFilter(FilterOption.goal);
-            },
-          ),
-          _buildFilterButton(
-            label: '중요',
-            isSelected: viewModel.selectedFilter == FilterOption.importance,
-            onTap: () {
-              viewModel.updateSelectedFilter(FilterOption.importance);
-            },
-          ),
-        ],
-      ),
-    );
+  // 3) FilterOption ↔ MenuOption 변환 함수
+  MenuOption _filterOptionToMenuOption(FilterOption filter) {
+    switch (filter) {
+      case FilterOption.all:
+        return MenuOption.all;
+      case FilterOption.goal:
+        return MenuOption.goal;
+      case FilterOption.importance:
+        return MenuOption.importance;
+    }
   }
 
-  Widget _buildFilterButton({
-    required String label,
-    required bool isSelected,
-    required VoidCallback onTap,
-  }) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          height: 40,
-          decoration: ShapeDecoration(
-            color: isSelected ? Color(0xFF78B545) : Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                topLeft: label == '전체' ? Radius.circular(8) : Radius.zero,
-                bottomLeft: label == '전체' ? Radius.circular(8) : Radius.zero,
-                topRight: label == '중요' ? Radius.circular(8) : Radius.zero,
-                bottomRight: label == '중요' ? Radius.circular(8) : Radius.zero,
-              ),
-            ),
-          ),
-          child: Center(
-            child: Text(
-              label,
-              style: TextStyle(
-                color: isSelected ? Colors.white : Colors.black.withOpacity(0.5),
-                fontSize: 14,
-                fontFamily: 'Pretendard Variable',
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
-                letterSpacing: 0.21,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+  FilterOption _menuOptionToFilterOption(MenuOption option) {
+    switch (option) {
+      case MenuOption.all:
+        return FilterOption.all;
+      case MenuOption.goal:
+        return FilterOption.goal;
+      case MenuOption.importance:
+        return FilterOption.importance;
+    }
   }
 
   Widget _buildGoalSelectionBar(TodoSubmissionViewModel viewModel, List<Goal> goals) {
