@@ -1,16 +1,22 @@
-// lib/viewmodels/goal/goal_management_viewmodel.dart
-
 import 'package:flutter/material.dart';
 import 'package:todo_with_alarm/models/goal_status.dart';
 import '../../models/goal.dart';
 import '../../services/goal_service.dart';
 
+// (1) 2가지 필터옵션
+enum GoalFilterOption {
+  inProgress,
+  completed,
+}
+
 class GoalManagementViewModel extends ChangeNotifier {
   final GoalService goalService;
+
   List<Goal> allGoals = [];
   List<Goal> filteredGoals = [];
-  String filter = '전체';
-  // 서브 필터 없이 '완료' 탭에서만 두 가지 상태를 표시하도록 수정
+
+  // 기본 필터: "진행 중"
+  GoalFilterOption filterOption = GoalFilterOption.inProgress;
 
   GoalManagementViewModel(this.goalService) {
     loadGoals();
@@ -21,26 +27,29 @@ class GoalManagementViewModel extends ChangeNotifier {
     applyFilter();
   }
 
-  void setFilter(String newFilter) {
-    filter = newFilter;
+  // (2) 필터옵션 변경
+  void setFilterOption(GoalFilterOption newFilterOption) {
+    filterOption = newFilterOption;
     applyFilter();
-    notifyListeners();
   }
 
+  // (3) Extension으로 GoalStatus를 간단히 분류
   void applyFilter() {
-    if (filter == '전체') {
-      filteredGoals = allGoals;
-    } else if (filter == '완료') {
-      // '완료' 탭에서는 status가 completed 또는 givenUp인 목표만 필터링
-      filteredGoals = allGoals.where((goal) =>
-          goal.status == GoalStatus.completed ||
-          goal.status == GoalStatus.givenUp).toList();
+    if (filterOption == GoalFilterOption.inProgress) {
+      // 진행 중: status.isInProgress == true (즉 active)
+      filteredGoals = allGoals.where((goal) => goal.status.isInProgress).toList();
+    } else {
+      // GoalFilterOption.completed
+      // 진행 완료: status.isCompleted == true (즉 completed or givenUp)
+      filteredGoals = allGoals.where((goal) => goal.status.isCompleted).toList();
     }
+
     notifyListeners();
   }
 
+  // 이하 목표 진행도 / 포기 / 삭제 / 완료 메서드는 동일
   Future<void> updateGoalProgress(String goalId, double newProgress) async {
-    Goal? goal = allGoals.firstWhere((goal) => goal.id == goalId);
+    final goal = allGoals.firstWhere((g) => g.id == goalId);
     if (goal != null) {
       goal.progress = newProgress;
       await goalService.updateGoal(goal);
@@ -49,7 +58,7 @@ class GoalManagementViewModel extends ChangeNotifier {
   }
 
   Future<void> giveUpGoal(String goalId) async {
-    Goal? goal = allGoals.firstWhere((goal) => goal.id == goalId);
+    final goal = allGoals.firstWhere((g) => g.id == goalId);
     if (goal != null) {
       goal.status = GoalStatus.givenUp;
       await goalService.updateGoal(goal);
@@ -63,11 +72,11 @@ class GoalManagementViewModel extends ChangeNotifier {
   }
 
   Future<void> completeGoal(String goalId) async {
-    Goal? goal = allGoals.firstWhere((goal) => goal.id == goalId);
+    final goal = allGoals.firstWhere((g) => g.id == goalId);
     if (goal != null) {
       goal.status = GoalStatus.completed;
       goal.progress = 100.0;
-      goal.isCompleted = true;
+      goal.isCompleted = true; // 모델에 따라
       await goalService.updateGoal(goal);
       notifyListeners();
     }
