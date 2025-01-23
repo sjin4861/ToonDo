@@ -11,6 +11,7 @@ import 'package:todo_with_alarm/models/user.dart';
 import 'package:todo_with_alarm/services/auth_service.dart';
 import 'package:todo_with_alarm/services/gpt_service.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
+import 'package:todo_with_alarm/viewmodels/home_viewmodel.dart';
 import 'package:todo_with_alarm/views/auth/login_screen.dart';
 import 'package:todo_with_alarm/views/goal/goal_management_screen.dart';
 import 'package:todo_with_alarm/views/my_page/my_page_screen.dart';
@@ -28,7 +29,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final goalViewmodel = Provider.of<GoalViewModel>(context);
+    final homeVM = Provider.of<HomeViewModel>(context);
     // JWT 토큰을 부여받았다면 백엔드로부터 User정보를 체크할 수 있음.
     // 이로부터 닉네임을 얻을 예정임
     final userBox = Hive.box<User>('user');
@@ -36,6 +37,7 @@ class HomeScreen extends StatelessWidget {
     final String userNickname = currentUser?.username ?? 'null';
 
     final gptService = Provider.of<GptService>(context, listen: false);
+    final top3Goals = homeVM.dDayClosestThree;
 
     return Scaffold(
       extendBody: true, // Scaffold의 body가 BottomAppBar 뒤로 확장되도록 설정
@@ -115,9 +117,9 @@ class HomeScreen extends StatelessWidget {
                   child: Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: goalViewmodel.goals.isNotEmpty
+                    child: top3Goals.isNotEmpty
                         ? Column(
-                            children: goalViewmodel.goals.take(3).map((goal) {
+                            children: top3Goals.map((goal) {
                               return Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 4),
@@ -296,7 +298,6 @@ class HomeScreen extends StatelessWidget {
                   'assets/icons/goal.svg',
                   width: 24,
                   height: 24,
-                  // ignore: deprecated_member_use
                   color: Colors.grey,
                 ),
                 onPressed: () {
