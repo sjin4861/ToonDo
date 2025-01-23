@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:todo_with_alarm/models/goal.dart';
-import 'package:todo_with_alarm/viewmodels/goal/goal_management_viewmodel.dart';
+import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart'; // GoalViewModel 대신 사용
 
 class GoalListItem extends StatelessWidget {
   final Goal goal;
@@ -21,14 +21,14 @@ class GoalListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 완료 여부
-    bool isCompleted = goal.isCompleted;
+    final bool isCompleted = goal.isCompleted;
     // 진행률
-    double progress = goal.progress.clamp(0, 100);
+    final double progress = goal.progress.clamp(0, 100);
     // 날짜 범위
-    String dateRange =
+    final String dateRange =
         '${DateFormat('yy.MM.dd').format(goal.startDate)} ~ ${DateFormat('yy.MM.dd').format(goal.endDate)}';
     // D-Day
-    int dDay = _calculateDDay(goal.endDate);
+    final int dDay = _calculateDDay(goal.endDate);
 
     return Dismissible(
       key: Key(goal.id ?? ''),
@@ -37,31 +37,29 @@ class GoalListItem extends StatelessWidget {
       confirmDismiss: (direction) => _confirmDelete(context),
       onDismissed: (direction) => _onDelete(context),
       child: Container(
-        // 아이템간 간격
         margin: const EdgeInsets.symmetric(vertical: 4),
         decoration: ShapeDecoration(
           color: isCompleted ? const Color(0xFFEEEEEE) : Colors.transparent,
           shape: RoundedRectangleBorder(
             side: BorderSide(
               width: 1,
-              color:
-                  isCompleted ? const Color(0x7FDDDDDD) : const Color(0xFF78B545),
+              color: isCompleted
+                  ? const Color(0x7FDDDDDD)
+                  : const Color(0xFF78B545),
             ),
             borderRadius: BorderRadius.circular(1000),
           ),
         ),
         child: ListTile(
-          // 1) 텍스트 오른쪽으로 더 밀어주기
           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
           onTap: onTap,
-          // 아이콘 부분
           leading: _buildGoalIcon(isCompleted),
-          // 목표 이름
           title: Text(
             goal.name,
             style: TextStyle(
-              color:
-                  isCompleted ? const Color(0x4C111111) : const Color(0xFF1C1D1B),
+              color: isCompleted
+                  ? const Color(0x4C111111)
+                  : const Color(0xFF1C1D1B),
               fontSize: 13,
               fontWeight: FontWeight.w700,
               letterSpacing: 0.20,
@@ -69,16 +67,14 @@ class GoalListItem extends StatelessWidget {
               decoration: isCompleted ? TextDecoration.lineThrough : null,
             ),
           ),
-          // 날짜 + D-Day
           subtitle: _buildDateSubtitle(dateRange, dDay),
-          // 진행률 (LinearProgressIndicator)
           trailing: _buildProgressIndicator(progress),
         ),
       ),
     );
   }
 
-  /// Dismissible 배경
+  /// 오른쪽 스와이프 배경 (삭제)
   Widget _buildDismissBackground() {
     return Container(
       alignment: Alignment.centerRight,
@@ -97,20 +93,20 @@ class GoalListItem extends StatelessWidget {
     );
   }
 
-  /// 삭제 전 확인 다이얼로그
+  /// 삭제 확인 다이얼로그
   Future<bool?> _confirmDelete(BuildContext context) {
     return showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: const Text('삭제 확인'),
         content: const Text('정말 이 목표를 삭제하시겠습니까?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
+            onPressed: () => Navigator.of(dialogContext).pop(false),
             child: const Text('취소'),
           ),
           TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
+            onPressed: () => Navigator.of(dialogContext).pop(true),
             child: const Text('삭제'),
           ),
         ],
@@ -118,11 +114,10 @@ class GoalListItem extends StatelessWidget {
     );
   }
 
-  /// 삭제 로직
+  /// 삭제 로직 (GoalViewModel로 직접 접근)
   void _onDelete(BuildContext context) {
-    final viewModel =
-        Provider.of<GoalManagementViewModel>(context, listen: false);
-    viewModel.deleteGoal(goal.id!);
+    final goalViewModel = Provider.of<GoalViewModel>(context, listen: false);
+    goalViewModel.deleteGoal(goal.id!);
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('목표가 삭제되었습니다.')),
     );
@@ -130,8 +125,7 @@ class GoalListItem extends StatelessWidget {
 
   /// 아이콘 표시
   Widget _buildGoalIcon(bool isCompleted) {
-    // 2) 아이콘 크기 확대
-    Widget iconWidget = (goal.icon != null)
+    final Widget iconWidget = (goal.icon != null)
         ? SvgPicture.asset(
             goal.icon!,
             fit: BoxFit.cover,
@@ -141,7 +135,6 @@ class GoalListItem extends StatelessWidget {
         : const Icon(Icons.flag, color: Colors.grey, size: 24);
 
     return Container(
-      // 기존 24 → 32로 확대
       width: 32,
       height: 32,
       padding: const EdgeInsets.all(4),
@@ -155,7 +148,7 @@ class GoalListItem extends StatelessWidget {
     );
   }
 
-  /// 날짜 + D-Day 부분
+  /// 날짜 + D-Day
   Widget _buildDateSubtitle(String dateRange, int dDay) {
     return Row(
       children: [
@@ -184,7 +177,7 @@ class GoalListItem extends StatelessWidget {
     );
   }
 
-  /// 진행률
+  /// 진행률 (가로형)
   Widget _buildProgressIndicator(double progress) {
     return SizedBox(
       width: 100,
@@ -219,7 +212,7 @@ class GoalListItem extends StatelessWidget {
       DateTime.now().month,
       DateTime.now().day,
     );
-    int difference = endDate.difference(now).inDays;
+    final int difference = endDate.difference(now).inDays;
     return difference >= 0 ? difference : 0;
   }
 }
