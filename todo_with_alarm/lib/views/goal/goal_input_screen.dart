@@ -15,6 +15,7 @@ import 'package:todo_with_alarm/widgets/text_fields/goal_name_input_field.dart';
 import 'package:todo_with_alarm/widgets/goal/goal_input_date_field.dart';
 import 'package:todo_with_alarm/widgets/text_fields/tip.dart';
 import 'package:todo_with_alarm/widgets/goal/goal_setting_bottom_sheet.dart';
+
 class GoalInputScreen extends StatelessWidget {
   final Goal? targetGoal;
 
@@ -22,11 +23,17 @@ class GoalInputScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFFCFCFC),
-      appBar: CustomAppBar(
-        title: '목표 설정하기',
+    final goalService = Provider.of<GoalService>(context, listen: false);
+    return ChangeNotifierProvider<GoalInputViewModel>(
+      create: (_) => GoalInputViewModel(
+        goalService: goalService,
+        targetGoal: targetGoal,
       ),
+      child: Scaffold(
+        backgroundColor: const Color(0xFFFCFCFC),
+        appBar: CustomAppBar(
+          title: '목표 설정하기',
+        ),
         body: Consumer<GoalInputViewModel>(
           builder: (context, viewModel, child) {
             return SingleChildScrollView(
@@ -109,26 +116,30 @@ class GoalInputScreen extends StatelessWidget {
             );
           },
         ),
-        // 작성하기 버튼을 Scaffold의 bottomNavigationBar에 배치
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
-          child: CustomButton(
-            text: '작성하기',
-            onPressed: () => _setGoal(context),
-            backgroundColor: const Color(0xFF78B545),
-            textColor: const Color(0xFFFCFCFC),
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 0.24,
-            padding: 16.0,
-            borderRadius: BorderRadius.circular(30),
-          ),
+        bottomNavigationBar: Consumer<GoalInputViewModel>(
+          builder: (context, viewModel, child) {
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+              child: CustomButton(
+                text: '작성하기',
+                onPressed: () => _setGoal(context, viewModel),
+                backgroundColor: const Color(0xFF78B545),
+                textColor: const Color(0xFFFCFCFC),
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.24,
+                padding: 16.0,
+                borderRadius: BorderRadius.circular(30),
+              ),
+            );
+          },
         ),
-      );
-    }
-  void _setGoal(BuildContext context) async {
-    final viewModel = Provider.of<GoalInputViewModel>(context, listen: false);
-    Goal? newGoal= await viewModel.saveGoal(context);
+      ),
+    );
+  }
+
+  void _setGoal(BuildContext context, GoalInputViewModel viewModel) async {
+    Goal? newGoal = await viewModel.saveGoal(context);
     if (newGoal != null) {
       // 목표 저장 성공 시 BottomSheet 표시
       showModalBottomSheet(
@@ -137,5 +148,5 @@ class GoalInputScreen extends StatelessWidget {
         builder: (context) => GoalSettingBottomSheet(goal: newGoal),
       );
     }
-  } 
+  }
 }
