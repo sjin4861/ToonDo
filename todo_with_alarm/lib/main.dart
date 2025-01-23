@@ -6,9 +6,11 @@ import 'package:todo_with_alarm/models/goal.dart';
 import 'package:todo_with_alarm/models/user.dart';
 import 'package:todo_with_alarm/services/gpt_service.dart';
 import 'package:todo_with_alarm/services/user_service.dart';
+import 'package:todo_with_alarm/viewmodels/goal/goal_management_viewmodel.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:todo_with_alarm/services/goal_service.dart';
 import 'package:todo_with_alarm/services/todo_service.dart';
+import 'package:todo_with_alarm/viewmodels/home_viewmodel.dart';
 import 'package:todo_with_alarm/viewmodels/todo/todo_viewmodel.dart';
 import 'package:todo_with_alarm/app/router.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -80,6 +82,17 @@ Future<void> main() async {
           create: (context) => TodoViewModel(
             Provider.of<TodoService>(context, listen: false),
           )..loadTodos(),
+        ),
+        ChangeNotifierProvider<HomeViewModel>(
+          create: (context) => HomeViewModel(
+            goalViewModel: Provider.of<GoalViewModel>(context, listen: false),
+          ),
+        ),
+        ChangeNotifierProvider<GoalManagementViewModel>(
+          create: (context) => GoalManagementViewModel(
+            // 생성자에 GoalService or GoalViewModel 등 필요한 의존성 주입
+            goalViewModel: Provider.of<GoalViewModel>(context, listen: false),
+          ),
         ),
       ],
       child: MyApp(),
