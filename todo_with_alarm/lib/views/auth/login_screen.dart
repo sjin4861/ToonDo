@@ -179,77 +179,79 @@ class LoginScreen extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: 32),
-                    // 버튼들
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: ElevatedButton(
-                            key: const Key('login_backButton'),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFFEEEEEE),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(1000),
-                              ),
-                              padding: EdgeInsets.all(16),
-                            ),
-                            child: Text(
-                              '뒤로',
-                              style: TextStyle(
-                                color: Color(0x7F1C1D1B),
-                                fontSize: 14,
-                                fontFamily: 'Pretendard Variable',
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 0.21,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 16),
-                        Expanded(
-                          flex: 2,
-                          child: ElevatedButton(
-                            key: const Key('login_nextButton'),
-                            onPressed: () async {
-                              bool success = await viewModel.login();
-                              if (success) {
-                                // 로그인 성공 시 홈 화면으로 이동
-                                Navigator.pushReplacementNamed(context, '/home');
-                              } else {
-                                // 로그인 실패 시 에러 메시지 표시
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(viewModel.loginError ?? '로그인에 실패했습니다.'),
-                                  ),
-                                );
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF78B545),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(1000),
-                              ),
-                              padding: EdgeInsets.all(16),
-                            ),
-                            child: Text(
-                              '다음으로',
-                              style: TextStyle(
-                                color: Color(0xFFFCFCFC),
-                                fontSize: 14,
-                                fontFamily: 'Pretendard Variable',
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 0.21,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
                   ],
                 ),
+              ),
+            ),
+            bottomNavigationBar: Padding(
+              padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: ElevatedButton(
+                      key: const Key('login_backButton'),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFEEEEEE),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(1000),
+                        ),
+                        padding: EdgeInsets.all(16),
+                      ),
+                      child: Text(
+                        '뒤로',
+                        style: TextStyle(
+                          color: Color(0x7F1C1D1B),
+                          fontSize: 14,
+                          fontFamily: 'Pretendard Variable',
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.21,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 16),
+                  Expanded(
+                    flex: 2,
+                    child: ElevatedButton(
+                      key: const Key('login_nextButton'),
+                      onPressed: () async {
+                        bool success = await viewModel.login();
+                        if (success) {
+                          // 로그인 성공 시 홈 화면으로 이동
+                          Navigator.pushReplacementNamed(context, '/home');
+                        } else {
+                          // 로그인 실패 시 에러 메시지 표시
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(viewModel.loginError ?? '로그인에 실패했습니다.'),
+                            ),
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF78B545),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(1000),
+                        ),
+                        padding: EdgeInsets.all(16),
+                      ),
+                      child: Text(
+                        '다음으로',
+                        style: TextStyle(
+                          color: Color(0xFFFCFCFC),
+                          fontSize: 14,
+                          fontFamily: 'Pretendard Variable',
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.21,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           );
