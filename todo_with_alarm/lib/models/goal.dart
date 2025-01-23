@@ -113,4 +113,44 @@ class Goal extends HiveObject {
   String toString() {
     return 'Goal(name: $name, icon: $icon, progress: $progress%, start: $startDate, end: $endDate, completed: $isCompleted, status: $status)';
   }
+
+  factory Goal.fromJsonApi(Map<String, dynamic> json) {
+    // 서버 응답의 각 필드가 null일 수 있으니 적절히 처리
+    final dynamic goalIdValue = json['goalId'];
+    final dynamic statusValue = json['status'];
+
+    return Goal(
+      // goalId가 int인 경우 → string 변환
+      id: goalIdValue?.toString(),
+      name: json['goalName'] ?? '이름 없음',
+      icon: json['icon'],
+      progress: (json['progress'] == null)
+          ? 0.0
+          : (json['progress'] as num).toDouble(),
+      startDate: DateTime.parse(json['startDate']),
+      endDate: DateTime.parse(json['endDate']),
+      isCompleted: json['isCompleted'] ?? false,
+      // status가 null일 수도 있으니 예: 0이면 active, 1이면 completed, 2이면 givenUp
+      status: _mapStatus(statusValue),
+      // 서버에서 isSynced 같은 건 별도 처리
+      isSynced: false,
+    );
+  }
+
+  /// 서버가 보내는 status (null or 0 or 1 or 2)를 GoalStatus로 매핑
+  static GoalStatus _mapStatus(dynamic status) {
+    if (status == null) {
+      return GoalStatus.active; // 기본값
+    }
+    // status가 int라고 가정
+    switch (status) {
+      case 1:
+        return GoalStatus.completed;
+      case 2:
+        return GoalStatus.givenUp;
+      case 0:
+      default:
+        return GoalStatus.active;
+    }
+  }
 }
