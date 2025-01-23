@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/goal_status.dart';
+import 'package:todo_with_alarm/widgets/top_menu_bar/menu_bar2.dart';
 import '../../viewmodels/goal/goal_management_viewmodel.dart';
 import '../../services/goal_service.dart';
 import '../../models/goal.dart';
@@ -31,12 +32,11 @@ class GoalManagementScreen extends StatelessWidget {
           builder: (context, viewModel, child) {
             return SingleChildScrollView(
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // "목표 관리하기" 텍스트
+                    /// "목표 관리하기" 텍스트
                     Text(
                       '목표 관리하기',
                       style: TextStyle(
@@ -48,97 +48,19 @@ class GoalManagementScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    // 필터 버튼 영역 (전체/완료 탭이 붙어있는 디자인)
-                    Container(
-                      // 전체 너비 사용 (패딩이 적용된 부모 내의 너비)
-                      width: double.infinity,
-                      height: 45,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: const Color(0xFFE4F0D9), width: 1),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Row(
-                        children: [
-                          // "전체" 탭
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () {
-                                viewModel.setFilter('전체');
-                              },
-                              child: Container(
-                                margin: const EdgeInsets.only(left: 4, top: 2, bottom: 2),
-                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                                decoration: BoxDecoration(
-                                  color: viewModel.filter == '전체'
-                                      ? const Color(0xFF78B545)
-                                      : Colors.transparent,
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(8),
-                                    bottomLeft: Radius.circular(8),
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    '전체',
-                                    style: TextStyle(
-                                      color: viewModel.filter == '전체'
-                                          ? Colors.white
-                                          : Colors.black.withOpacity(0.5),
-                                      fontSize: 14,
-                                      fontFamily: 'Pretendard Variable',
-                                      fontWeight: viewModel.filter == '전체'
-                                          ? FontWeight.w700
-                                          : FontWeight.w400,
-                                      letterSpacing: 0.21,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          // "완료" 탭
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () {
-                                viewModel.setFilter('완료');
-                              },
-                              child: Container(
-                                margin: const EdgeInsets.only(right: 4, top: 2, bottom: 2),
-                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                                decoration: BoxDecoration(
-                                  color: viewModel.filter == '완료'
-                                      ? const Color(0xFF78B545)
-                                      : Colors.transparent,
-                                  borderRadius: const BorderRadius.only(
-                                    topRight: Radius.circular(8),
-                                    bottomRight: Radius.circular(8),
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    '완료',
-                                    style: TextStyle(
-                                      color: viewModel.filter == '완료'
-                                          ? Colors.white
-                                          : Colors.black.withOpacity(0.5),
-                                      fontSize: 14,
-                                      fontFamily: 'Pretendard Variable',
-                                      fontWeight: viewModel.filter == '완료'
-                                          ? FontWeight.w700
-                                          : FontWeight.w400,
-                                      letterSpacing: 0.21,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+
+                    /// 2) MenuBarWidget으로 교체
+                    /// (TwoMenuBarWidget이 GoalFilterOption을 사용한다고 가정)
+                    TwoMenuBarWidget(
+                      selectedOption: viewModel.filterOption, 
+                      onOptionSelected: (option) {
+                        /// ViewModel의 filterOption 업데이트 (GoalFilterOption)
+                        viewModel.setFilterOption(option);
+                      },
                     ),
                     const SizedBox(height: 24),
-                    // 목표 리스트
+
+                    /// 목표 리스트
                     viewModel.filteredGoals.isEmpty
                         ? const Center(
                             child: Text(
@@ -151,36 +73,15 @@ class GoalManagementScreen extends StatelessWidget {
                               ),
                             ),
                           )
-                        : viewModel.filter == '전체'
-                            ? ListView.builder(
-                                physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: viewModel.filteredGoals.length,
-                                itemBuilder: (context, index) {
-                                  final goal = viewModel.filteredGoals[index];
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 8),
-                                    child: GoalListItem(
-                                      goal: goal,
-                                      onTap: () {
-                                        showModalBottomSheet(
-                                          context: context,
-                                          isScrollControlled: true,
-                                          builder: (context) =>
-                                              GoalOptionsBottomSheet(goal: goal),
-                                        );
-                                      },
-                                    ),
-                                  );
-                                },
-                              )
-                            : _buildCompletedGoalsSection(context, viewModel),
+                        : _buildGoalListSection(context, viewModel),
                   ],
                 ),
               ),
             );
           },
         ),
+
+        /// 하단 버튼
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
           child: CustomButton(
@@ -211,144 +112,118 @@ class GoalManagementScreen extends StatelessWidget {
     );
   }
 
-  // '완료' 탭에서 완료된 목표를 섹션별로 표시하는 위젯
-  Widget _buildCompletedGoalsSection(
-      BuildContext context, GoalManagementViewModel viewModel) {
-    // 'completed'와 'givenUp' 상태의 목표를 각각 필터링
-    List<Goal> completedGoals = viewModel.filteredGoals
-        .where((goal) => goal.status == GoalStatus.completed)
-        .toList();
-    List<Goal> givenUpGoals = viewModel.filteredGoals
-        .where((goal) => goal.status == GoalStatus.givenUp)
-        .toList();
+  /// 진행 중이면 '미완료' 목표 목록, 진행 완료면 '완료 or 포기' 목록을 보여주는 메서드
+  Widget _buildGoalListSection(BuildContext context, GoalManagementViewModel viewModel) {
+    /// filteredGoals에는 이미 ViewModel에서 필터링된 목록 (inProgress or completed)
+    final goals = viewModel.filteredGoals;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // '성공' 섹션
-        if (completedGoals.isNotEmpty) ...[
-          Text(
-            '성공',
-            style: const TextStyle(
-              color: Color(0xFF1C1D1B),
-              fontSize: 16,
-              fontFamily: 'Pretendard Variable',
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.16,
+    /// !!! 여기서 GoalStatus가 아니라 GoalFilterOption과 비교해야 함
+    if (viewModel.filterOption == GoalFilterOption.completed) {
+      /// '진행 완료' 필터일 때, 내부적으로 '완료' / '포기'를 구분하여 섹션화
+      List<Goal> completedGoals = goals.where((g) => g.status == GoalStatus.completed).toList();
+      List<Goal> givenUpGoals = goals.where((g) => g.status == GoalStatus.givenUp).toList();
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          /// '성공' 섹션
+          if (completedGoals.isNotEmpty) ...[
+            Text(
+              '성공',
+              style: const TextStyle(
+                color: Color(0xFF1C1D1B),
+                fontSize: 16,
+                fontFamily: 'Pretendard Variable',
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.16,
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: completedGoals.length,
-            itemBuilder: (context, index) {
-              final goal = completedGoals[index];
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: GoalListItem(
-                  goal: goal,
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (context) =>
-                          GoalOptionsBottomSheet(goal: goal),
-                    );
-                  },
-                ),
-              );
-            },
-          ),
-          const SizedBox(height: 16),
+            const SizedBox(height: 8),
+            ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: completedGoals.length,
+              itemBuilder: (context, index) {
+                final goal = completedGoals[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: GoalListItem(
+                    goal: goal,
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (context) => GoalOptionsBottomSheet(goal: goal),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 16),
+          ],
+
+          /// '포기' 섹션
+          if (givenUpGoals.isNotEmpty) ...[
+            Text(
+              '포기',
+              style: const TextStyle(
+                color: Color(0xFF1C1D1B),
+                fontSize: 16,
+                fontFamily: 'Pretendard Variable',
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.16,
+              ),
+            ),
+            const SizedBox(height: 8),
+            ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: givenUpGoals.length,
+              itemBuilder: (context, index) {
+                final goal = givenUpGoals[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: GoalListItem(
+                    goal: goal,
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (context) => GoalOptionsBottomSheet(goal: goal),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 16),
+          ],
         ],
-        // '포기' 섹션
-        if (givenUpGoals.isNotEmpty) ...[
-          Text(
-            '포기',
-            style: const TextStyle(
-              color: Color(0xFF1C1D1B),
-              fontSize: 16,
-              fontFamily: 'Pretendard Variable',
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.16,
+      );
+    } else {
+      /// GoalFilterOption.inProgress → 그냥 리스트 보여주기
+      return ListView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: goals.length,
+        itemBuilder: (context, index) {
+          final goal = goals[index];
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: GoalListItem(
+              goal: goal,
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (context) => GoalOptionsBottomSheet(goal: goal),
+                );
+              },
             ),
-          ),
-          const SizedBox(height: 8),
-          ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: givenUpGoals.length,
-            itemBuilder: (context, index) {
-              final goal = givenUpGoals[index];
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: GoalListItem(
-                  goal: goal,
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (context) =>
-                          GoalOptionsBottomSheet(goal: goal),
-                    );
-                  },
-                ),
-              );
-            },
-          ),
-          const SizedBox(height: 16),
-        ],
-      ],
-    );
-  }
-}
-
-class FilterButton extends StatelessWidget {
-  final String label;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const FilterButton({
-    Key? key,
-    required this.label,
-    required this.isSelected,
-    required this.onTap,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    // 현재는 사용하지 않고 위의 Expanded 기반의 디자인을 사용합니다.
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 40,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: ShapeDecoration(
-          color: isSelected ? const Color(0xFF78B545) : Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-            side: BorderSide(
-              color: isSelected
-                  ? const Color(0xFF78B545)
-                  : const Color(0xFFE4F0D9),
-              width: 1,
-            ),
-          ),
-        ),
-        child: Center(
-          child: Text(
-            label,
-            style: TextStyle(
-              color: isSelected ? Colors.white : Colors.black.withOpacity(0.5),
-              fontSize: 14,
-              fontFamily: 'Pretendard Variable',
-              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
-              letterSpacing: 0.21,
-            ),
-          ),
-        ),
-      ),
-    );
+          );
+        },
+      );
+    }
   }
 }
