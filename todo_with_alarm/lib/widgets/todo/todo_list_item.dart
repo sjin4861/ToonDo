@@ -1,6 +1,7 @@
 // lib/widgets/todo_list_item.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/todo.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
@@ -34,8 +35,7 @@ class TodoListItem extends StatelessWidget {
     bool isDDay = todo.isDDayTodo();
     bool isCompleted = todo.status >= 100;
 
-    // 디데이 투두인 경우, 진행률 표시기를 trailing에 표시
-    // 데일리 투두인 경우, 체크박스를 trailing에 표시
+    // D-Day → 진행률 표시, Daily → Checkbox
     Widget trailingWidget = isDDay
         ? _buildProgressIndicator(context)
         : Checkbox(
@@ -50,14 +50,19 @@ class TodoListItem extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
+      // Figma 디자인처럼 키우고 싶다면 height도 지정 가능
+      // height: 56,
       decoration: ShapeDecoration(
         color: isCompleted ? const Color(0xFFEEEEEE) : Colors.transparent,
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            width: isCompleted ? 1 : 1.5,
-            color: isCompleted ? const Color(0x7FDDDDDD) : todo.getBorderColor(),
+            width: 1,
+            color: isCompleted
+                ? const Color(0x7FDDDDDD)
+                : todo.getBorderColor(),
           ),
-          borderRadius: BorderRadius.circular(8),
+          // ★ 둥글기 크게
+          borderRadius: BorderRadius.circular(1000),
         ),
       ),
       child: ListTile(
@@ -74,55 +79,11 @@ class TodoListItem extends StatelessWidget {
             decoration: isCompleted ? TextDecoration.lineThrough : null,
           ),
         ),
-        subtitle: isDDay
-            ? Row(
-                children: [
-                  Text(
-                    '${DateFormat('yy.MM.dd').format(todo.startDate)} ~ ${DateFormat('yy.MM.dd').format(todo.endDate)}',
-                    style: const TextStyle(
-                      color: Color(0x7F1C1D1B),
-                      fontSize: 8,
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: 0.12,
-                      fontFamily: 'Pretendard Variable',
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    _getDDayString(),
-                    style: const TextStyle(
-                      color: Color(0x7F1C1D1B),
-                      fontSize: 8,
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: 0.12,
-                      fontFamily: 'Pretendard Variable',
-                    ),
-                  ),
-                ],
-              )
-            : _buildSubtitle(context),
+        subtitle: isDDay ? _buildDDaySubtitle() : _buildSubtitle(context),
         trailing: trailingWidget,
         onTap: () {
           _showTodoOptionsDialog(context, todo);
         },
-      ),
-    );
-  }
-
-  Widget _buildLeading(BuildContext context) {
-    // 목표 아이콘 표시
-    return Container(
-      width: 24,
-      height: 24,
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: todo.getBorderColor().withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Icon(
-        _getGoalIcon(todo.goalId),
-        size: 16,
-        color: todo.getBorderColor(),
       ),
     );
   }
@@ -167,6 +128,35 @@ class TodoListItem extends StatelessWidget {
     } else {
       return 'D+${-dDay}';
     }
+  }
+
+  /// D-Day 날짜/진행률용 subtitle
+  Widget _buildDDaySubtitle() {
+    return Row(
+      children: [
+        Text(
+          '${DateFormat('yy.MM.dd').format(todo.startDate)} ~ ${DateFormat('yy.MM.dd').format(todo.endDate)}',
+          style: const TextStyle(
+            color: Color(0x7F1C1D1B),
+            fontSize: 8,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 0.12,
+            fontFamily: 'Pretendard Variable',
+          ),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          _getDDayString(),
+          style: const TextStyle(
+            color: Color(0x7F1C1D1B),
+            fontSize: 8,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 0.12,
+            fontFamily: 'Pretendard Variable',
+          ),
+        ),
+      ],
+    );
   }
 
   // 진행률 표시기 위젯 (디데이 투두용)
@@ -232,18 +222,43 @@ class TodoListItem extends StatelessWidget {
       },
     );
   }
+  /// leading 아이콘
+  Widget _buildLeading(BuildContext context) {
+    final goalViewmodel = Provider.of<GoalViewModel>(context, listen: false);
+    final matchedGoal = goalViewmodel.goals
+        .where((g) => g.id == todo.goalId)
+        .isNotEmpty
+        ? goalViewmodel.goals.firstWhere((g) => g.id == todo.goalId)
+        : null;
 
-  // 목표 아이콘 반환 메서드
-  IconData _getGoalIcon(String? goalId) {
-    switch (goalId) {
-      case 'goal1':
-        return Icons.school;
-      case 'goal2':
-        return Icons.work;
-      case 'goal3':
-        return Icons.fitness_center;
-      default:
-        return Icons.flag;
-    }
+    bool isCompleted = todo.status >= 100;
+    final iconPath = matchedGoal?.icon; // goal.icon
+
+    return _buildGoalIcon(iconPath, todo.getBorderColor(), isSelected: !isCompleted);
+  }
+
+  /// goal.icon (SVG) 표시
+  Widget _buildGoalIcon(String? iconPath, Color borderColor, {bool isSelected = false}) {
+    return Container(
+      width: 24,
+      height: 24,
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: isSelected
+            ? borderColor.withOpacity(0.2)
+            : const Color(0x7FDDDDDD),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: iconPath != null
+          ? SvgPicture.asset(
+              iconPath,
+              fit: BoxFit.cover,
+            )
+          : Icon(
+              Icons.help_outline,
+              size: 16,
+              color: borderColor,
+            ),
+    );
   }
 }
