@@ -66,7 +66,7 @@ class TodoListItem extends StatelessWidget {
         ),
       ),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         leading: _buildLeading(context),
         title: Text(
           todo.title,
@@ -240,14 +240,14 @@ class TodoListItem extends StatelessWidget {
   /// goal.icon (SVG) 표시
   Widget _buildGoalIcon(String? iconPath, Color borderColor, {bool isSelected = false}) {
     return Container(
-      width: 24,
-      height: 24,
+      width: 32,
+      height: 32,
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: isSelected
             ? borderColor.withOpacity(0.2)
             : const Color(0x7FDDDDDD),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: iconPath != null
           ? SvgPicture.asset(
@@ -256,7 +256,7 @@ class TodoListItem extends StatelessWidget {
             )
           : Icon(
               Icons.help_outline,
-              size: 16,
+              size: 20,
               color: borderColor,
             ),
     );
