@@ -2,83 +2,125 @@
 
 import 'package:flutter/material.dart';
 import 'package:todo_with_alarm/models/goal.dart';
+import 'package:todo_with_alarm/models/goal_status.dart';
 import 'package:todo_with_alarm/services/goal_service.dart';
-import 'package:uuid/uuid.dart';
 
 class GoalViewModel extends ChangeNotifier {
   final GoalService goalService;
+
+  // 전체 Goal 목록
   List<Goal> _goals = [];
 
-  List<Goal> get goals => _goals;
+  List<Goal> get goals => _goals; // 필터 없이 전체 목록
 
   GoalViewModel({required this.goalService}) {
     loadGoals();
   }
 
+  /// --------------------------
+  /// 1) 목표 목록 로딩
+  /// --------------------------
   Future<void> loadGoals() async {
     try {
       _goals = await goalService.loadGoals();
-      notifyListeners();
+      notifyListeners(); // 목록 업데이트
     } catch (e) {
-      // 에러 처리
       print('Error loading goals: $e');
     }
   }
 
+  /// --------------------------
+  /// 2) 목표 CRUD
+  /// --------------------------
+  
+  // CREATE
   Future<void> addGoal(Goal goal) async {
     try {
       final newGoal = await goalService.createGoal(goal);
       _goals.add(newGoal);
       notifyListeners();
     } catch (e) {
-      // 에러 처리
       print('Error adding goal: $e');
-      throw e;
+      rethrow;
     }
   }
 
+  // UPDATE
   Future<void> updateGoal(Goal updatedGoal) async {
     try {
       await goalService.updateGoal(updatedGoal);
-      int index = _goals.indexWhere((goal) => goal.id == updatedGoal.id);
+      final index = _goals.indexWhere((g) => g.id == updatedGoal.id);
       if (index != -1) {
         _goals[index] = updatedGoal;
         notifyListeners();
       }
     } catch (e) {
-      // 에러 처리
       print('Error updating goal: $e');
-      throw e;
+      rethrow;
     }
   }
 
-  Future<void> deleteGoal(String id) async {
+  // DELETE
+  Future<void> deleteGoal(String goalId) async {
     try {
-      await goalService.deleteGoal(id);
-      _goals.removeWhere((goal) => goal.id.toString() == id);
+      await goalService.deleteGoal(goalId);
+      _goals.removeWhere((g) => g.id == goalId);
       notifyListeners();
     } catch (e) {
-      // 에러 처리
       print('Error deleting goal: $e');
-      throw e;
+      rethrow;
     }
   }
-  /// 목표 진행률 업데이트
-  Future<void> updateGoalProgress(String id, double newProgress) async {
+
+  /// --------------------------
+  /// 3) 기타 기능
+  /// --------------------------
+
+  // 진행률 변경
+  Future<void> updateGoalProgress(String goalId, double newProgress) async {
     try {
-      Goal? goal = goals.firstWhere((g) => g.id == id);
+      final goal = _goals.firstWhere((g) => g.id == goalId);
       if (goal != null) {
-        goal.updateProgress(newProgress);
+        goal.progress = newProgress;
         await updateGoal(goal);
       }
     } catch (e) {
       print('Error updating goal progress: $e');
-      // 에러 처리 로직 추가 가능
+    }
+  }
+
+  // 목표 포기
+  Future<void> giveUpGoal(String goalId) async {
+    try {
+      final goal = _goals.firstWhere((g) => g.id == goalId);
+      if (goal != null) {
+        goal.status = GoalStatus.givenUp;
+        await updateGoal(goal);
+      }
+    } catch (e) {
+      print('Error giving up goal: $e');
+    }
+  }
+
+  // 목표 완료
+  Future<void> completeGoal(String goalId) async {
+    try {
+      final goal = _goals.firstWhere((g) => g.id == goalId);
+      if (goal != null) {
+        goal.status = GoalStatus.completed;
+        goal.progress = 100.0;
+        goal.isCompleted = true;
+        await updateGoal(goal);
+      }
+    } catch (e) {
+      print('Error completing goal: $e');
     }
   }
 
   // 특정 목표 가져오기
   Goal? getGoalById(String id) {
-    return _goals.firstWhere((goal) => goal.id.toString() == id, orElse: () => Goal(name: '', startDate: DateTime.now(), endDate: DateTime.now()));
+    return _goals.firstWhere(
+      (g) => g.id == id,
+    );
   }
 }
