@@ -35,6 +35,7 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   hive_generator: ^2.0.1
   build_runner: ^2.4.13
+  audioplayers: ^6.1.1
 
 flutter:
   uses-material-design: true
@@ -42,3 +43,4 @@ flutter:
     - assets/icons/
     - assets/images/
     - assets/rives/
+    - assets/audios/
