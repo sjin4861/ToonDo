@@ -1,67 +1,54 @@
 // lib/screens/home_screen.dart
 
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_with_alarm/models/goal.dart';
+import 'package:todo_with_alarm/models/goal_status.dart';
 import 'package:todo_with_alarm/models/user.dart';
 import 'package:todo_with_alarm/services/auth_service.dart';
 import 'package:todo_with_alarm/services/gpt_service.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
-import 'package:todo_with_alarm/viewmodels/home_viewmodel.dart';
-import 'package:todo_with_alarm/views/auth/login_screen.dart';
 import 'package:todo_with_alarm/views/goal/goal_management_screen.dart';
 import 'package:todo_with_alarm/views/my_page/my_page_screen.dart';
-import 'package:todo_with_alarm/widgets/character/chat_bubble.dart';
-import 'package:todo_with_alarm/widgets/goal/goal_list_item.dart';
-import 'package:todo_with_alarm/widgets/image_shadow.dart';
+import 'package:todo_with_alarm/widgets/character/slime_area.dart';
+import 'package:todo_with_alarm/widgets/goal/goal_list_section.dart';
+import 'package:todo_with_alarm/widgets/character/background.dart';
+import 'package:todo_with_alarm/widgets/navigation/bottom_navigation_bar_widget.dart';
 import '../goal/goal_input_screen.dart';
 import '../goal/goal_progress_screen.dart';
 import '../todo/todo_submission_screen.dart';
-// import 'eisenhower_matrix_screen.dart';
-import 'dart:math';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final homeVM = Provider.of<HomeViewModel>(context);
-    // JWT 토큰을 부여받았다면 백엔드로부터 User정보를 체크할 수 있음.
-    // 이로부터 닉네임을 얻을 예정임
+    final goalVM = Provider.of<GoalViewModel>(context, listen: false);
     final userBox = Hive.box<User>('user');
     final currentUser = userBox.get('currentUser');
     final String userNickname = currentUser?.username ?? 'null';
 
+    // 진행 중 목표만 필터 → 종료일 오름차순 → 상위 3개
+    final inProgressGoals = goalVM.goals
+        .where((g) => g.status == GoalStatus.active)
+        .toList();
+    inProgressGoals.sort((a, b) => a.endDate.compareTo(b.endDate));
+    final top3Goals = inProgressGoals.take(3).toList();
+
     final gptService = Provider.of<GptService>(context, listen: false);
-    final top3Goals = homeVM.dDayClosestThree;
 
     return Scaffold(
-      extendBody: true, // Scaffold의 body가 BottomAppBar 뒤로 확장되도록 설정
-      backgroundColor: Colors.transparent, // 배경 색상을 투명하게 설정
-      extendBodyBehindAppBar: true, // AppBar가 배경을 덮지 않도록 설정
+      extendBody: true,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
-        automaticallyImplyLeading: false,  // 기본 뒤로가기 버튼 숨김
-        title: const SizedBox(
-          width: 100, // 원하는 너비 지정
-          height: 40, // 원하는 높이 지정
-          child: Center(
-            child: Text(
-              'ToonDo',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
+        automaticallyImplyLeading: false,
+        title: const Text('ToonDo', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
-          // 로그아웃 아이콘 추가
           IconButton(
             key: const Key('logoutButton'),
             icon: const Icon(Icons.exit_to_app, size: 24),
@@ -85,280 +72,74 @@ class HomeScreen extends StatelessWidget {
               );
               if (shouldLogout == true) {
                 await AuthService().logout();
-                // 로그아웃 후 WelcomeScreen으로 이동 (로그아웃 상태라 뒤로가기 불가하도록 replacement)
                 Navigator.pushReplacementNamed(context, '/');
               }
             },
           ),
-          // 기존 로그인 아이콘 (혹은 다른 동작)도 필요하다면 추가 가능
         ],
       ),
       body: Stack(
         children: [
-          // 배경 그라데이션
-          Positioned.fill(
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [Color(0xFFFDF8EB), Color(0xFFE2F1F6)],
-                ),
-              ),
-            ),
-          ),
-          // SafeArea를 Stack 내에 배치하여 시스템 UI와 겹치지 않도록 함
+          // 1) 배경
+          const HomeBackground(),
+
+          // 2) SafeArea + Column(목표 리스트 + 슬라임 영역)
           SafeArea(
             child: Column(
               children: [
-                // 목표 리스트 상단 배치
+                // 상단 목표 리스트
                 Expanded(
-                  flex: 4, // 화면의 40%를 목표 리스트에 할당
+                  flex: 4,
                   child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: top3Goals.isNotEmpty
-                        ? Column(
-                            children: top3Goals.map((goal) {
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 4),
-                                child: GoalListItem(
-                                  goal: goal,
-                                  onTap: () {
-                                    // 아무 동작도 하지 않도록 설정, 추후에는 캐릭터와 상호작용하도록 해야할 듯
-                                  },
-                                ),
-                              );
-                            }).toList(),
-                          )
-                        : const Center(
-                            child: Text(
-                              '설정된 목표가 없습니다. 목표를 추가해보세요!',
-                              style:
-                                  TextStyle(fontSize: 16, color: Colors.grey),
-                            ),
-                          ),
+                    padding: const EdgeInsets.symmetric(horizontal:16, vertical: 8),
+                    child: GoalListSection(topGoals: top3Goals),
                   ),
                 ),
-                // 캐릭터 이미지와 말풍선 배치
+                // 하단 슬라임 영역
                 Expanded(
-                  flex: 3, // 화면의 30%를 캐릭터와 말풍선에 할당
-                  child: Stack(
-                    children: [
-                      // 왼쪽 수풀 이미지
-                      Positioned(
-                        left: 0,
-                        bottom: 20,
-                        child: SvgPicture.asset(
-                          'assets/icons/group-2.svg',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      // 오른쪽 수풀 이미지
-                      Positioned(
-                        right: 0,
-                        bottom: 20,
-                        child: SvgPicture.asset(
-                          'assets/icons/group-3.svg',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      // 갈색 배경
-                      Positioned(
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        child: Container(
-                          width: double.infinity,
-                          height: 110, // 원하는 높이로 설정
-                          color: const Color(0xFFECDFBB), // 갈색 배경색 (#ECDFBB)
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: List.generate(3, (index) {
-                              //선 2개 생성
-                              return Container(
-                                width: double.infinity,
-                                height: 2, // 선의 두께
-                                color: const Color.fromARGB(
-                                    255, 248, 238, 226), // 선의 색상
-                              );
-                            }),
-                          ),
-                        ),
-                      ),
-                      // 메인 캐릭터 이미지
-                      Positioned(
-                        left: MediaQuery.of(context).size.width / 2 -
-                            75, // 화면 중앙에 위치
-                        bottom: 80, // 갈색 배경 위에 위치하도록 설정
-                        child: SizedBox(
-                          width: 150,
-                          height: 150,
-                          child: ImageShadow(
-                            opacity: 0.2, // 그림자 투명도
-                            sigma: 7, // 블러 정도
-                            color: Colors.black, // 그림자 색상
-                            offset: const Offset(0, 300), // 그림자를 아래로 이동
-                            transform: Matrix4.identity()
-                              ..setEntry(3, 1, -0.001) // 원근감 추가
-                              ..rotateX(pi / 4) // X축으로 45도 회전하여 찌그러뜨림
-                              ..scale(0.7, 0.3), // 세로로 축소하여 그림자 모양 조정
-                            child: SvgPicture.asset(
-                              'assets/icons/character.svg', // SVG 파일 경로
-                              width: 150, // SVG 파일 너비
-                              height: 150, // SVG 파일 높이
-                              fit: BoxFit.contain, // SVG의 적합 방식
-                            ),
-                          ),
-                        ),
-                      ),
-                      // 말풍선
-                      Positioned(
-                        left: MediaQuery.of(context).size.width / 2 - 125, // 변경: -125에서 -150으로
-                        bottom: 230, // 변경: 230에서 210으로
-                        child: ChatBubble(
-                          nickname: userNickname,
-                          gptService: gptService,
-                        ),
-                      ),
-                    ],
+                  flex: 3,
+                  child: SlimeArea(
+                    userNickname: userNickname,
+                    gptService: gptService,
                   ),
                 ),
               ],
             ),
           ),
-          // 갈색 배경 컨테이너 추가 (BottomAppBar 뒤에 위치)
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Container(
-              width: double.infinity,
-              height: 110, // 원하는 높이로 설정
-              decoration: const BoxDecoration(
-                color: Color(0xFFECDFBB), // 갈색 배경색 (#ECDFBB)
-              ),
-            ),
-          ),
         ],
       ),
-      // Floating Action Button in the center
+
+      // FAB
       floatingActionButton: GestureDetector(
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  const TodoSubmissionScreen(), // 'todo' 화면으로 이동
-            ),
+            MaterialPageRoute(builder: (context) => const TodoSubmissionScreen()),
           );
         },
         child: Container(
-          width: 40, // 변경: 40
-          height: 40, // 변경: 40
-          padding: const EdgeInsets.all(8), // 변경: padding 8
+          width: 40,
+          height: 40,
+          padding: const EdgeInsets.all(8),
           decoration: ShapeDecoration(
-            color: Colors.white, // 변경: 배경색 흰색
+            color: Colors.white,
             shape: RoundedRectangleBorder(
-              side: const BorderSide(
-                  width: 0.5, color: Color(0x3F1B1C1B)), // 변경: 테두리
-              borderRadius: BorderRadius.circular(20), // 변경: borderRadius 20
+              side: const BorderSide(width: 0.5, color: Color(0x3F1B1C1B)),
+              borderRadius: BorderRadius.circular(20),
             ),
           ),
           child: Center(
-            child: SizedBox(
+            child: SvgPicture.asset(
+              'assets/icons/plus.svg',
               width: 20,
               height: 20,
-              // clipBehavior: Clip.antiAlias, // 제거: 오류의 원인
-              child: SvgPicture.asset(
-                'assets/icons/plus.svg', // 사용하고자 하는 아이콘 경로로 변경
-                width: 20,
-                height: 20,
-                color: Colors.blueAccent, // 아이콘 색상 설정
-              ),
+              color: Colors.blueAccent,
             ),
           ),
         ),
       ),
-      floatingActionButtonLocation:
-          FloatingActionButtonLocation.centerDocked, // 가운데 위치
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 10,
-        color: Colors.white, // 네비게이션 바 배경색 흰색
-        child: SizedBox(
-          height: 60, // 네비게이션 바 높이 설정
-          child: Row(
-            mainAxisAlignment:
-                MainAxisAlignment.spaceAround, // 네비게이션 바 버튼을 균등 분배
-            children: [
-              IconButton(
-                icon: SvgPicture.asset(
-                  'assets/icons/goal.svg',
-                  width: 24,
-                  height: 24,
-                  color: Colors.grey,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          GoalManagementScreen(), // 'goal_input' 화면으로 이동
-                    ),
-                  );
-                },
-              ),
-              IconButton(
-                icon: SvgPicture.asset(
-                  'assets/icons/eisenhower.svg',
-                  width: 24,
-                  height: 24,
-                  color: Colors.grey,
-                ),
-                onPressed: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //       builder: (context) => const EisenhowerMatrixScreen()),
-                  // );
-                },
-              ),
-              const SizedBox(width: 48), // 플로팅 버튼 공간 확보
-              IconButton(
-                icon: SvgPicture.asset(
-                  'assets/icons/stats.svg',
-                  width: 24,
-                  height: 24,
-                  color: Colors.grey,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => GoalProgressScreen()),
-                  );
-                },
-              ),
-              IconButton(
-                icon: SvgPicture.asset(
-                  'assets/icons/mypage.svg',
-                  width: 24,
-                  height: 24,
-                  color: Colors.grey,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const MyPageScreen()),
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: const BottomNavigationBarWidget(),
     );
   }
 }
