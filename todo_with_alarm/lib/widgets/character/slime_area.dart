@@ -23,21 +23,21 @@ class SlimeArea extends StatelessWidget {
       children: [
         // (1) 슬라임 캐릭터
         Positioned(
-          left: (screenWidth / 2) - 150, 
-          bottom: -50,
+          left: (screenWidth / 2) - 250, // 중앙에 위치하도록 조정
+          bottom: -170, // 기존 -50에서 90으로 증가
           child: const SizedBox(
-            width: 300,
-            height: 300,
+            width: 500, // 기존 150에서 225으로 증가
+            height: 500, // 기존 150에서 225으로 증가
             child: SlimeCharacterWidget(
-              width: 300,
-              height: 300,
+              width: 500, // 기존 150에서 225으로 증가
+              height: 500, // 기존 150에서 225으로 증가
             ),
           ),
         ),
         // (2) 말풍선
         Positioned(
-          left: (screenWidth / 2) - 125,
-          bottom: 180, 
+          left: (screenWidth / 2) - 175,
+          bottom: 180, // 기존 180에서 270으로 증가
           child: ChatBubble(
             nickname: userNickname,
             gptService: gptService,

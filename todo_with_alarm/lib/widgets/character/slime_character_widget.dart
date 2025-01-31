@@ -14,7 +14,7 @@ class SlimeCharacterWidget extends StatefulWidget {
     Key? key,
     this.width = 150,
     this.height = 150,
-    this.initialAnimationName = 'Idle', // 기본 Idle
+    this.initialAnimationName = 'id', // 기본 Idle
   }) : super(key: key);
 
   @override
@@ -51,13 +51,13 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> {
   /// Blink 애니메이션이 끝나면 다시 Idle
   void _playBlinkThenIdle() {
     // Blink로 전환
-    setAnimation('Blink');
+    setAnimation('eye');
 
     // Blink 길이가 예: 0.3초라면, 그 후 Idle 복귀
     // 실제 길이에 맞춰 조정
     Future.delayed(const Duration(milliseconds: 300), () {
       // 깜빡임이 끝난 후 다시 Idle
-      setAnimation('Idle');
+      setAnimation('id');
     });
   }
 
