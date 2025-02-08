@@ -123,19 +123,15 @@ class TodoService {
     // 1) 미동기화된 투두 수집
     final unsyncedTodos = _todoBox.values.where((t) => !t.isSynced).toList();
 
-    // 2) toDoRequests 생성
+    // 2) toDoRequests 생성, id와 goalId를 서버 스펙에 맞게 Long (int) 타입으로 변환
     final toDoRequests = unsyncedTodos.map((t) {
-      // goalId가 int인지, todoId가 int인지 스펙에 맞게 변환
-      final int? goalId = (t.goalId != null) ? int.tryParse(t.goalId!) : null;
-      final int todoId = int.tryParse(t.id) ?? 0;
-
       return {
-        "todoId": todoId,
-        "goalId": goalId,
+        "todoId": int.parse(t.id),
+        "goalId": t.goalId != null ? int.parse(t.goalId!) : null,
         "title": t.title,
         "status": t.status,
-        "startDate": t.startDate.toIso8601String(),
-        "endDate": t.endDate.toIso8601String(),
+        "startDate": t.startDate.toIso8601String().split('T')[0],
+        "endDate": t.endDate.toIso8601String().split('T')[0],
         "urgency": t.urgency,
         "importance": t.importance,
         "comment": t.comment.isEmpty ? null : t.comment,
@@ -143,16 +139,13 @@ class TodoService {
     }).toList();
 
     // 3) deletedTodoIds: 로컬에서 삭제된 ID
-    //   - 서버는 정수 todoId 사용 → int로 변환
-    final List<int> deletedTodoIds = _deletedIds
-        .map((delId) => int.tryParse(delId) ?? 0)
-        .where((id) => id != 0)
-        .toList();
+    final List<String> deletedTodoIds = _deletedIds;
 
     final requestBody = {
       "toDoRequests": toDoRequests,
       "deletedTodoIds": deletedTodoIds,
     };
+    print(requestBody);
 
     final url = Uri.parse('$baseUrl/todos/all/commit');
     try {
@@ -164,7 +157,7 @@ class TodoService {
         },
         body: jsonEncode(requestBody),
       );
-
+      print('Response Status Code : ${response.statusCode}');
       if (response.statusCode == 200) {
         // 예) {"message":"투두 동기화 성공","savedTodosCount":2,"deletedCount":3}
         final decoded = jsonDecode(response.body);
@@ -236,11 +229,11 @@ class TodoService {
         // 서버로부터 받은 todos -> 로컬 저장
         // todoId가 int이므로 Todo.id/string 변환 로직 필요
         final List<Todo> newList = todosJson.map((json) {
-          final todoId = json['todoId']?.toString() ?? '';
-          final goalId = json['goalId']?.toString();
+          final String todoId = json['todoId'].toString();
+          final dynamic goalIdValue = json['goalId'];
           return Todo(
             id: todoId,
-            goalId: goalId,
+            goalId: goalIdValue != null ? goalIdValue.toString() : null,
             title: json['title'],
             status: (json['status'] as num).toDouble(),
             startDate: DateTime.parse(json['startDate']),
