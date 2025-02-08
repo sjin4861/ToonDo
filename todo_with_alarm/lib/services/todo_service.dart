@@ -114,7 +114,7 @@ class TodoService {
   /// - 미동기화 투두들(생성·수정) -> toDoRequests
   /// - 삭제된 투두 ID -> deletedTodoIds
   /// - 서버에서 처리 후, 응답 200 -> isSynced=true
-  Future<void> syncTodos() async {
+  Future<void> commitTodos() async {
     final token = await authService.getToken();
     if (token == null) {
       throw Exception('JWT 토큰이 없습니다. 다시 로그인해주세요.');
@@ -154,7 +154,7 @@ class TodoService {
       "deletedTodoIds": deletedTodoIds,
     };
 
-    final url = Uri.parse('$baseUrl/todos/all/fetch');
+    final url = Uri.parse('$baseUrl/todos/all/commit');
     try {
       final response = await httpClient.post(
         url,
@@ -187,10 +187,10 @@ class TodoService {
         final errMsg = decoded['message'] ?? 'Bad Request';
         throw Exception('서버 응답 400: $errMsg');
       } else {
-        throw Exception('Failed to sync todos: ${response.body}');
+        throw Exception('Failed to commit todos: ${response.body}');
       }
     } catch (e) {
-      print('Error syncing todos: $e');
+      print('Error commit todos: $e');
       rethrow;
     }
   }
@@ -200,13 +200,13 @@ class TodoService {
   /// - 서버가 해당 유저의 모든 투두를 반환
   /// - 200 -> "todos": [...] 을 로컬에 저장 (전체 갱신)
   /// - 404 -> "해당 유저의 투두 리스트가 없습니다." -> 로컬 clear()
-  Future<void> commitTodos() async {
+  Future<void> fetchTodos() async {
     final token = await authService.getToken();
     if (token == null) {
       throw Exception('JWT 토큰이 없습니다. 다시 로그인해주세요.');
     }
 
-    final url = Uri.parse('$baseUrl/todos/all/commit');
+    final url = Uri.parse('$baseUrl/todos/all/fetch');
 
     try {
       final response = await httpClient.get(
@@ -264,11 +264,13 @@ class TodoService {
         // 로컬 투두도 비울지 결정
         await _todoBox.clear();
       } else {
-        throw Exception('Failed to commit todos: ${response.body}');
+        throw Exception('Failed to fetch todos: ${response.body}');
       }
     } catch (e) {
-      print('Error in commitTodos: $e');
+      print('Error in fetchTodos: $e');
       rethrow;
     }
   }
+  // 임시 코드
+  Future<int> getUnsyncedTodosCount() async {return 0;}
 }
