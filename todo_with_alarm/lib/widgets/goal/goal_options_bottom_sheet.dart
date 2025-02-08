@@ -32,18 +32,15 @@ class GoalOptionsBottomSheet extends StatelessWidget {
   }
 
   void _setProgress(BuildContext context) {
-    // 부모 context 캡처
-    final parentContext = context;
+    final goalManagementVM = Provider.of<GoalManagementViewModel>(context, listen: false);
+    final initialProgress = goal.progress;
+    Navigator.pop(context);
 
-    Navigator.pop(context); // 바텀 시트 닫기
-
-    // Navigator.pop이 완료된 후 showDialog를 호출
     WidgetsBinding.instance.addPostFrameCallback((_) {
       showDialog(
-        context: parentContext, // 부모 context 사용
-        // useRootNavigator: true, // 제거
+        context: context,
         builder: (dialogContext) {
-          double newProgress = goal.progress;
+          double newProgress = initialProgress;
 
           return StatefulBuilder(
             builder: (context, setStateDialog) {
@@ -74,9 +71,7 @@ class GoalOptionsBottomSheet extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () {
-                      // Progress 업데이트
-                      Provider.of<GoalManagementViewModel>(parentContext, listen: false)
-                          .updateGoalProgress(goal.id!, newProgress);
+                      goalManagementVM.updateGoalProgress(goal.id!, newProgress);
                       Navigator.pop(dialogContext);
                     },
                     child: const Text('저장'),
@@ -91,16 +86,12 @@ class GoalOptionsBottomSheet extends StatelessWidget {
   }
 
   void _giveUpGoal(BuildContext context) {
-    // 부모 context 캡처
-    final parentContext = context;
+    final goalManagementVM = Provider.of<GoalManagementViewModel>(context, listen: false);
+    Navigator.pop(context);
 
-    Navigator.pop(context); // 바텀 시트 닫기
-
-    // Navigator.pop이 완료된 후 showDialog를 호출
     WidgetsBinding.instance.addPostFrameCallback((_) {
       showDialog(
-        context: parentContext, // 부모 context 사용
-        // useRootNavigator: true, // 제거
+        context: context,
         builder: (dialogContext) {
           return AlertDialog(
             title: const Text('목표 포기하기'),
@@ -112,9 +103,7 @@ class GoalOptionsBottomSheet extends StatelessWidget {
               ),
               TextButton(
                 onPressed: () {
-                  // 목표 포기 로직
-                  Provider.of<GoalManagementViewModel>(parentContext, listen: false)
-                      .giveUpGoal(goal.id!);
+                  goalManagementVM.giveUpGoal(goal.id!);
                   Navigator.pop(dialogContext);
                 },
                 child: const Text('포기하기'),
