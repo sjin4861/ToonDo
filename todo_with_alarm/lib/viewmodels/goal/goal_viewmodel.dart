@@ -79,11 +79,12 @@ class GoalViewModel extends ChangeNotifier {
   // 진행률 변경
   Future<void> updateGoalProgress(String goalId, double newProgress) async {
     try {
+      await goalService.updateProgress(goalId, newProgress);
       final goal = _goals.firstWhere((g) => g.id == goalId);
       if (goal != null) {
         goal.progress = newProgress;
-        await updateGoal(goal);
       }
+      notifyListeners();
     } catch (e) {
       print('Error updating goal progress: $e');
     }
