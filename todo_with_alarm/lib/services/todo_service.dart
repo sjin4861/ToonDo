@@ -226,15 +226,15 @@ class TodoService {
 
         print('$message (count=$count)');
 
-        // 서버로부터 받은 todos -> 로컬 저장
-        // todoId가 int이므로 Todo.id/string 변환 로직 필요
+        // title을 utf8 디코딩하여 처리
         final List<Todo> newList = todosJson.map((json) {
           final String todoId = json['todoId'].toString();
           final dynamic goalIdValue = json['goalId'];
+          final String title = utf8.decode(json['title'].toString().codeUnits);
           return Todo(
             id: todoId,
             goalId: goalIdValue != null ? goalIdValue.toString() : null,
-            title: json['title'],
+            title: title,
             status: (json['status'] as num).toDouble(),
             startDate: DateTime.parse(json['startDate']),
             endDate: DateTime.parse(json['endDate']),
