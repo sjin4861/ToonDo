@@ -221,7 +221,7 @@ class GoalService {
           'Content-Type': 'application/json; charset=UTF-8',
         },
       );
-
+      print('Response: ${response.statusCode}');
       if (response.statusCode == 200) {
         // 서버에서 정상 삭제 -> 로컬에서도 삭제
         await goalBox.delete(id);
@@ -237,6 +237,69 @@ class GoalService {
     }
   }
   
+  /// [PUT] /goals/update/progress/{goalId}
+  /// 특정 목표의 성취도(progress)를 수정 (0~100 사이 값)
+  ///
+  /// 요청 예시:
+  /// {
+  ///   "progress": 80
+  /// }
+  ///
+  /// 응답 예시 (200 OK):
+  /// {
+  ///   "message": "목표 성취도(progress) 업데이트 성공",
+  ///   "goalId": 1,
+  ///   "goalName": "수정된 목표 이름",
+  ///   "startDate": "2023-01-10",
+  ///   "endDate": "2023-12-25",
+  ///   "progress": 80,
+  ///   "icon": "aaa",
+  ///   "status": null,
+  ///   "createdAt": "2023-01-01T00:00:00"
+  /// }
+  Future<void> updateProgress(String goalId, double progress) async {
+    print('updateProgress() called with goalId: $goalId and progress: $progress');
+    final token = await authService.getToken();
+    if (token == null) {
+      throw Exception('JWT 토큰이 없습니다. 다시 로그인해주세요.');
+    }
+
+    try {
+      final url = Uri.parse('$baseUrl/goals/update/progress/$goalId');
+      final requestBody = {
+        "progress": progress,
+      };
+
+      final response = await httpClient.put(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(requestBody),
+      );
+      print('Response: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        final utf8Body = utf8.decode(response.bodyBytes);
+        final data = jsonDecode(utf8Body);
+        final updatedGoal = Goal.fromJsonApi(data);
+        // 로컬 Hive의 목표 업데이트
+        if (updatedGoal.id != null) {
+          await goalBox.put(updatedGoal.id, updatedGoal);
+        }
+        print('Goal progress updated successfully: ${updatedGoal.name}');
+      } else if (response.statusCode == 404) {
+        print('해당 목표를 찾을 수 없습니다. (goalId: $goalId)');
+        throw Exception('해당 목표를 찾을 수 없습니다.');
+      } else {
+        throw Exception('Failed to update progress: ${response.body}');
+      }
+    } catch (e) {
+      print('Error updating progress: $e');
+      rethrow;
+    }
+  }
+
   /// 목표 완료 상태 토글
   Future<void> toggleGoalCompletion(String id) async {
     print('toggleGoalCompletion() called with goalId: $id');
