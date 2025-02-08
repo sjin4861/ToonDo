@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_with_alarm/views/auth/sms_verification_screen.dart';
 import 'package:todo_with_alarm/widgets/text_fields/custom_text_field.dart';
 import '../../viewmodels/auth/signup_viewmodel.dart';
 import 'login_screen.dart'; // 로그인 화면 임포트
@@ -135,6 +136,14 @@ class _SignupStep1State extends State<SignupStep1> {
                     key: const Key('signupStep1_nextButton'), // ★ 추가
                     onPressed: () {
                       viewModel.validatePhoneNumber();
+                      if (viewModel.phoneNumber.isNotEmpty) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SmsVerificationScreen(phoneNumber: viewModel.phoneNumber),
+                          ),
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF78B545),
