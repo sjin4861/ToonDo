@@ -3,18 +3,19 @@
 
 **Home Screen**
 
-<img width="318" alt="스크린샷 2024-12-01 오후 3 42 34" src="https://github.com/user-attachments/assets/f15331e4-094a-48ff-8a62-2a9061ef556a">
+<img width="332" alt="스크린샷 2025-02-09 오전 12 46 03" src="https://github.com/user-attachments/assets/ac7ff4ad-b2c3-4bfe-b4cf-cf82d8aa6bae" />
 
-**Goal Input Screen**
+**Goal Manage & Input Screen**
 
-<img width="318" alt="스크린샷 2024-12-01 오후 3 44 57" src="https://github.com/user-attachments/assets/320541ea-3c24-4fdb-8ec6-24f731fdbe66">
+<img width="332" alt="스크린샷 2025-02-09 오전 12 46 18" src="https://github.com/user-attachments/assets/0af83f35-c215-4cad-920e-ec903613bef0" />
+<img width="332" alt="스크린샷 2025-02-09 오전 12 46 42" src="https://github.com/user-attachments/assets/210d239b-c2b6-4c82-b277-083976a48482" />
 
 **Todo List Screen**
 
-<img width="318" alt="스크린샷 2024-12-01 오후 3 44 04" src="https://github.com/user-attachments/assets/24c21077-59de-4199-ac89-50fb5775a652">
-<img width="318" alt="스크린샷 2024-12-01 오후 3 44 32" src="https://github.com/user-attachments/assets/738b3e8c-9fcf-4e02-83ca-9f0b3c4ca4be">
+<img width="332" alt="스크린샷 2025-02-09 오전 12 46 53" src="https://github.com/user-attachments/assets/c749e61d-3032-43b1-a077-7b10ec88ca48" />
+<img width="332" alt="스크린샷 2025-02-09 오전 12 47 56" src="https://github.com/user-attachments/assets/cf32974c-12ef-450a-8591-72835025b9e4" />
+<img width="332" alt="스크린샷 2025-02-09 오전 12 48 02" src="https://github.com/user-attachments/assets/002ba92c-45b6-40d5-a966-b89fa537b9bc" />
 
-<img width="318" alt="스크린샷 2024-12-01 오후 3 44 36" src="https://github.com/user-attachments/assets/396425bc-7e45-4062-842a-6766d280f064">
 
 ## Introduction
 
