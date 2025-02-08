@@ -25,7 +25,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final goalVM = Provider.of<GoalViewModel>(context, listen: false);
+    final goalVM = Provider.of<GoalViewModel>(context);
     final userBox = Hive.box<User>('user');
     final currentUser = userBox.get('currentUser');
     final String userNickname = currentUser?.username ?? 'null';

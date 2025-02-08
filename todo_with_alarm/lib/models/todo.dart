@@ -1,12 +1,15 @@
 // lib/models/todo.dart
 import 'package:hive/hive.dart';
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
+// import 'package:uuid/uuid.dart'; // 제거
 
 part 'todo.g.dart'; // 어댑터 생성 파일
 
 @HiveType(typeId: 0)
 class Todo extends HiveObject {
+  // 정적 변수 _nextId: 새로운 todo 생성 시마다 증가
+  static int _nextId = 1;
+  
   @HiveField(0)
   String id; // 투두의 고유 ID
 
@@ -49,7 +52,7 @@ class Todo extends HiveObject {
     this.urgency = 0,
     this.importance = 0,
     this.isSynced = false, // 기본적으로 미동기화 상태
-  }) : this.id = id ?? const Uuid().v4();
+  }) : id = id ?? (_nextId++).toString();
 
   bool isDDayTodo() {
     return !(startDate.year == endDate.year &&

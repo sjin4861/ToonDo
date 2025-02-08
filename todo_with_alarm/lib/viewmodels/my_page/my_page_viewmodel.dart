@@ -20,7 +20,7 @@ class MyPageViewModel extends ChangeNotifier {
   Future<void> commitData() async {
     try {
       // 투두 & 목표 각각 커밋
-      await todoService.commitTodo();
+      await todoService.commitTodos();
       await goalService.commitGoal();
     } catch (e) {
       print('Error while committing data: $e');
@@ -37,6 +37,26 @@ class MyPageViewModel extends ChangeNotifier {
       await goalService.fetchGoals();
     } catch (e) {
       print('Error while fetching data: $e');
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchTodoOnly() async {
+    try {
+      await todoService.fetchTodos();
+    } catch (e) {
+      print('Error fetching todo only: $e');
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<void> commitTodoOnly() async {
+    try {
+      await todoService.commitTodos();
+    } catch (e) {
+      print('Error committing todo only: $e');
     } finally {
       notifyListeners();
     }
