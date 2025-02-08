@@ -73,6 +73,22 @@ class MyPageScreen extends StatelessWidget {
                       child: const Text('동기화하기'),
                     ),
                   ),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () => viewModel.fetchTodoOnly(),
+                      child: const Text('Fetch Todo'),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () => viewModel.commitTodoOnly(),
+                      child: const Text('Commit Todo'),
+                    ),
+                  ),
                 ],
               ),
             ),
