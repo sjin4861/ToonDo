@@ -283,8 +283,15 @@ class GoalService {
         final utf8Body = utf8.decode(response.bodyBytes);
         final data = jsonDecode(utf8Body);
         final updatedGoal = Goal.fromJsonApi(data);
-        // 로컬 Hive의 목표 업데이트
         if (updatedGoal.id != null) {
+          // 자동 완료 조건 체크: 진행률이 100 이상 또는 목표 마감일 경과 시 status를 completed로 변경
+          if (updatedGoal.progress >= 100 || DateTime.now().isAfter(updatedGoal.endDate)) {
+            if (updatedGoal.status != GoalStatus.completed) {
+              updatedGoal.status = GoalStatus.completed;
+              print('Goal automatically marked as completed: ${updatedGoal.name}');
+              // (필요 시 updateStatus API 호출 추가)
+            }
+          }
           await goalBox.put(updatedGoal.id, updatedGoal);
         }
         print('Goal progress updated successfully: ${updatedGoal.name}');
@@ -300,62 +307,95 @@ class GoalService {
     }
   }
 
-  /// 목표 완료 상태 토글
+  /// [PUT] /goals/update/status/{goalId}
+  /// 특정 목표의 상태(status)를 수정 (0: 진행 중, 1: 완료, 2: 포기)
+  ///
+  /// 요청 예시:
+  /// {
+  ///   "status": 1
+  /// }
+  ///
+  /// 응답 예시 (200 OK):
+  /// {
+  ///   "message": "목표 상태(status) 업데이트 성공",
+  ///   "goalId": 1,
+  ///   "goalName": "수정된 목표 이름",
+  ///   "startDate": "2023-01-10",
+  ///   "endDate": "2023-12-25",
+  ///   "progress": 100,
+  ///   "icon": "aaa",
+  ///   "status": 1,
+  ///   "createdAt": "2023-01-01T00:00:00"
+  /// }
+  Future<void> updateStatus(String goalId, int status) async {
+    print('updateStatus() called with goalId: $goalId and status: $status');
+    final token = await authService.getToken();
+    if (token == null) {
+      throw Exception('JWT 토큰이 없습니다. 다시 로그인해주세요.');
+    }
+    // status 값이 0, 1, 2 이외의 값은 미리 차단 (서버에서도 체크하겠지만, 클라이언트 차원에서 예방)
+    if (status < 0 || status > 2) {
+      throw Exception('목표 상태(status)는 0(진행중), 1(완료), 2(포기)만 가능합니다.');
+    }
+
+    try {
+      final url = Uri.parse('$baseUrl/goals/update/status/$goalId');
+      final requestBody = {
+        "status": status,
+      };
+
+      final response = await httpClient.put(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(requestBody),
+      );
+      print('Response status code: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final utf8Body = utf8.decode(response.bodyBytes);
+        final data = jsonDecode(utf8Body);
+        final updatedGoal = Goal.fromJsonApi(data);
+        if (updatedGoal.id != null) {
+          await goalBox.put(updatedGoal.id, updatedGoal);
+        }
+        print('Goal status updated successfully: ${updatedGoal.name}');
+      } else if (response.statusCode == 400) {
+        final utf8Body = utf8.decode(response.bodyBytes);
+        final errorData = jsonDecode(utf8Body);
+        throw Exception(errorData['error']);
+      } else if (response.statusCode == 404) {
+        throw Exception('해당 목표를 찾을 수 없습니다. (goalId: $goalId)');
+      } else {
+        throw Exception('Failed to update goal status: ${response.body}');
+      }
+    } catch (e) {
+      print('Error updating goal status: $e');
+      rethrow;
+    }
+  }
+
+  /// 목표 완료 상태 토글: 목표가 완료 상태이면 active로, active이면 completed로 변경
   Future<void> toggleGoalCompletion(String id) async {
     print('toggleGoalCompletion() called with goalId: $id');
     final goal = goalBox.get(id);
     if (goal != null) {
-      goal.isCompleted = !goal.isCompleted;
-      goal.progress = goal.isCompleted ? 100.0 : goal.getExpectedProgress();
-      //goal.updatedAt = DateTime.now();
-      await goal.save();
-
-      // 원격 서버에 동기화
-      try {
-        final url = Uri.parse('$baseUrl/goals/$id');
-        final response = await httpClient.put(
-          url,
-          headers: {'Content-Type': 'application/json; charset=UTF-8',},
-          body: jsonEncode(goal.toJson()),
-        );
-
-        if (response.statusCode != 200) {
-          throw Exception('Failed to update goal completion on server');
-        }
-        print('Goal completion toggled successfully: ${goal.name}');
-      } catch (e) {
-        print('Error updating goal completion on server: $e');
-        // 서버 동기화 실패 시 로컬 데이터는 이미 업데이트되어 있으므로 추가 조치는 필요 없음
-      }
+      final newStatus = (goal.status == GoalStatus.completed)
+          ? GoalStatus.active.index
+          : GoalStatus.completed.index;
+      // progress 업데이트는 서버 응답 결과에 맡김
+      await updateStatus(id, newStatus);
     }
   }
 
+  /// 목표 포기: 상태를 givenUp으로 변경
   Future<void> giveUpGoal(String goalId) async {
     print('giveUpGoal() called with goalId: $goalId');
-    final goal = goalBox.get(goalId);
-    if (goal != null) {
-      goal.status = GoalStatus.givenUp; // 상태를 givenUp으로 변경
-      await goal.save();
-
-      // 원격 서버에 동기화
-      try {
-        final url = Uri.parse('$baseUrl/goals/$goalId');
-        final response = await httpClient.put(
-          url,
-          headers: {'Content-Type': 'application/json; charset=UTF-8',},
-          body: jsonEncode(goal.toJson()),
-        );
-
-        if (response.statusCode != 200) {
-          throw Exception('Failed to update goal status on server');
-        }
-        print('Goal given up successfully: ${goal.name}');
-      } catch (e) {
-        print('Error updating goal status on server: $e');
-        // 서버 동기화 실패 시 로컬 데이터는 이미 업데이트되어 있으므로 추가 조치는 필요 없음
-      }
-    }
+    await updateStatus(goalId, GoalStatus.givenUp.index);
   }
+
   Future<int> getUnsyncedGoalsCount() async {
     print('getUnsyncedGoalsCount() called');
     return goalBox.values.where((goal) => !goal.isSynced).length;
