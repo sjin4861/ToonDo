@@ -9,9 +9,11 @@ import 'package:todo_with_alarm/models/goal_status.dart';
 import 'package:todo_with_alarm/models/user.dart';
 import 'package:todo_with_alarm/services/auth_service.dart';
 import 'package:todo_with_alarm/services/gpt_service.dart';
+import 'package:todo_with_alarm/viewmodels/character/slime_character_viewmodel.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:todo_with_alarm/views/goal/goal_management_screen.dart';
 import 'package:todo_with_alarm/views/my_page/my_page_screen.dart';
+import 'package:todo_with_alarm/widgets/bottom_button/expandable_floating_button.dart';
 import 'package:todo_with_alarm/widgets/character/slime_area.dart';
 import 'package:todo_with_alarm/widgets/goal/goal_list_section.dart';
 import 'package:todo_with_alarm/widgets/character/background.dart';
@@ -19,6 +21,7 @@ import 'package:todo_with_alarm/widgets/navigation/bottom_navigation_bar_widget.
 import '../goal/goal_input_screen.dart';
 import '../goal/goal_progress_screen.dart';
 import '../todo/todo_submission_screen.dart';
+import 'dart:math';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -39,107 +42,130 @@ class HomeScreen extends StatelessWidget {
 
     final gptService = Provider.of<GptService>(context, listen: false);
 
-    return Scaffold(
-      extendBody: true,
-      extendBodyBehindAppBar: true,
-      backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text('ToonDo', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: [
-          IconButton(
-            key: const Key('logoutButton'),
-            icon: const Icon(Icons.exit_to_app, size: 24),
-            onPressed: () async {
-              final shouldLogout = await showDialog<bool>(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('로그아웃'),
-                  content: const Text('정말 로그아웃 하시겠습니까?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: const Text('취소'),
+    // Provider로 슬라임 ViewModel을 하위 위젯에 공급
+    return ChangeNotifierProvider<SlimeCharacterViewModel>(
+      create: (_) => SlimeCharacterViewModel(),
+      child: Builder(builder: (context) {
+        final slimeVM = Provider.of<SlimeCharacterViewModel>(context);
+        return Scaffold(
+          extendBody: true,
+          extendBodyBehindAppBar: true,
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            title: const Text('ToonDo', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            actions: [
+              IconButton(
+                key: const Key('logoutButton'),
+                icon: const Icon(Icons.exit_to_app, size: 24),
+                onPressed: () async {
+                  final shouldLogout = await showDialog<bool>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('로그아웃'),
+                      content: const Text('정말 로그아웃 하시겠습니까?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: const Text('취소'),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: const Text('로그아웃'),
+                        ),
+                      ],
                     ),
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(true),
-                      child: const Text('로그아웃'),
+                  );
+                  if (shouldLogout == true) {
+                    await AuthService().logout();
+                    Navigator.pushReplacementNamed(context, '/');
+                  }
+                },
+              ),
+            ],
+          ),
+          body: Stack(
+            children: [
+              // 1) 배경
+              const HomeBackground(),
+
+              // 2) SafeArea + Column(목표 리스트 + 슬라임 영역)
+              SafeArea(
+                child: Column(
+                  children: [
+                    // 상단 목표 리스트
+                    Expanded(
+                      flex: 4,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal:16, vertical: 8),
+                        child: GoalListSection(topGoals: top3Goals),
+                      ),
+                    ),
+                    // 하단 슬라임 영역
+                    Expanded(
+                      flex: 3,
+                      child: SlimeArea(
+                        characterViewModel: slimeVM,
+                        userNickname: userNickname,
+                        gptService: gptService,
+                      ),
                     ),
                   ],
                 ),
-              );
-              if (shouldLogout == true) {
-                await AuthService().logout();
-                Navigator.pushReplacementNamed(context, '/');
-              }
-            },
+              ),
+            ],
           ),
-        ],
-      ),
-      body: Stack(
-        children: [
-          // 1) 배경
-          const HomeBackground(),
 
-          // 2) SafeArea + Column(목표 리스트 + 슬라임 영역)
-          SafeArea(
-            child: Column(
-              children: [
-                // 상단 목표 리스트
-                Expanded(
-                  flex: 4,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal:16, vertical: 8),
-                    child: GoalListSection(topGoals: top3Goals),
-                  ),
-                ),
-                // 하단 슬라임 영역
-                Expanded(
-                  flex: 3,
-                  child: SlimeArea(
-                    userNickname: userNickname,
-                    gptService: gptService,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-
-      // FAB
-      floatingActionButton: GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const TodoSubmissionScreen()),
-          );
-        },
-        child: Container(
-          width: 40,
-          height: 40,
-          padding: const EdgeInsets.all(8),
-          decoration: ShapeDecoration(
-            color: Colors.white,
-            shape: RoundedRectangleBorder(
-              side: const BorderSide(width: 0.5, color: Color(0x3F1B1C1B)),
-              borderRadius: BorderRadius.circular(20),
-            ),
-          ),
-          child: Center(
-            child: SvgPicture.asset(
-              'assets/icons/plus.svg',
-              width: 20,
-              height: 20,
-              color: Colors.blueAccent,
-            ),
-          ),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: const BottomNavigationBarWidget(),
+          // FAB
+          // floatingActionButton: GestureDetector(
+          //   onTap: () {
+          //     // 랜덤 선택: true면 슬라임 상호작용, false면 Todo Submission으로 이동
+          //     final bool interact = Random().nextBool();
+          //     if (interact) {
+          //       // 4개 애니메이션 중 랜덤 선택
+          //       final animations = <void Function()>[
+          //         slimeVM.setAngry,
+          //         slimeVM.setHappy,
+          //         slimeVM.setShine,
+          //         slimeVM.setMelt,
+          //       ];
+          //       final randomAnimation = animations[Random().nextInt(animations.length)];
+          //       randomAnimation();
+          //     } else {
+          //       Navigator.push(
+          //         context,
+          //         MaterialPageRoute(builder: (context) => const TodoSubmissionScreen()),
+          //       );
+          //     }
+          //   },
+          //   child: Container(
+          //     width: 40,
+          //     height: 40,
+          //     padding: const EdgeInsets.all(8),
+          //     decoration: ShapeDecoration(
+          //       color: Colors.white,
+          //       shape: RoundedRectangleBorder(
+          //         side: const BorderSide(width: 0.5, color: Color(0x3F1B1C1B)),
+          //         borderRadius: BorderRadius.circular(20),
+          //       ),
+          //     ),
+          //     child: Center(
+          //       child: SvgPicture.asset(
+          //         'assets/icons/plus.svg',
+          //         width: 20,
+          //         height: 20,
+          //         color: Colors.blueAccent,
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          floatingActionButton: const ExpandableFab(),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          bottomNavigationBar: const BottomNavigationBarWidget(),
+        );
+      }),
     );
   }
 }
