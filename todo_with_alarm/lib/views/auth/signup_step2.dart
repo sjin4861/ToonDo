@@ -7,6 +7,9 @@ import '../../viewmodels/auth/signup_viewmodel.dart';
 import '../onboarding/onboarding_screen.dart'; // OnboardingScreen 임포트
 
 class SignupStep2 extends StatefulWidget {
+  final String phoneNumber; // 휴대폰 번호 의존성 추가
+  const SignupStep2({Key? key, required this.phoneNumber}) : super(key: key);
+
   @override
   _SignupStep2State createState() => _SignupStep2State();
 }
@@ -14,6 +17,7 @@ class SignupStep2 extends StatefulWidget {
 class _SignupStep2State extends State<SignupStep2> {
   bool isPasswordVisible = false;
   SignupViewModel? viewModel;
+  late TextEditingController _phoneController;
 
   @override
   void didChangeDependencies() {
@@ -21,12 +25,14 @@ class _SignupStep2State extends State<SignupStep2> {
     if (viewModel == null) {
       viewModel = Provider.of<SignupViewModel>(context);
       viewModel!.addListener(_onSignupComplete);
+      _phoneController = TextEditingController(text: widget.phoneNumber); // widget.phoneNumber 사용
     }
   }
 
   @override
   void dispose() {
     viewModel?.removeListener(_onSignupComplete);
+    _phoneController.dispose();
     super.dispose();
   }
 
@@ -78,21 +84,21 @@ class _SignupStep2State extends State<SignupStep2> {
                   ),
                 ),
                 SizedBox(height: 32),
-                // 휴대폰 번호 입력란
+                // 휴대폰 번호 입력란 (widget.phoneNumber 사용)
                 CustomTextField(
-                  key: const Key('signupStep2_phoneNumberField'), // ★ 추가
+                  key: const Key('signupStep2_phoneNumberField'),
                   label: '휴대폰 번호',
                   hintText: '',
-                  controller: TextEditingController(text: signupViewModel.phoneNumber),
+                  controller: _phoneController,
                   enabled: false,
-                  isValid: false, // 입력 불가능하므로 유효성 표시 필요 없음
-                  borderColor: Color(0xFFDDDDDD), // 기본 테두리 색상 적용
+                  isValid: false,
+                  borderColor: Color(0xFFDDDDDD),
                   contentPadding: EdgeInsets.symmetric(horizontal: 16),
                 ),
                 SizedBox(height: 24),
                 // 비밀번호 입력란
                 CustomTextField(
-                  key: const Key('signupStep2_passwordField'), // ★ 추가
+                  key: const Key('signupStep2_passwordField'),
                   label: '비밀번호',
                   hintText: '비밀번호를 입력하세요',
                   obscureText: !isPasswordVisible,
@@ -101,7 +107,6 @@ class _SignupStep2State extends State<SignupStep2> {
                       signupViewModel.password = value;
                     });
                   },
-                  // errorText: signupViewModel.passwordError,
                   isValid: signupViewModel.password.isNotEmpty,
                   borderColor: signupViewModel.password.isNotEmpty
                       ? Color(0xFF78B545)
