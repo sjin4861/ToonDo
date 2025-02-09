@@ -9,7 +9,7 @@ import 'package:http/testing.dart';
 void main() {
   // Flutter 바인딩 초기화
   TestWidgetsFlutterBinding.ensureInitialized();
-  
+
   group('AuthService Tests', () {
     late MockClient mockHttpClient;
     late AuthService authService;
@@ -32,7 +32,8 @@ void main() {
               201,
             );
           }
-        } else if (request.url.path == '/users/login' && request.method == 'POST') {
+        } else if (request.url.path == '/users/login' &&
+            request.method == 'POST') {
           if (requestBody['password'] == 'correctpassword') {
             // 로그인 성공
             return http.Response(
@@ -46,7 +47,8 @@ void main() {
               400,
             );
           }
-        } else if (request.url.path == '/users/update-username' && request.method == 'PUT') {
+        } else if (request.url.path == '/users/update-username' &&
+            request.method == 'PUT') {
           if (requestBody['userId'] == 'validUserId') {
             // 닉네임 업데이트 성공
             return http.Response(
@@ -58,6 +60,21 @@ void main() {
             return http.Response(
               jsonEncode({'message': '유효하지 않은 사용자 ID입니다.'}),
               400,
+            );
+          }
+        } else if (request.url.path == '/users/check-phone' &&
+            request.method == 'POST') {
+          if (requestBody['phoneNumber'] == '01012345678') {
+            // 휴대폰 번호가 이미 등록되어 있음
+            return http.Response(
+              jsonEncode({'exists': true}),
+              200,
+            );
+          } else {
+            // 휴대폰 번호가 등록되어 있지 않음
+            return http.Response(
+              jsonEncode({'exists': false}),
+              200,
             );
           }
         } else {
@@ -83,8 +100,8 @@ void main() {
 
     test('2. Fail to register user with existing phone number', () async {
       // Arrange
-      final phoneNumber = '01098765432'; // 이미 존재하는 번호로 설정
-      final password = 'password456';
+      final phoneNumber = '01087654321'; // 이미 존재하는 번호로 설정
+      final password = '87654321';
 
       // Act & Assert
       expect(
@@ -127,11 +144,10 @@ void main() {
 
     test('5. Successfully update username', () async {
       // Arrange
-      final userId = 'validUserId';
       final nickname = 'NewNickname';
 
       // Act
-      await authService.updateUsername(userId, nickname);
+      await authService.updateUsername(nickname);
 
       // Assert
       // 예외가 발생하지 않으면 닉네임 업데이트 성공으로 간주합니다.
@@ -139,18 +155,36 @@ void main() {
 
     test('6. Fail to update username with invalid userId', () async {
       // Arrange
-      final userId = 'invalidUserId';
       final nickname = 'NewNickname';
 
       // Act & Assert
       expect(
-        () async => await authService.updateUsername(userId, nickname),
+        () async => await authService.updateUsername(nickname),
         throwsA(isA<Exception>().having(
           (e) => e.toString(),
           'message',
           contains('유효하지 않은 사용자 ID입니다.'),
         )),
       );
+    });
+
+    test('7. Check if phone number is already registered', () async {
+      // Arrange
+      final phoneNumber = '01012345678';
+
+      // Act
+      final result = await authService.isPhoneNumberRegistered(phoneNumber);
+
+      // Assert
+      expect(result, isA<bool>());
+    });
+
+    test('8. Logout clears token and currentUser', () async {
+      // Act
+      await authService.logout();
+
+      // Assert
+      // Expect token and currentUser to be removed from storage
     });
   });
 }

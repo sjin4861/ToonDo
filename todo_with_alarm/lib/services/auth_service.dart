@@ -75,6 +75,7 @@ class AuthService {
       throw Exception(responseData['message'] ?? '회원가입 실패');
     }
   }
+
   // 로그인
   Future<User> login(String phoneNumber, String password) async {
     final url = Uri.parse('$baseUrl/users/login');
@@ -115,8 +116,9 @@ class AuthService {
       throw Exception(responseData['message'] ?? '로그인 실패');
     }
   }
+
   /// 닉네임 업데이트
-  Future<void> updateUsername(int userId, String nickname) async {
+  Future<void> updateUsername(String nickname) async {
     final token = await getToken();
     if (token == null) {
       throw Exception('토큰이 없습니다. 다시 로그인해주세요.');

@@ -11,7 +11,7 @@ class OnboardingViewModel extends ChangeNotifier {
     final authService = AuthService();
 
     try {
-      await authService.updateUsername(userId, nickname);
+      await authService.updateUsername(nickname);
     } catch (e) {
       // 에러 처리
       throw Exception('닉네임 업데이트에 실패했습니다: ${e.toString()}');
