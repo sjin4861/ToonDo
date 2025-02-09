@@ -6,6 +6,7 @@ import 'package:todo_with_alarm/models/goal.dart';
 import 'package:todo_with_alarm/models/user.dart';
 import 'package:todo_with_alarm/services/gpt_service.dart';
 import 'package:todo_with_alarm/services/user_service.dart';
+import 'package:todo_with_alarm/viewmodels/auth/signup_viewmodel.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_management_viewmodel.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:todo_with_alarm/services/goal_service.dart';
@@ -60,6 +61,9 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider<SignupViewModel>(
+          create: (_) => SignupViewModel(),
+        ),
         // Provider<TodoService> 등록
         Provider<TodoService>(
           create: (_) => todoService),
