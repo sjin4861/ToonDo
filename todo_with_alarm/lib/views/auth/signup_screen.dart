@@ -28,9 +28,6 @@ class SignupScreen extends StatelessWidget {
             case 1:
               currentStepWidget = SignupStep1();
               break;
-            case 2:
-              currentStepWidget = SignupStep2();
-              break;
             default:
               currentStepWidget = Container();
           }
