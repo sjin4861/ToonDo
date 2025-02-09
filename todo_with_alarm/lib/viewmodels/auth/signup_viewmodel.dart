@@ -15,13 +15,20 @@ class SignupViewModel extends ChangeNotifier {
   void setNavigateToLogin(VoidCallback callback) {
     navigateToLogin = callback;
   }
+
+  // 추가: 등록된 유저인지 점검하는 메서드
+  Future<bool> checkIfRegistered() async {
+    AuthService authService = AuthService();
+    return await authService.isPhoneNumberRegistered(phoneNumber);
+  }
+
   Future<void> validatePhoneNumber() async {
     AuthService authService = AuthService();
     try {
       if (phoneNumber.isEmpty || !RegExp(r'^\d{10,11}$').hasMatch(phoneNumber)) {
         phoneError = '유효한 휴대폰 번호를 입력해주세요.';
-      } else if (await authService.isPhoneNumberRegistered(phoneNumber)) {
-        goToLogin(); // 로그인 화면으로 이동
+      } else if (await checkIfRegistered()) {
+        goToLogin(); // 등록된 유저이면 로그인 화면으로 이동
       } else {
         phoneError = null;
         nextStep();
