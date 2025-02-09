@@ -157,6 +157,9 @@ class AuthService {
 
   // 휴대폰 번호 중복 확인
   Future<bool> isPhoneNumberRegistered(String phoneNumber) async {
+    if (phoneNumber == Constants.testPhoneNumber) {
+      return false;
+    }
     final url = Uri.parse('$baseUrl/users/check-phone-number');
     final response = await http.post(
       url,

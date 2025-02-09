@@ -267,7 +267,7 @@ class GoalService {
     try {
       final url = Uri.parse('$baseUrl/goals/update/progress/$goalId');
       final requestBody = {
-        "progress": progress,
+        "progress": progress.toInt(),
       };
 
       final response = await httpClient.put(
