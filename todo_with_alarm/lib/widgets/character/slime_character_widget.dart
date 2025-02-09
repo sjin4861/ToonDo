@@ -4,17 +4,21 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
+import '../../viewmodels/character/slime_character_viewmodel.dart';
 
 class SlimeCharacterWidget extends StatefulWidget {
   final double width;
   final double height;
+  // 추가: MVVM에서 사용할 ViewModel을 외부에서 전달받음
+  final SlimeCharacterViewModel viewModel;
   final String initialAnimationName;
 
   const SlimeCharacterWidget({
     Key? key,
     this.width = 150,
     this.height = 150,
-    this.initialAnimationName = 'id', // 기본 Idle
+    this.initialAnimationName = 'id',
+    required this.viewModel,
   }) : super(key: key);
 
   @override
@@ -23,55 +27,49 @@ class SlimeCharacterWidget extends StatefulWidget {
 
 class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> {
   RiveAnimationController? _controller;
-  Timer? _blinkTimer; // 깜빡임 타이머
+  Timer? _blinkTimer;
 
   @override
   void initState() {
     super.initState();
-    // 처음엔 Idle
+    // 초기 애니메이션은 ViewModel 상태 또는 전달된 기본값 사용
     _controller = SimpleAnimation(widget.initialAnimationName);
-
-    // 깜빡임 타이머 시작
+    // ViewModel 상태 변화에 따른 업데이트 등록
+    widget.viewModel.addListener(_onViewModelChanged);
+    // Blink 타이머 시작 (필요 시 ViewModel과 분리하여 내부 타이머 유지)
     _startBlinkSchedule();
   }
 
   @override
   void dispose() {
     _blinkTimer?.cancel();
+    widget.viewModel.removeListener(_onViewModelChanged);
     super.dispose();
   }
 
-  /// 특정 애니메이션으로 전환
+  void _onViewModelChanged() {
+    // ViewModel의 animation 값이 변경되면 Rive 컨트롤러 업데이트
+    setAnimation(widget.viewModel.animation);
+  }
+
   void setAnimation(String animationName) {
     setState(() {
       _controller = SimpleAnimation(animationName);
     });
   }
 
-  /// Blink 애니메이션이 끝나면 다시 Idle
   void _playBlinkThenIdle() {
-    // Blink로 전환
     setAnimation('eye');
-
-    // Blink 길이가 예: 0.3초라면, 그 후 Idle 복귀
-    // 실제 길이에 맞춰 조정
     Future.delayed(const Duration(milliseconds: 300), () {
-      // 깜빡임이 끝난 후 다시 Idle
       setAnimation('id');
     });
   }
 
-  /// 일정 랜덤 간격으로 Blink
   void _startBlinkSchedule() {
     _blinkTimer?.cancel();
-
-    // 3~6초 사이 랜덤
-    final nextBlink = 3 + Random().nextInt(4); 
-
+    final nextBlink = 3 + Random().nextInt(4);
     _blinkTimer = Timer(Duration(seconds: nextBlink), () {
-      // Blink 실행
       _playBlinkThenIdle();
-      // 다음 깜빡임 예약
       _startBlinkSchedule();
     });
   }

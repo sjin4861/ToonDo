@@ -1,6 +1,7 @@
 // lib/widgets/character/slime_area.dart
 
 import 'package:flutter/material.dart';
+import 'package:todo_with_alarm/viewmodels/character/slime_character_viewmodel.dart';
 import 'package:todo_with_alarm/widgets/character/chat_bubble.dart';
 import 'package:todo_with_alarm/services/gpt_service.dart';
 import 'package:todo_with_alarm/widgets/character/slime_character_widget.dart';
@@ -8,11 +9,13 @@ import 'package:todo_with_alarm/widgets/character/slime_character_widget.dart';
 class SlimeArea extends StatelessWidget {
   final String userNickname;
   final GptService gptService;
+  final SlimeCharacterViewModel characterViewModel;
 
   const SlimeArea({
     Key? key,
     required this.userNickname,
     required this.gptService,
+    required this.characterViewModel,
   }) : super(key: key);
 
   @override
@@ -25,12 +28,14 @@ class SlimeArea extends StatelessWidget {
         Positioned(
           left: (screenWidth / 2) - 250, // 중앙에 위치하도록 조정
           bottom: -170, // 기존 -50에서 90으로 증가
-          child: const SizedBox(
+          child: SizedBox(
             width: 500, // 기존 150에서 225으로 증가
             height: 500, // 기존 150에서 225으로 증가
             child: SlimeCharacterWidget(
               width: 500, // 기존 150에서 225으로 증가
               height: 500, // 기존 150에서 225으로 증가
+              initialAnimationName : 'id',
+              viewModel: characterViewModel,
             ),
           ),
         ),
