@@ -21,12 +21,18 @@ class SmsService {
   }
 
   Future<String> verifySmsCode(String phoneNumber, String code) async {
+    // 테스트용 인증코드가 일치하면 무조건 성공 처리
+    if (code == Constants.testVerificationCode) {
+      print("테스트 인증 성공");
+      return "본인인증 성공";
+    }
     final url = Uri.parse('$baseUrl/sms/verify-code?phoneNumber=$phoneNumber&code=$code');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
     );
     if (response.statusCode == 200) {
+      print("본인인증 성공");
       return "본인인증 성공";
     } else {
       throw Exception("인증번호가 일치하지 않습니다.");
