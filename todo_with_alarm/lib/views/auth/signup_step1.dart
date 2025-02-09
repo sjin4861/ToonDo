@@ -80,7 +80,7 @@ class _SignupStep1State extends State<SignupStep1> {
               hintText: '01012345678',
               onChanged: (value) {
                 setState(() {
-                  viewModel.phoneNumber = value;
+                  viewModel.setPhoneNumber(value);
                 });
               },
               //errorText: viewModel.phoneError,
