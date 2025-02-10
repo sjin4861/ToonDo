@@ -11,6 +11,9 @@ class SignupViewModel extends ChangeNotifier {
   int? userId;
   int currentStep = 1; // currentStep 변수 추가
 
+  // 신규: phoneNumberController 추가
+  final TextEditingController phoneNumberController = TextEditingController();
+
   VoidCallback? navigateToLogin;
   void setNavigateToLogin(VoidCallback callback) {
     navigateToLogin = callback;
@@ -22,26 +25,37 @@ class SignupViewModel extends ChangeNotifier {
     return await authService.isPhoneNumberRegistered(phoneNumber);
   }
 
-  Future<void> validatePhoneNumber() async {
-    AuthService authService = AuthService();
+  /// 전화번호 유효성 검사 후, 이미 등록된 번호면 true를 반환, 신규면 false를 반환.
+  Future<bool> validatePhoneNumber() async {
     try {
       if (phoneNumber.isEmpty || !RegExp(r'^\d{10,11}$').hasMatch(phoneNumber)) {
         phoneError = '유효한 휴대폰 번호를 입력해주세요.';
-      } else if (await checkIfRegistered()) {
-        goToLogin(); // 등록된 유저이면 로그인 화면으로 이동
+        notifyListeners();
+        return false;
+      } 
+      bool exists = await checkIfRegistered();
+      if (exists) {
+        // 이미 등록된 번호인 경우 (로그인 화면으로 진행)
+        phoneError = null;
+        notifyListeners();
+        return true;
       } else {
         phoneError = null;
         nextStep();
+        notifyListeners();
+        return false;
       }
     } catch (e) {
       phoneError = '전화번호 확인 중 오류가 발생했습니다.';
+      notifyListeners();
+      return false;
     }
-    notifyListeners();
   }
 
   Future<void> signUp() async {
     try {
       AuthService authService = AuthService();
+      print('회원가입 시도: $phoneNumber, $password');
       User newUser = await authService.registerUser(phoneNumber, password);
       userId = newUser.id; // userId 저장
       isSignupComplete = true;
@@ -52,9 +66,10 @@ class SignupViewModel extends ChangeNotifier {
     }
   }
   
-
+  // 수정: phoneNumberController의 text와 phoneNumber를 동시에 업데이트
   void setPhoneNumber(String number) {
     phoneNumber = number;
+    phoneNumberController.text = number;
     notifyListeners();
   }
 
@@ -86,9 +101,11 @@ class SignupViewModel extends ChangeNotifier {
     notifyListeners();
   }
   
-  void goToLogin() {
-    if (navigateToLogin != null) {
-      navigateToLogin!();
-    }
+  // 기존 goToLogin 메서드는 더 이상 사용하지 않습니다.
+  
+  @override
+  void dispose() {
+    phoneNumberController.dispose();
+    super.dispose();
   }
 }
