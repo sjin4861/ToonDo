@@ -5,6 +5,7 @@ import 'package:todo_with_alarm/widgets/bottom_button/custom_button.dart';
 import 'package:todo_with_alarm/widgets/text_fields/custom_text_field.dart';
 import '../../viewmodels/auth/signup_viewmodel.dart';
 import '../onboarding/onboarding_screen.dart'; // OnboardingScreen 임포트
+import '../../widgets/text_fields/custom_auth_text_field.dart';
 
 class SignupStep2 extends StatefulWidget {
   final String phoneNumber; // 휴대폰 번호 의존성 추가
@@ -18,14 +19,22 @@ class _SignupStep2State extends State<SignupStep2> {
   bool isPasswordVisible = false;
   SignupViewModel? viewModel;
   late TextEditingController _phoneController;
+  late TextEditingController _passwordController; // 신규 추가
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (viewModel == null) {
       viewModel = Provider.of<SignupViewModel>(context);
+      // 휴대폰 번호가 viewmodel에 아직 설정되지 않은 경우 widget의 번호를 전달
+      if (viewModel!.phoneNumber.isEmpty) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          viewModel!.setPhoneNumber(widget.phoneNumber);
+        });
+      }
       viewModel!.addListener(_onSignupComplete);
       _phoneController = TextEditingController(text: widget.phoneNumber); // widget.phoneNumber 사용
+      _passwordController = TextEditingController(); // 초기화
     }
   }
 
@@ -33,6 +42,7 @@ class _SignupStep2State extends State<SignupStep2> {
   void dispose() {
     viewModel?.removeListener(_onSignupComplete);
     _phoneController.dispose();
+    _passwordController.dispose(); // dispose 추가
     super.dispose();
   }
 
@@ -85,32 +95,27 @@ class _SignupStep2State extends State<SignupStep2> {
                 ),
                 SizedBox(height: 32),
                 // 휴대폰 번호 입력란 (widget.phoneNumber 사용)
-                CustomTextField(
+                CustomAuthTextField(
                   key: const Key('signupStep2_phoneNumberField'),
                   label: '휴대폰 번호',
-                  hintText: '',
                   controller: _phoneController,
-                  enabled: false,
-                  isValid: false,
-                  borderColor: Color(0xFFDDDDDD),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                  readOnly: true,
                 ),
                 SizedBox(height: 24),
-                // 비밀번호 입력란
-                CustomTextField(
+                // 비밀번호 입력란 (CustomTextField -> CustomAuthTextField 변경)
+                CustomAuthTextField(
                   key: const Key('signupStep2_passwordField'),
                   label: '비밀번호',
                   hintText: '비밀번호를 입력하세요',
+                  controller: _passwordController,
                   obscureText: !isPasswordVisible,
                   onChanged: (value) {
                     setState(() {
                       signupViewModel.password = value;
                     });
                   },
-                  isValid: signupViewModel.password.isNotEmpty,
-                  borderColor: signupViewModel.password.isNotEmpty
-                      ? Color(0xFF78B545)
-                      : Color(0xFFDDDDDD),
+                  // errorText: signupViewModel.passwordError,
+                  // 입력 시 border 색상은 내부 ValueListenableBuilder 에서 처리됨
                   contentPadding: EdgeInsets.symmetric(horizontal: 16),
                   suffixIcon: IconButton(
                     icon: Icon(
@@ -159,8 +164,10 @@ class _SignupStep2State extends State<SignupStep2> {
                       child: CustomButton(
                         key: const Key('signupStep2_nextButton'), // ★ 추가
                         text: '다음으로',
-                        onPressed: () {
-                          signupViewModel.validatePassword();
+                        onPressed: () async {
+                          await signupViewModel.validatePassword();
+                          // 버튼 눌렀을 때 유효하지 않은 비밀번호면 화면 전환 방지
+                          if (signupViewModel.passwordError != null) return;
                           _onSignupComplete();
                         },
                         backgroundColor: Color(0xFF78B545),

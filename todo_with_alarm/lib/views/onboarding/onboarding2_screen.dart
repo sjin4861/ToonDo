@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import '../../viewmodels/onboarding/onboarding_viewmodel.dart';
-import '../../widgets/text_fields/custom_text_field.dart';
+import '../../widgets/text_fields/custom_auth_text_field.dart';
 import '../home/home_screen.dart';
 
 class Onboarding2Page extends StatefulWidget {
@@ -118,7 +118,7 @@ class _Onboarding2PageState extends State<Onboarding2Page> {
                         SizedBox(height: 64),
                         Consumer<OnboardingViewModel>(
                           builder: (context, viewModel, child) {
-                            return CustomTextField(
+                            return CustomAuthTextField(
                               key: const Key('onboarding2_nicknameTextField'),
                               label: '닉네임',
                               hintText: '8자 이내의 닉네임을 입력해주세요',
@@ -129,12 +129,8 @@ class _Onboarding2PageState extends State<Onboarding2Page> {
                                 });
                                 viewModel.nickname = value;
                               },
-                              errorText: nicknameError,
+                              //errorText: nicknameError,
                               isValid: viewModel.nickname.isNotEmpty,
-                              borderColor: viewModel.nickname.isNotEmpty
-                                  ? Color(0xFF78B545)
-                                  : Color(0xFFDDDDDD),
-                              contentPadding: EdgeInsets.symmetric(horizontal: 16),
                             );
                           },
                         ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:todo_with_alarm/services/sms_service.dart';
 import 'package:todo_with_alarm/widgets/text_fields/custom_text_field.dart';
 import 'signup_step2.dart';
+import '../../widgets/text_fields/custom_auth_text_field.dart';
 
 class SmsVerificationScreen extends StatefulWidget {
   final String phoneNumber;
@@ -148,15 +149,12 @@ class _SmsVerificationScreenState extends State<SmsVerificationScreen> {
             ),
             SizedBox(height: 32),
             // 인증코드 입력란 (비밀번호 대신)
-            CustomTextField(
+            CustomAuthTextField(
               key: const Key('smsVerification_codeField'),
               label: '인증코드',
               hintText: '인증번호를 입력하세요',
               controller: _codeController,
               onChanged: (value) {},
-              isValid: _codeController.text.isNotEmpty,
-              borderColor: _codeController.text.isNotEmpty ? Color(0xFF78B545) : Color(0xFFDDDDDD),
-              contentPadding: EdgeInsets.symmetric(horizontal: 16),
             ),
             SizedBox(height: 24),
             if (_message.isNotEmpty)

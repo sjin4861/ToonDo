@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../viewmodels/auth/login_viewmodel.dart';
+import '../../widgets/text_fields/custom_auth_text_field.dart';
 
 class LoginScreen extends StatelessWidget {
   final String? phoneNumber; // 외부에서 전달되더라도 필드 입력이 가능하도록 함
@@ -13,6 +14,10 @@ class LoginScreen extends StatelessWidget {
       create: (_) => LoginViewModel(phoneNumber: phoneNumber),
       child: Consumer<LoginViewModel>(
         builder: (context, viewModel, child) {
+          // 전달된 휴대폰 번호가 있다면 컨트롤러에 초기값 설정
+          if (phoneNumber != null && viewModel.phoneNumberController.text.isEmpty) {
+            viewModel.phoneNumberController.text = phoneNumber!;
+          }
           return Scaffold(
             backgroundColor: Color(0xFFFCFCFC),
             appBar: AppBar(
@@ -67,116 +72,31 @@ class LoginScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 32),
                     // 휴대폰 번호 입력 필드 (기존에는 표시만 했었음)
-                    Text(
-                      '휴대폰 번호',
-                      style: TextStyle(
-                        color: Color(0xFF1C1D1B),
-                        fontSize: 10,
-                        fontFamily: 'Pretendard Variable',
-                        fontWeight: FontWeight.w400,
-                        letterSpacing: 0.15,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    TextField(
+                    CustomAuthTextField(
                       key: const Key('login_phoneNumberField'),
+                      label: '휴대폰 번호',
                       controller: viewModel.phoneNumberController,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                        hintText: '휴대폰 번호를 입력하세요',
-                        hintStyle: TextStyle(
-                          color: Color(0xFFB2B2B2),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 0.18,
-                          fontFamily: 'Pretendard Variable',
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(1000),
-                          borderSide: BorderSide(color: Color(0xFFDDDDDD)),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(1000),
-                          borderSide: BorderSide(color: Color(0xFF78B545)),
-                        ),
-                      ),
-                      keyboardType: TextInputType.phone,
+                      readOnly: phoneNumber != null,
+                      hintText: phoneNumber != null ? null : '휴대폰 번호를 입력하세요',
                     ),
                     SizedBox(height: 24),
-                    // 비밀번호 입력 필드
-                    Text(
-                      '비밀번호',
-                      style: TextStyle(
-                        color: Color(0xFF1C1D1B),
-                        fontSize: 10,
-                        fontFamily: 'Pretendard Variable',
-                        fontWeight: FontWeight.w400,
-                        letterSpacing: 0.15,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextField(
-                          key: const Key('login_passwordField'),
-                          obscureText: !viewModel.isPasswordVisible,
-                          onChanged: (value) {
-                            viewModel.password = value;
-                          },
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                            hintText: '비밀번호를 입력하세요.',
-                            hintStyle: TextStyle(
-                              color: Color(0xFFB2B2B2),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              letterSpacing: 0.18,
-                              fontFamily: 'Pretendard Variable',
-                            ),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                viewModel.isPasswordVisible
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                                color: Color(0xFF1C1D1B),
-                              ),
-                              onPressed: () {
-                                viewModel.togglePasswordVisibility();
-                              },
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(1000),
-                              borderSide: BorderSide(color: Color(0xFFDDDDDD)),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(1000),
-                              borderSide: BorderSide(color: Color(0xFF78B545)),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(1000),
-                              borderSide: BorderSide(color: Color(0xFFEE0F12)),
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(1000),
-                              borderSide: BorderSide(color: Color(0xFFEE0F12)),
-                            ),
-                          ),
+                    CustomAuthTextField(
+                      key: const Key('login_passwordField'),
+                      label: '비밀번호',
+                      controller: viewModel.passwordController, // 로그인 뷰모델 내 비밀번호 컨트롤러 사용
+                      obscureText: !viewModel.isPasswordVisible,
+                      onChanged: (value) {
+                        viewModel.setPassword(value);
+                      },
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          viewModel.isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                          color: Color(0xFF1C1D1B),
                         ),
-                        if (viewModel.passwordError != null) ...[
-                          SizedBox(height: 4),
-                          Text(
-                            viewModel.passwordError!,
-                            style: TextStyle(
-                              color: Color(0xFFEE0F12),
-                              fontSize: 10,
-                              fontFamily: 'Pretendard Variable',
-                              fontWeight: FontWeight.w400,
-                              letterSpacing: 0.15,
-                            ),
-                          ),
-                        ],
-                      ],
+                        onPressed: () {
+                          viewModel.togglePasswordVisibility();
+                        },
+                      ),
                     ),
                     SizedBox(height: 32),
                   ],

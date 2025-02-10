@@ -4,6 +4,7 @@ import 'package:todo_with_alarm/views/auth/sms_verification_screen.dart';
 import 'package:todo_with_alarm/widgets/text_fields/custom_text_field.dart';
 import '../../viewmodels/auth/signup_viewmodel.dart';
 import 'login_screen.dart'; // 로그인 화면 임포트
+import '../../widgets/text_fields/custom_auth_text_field.dart';
 
 class SignupStep1 extends StatefulWidget {
   @override
@@ -14,14 +15,6 @@ class _SignupStep1State extends State<SignupStep1> {
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<SignupViewModel>(context);
-
-    // 로그인 페이지로 이동하는 콜백 설정
-    viewModel.setNavigateToLogin(() {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
-      );
-    });
 
     return Scaffold(
       backgroundColor: Color(0xFFFCFCFC),
@@ -74,17 +67,16 @@ class _SignupStep1State extends State<SignupStep1> {
               ),
             ),
             SizedBox(height: 32),
-            CustomTextField(
-              key: const Key('signupStep1_phoneNumberField'), // ★ 추가
+            CustomAuthTextField(
+              key: const Key('signupStep1_phoneNumberField'),
               label: '휴대폰 번호',
               hintText: '01012345678',
+              controller: viewModel.phoneNumberController, // 뷰모델 내 컨트롤러 사용
               onChanged: (value) {
                 setState(() {
                   viewModel.setPhoneNumber(value);
                 });
               },
-              //errorText: viewModel.phoneError,
-              isValid: viewModel.phoneNumber.isNotEmpty,
             ),
             if (viewModel.phoneError != null) ...[
               SizedBox(height: 4),
@@ -134,15 +126,26 @@ class _SignupStep1State extends State<SignupStep1> {
                   flex: 2,
                   child: ElevatedButton(
                     key: const Key('signupStep1_nextButton'), // ★ 추가
-                    onPressed: () {
-                      viewModel.validatePhoneNumber();
-                      if (viewModel.phoneNumber.isNotEmpty) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SmsVerificationScreen(phoneNumber: viewModel.phoneNumber),
-                          ),
-                        );
+                    onPressed: () async {
+                      bool alreadyRegistered = await viewModel.validatePhoneNumber();
+                      if (viewModel.phoneError == null && viewModel.phoneNumber.isNotEmpty) {
+                        // 전화번호가 이미 등록되어 있다면 로그인 화면으로 이동
+                        if (alreadyRegistered) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  LoginScreen(phoneNumber: viewModel.phoneNumber),
+                            ),
+                          );
+                        } else {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SmsVerificationScreen(phoneNumber: viewModel.phoneNumber),
+                            ),
+                          );
+                        }
                       }
                     },
                     style: ElevatedButton.styleFrom(
