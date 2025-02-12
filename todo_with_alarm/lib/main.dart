@@ -2,8 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_with_alarm/models/goal.dart';
-import 'package:todo_with_alarm/models/user.dart';
+import 'package:todo_with_alarm/data/models/goal.dart';
+import 'package:todo_with_alarm/data/models/user.dart';
+import 'package:todo_with_alarm/data/repositories/todo_repository.dart';
 import 'package:todo_with_alarm/services/gpt_service.dart';
 import 'package:todo_with_alarm/services/user_service.dart';
 import 'package:todo_with_alarm/viewmodels/auth/signup_viewmodel.dart';
@@ -16,10 +17,11 @@ import 'package:todo_with_alarm/viewmodels/todo/todo_viewmodel.dart';
 import 'package:todo_with_alarm/app/router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:todo_with_alarm/services/notification_service.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:todo_with_alarm/models/todo.dart';
-import 'package:todo_with_alarm/models/goal_status.dart'; // GoalStatus import
+import 'package:todo_with_alarm/injection.dart'; // 주입 설정 가져오기
+// import 'package:hive/hive.dart';?
+import 'package:todo_with_alarm/data/models/todo.dart';
+import 'package:todo_with_alarm/data/models/goal_status.dart'; // GoalStatus import
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,6 +44,7 @@ Future<void> main() async {
 
   // Hive 박스 열기
   final Box<Todo> todoBox = await Hive.openBox<Todo>('todos');
+  final Box<Todo> deletedTodoBox = await Hive.openBox<Todo>('deleted_todos');
   final Box<Goal> goalBox = await Hive.openBox<Goal>('goals');
   final Box<User> userBox = await Hive.openBox<User>('user');
 
@@ -57,6 +60,10 @@ Future<void> main() async {
   final todoService = TodoService(todoBox, userService);
   final goalService = GoalService(goalBox, userService); // GoalService 인스턴스 생성
   final gptService = GptService(userService: userService);
+
+  // GetIt 주입 설정 진행
+  setupInjection();
+  final todoRepository = getIt<TodoRepository>();
 
   runApp(
     MultiProvider(
@@ -75,6 +82,9 @@ Future<void> main() async {
           create: (_) => userService),
         Provider<GptService>(
           create: (_) => gptService),
+        Provider<TodoRepository>(
+          create: (_) => todoRepository,
+        ),
         // ChangeNotifierProvider for GoalViewModel
         ChangeNotifierProvider<GoalViewModel>(
           create: (context) => GoalViewModel(
