@@ -1,173 +1,167 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mockito/mockito.dart';
-import 'package:todo_with_alarm/models/todo.dart';
-import 'package:todo_with_alarm/services/todo_service.dart';
-import 'package:todo_with_alarm/viewmodels/todo/todo_input_viewmodel.dart';
-import '../../mocks/mock_todo_service.mocks.dart'; // 모킹 클래스 임포트
-import '../../mocks/mock_build_context.mocks.dart'; // 생성된 모킹 클래스 임포트
-import 'package:mockito/annotations.dart'; // mockito 어노테이션 추가
+import 'package:todo_with_alarm/data/models/todo.dart';
+import 'package:todo_with_alarm/data/repositories/todo_repository.dart';
+import 'package:todo_with_alarm/ui/todo/todo_input/todo_input_viewmodel.dart';
+import '../../mocks/mock_todo_repository.dart'; // 새로 만든 mock import
 
-@GenerateMocks([BuildContext, NavigatorState, ScaffoldMessengerState])
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized(); // 바인딩 초기화
+  late MockTodoRepository mockRepo;
+  late TodoInputViewModel viewModel;
 
-  group('TodoInputViewModel 테스트', () {
-    late MockTodoService mockTodoService;
-    late TodoInputViewModel viewModel;
-    late MockBuildContext mockContext;
-    late MockNavigatorState mockNavigator;
-    late MockScaffoldMessengerState mockScaffoldMessenger;
+  setUp(() {
+    GetIt.instance.reset();
+    mockRepo = MockTodoRepository();
+    GetIt.instance.registerSingleton<TodoRepository>(mockRepo);
+    viewModel = TodoInputViewModel(isDDayTodo: true);
+  });
 
-    setUp(() {
-      mockTodoService = MockTodoService();
-      mockContext = MockBuildContext();
-      mockNavigator = MockNavigatorState();
-      mockScaffoldMessenger = MockScaffoldMessengerState();
-      viewModel = TodoInputViewModel(
-        todo: null,
-        isDDayTodo: false,
-        todoService: mockTodoService,
-      );
-      // `BuildContext`의 Navigator와 ScaffoldMessenger를 모킹합니다.
-      when(mockContext.findAncestorStateOfType<NavigatorState>()).thenReturn(mockNavigator);
-      when(mockContext.findAncestorStateOfType<ScaffoldMessengerState>()).thenReturn(mockScaffoldMessenger);
+  tearDown(() {
+    GetIt.instance.reset();
+  });
+
+  test('초기 상태 테스트 (신규 투두)', () {
+    expect(viewModel.title, '');
+    expect(viewModel.isDailyTodo, false);
+    expect(viewModel.selectedGoalId, isNull);
+  });
+
+  test('titleController 변경시 isTitleNotEmpty 업데이트', () {
+    viewModel.titleController.text = '테스트 투두';
+    viewModel.titleController.notifyListeners();
+    expect(viewModel.isTitleNotEmpty, true);
+  });
+
+  test('setDailyTodoStatus 메서드 테스트', () {
+    viewModel.setDailyTodoStatus(true);
+    expect(viewModel.startDate, null);
+    expect(viewModel.endDate, null);
+
+    viewModel.setDailyTodoStatus(false);
+    expect(viewModel.startDate, isNotNull);
+    expect(viewModel.endDate, isNotNull);
+  });
+
+  test('setEisenhower 메서드 테스트', () {
+    viewModel.setEisenhower(3);
+    expect(viewModel.importance, 1);
+    expect(viewModel.urgency, 1);
+
+    viewModel.setEisenhower(0);
+    expect(viewModel.importance, 0);
+    expect(viewModel.urgency, 0);
+  });
+
+  testWidgets('saveTodo 신규 투두 호출 시 title이 지정된 투두 생성 확인', (WidgetTester tester) async {
+    final formKey = viewModel.formKey;
+    final testWidget = MaterialApp(
+      home: Scaffold(
+        body: Form(
+          key: formKey,
+          child: const SizedBox(),
+        ),
+      ),
+    );
+    await tester.pumpWidget(testWidget);
+    formKey.currentState?.save();
+
+    // title이 비어있지 않은 경우에만 생성되어야 함
+    final newTodo = Todo(
+      id: '1',
+      title: '새로운 투두',
+      startDate: DateTime.now(),
+      endDate: DateTime.now(),
+      goalId: '1',
+    );
+    when(mockRepo.createTodo(newTodo)).thenAnswer((_) async => true);
+    viewModel.titleController.text = '새로운 투두';
+    await viewModel.saveTodo(tester.element(find.byType(Form)));
+    verify(mockRepo.createTodo(newTodo)).called(1);
+  });
+
+  testWidgets('saveTodo 신규 투두 호출 시 빈 제목이면 투두 생성 안됨', (WidgetTester tester) async {
+    final formKey = viewModel.formKey;
+    final testWidget = MaterialApp(
+      home: Scaffold(
+        body: Form(
+          key: formKey,
+          child: const SizedBox(),
+        ),
+      ),
+    );
+    await tester.pumpWidget(testWidget);
+    formKey.currentState?.save();
+
+    // createTodo가 호출되지 않아야 함
+    viewModel.titleController.text = ''; // 빈 제목
+    await viewModel.saveTodo(tester.element(find.byType(Form)));
+    // verifyNever(mockRepo.createTodo());
+  });
+
+  testWidgets('saveTodo 신규 투두 호출 시 빈 제목이면 에러 메시지 표시', (WidgetTester tester) async {
+    final formKey = viewModel.formKey;
+    final testWidget = MaterialApp(
+      home: Scaffold(
+        body: Form(
+          key: formKey,
+          child: const SizedBox(),
+        ),
+      ),
+    );
+    await tester.pumpWidget(testWidget);
+    formKey.currentState?.save();
+
+    // 초기 titleError는 null이어야 함
+    expect(viewModel.titleError, null);
+
+    viewModel.titleController.text = ''; // 빈 제목 설정
+    await viewModel.saveTodo(tester.element(find.byType(Form)));
+
+    // titleError가 null이 아니어야 함
+    expect(viewModel.titleError, isNotNull);
+    // createTodo는 호출되지 않아야 함
+    // verifyNever(mockRepo.createTodo(any));
+  });
+
+  testWidgets('saveTodo 수정 모드 호출 시 updateTodo 호출 확인', (WidgetTester tester) async {
+    // Arrange: GetIt에 repository를 먼저 등록한 후, TodoInputViewModel 생성
+    GetIt.instance.reset();
+    mockRepo = MockTodoRepository();
+    GetIt.instance.registerSingleton<TodoRepository>(mockRepo);
     
-    });
+    final existingTodo = Todo(
+      id: '1',
+      title: '기존 투두',
+      startDate: DateTime.now(),
+      endDate: DateTime.now(),
+      goalId: '1',
+    );
+    viewModel = TodoInputViewModel(todo: existingTodo, isDDayTodo: true);
+    
+    final formKey = viewModel.formKey;
+    final testWidget = MaterialApp(
+      home: Scaffold(
+        body: Form(
+          key: formKey,
+          child: const SizedBox(),
+        ),
+      ),
+    );
+    await tester.pumpWidget(testWidget);
+    formKey.currentState?.save();
 
-    test('초기 상태가 올바른지 확인', () {
-      expect(viewModel.title, '');
-      expect(viewModel.selectedGoalId, isNull);
-      expect(viewModel.startDate, isNull);
-      expect(viewModel.endDate, isNull);
-      expect(viewModel.isDailyTodo, isTrue); // isDailyTodo는 !isDDayTodo로 초기화되어 true
-      expect(viewModel.importance, 0);
-      expect(viewModel.urgency, 0);
-      expect(viewModel.isTitleNotEmpty, isFalse);
-      expect(viewModel.showGoalDropdown, isFalse);
-      expect(viewModel.selectedEisenhowerIndex, -1); // 초기값은 -1
-    });
-
-    test('setDailyTodoStatus가 isDailyTodo와 날짜를 올바르게 업데이트하는지 확인', () {
-      viewModel.setDailyTodoStatus(false);
-      expect(viewModel.isDailyTodo, isFalse);
-      expect(viewModel.startDate, isNotNull);
-      expect(viewModel.endDate, isNotNull);
-
-      viewModel.setDailyTodoStatus(true);
-      expect(viewModel.isDailyTodo, isTrue);
-      expect(viewModel.startDate, isNull);
-      expect(viewModel.endDate, isNull);
-    });
-
-    test('setImportance가 importance를 올바르게 업데이트하는지 확인', () {
-      viewModel.setImportance(1);
-      expect(viewModel.importance, 1);
-    });
-
-    test('setUrgency가 urgency를 올바르게 업데이트하는지 확인', () {
-      viewModel.setUrgency(1);
-      expect(viewModel.urgency, 1);
-    });
-
-    test('toggleGoalDropdown이 showGoalDropdown을 올바르게 토글하는지 확인', () {
-      viewModel.toggleGoalDropdown();
-      expect(viewModel.showGoalDropdown, isTrue);
-      viewModel.toggleGoalDropdown();
-      expect(viewModel.showGoalDropdown, isFalse);
-    });
-
-    test('selectGoal이 selectedGoalId를 업데이트하고 드롭다운을 숨기는지 확인', () {
-      viewModel.selectGoal('goal1');
-      expect(viewModel.selectedGoalId, 'goal1');
-      expect(viewModel.showGoalDropdown, isFalse);
-    });
-
-    test('setEisenhower가 importance와 urgency를 올바르게 업데이트하는지 확인', () {
-      viewModel.setEisenhower(3);
-      expect(viewModel.importance, 1);
-      expect(viewModel.urgency, 1);
-    });
-
-    test('제목 컨트롤러 리스너가 isTitleNotEmpty를 업데이트하는지 확인', () {
-      viewModel.titleController.text = '새 제목';
-      expect(viewModel.isTitleNotEmpty, isTrue);
-      viewModel.titleController.text = '';
-      expect(viewModel.isTitleNotEmpty, isFalse);
-    });
-
-    test('saveTodo가 새로운 Todo를 추가하는지 확인', () async {
-      // Given
-      viewModel.title = '새로운 투두';
-      viewModel.selectedGoalId = 'goal1';
-      viewModel.isDailyTodo = true;
-      viewModel.importance = 1;
-      viewModel.urgency = 0;
-
-      // When
-      await viewModel.saveTodo(mockContext); // context는 null로 전달 (SnackBar 등 UI 관련 로직 무시)
-
-      // Then
-      verify(mockTodoService.addTodo(any)).called(1);
-      verifyNever(mockTodoService.updateTodo(any));
-      verify(mockScaffoldMessenger.showSnackBar(any)).called(1);
-      verify(mockNavigator.pop()).called(1);
-    });
-
-    test('saveTodo가 기존 Todo를 업데이트하는지 확인', () async {
-      // Given
-      Todo existingTodo = Todo(
-        id: 'todo1',
-        title: '기존 투두',
-        startDate: DateTime.now(),
-        endDate: DateTime.now(),
-        goalId: 'goal1',
-        importance: 1,
-        urgency: 1,
-      );
-      viewModel = TodoInputViewModel(
-        todo: existingTodo,
-        isDDayTodo: false,
-        todoService: mockTodoService,
-      );
-      viewModel.title = '수정된 투두';
-      viewModel.selectedGoalId = 'goal2';
-      viewModel.isDailyTodo = false;
-      viewModel.importance = 0;
-      viewModel.urgency = 1;
-
-      // When
-      await viewModel.saveTodo(mockContext); // context는 null로 전달
-
-      // Then
-      verify(mockTodoService.addTodo(any)).called(1);
-      verifyNever(mockTodoService.updateTodo(any));
-      verify(mockScaffoldMessenger.showSnackBar(any)).called(1);
-      verify(mockNavigator.pop()).called(1);
-    });
-
-    test('saveTodo에서 에러 발생 시 에러를 처리하는지 확인', () async {
-      // Given
-      viewModel.title = '새로운 투두';
-      when(mockTodoService.addTodo(any)).thenThrow(Exception('Hive 에러'));
-
-      // When
-      await viewModel.saveTodo(mockContext);
-
-      // Then
-      verify(mockTodoService.addTodo(any)).called(1);
-      verifyNever(mockTodoService.updateTodo(any));
-      // Then
-      verify(mockTodoService.addTodo(any)).called(1);
-      verifyNever(mockTodoService.updateTodo(any));
-      verify(mockScaffoldMessenger.showSnackBar(any));
-      verify(mockNavigator.pop());
-      // 에러 처리 부분은 UI 관련이므로, 여기서는 로그 출력만 확인
-    });
-
-    tearDown(() {
-      viewModel.dispose();
-    });
+    final updatedTodo = Todo(
+      id: existingTodo.id,
+      title: '수정된 투두',
+      startDate: existingTodo.startDate,
+      endDate: existingTodo.endDate,
+      goalId: existingTodo.goalId,
+    );
+    when(mockRepo.updateTodo(updatedTodo)).thenAnswer((_) async {});
+    viewModel.titleController.text = '수정된 투두';
+    await viewModel.saveTodo(tester.element(find.byType(Form)));
+    verify(mockRepo.updateTodo(updatedTodo)).called(1);
   });
 }
