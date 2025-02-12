@@ -1,7 +1,7 @@
 // lib/widgets/goal/goal_list_section.dart
 
 import 'package:flutter/material.dart';
-import 'package:todo_with_alarm/models/goal.dart';
+import 'package:todo_with_alarm/data/models/goal.dart';
 import 'package:todo_with_alarm/widgets/goal/goal_list_item.dart';
 
 class GoalListSection extends StatelessWidget {

@@ -1,7 +1,7 @@
 // lib/widgets/goal/goal_options_bottom_sheet.dart
 
 import 'package:flutter/material.dart';
-import '../../models/goal.dart';
+import '../../data/models/goal.dart';
 import '../../viewmodels/goal/goal_management_viewmodel.dart';
 import '../../views/goal/goal_input_screen.dart';
 import 'package:provider/provider.dart';

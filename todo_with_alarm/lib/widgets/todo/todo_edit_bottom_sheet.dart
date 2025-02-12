@@ -1,7 +1,7 @@
 // lib/widgets/todo_edit_bottom_sheet.dart
 
 import 'package:flutter/material.dart';
-import 'package:todo_with_alarm/models/todo.dart';
+import 'package:todo_with_alarm/data/models/todo.dart';
 
 class ToDoEditBottomSheet extends StatelessWidget {
   final Todo todo;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:todo_with_alarm/widgets/bottom_button/custom_button.dart';
-import 'package:todo_with_alarm/models/goal.dart';
+import 'package:todo_with_alarm/data/models/goal.dart';
 
 /// 목표 작성 성공 시 표시할 BottomSheet 위젯
 class GoalSettingBottomSheet extends StatelessWidget {

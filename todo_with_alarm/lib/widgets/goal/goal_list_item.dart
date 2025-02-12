@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:todo_with_alarm/models/goal.dart';
+import 'package:todo_with_alarm/data/models/goal.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart'; // GoalViewModel 대신 사용
 
 class GoalListItem extends StatelessWidget {

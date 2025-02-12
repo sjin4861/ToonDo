@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_with_alarm/models/todo.dart';
+import 'package:todo_with_alarm/data/models/todo.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_with_alarm/viewmodels/todo/todo_submission_viewmodel.dart';
