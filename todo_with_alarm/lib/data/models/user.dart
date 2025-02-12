@@ -3,7 +3,7 @@ import 'package:hive/hive.dart';
 part 'user.g.dart'; // 어댑터 생성을 위한 부분 파일
 
 @HiveType(typeId: 3) // typeId는 앱 내에서 고유해야 합니다.
-class User {
+class User extends HiveObject {
   @HiveField(0)
   final int id;
   
@@ -52,6 +52,7 @@ class User {
     );
   }
 
+  // 한글이 깨지지 않도록 단순 문자열 업데이트
   void updateUsername(String newUsername) {
     username = newUsername;
   }

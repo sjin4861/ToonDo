@@ -1,6 +1,6 @@
 // models/app_notification.dart
 
-import 'package:todo_with_alarm/models/notification_type.dart';
+import 'package:todo_with_alarm/data/models/notification_type.dart';
 
 class AppNotification {
   String title;                 // 알림 제목
