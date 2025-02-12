@@ -1,7 +1,7 @@
 // lib/services/user_service.dart
 
 import 'package:hive/hive.dart';
-import 'package:todo_with_alarm/models/user.dart';
+import 'package:todo_with_alarm/data/models/user.dart';
 
 class UserService {
   final Box<User> _userBox;

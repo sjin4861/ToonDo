@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:todo_with_alarm/models/goal.dart';
-import 'package:todo_with_alarm/models/goal_status.dart';
+import 'package:todo_with_alarm/data/models/goal.dart';
+import 'package:todo_with_alarm/data/models/goal_status.dart';
 import 'package:todo_with_alarm/services/goal_service.dart';
 import 'package:uuid/uuid.dart';
 import 'package:provider/provider.dart';

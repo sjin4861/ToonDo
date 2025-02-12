@@ -1,7 +1,7 @@
 // lib/viewmodels/my_page/my_page_viewmodel.dart
 
 import 'package:flutter/material.dart';
-import 'package:todo_with_alarm/models/user.dart';
+import 'package:todo_with_alarm/data/models/user.dart';
 import 'package:todo_with_alarm/services/todo_service.dart';
 import 'package:todo_with_alarm/services/goal_service.dart';
 

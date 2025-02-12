@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo_with_alarm/models/user.dart';
+import 'package:todo_with_alarm/data/models/user.dart';
 import '../../services/auth_service.dart';
 
 class SignupViewModel extends ChangeNotifier {

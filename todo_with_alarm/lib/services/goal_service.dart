@@ -3,9 +3,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
-import 'package:todo_with_alarm/models/goal.dart';
+import 'package:todo_with_alarm/data/models/goal.dart';
 import 'package:todo_with_alarm/constants.dart';
-import 'package:todo_with_alarm/models/goal_status.dart';
+import 'package:todo_with_alarm/data/models/goal_status.dart';
 import 'package:todo_with_alarm/services/auth_service.dart';
 import 'package:todo_with_alarm/services/user_service.dart'; // constants.dart 임포트
 

@@ -4,8 +4,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:flutter/material.dart';
-import 'package:todo_with_alarm/models/app_notification.dart';
-import 'package:todo_with_alarm/models/notification_type.dart';
+import 'package:todo_with_alarm/data/models/app_notification.dart';
+import 'package:todo_with_alarm/data/models/notification_type.dart';
 
 class NotificationService {
   // 싱글톤 패턴 적용

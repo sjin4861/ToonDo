@@ -1,8 +1,8 @@
 // lib/viewmodels/goal/goal_viewmodel.dart
 
 import 'package:flutter/material.dart';
-import 'package:todo_with_alarm/models/goal.dart';
-import 'package:todo_with_alarm/models/goal_status.dart';
+import 'package:todo_with_alarm/data/models/goal.dart';
+import 'package:todo_with_alarm/data/models/goal_status.dart';
 import 'package:todo_with_alarm/services/goal_service.dart';
 
 class GoalViewModel extends ChangeNotifier {

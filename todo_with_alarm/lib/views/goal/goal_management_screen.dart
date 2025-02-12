@@ -2,13 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_with_alarm/models/goal_status.dart';
+import 'package:todo_with_alarm/data/models/goal_status.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_filter_option.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_management_viewmodel.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:todo_with_alarm/widgets/top_menu_bar/menu_bar2.dart';
 import '../../services/goal_service.dart';
-import '../../models/goal.dart';
+import '../../data/models/goal.dart';
 import '../goal/goal_input_screen.dart';
 import '../../widgets/app_bar/custom_app_bar.dart';
 import '../../widgets/goal/goal_list_item.dart';

@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_with_alarm/models/goal.dart';
-import 'package:todo_with_alarm/models/goal_status.dart';
-import 'package:todo_with_alarm/models/user.dart';
+import 'package:todo_with_alarm/data/models/goal.dart';
+import 'package:todo_with_alarm/data/models/goal_status.dart';
+import 'package:todo_with_alarm/data/models/user.dart';
 import 'package:todo_with_alarm/services/auth_service.dart';
 import 'package:todo_with_alarm/services/gpt_service.dart';
 import 'package:todo_with_alarm/viewmodels/character/slime_character_viewmodel.dart';
@@ -22,9 +22,12 @@ import '../goal/goal_input_screen.dart';
 import '../goal/goal_progress_screen.dart';
 import '../todo/todo_submission_screen.dart';
 import 'dart:math';
+import 'package:todo_with_alarm/services/data_sync_service.dart';
+import 'package:todo_with_alarm/widgets/data_sync_initializer.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  final bool isNewLogin;
+  const HomeScreen({Key? key, this.isNewLogin = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +91,8 @@ class HomeScreen extends StatelessWidget {
           ),
           body: Stack(
             children: [
+              // DataSyncInitializer는 isNewLogin일 때 동기화 호출
+              DataSyncInitializer(isNewLogin: isNewLogin),
               // 1) 배경
               const HomeBackground(),
 
@@ -117,50 +122,6 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
-
-          // FAB
-          // floatingActionButton: GestureDetector(
-          //   onTap: () {
-          //     // 랜덤 선택: true면 슬라임 상호작용, false면 Todo Submission으로 이동
-          //     final bool interact = Random().nextBool();
-          //     if (interact) {
-          //       // 4개 애니메이션 중 랜덤 선택
-          //       final animations = <void Function()>[
-          //         slimeVM.setAngry,
-          //         slimeVM.setHappy,
-          //         slimeVM.setShine,
-          //         slimeVM.setMelt,
-          //       ];
-          //       final randomAnimation = animations[Random().nextInt(animations.length)];
-          //       randomAnimation();
-          //     } else {
-          //       Navigator.push(
-          //         context,
-          //         MaterialPageRoute(builder: (context) => const TodoSubmissionScreen()),
-          //       );
-          //     }
-          //   },
-          //   child: Container(
-          //     width: 40,
-          //     height: 40,
-          //     padding: const EdgeInsets.all(8),
-          //     decoration: ShapeDecoration(
-          //       color: Colors.white,
-          //       shape: RoundedRectangleBorder(
-          //         side: const BorderSide(width: 0.5, color: Color(0x3F1B1C1B)),
-          //         borderRadius: BorderRadius.circular(20),
-          //       ),
-          //     ),
-          //     child: Center(
-          //       child: SvgPicture.asset(
-          //         'assets/icons/plus.svg',
-          //         width: 20,
-          //         height: 20,
-          //         color: Colors.blueAccent,
-          //       ),
-          //     ),
-          //   ),
-          // ),
           floatingActionButton: const ExpandableFab(),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
           bottomNavigationBar: const BottomNavigationBarWidget(),

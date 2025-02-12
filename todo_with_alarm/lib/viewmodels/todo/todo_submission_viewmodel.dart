@@ -1,7 +1,7 @@
 // lib/viewmodels/todo/todo_submission_viewmodel.dart
 
 import 'package:flutter/material.dart';
-import 'package:todo_with_alarm/models/todo.dart';
+import 'package:todo_with_alarm/data/models/todo.dart';
 import 'package:todo_with_alarm/services/todo_service.dart';
 
 enum FilterOption { all, goal, importance }

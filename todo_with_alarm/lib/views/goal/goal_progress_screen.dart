@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_with_alarm/models/goal.dart';
+import 'package:todo_with_alarm/data/models/goal.dart';
 import 'package:todo_with_alarm/viewmodels/goal/goal_viewmodel.dart';
 import 'package:intl/intl.dart';
 

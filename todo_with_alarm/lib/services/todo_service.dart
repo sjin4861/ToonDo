@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:todo_with_alarm/constants.dart';
-import 'package:todo_with_alarm/models/todo.dart';
+import 'package:todo_with_alarm/data/models/todo.dart';
 import 'package:todo_with_alarm/services/auth_service.dart';
 import 'package:todo_with_alarm/services/user_service.dart';
 

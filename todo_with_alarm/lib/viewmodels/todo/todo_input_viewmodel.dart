@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:todo_with_alarm/models/todo.dart';
+import 'package:todo_with_alarm/data/models/todo.dart';
 import 'package:todo_with_alarm/services/todo_service.dart';
 import 'package:todo_with_alarm/widgets/calendar/calendar_bottom_sheet.dart';
 
