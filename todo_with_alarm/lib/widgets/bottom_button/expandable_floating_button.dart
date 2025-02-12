@@ -2,8 +2,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_with_alarm/ui/todo/todo_manage/todo_manage_view.dart';
 import 'package:todo_with_alarm/viewmodels/character/slime_character_viewmodel.dart';
-import 'package:todo_with_alarm/views/todo/todo_submission_screen.dart';
+// import 'package:todo_with_alarm/views/todo/todo_submission_screen.dart';
 
 class ExpandableFab extends StatefulWidget {
   const ExpandableFab({Key? key}) : super(key: key);
@@ -113,7 +114,7 @@ class _ExpandableFabState extends State<ExpandableFab>
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const TodoSubmissionScreen()),
+                        builder: (context) => const TodoManageView()),
                   );
                   _toggle();
                 },
