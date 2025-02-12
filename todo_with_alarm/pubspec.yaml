@@ -26,7 +26,10 @@ dependencies:
   hive_flutter: ^1.1.0
   patrol: ^3.13.2
   rive: ^0.13.20
+  get_it: ^8.0.3
+  audioplayers: ^6.1.1
 
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -35,7 +38,7 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   hive_generator: ^2.0.1
   build_runner: ^2.4.13
-  audioplayers: ^6.1.1
+  hive_test: ^1.0.1
 
 flutter:
   uses-material-design: true
