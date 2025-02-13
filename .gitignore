@@ -20,8 +20,8 @@ lib/generated_plugin_registrant.dart
 # See https://dart.dev/guides/libraries/private-files#pubspeclock
 #pubspec.lock
 
-/todo_with_alarm/lib/constants.dart
-/todo_with_alarm/android
+/toondo/lib/constants.dart
+/toondo/android
 # Android related
 **/android/**/gradle-wrapper.jar
 **/android/.gradle
@@ -32,7 +32,7 @@ lib/generated_plugin_registrant.dart
 **/android/local.properties
 **/android/**/GeneratedPluginRegistrant.java
 
-/todo_with_alarm/ios
+/toondo/ios
 # iOS/XCode related
 **/ios/**/*.mode1v3
 **/ios/**/*.mode2v3
@@ -69,10 +69,10 @@ lib/generated_plugin_registrant.dart
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
-/todo_with_alarm/linux
-/todo_with_alarm/macos
-/todo_with_alarm/web
-/todo_with_alarm/windows
+/toondo/linux
+/toondo/macos
+/toondo/web
+/toondo/windows
 *.metadata
 # End of https://www.toptal.com/developers/gitignore/api/flutter
 .DS_Store
