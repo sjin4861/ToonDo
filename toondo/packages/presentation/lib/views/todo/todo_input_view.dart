@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:toondo/data/models/todo.dart';
-import '../../viewmodels/todo/todo_input_viewmodel.dart';
-import '../../widgets/app_bar/custom_app_bar.dart';
-import '../../widgets/bottom_button/edit_update_button.dart';
-import '../../widgets/goal/goal_list_dropdown.dart';
-import '../../widgets/todo/dday_daily_chip.dart';
-import '../../widgets/todo/eisenhower_button.dart';
-import '../../widgets/text_fields/tip.dart';
-import '../../widgets/todo/todo_input_date_field.dart';
+import 'package:get_it/get_it.dart';
+import 'package:domain/entities/todo.dart';
+import 'package:domain/usecases/todo/create_todo.dart';
+import 'package:domain/usecases/todo/update_todo.dart';
+import 'package:presentation/viewmodels/todo/todo_input_viewmodel.dart';
+import 'package:presentation/viewmodels/goal/goal_viewmodel.dart';
+import 'package:presentation/widgets/app_bar/custom_app_bar.dart';
+import 'package:presentation/widgets/bottom_button/edit_update_button.dart';
+import 'package:presentation/widgets/goal/goal_list_dropdown.dart';
+import 'package:presentation/widgets/todo/dday_daily_chip.dart';
+import 'package:presentation/widgets/todo/eisenhower_button.dart';
+import 'package:presentation/widgets/text_fields/tip.dart';
+import 'package:presentation/widgets/todo/todo_input_date_field.dart';
 
 class TodoInputView extends StatelessWidget {
   final bool isDDayTodo;
@@ -19,12 +23,17 @@ class TodoInputView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<TodoInputViewModel>(
-      create: (_) => TodoInputViewModel(todo: todo, isDDayTodo: isDDayTodo),
+      create:
+          (_) => TodoInputViewModel(
+            todo: todo,
+            isDDayTodo: isDDayTodo,
+            createTodoUseCase: GetIt.instance<CreateTodo>(),
+            updateTodoUseCase: GetIt.instance<UpdateTodo>(),
+            goalViewModel: GetIt.instance<GoalViewModel>(),
+          ),
       child: Scaffold(
         backgroundColor: const Color(0xFFFCFCFC),
-        appBar: CustomAppBar(
-          title: todo != null ? '투두 수정' : '투두 작성',
-        ),
+        appBar: CustomAppBar(title: todo != null ? '투두 수정' : '투두 작성'),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
           child: Consumer<TodoInputViewModel>(
@@ -65,7 +74,8 @@ class TodoInputView extends StatelessWidget {
                       // TIP 위젯
                       const TipWidget(
                         title: 'TIP',
-                        description: '아이젠하워는 긴급도와 중요도에 따라 할 일을 정리하는 방법이에요.\n'
+                        description:
+                            '아이젠하워는 긴급도와 중요도에 따라 할 일을 정리하는 방법이에요.\n'
                             '앞으로 투두가 아이젠하워에 따라 가장 중요한 일부터 알려줄게요!',
                       ),
                     ],
@@ -119,9 +129,10 @@ class TodoInputView extends StatelessWidget {
               borderRadius: BorderRadius.circular(1000),
               side: BorderSide(
                 width: 1,
-                color: viewModel.isTitleNotEmpty
-                    ? const Color(0xFF78B545)
-                    : const Color(0xFFDDDDDD),
+                color:
+                    viewModel.isTitleNotEmpty
+                        ? const Color(0xFF78B545)
+                        : const Color(0xFFDDDDDD),
               ),
             ),
           ),
@@ -186,11 +197,14 @@ class TodoInputView extends StatelessWidget {
     );
   }
 
-  Widget _buildGoalSelection(TodoInputViewModel viewModel, BuildContext context) {
+  Widget _buildGoalSelection(
+    TodoInputViewModel viewModel,
+    BuildContext context,
+  ) {
     // GoalListDropdown는 목표 선택 UI를 구성하는 커스텀 위젯입니다.
     return GoalListDropdown(
       selectedGoalId: viewModel.selectedGoalId,
-      goals: const [], // ...기존 코드에서 목표 목록 전달...
+      goals: viewModel.goals,
       isDropdownOpen: viewModel.showGoalDropdown,
       onGoalSelected: (goalId) {
         viewModel.selectGoal(goalId);

@@ -1,4 +1,6 @@
 class Todo {
+  static int currentId = 1; // Global ID variable
+
   final String id;
   final String title;
   final String? goalId;
@@ -9,7 +11,7 @@ class Todo {
   final int urgency;
   final int importance;
 
-  const Todo({
+  Todo({
     required this.id,
     required this.title,
     required this.startDate,

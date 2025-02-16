@@ -8,6 +8,6 @@ class AddTodoUseCase {
   AddTodoUseCase(this.repository);
 
   Future<void> call(Todo todo) {
-    return repository.addTodo(todo);
+    return repository.createTodo(todo);
   }
 }

@@ -7,4 +7,10 @@ abstract class TodoRepository {
   Future<bool> createTodo(Todo todo);
   Future<bool> commitTodos();
   Future<List<Todo>> fetchTodos();
+  Future<void> updateTodoDates(
+    Todo todo,
+    DateTime newStartDate,
+    DateTime newEndDate,
+  );
+  Future<void> updateTodoStatus(Todo todo, double status);
 }

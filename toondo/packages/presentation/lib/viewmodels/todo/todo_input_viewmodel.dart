@@ -1,9 +1,12 @@
+import 'package:domain/entities/goal.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:get_it/get_it.dart';
-import 'package:toondo/data/models/todo.dart';
+import 'package:domain/entities/todo.dart';
 import 'package:domain/usecases/todo/create_todo.dart';
 import 'package:domain/usecases/todo/update_todo.dart';
+import 'package:presentation/viewmodels/goal/goal_viewmodel.dart';
+import 'package:presentation/widgets/calendar/calendar_bottom_sheet.dart';
 
 class TodoInputViewModel extends ChangeNotifier {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -26,14 +29,17 @@ class TodoInputViewModel extends ChangeNotifier {
   bool isDDayTodo;
   final CreateTodo _createTodoUseCase;
   final UpdateTodo _updateTodoUseCase;
+  final GoalViewModel _goalViewModel;
 
   TodoInputViewModel({
     this.todo,
     required this.isDDayTodo,
     required CreateTodo createTodoUseCase,
     required UpdateTodo updateTodoUseCase,
+    required GoalViewModel goalViewModel,
   }) : _createTodoUseCase = createTodoUseCase,
-       _updateTodoUseCase = updateTodoUseCase {
+       _updateTodoUseCase = updateTodoUseCase,
+       _goalViewModel = goalViewModel {
     if (todo != null) {
       // 수정 모드
       titleController.text = todo!.title;
@@ -56,6 +62,8 @@ class TodoInputViewModel extends ChangeNotifier {
   }
 
   get goalNameError => null;
+
+  List<Goal> get goals => _goalViewModel.goals;
 
   void _onTitleChanged() {
     isTitleNotEmpty = titleController.text.isNotEmpty;
@@ -169,7 +177,7 @@ class TodoInputViewModel extends ChangeNotifier {
       formKey.currentState!.save();
       try {
         Todo newTodo = Todo(
-          id: todo?.id,
+          id: todo!.id,
           title: title,
           startDate:
               isDailyTodo ? DateTime.now() : (startDate ?? DateTime.now()),
@@ -179,7 +187,6 @@ class TodoInputViewModel extends ChangeNotifier {
           urgency: urgency,
         );
         if (todo != null) {
-          todo!.updateFrom(newTodo);
           await _updateTodoUseCase(todo!);
         } else {
           await _createTodoUseCase(newTodo);

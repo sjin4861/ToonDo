@@ -2,12 +2,12 @@ import 'package:injectable/injectable.dart';
 import 'package:domain/repositories/goal_repository.dart';
 
 @injectable
-class DeleteGoalUseCase {
+class DeleteGoal {
   final GoalRepository repository;
 
-  DeleteGoalUseCase(this.repository);
+  DeleteGoal(this.repository);
 
-  Future<void> call(int goalId) {
-    return repository.deleteGoal(goalId);
+  Future<void> call(String goalId) async {
+    await repository.deleteGoal(goalId);
   }
 }

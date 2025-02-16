@@ -3,11 +3,11 @@ import 'package:domain/entities/todo.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
-class GetTodosUseCase {
+class GetAllTodosUseCase {
   final TodoRepository repository;
-  GetTodosUseCase(this.repository);
+  GetAllTodosUseCase(this.repository);
 
-  Future<List<Todo>> call() {
-    return repository.getTodos();
+  List<Todo> call() {
+    return repository.getLocalTodos();
   }
 }

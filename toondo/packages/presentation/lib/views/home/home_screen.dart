@@ -23,7 +23,7 @@ import '../goal/goal_progress_screen.dart';
 import '../todo/todo_submission_screen.dart';
 import 'dart:math';
 import 'package:toondo/services/data_sync_service.dart';
-import 'package:toondo/widgets/data_sync_initializer.dart';
+import 'package:presentation/widgets/data_sync_initializer.dart';
 
 class HomeScreen extends StatelessWidget {
   final bool isNewLogin;

@@ -1,15 +1,22 @@
+import 'package:domain/entities/goal.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../data/lib/models/goal.dart';
-import 'package:toondo/data/models/todo.dart';
-import '../../../../data/lib/repositories/todo_repository.dart';
-import 'package:toondo/viewmodels/goal/goal_viewmodel.dart';
-import '../../widgets/app_bar/custom_app_bar.dart';
-import '../../widgets/top_menu_bar/menu_bar.dart';
-import '../../widgets/calendar/calendar.dart';
-import '../../widgets/todo/todo_list_item.dart';
-import 'todo_input_view.dart'; // 필요 시 경로 조정
-import '../../viewmodels/todo/todo_manage_viewmodel.dart';
+import 'package:get_it/get_it.dart';
+import 'package:domain/entities/todo.dart';
+import 'package:domain/usecases/todo/fetch_todos.dart';
+import 'package:domain/usecases/todo/update_todo_status.dart';
+import 'package:domain/usecases/todo/update_todo_dates.dart';
+import 'package:domain/usecases/todo/delete_todo.dart';
+import 'package:domain/usecases/todo/commit_todos.dart';
+import 'package:domain/usecases/todo/create_todo.dart';
+import 'package:domain/usecases/todo/get_all_todos.dart';
+import 'package:presentation/viewmodels/todo/todo_manage_viewmodel.dart';
+import 'package:presentation/viewmodels/goal/goal_viewmodel.dart';
+import 'package:presentation/widgets/app_bar/custom_app_bar.dart';
+import 'package:presentation/widgets/top_menu_bar/menu_bar.dart';
+import 'package:presentation/widgets/calendar/calendar.dart';
+import 'package:presentation/widgets/todo/todo_list_item.dart';
+import 'package:presentation/views/todo/todo_input_view.dart';
 
 class TodoManageView extends StatelessWidget {
   final DateTime? selectedDate;
@@ -17,22 +24,24 @@ class TodoManageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final todoRepository = Provider.of<TodoRepository>(context, listen: false);
     return ChangeNotifierProvider<TodoManageViewModel>(
-      create: (_) => TodoManageViewModel(
-        todoRepository: todoRepository,
-        initialDate: selectedDate,
-      )..loadTodos(),
+      create:
+          (_) => TodoManageViewModel(
+            fetchTodosUseCase: GetIt.instance<FetchTodos>(),
+            deleteTodoUseCase: GetIt.instance<DeleteTodoUseCase>(),
+            commitTodosUseCase: GetIt.instance<CommitTodos>(),
+            createTodoUseCase: GetIt.instance<CreateTodo>(),
+            getTodosUseCase: GetIt.instance<GetAllTodosUseCase>(),
+            updateTodoStatusUseCase: GetIt.instance<UpdateTodoStatus>(),
+            updateTodoDatesUseCase: GetIt.instance<UpdateTodoDates>(),
+            goalViewModel: GetIt.instance<GoalViewModel>(),
+            initialDate: selectedDate,
+          )..loadTodos(),
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: CustomAppBar(
-          title: '투두리스트',
-        ),
+        appBar: CustomAppBar(title: '투두리스트'),
         body: Consumer<TodoManageViewModel>(
           builder: (context, viewModel, child) {
-            final goalViewModel = Provider.of<GoalViewModel>(context);
-            final goals = goalViewModel.goals;
-
             return Column(
               children: [
                 // 캘린더
@@ -45,7 +54,9 @@ class TodoManageView extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 28),
                   child: MenuBarWidget(
-                    selectedMenu: _filterOptionToMenuOption(viewModel.selectedFilter),
+                    selectedMenu: _filterOptionToMenuOption(
+                      viewModel.selectedFilter,
+                    ),
                     onItemSelected: (option) {
                       final filter = _menuOptionToFilterOption(option);
                       viewModel.updateSelectedFilter(filter);
@@ -59,8 +70,20 @@ class TodoManageView extends StatelessWidget {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        _buildTodoSection(context, '디데이 투두', viewModel.dDayTodos, viewModel, isDDay: true),
-                        _buildTodoSection(context, '데일리 투두', viewModel.dailyTodos, viewModel, isDDay: false),
+                        _buildTodoSection(
+                          context,
+                          '디데이 투두',
+                          viewModel.dDayTodos,
+                          viewModel,
+                          isDDay: true,
+                        ),
+                        _buildTodoSection(
+                          context,
+                          '데일리 투두',
+                          viewModel.dailyTodos,
+                          viewModel,
+                          isDDay: false,
+                        ),
                       ],
                     ),
                   ),
@@ -83,7 +106,10 @@ class TodoManageView extends StatelessWidget {
     );
   }
 
-  Widget _buildGoalSelectionBar(TodoManageViewModel viewModel, List<Goal> goals) {
+  Widget _buildGoalSelectionBar(
+    TodoManageViewModel viewModel,
+    List<Goal> goals,
+  ) {
     return Container(
       height: 40,
       margin: const EdgeInsets.symmetric(horizontal: 28, vertical: 8),
@@ -94,12 +120,17 @@ class TodoManageView extends StatelessWidget {
           final goal = goals[index];
           bool isSelected = viewModel.selectedGoalId == goal.id;
           return GestureDetector(
-            onTap: () => viewModel.updateSelectedFilter(FilterOption.goal, goalId: goal.id),
+            onTap:
+                () => viewModel.updateSelectedFilter(
+                  FilterOption.goal,
+                  goalId: goal.id,
+                ),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               margin: const EdgeInsets.symmetric(horizontal: 4),
               decoration: BoxDecoration(
-                color: isSelected ? const Color(0xFF78B545) : Colors.transparent,
+                color:
+                    isSelected ? const Color(0xFF78B545) : Colors.transparent,
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(color: const Color(0xFFE4F0D9)),
               ),
@@ -107,7 +138,10 @@ class TodoManageView extends StatelessWidget {
                 child: Text(
                   goal.name,
                   style: TextStyle(
-                    color: isSelected ? Colors.white : Colors.black.withOpacity(0.5),
+                    color:
+                        isSelected
+                            ? Colors.white
+                            : Colors.black.withOpacity(0.5),
                     fontSize: 14,
                     fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
                   ),
@@ -175,18 +209,20 @@ class TodoManageView extends StatelessWidget {
           // 투두 리스트
           todos.isNotEmpty
               ? ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: todos.length,
-                  itemBuilder: (context, index) {
-                    final todo = todos[index];
-                    return _buildTodoItem(context, todo, viewModel, isDDay: isDDay);
-                  },
-                )
-              : const Text(
-                  '투두가 없습니다.',
-                  style: TextStyle(color: Colors.grey),
-                ),
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: todos.length,
+                itemBuilder: (context, index) {
+                  final todo = todos[index];
+                  return _buildTodoItem(
+                    context,
+                    todo,
+                    viewModel,
+                    isDDay: isDDay,
+                  );
+                },
+              )
+              : const Text('투두가 없습니다.', style: TextStyle(color: Colors.grey)),
         ],
       ),
     );
@@ -215,7 +251,9 @@ class TodoManageView extends StatelessWidget {
           ),
         ).then((_) => viewModel.loadTodos());
       },
-      onStatusUpdate: (updatedTodo, newStatus) => viewModel.updateTodoStatus(updatedTodo, newStatus),
+      onStatusUpdate:
+          (updatedTodo, newStatus) =>
+              viewModel.updateTodoStatus(updatedTodo as Todo, newStatus),
       onDelete: () => viewModel.deleteTodoById(todo.id),
       onPostpone: () {
         final newStart = todo.startDate.add(const Duration(days: 1));

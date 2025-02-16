@@ -26,7 +26,10 @@ class TodoRepositoryImpl implements TodoRepository {
   Future<bool> commitTodos() async {
     final unsyncedTodos = localDatasource.getUnsyncedTodos();
     final deletedTodos = localDatasource.getDeletedTodos();
-    final isCommitted = await remoteDatasource.commitTodos(unsyncedTodos, deletedTodos);
+    final isCommitted = await remoteDatasource.commitTodos(
+      unsyncedTodos,
+      deletedTodos,
+    );
     if (!isCommitted) {
       throw Exception('Failed to commit todos');
     }

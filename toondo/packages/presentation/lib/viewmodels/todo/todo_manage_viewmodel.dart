@@ -1,21 +1,23 @@
+import 'package:domain/usecases/todo/get_all_todos.dart';
 import 'package:flutter/material.dart';
 import 'package:domain/entities/todo.dart';
 import 'package:domain/usecases/todo/fetch_todos.dart';
-import 'package:domain/usecases/todo/update_todo.dart';
+import 'package:domain/usecases/todo/update_todo_status.dart';
+import 'package:domain/usecases/todo/update_todo_dates.dart';
 import 'package:domain/usecases/todo/delete_todo.dart';
 import 'package:domain/usecases/todo/commit_todos.dart';
 import 'package:domain/usecases/todo/create_todo.dart';
-import 'package:domain/usecases/todo/get_todos.dart';
 
 enum FilterOption { all, goal, importance, dDay, daily }
 
 class TodoManageViewModel extends ChangeNotifier {
   final FetchTodos _fetchTodosUseCase;
-  final UpdateTodo _updateTodoUseCase;
   final DeleteTodoUseCase _deleteTodoUseCase;
   final CommitTodos _commitTodosUseCase;
   final CreateTodo _createTodoUseCase;
-  final GetTodosUseCase _getTodosUseCase;
+  final GetAllTodosUseCase _getTodosUseCase;
+  final UpdateTodoStatus _updateTodoStatusUseCase;
+  final UpdateTodoDates _updateTodoDatesUseCase;
 
   DateTime selectedDate;
   FilterOption selectedFilter = FilterOption.all;
@@ -26,18 +28,20 @@ class TodoManageViewModel extends ChangeNotifier {
 
   TodoManageViewModel({
     required FetchTodos fetchTodosUseCase,
-    required UpdateTodo updateTodoUseCase,
     required DeleteTodoUseCase deleteTodoUseCase,
     required CommitTodos commitTodosUseCase,
     required CreateTodo createTodoUseCase,
-    required GetTodosUseCase getTodosUseCase,
+    required GetAllTodosUseCase getTodosUseCase,
+    required UpdateTodoStatus updateTodoStatusUseCase,
+    required UpdateTodoDates updateTodoDatesUseCase,
     DateTime? initialDate,
   }) : _fetchTodosUseCase = fetchTodosUseCase,
-       _updateTodoUseCase = updateTodoUseCase,
        _deleteTodoUseCase = deleteTodoUseCase,
        _commitTodosUseCase = commitTodosUseCase,
        _createTodoUseCase = createTodoUseCase,
        _getTodosUseCase = getTodosUseCase,
+       _updateTodoStatusUseCase = updateTodoStatusUseCase,
+       _updateTodoDatesUseCase = updateTodoDatesUseCase,
        selectedDate = initialDate ?? DateTime.now();
 
   Future<void> loadTodos() async {
@@ -115,8 +119,7 @@ class TodoManageViewModel extends ChangeNotifier {
 
   Future<void> updateTodoStatus(Todo todo, double status) async {
     try {
-      todo.status = status;
-      await _updateTodoUseCase(todo);
+      await _updateTodoStatusUseCase(todo, status);
       final idx = allTodos.indexWhere((t) => t.id == todo.id);
       if (idx != -1) allTodos[idx] = todo;
       _filterAndCategorizeTodos();
@@ -142,9 +145,7 @@ class TodoManageViewModel extends ChangeNotifier {
     DateTime newEndDate,
   ) async {
     try {
-      todo.startDate = newStartDate;
-      todo.endDate = newEndDate;
-      await _updateTodoUseCase(todo);
+      await _updateTodoDatesUseCase(todo, newStartDate, newEndDate);
       await loadTodos();
     } catch (e) {
       print('Error updating todo dates: $e');
