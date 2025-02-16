@@ -2,18 +2,18 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:toondo/data/models/goal_status.dart';
+import '../../../packages/data/lib/models/goal_status.dart';
 import 'package:toondo/viewmodels/goal/goal_filter_option.dart';
 import 'package:toondo/viewmodels/goal/goal_management_viewmodel.dart';
 import 'package:toondo/viewmodels/goal/goal_viewmodel.dart';
-import 'package:toondo/widgets/top_menu_bar/menu_bar2.dart';
+import '../../../packages/presentaion/lib/widgets/top_menu_bar/menu_bar2.dart';
 import '../../services/goal_service.dart';
-import '../../data/models/goal.dart';
+import '../../../packages/data/lib/models/goal.dart';
 import '../goal/goal_input_screen.dart';
-import '../../widgets/app_bar/custom_app_bar.dart';
-import '../../widgets/goal/goal_list_item.dart';
-import '../../widgets/bottom_button/custom_button.dart';
-import 'package:toondo/widgets/goal/goal_options_bottom_sheet.dart';
+import '../../../packages/presentaion/lib/widgets/app_bar/custom_app_bar.dart';
+import '../../../packages/presentaion/lib/widgets/goal/goal_list_item.dart';
+import '../../../packages/presentaion/lib/widgets/bottom_button/custom_button.dart';
+import '../../../packages/presentaion/lib/widgets/goal/goal_options_bottom_sheet.dart';
 
 class GoalManagementScreen extends StatelessWidget {
   const GoalManagementScreen({Key? key}) : super(key: key);

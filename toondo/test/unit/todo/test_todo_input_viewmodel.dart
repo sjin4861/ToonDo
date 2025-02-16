@@ -3,8 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mockito/mockito.dart';
 import 'package:toondo/data/models/todo.dart';
-import 'package:toondo/data/repositories/todo_repository.dart';
-import 'package:toondo/ui/todo/todo_input/todo_input_viewmodel.dart';
+import '../../../packages/data/lib/repositories/todo_repository.dart';
+import '../../../packages/presentaion/lib/viewmodels/todo/todo_input_viewmodel.dart';
 import '../../mocks/mock_todo_repository.dart'; // 새로 만든 mock import
 
 void main() {

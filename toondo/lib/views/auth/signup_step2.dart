@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:toondo/widgets/app_bar/custom_app_bar.dart';
-import 'package:toondo/widgets/bottom_button/custom_button.dart';
-import 'package:toondo/widgets/text_fields/custom_text_field.dart';
+import '../../../packages/presentaion/lib/widgets/app_bar/custom_app_bar.dart';
+import '../../../packages/presentaion/lib/widgets/bottom_button/custom_button.dart';
+import '../../../packages/presentaion/lib/widgets/text_fields/custom_text_field.dart';
 import '../../viewmodels/auth/signup_viewmodel.dart';
 import '../onboarding/onboarding_screen.dart'; // OnboardingScreen 임포트
-import '../../widgets/text_fields/custom_auth_text_field.dart';
+import '../../../packages/presentaion/lib/widgets/text_fields/custom_auth_text_field.dart';
 
 class SignupStep2 extends StatefulWidget {
   final String phoneNumber; // 휴대폰 번호 의존성 추가

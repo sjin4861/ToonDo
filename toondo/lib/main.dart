@@ -2,9 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:toondo/data/models/goal.dart';
-import 'package:toondo/data/models/user.dart';
-import 'package:toondo/data/repositories/todo_repository.dart';
+import 'package:data/models/goal.dart';
+import 'package:data/models/user.dart';
+import 'package:data/repositories/todo_repository_impl.dart'; // 수정된 import
 import 'package:toondo/services/gpt_service.dart';
 import 'package:toondo/services/user_service.dart';
 import 'package:toondo/viewmodels/auth/signup_viewmodel.dart';
@@ -18,23 +18,24 @@ import 'package:toondo/app/router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:toondo/services/notification_service.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:toondo/injection.dart'; // 주입 설정 가져오기
+import 'package:toondo/injection/di.dart'; // 주입 설정 가져오기
 // import 'package:hive/hive.dart';?
-import 'package:toondo/data/models/todo.dart';
-import 'package:toondo/data/models/goal_status.dart'; // GoalStatus import
+import 'package:data/models/todo_model.dart';
+import 'package:data/models/goal_status.dart'; // GoalStatus import
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Hive 초기화
   await Hive.initFlutter();
+  configureAllDependencies();
 
   // await Hive.deleteBoxFromDisk('todos');
   // await Hive.deleteBoxFromDisk('goals');
   // await Hive.deleteBoxFromDisk('user');
 
   // Hive 어댑터 등록
-  Hive.registerAdapter(TodoAdapter());
+  Hive.registerAdapter(TodoModelAdapter());
   Hive.registerAdapter(GoalStatusAdapter());
   Hive.registerAdapter(GoalAdapter()); // GoalAdapter 등록
   Hive.registerAdapter(UserAdapter()); // UserAdapter 등록 (typeId는 User 클래스와 일치해야 함)
@@ -43,8 +44,8 @@ Future<void> main() async {
   // Hive.registerAdapter(GoalAdapter());
 
   // Hive 박스 열기
-  final Box<Todo> todoBox = await Hive.openBox<Todo>('todos');
-  final Box<Todo> deletedTodoBox = await Hive.openBox<Todo>('deleted_todos');
+  final Box<TodoModel> todoBox = await Hive.openBox<TodoModel>('todos');
+  final Box<TodoModel> deletedTodoBox = await Hive.openBox<TodoModel>('deleted_todos');
   final Box<Goal> goalBox = await Hive.openBox<Goal>('goals');
   final Box<User> userBox = await Hive.openBox<User>('user');
 

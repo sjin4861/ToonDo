@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:toondo/data/models/goal.dart';
+import '../../../packages/data/lib/models/goal.dart';
 import 'package:toondo/viewmodels/goal/goal_viewmodel.dart';
 import 'package:intl/intl.dart';
 

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import '../../viewmodels/onboarding/onboarding_viewmodel.dart';
-import '../../widgets/text_fields/custom_auth_text_field.dart';
+import '../../../packages/presentaion/lib/widgets/text_fields/custom_auth_text_field.dart';
 import '../home/home_screen.dart';
 
 class Onboarding2Page extends StatefulWidget {

@@ -1,7 +1,7 @@
 // lib/viewmodels/my_page/my_page_viewmodel.dart
 
 import 'package:flutter/material.dart';
-import 'package:toondo/data/models/user.dart';
+import '../../../packages/data/lib/models/user.dart';
 import 'package:toondo/services/todo_service.dart';
 import 'package:toondo/services/goal_service.dart';
 

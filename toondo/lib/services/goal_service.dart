@@ -3,9 +3,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
-import 'package:toondo/data/models/goal.dart';
+import '../../packages/data/lib/models/goal.dart';
 import 'package:toondo/constants.dart';
-import 'package:toondo/data/models/goal_status.dart';
+import '../../packages/data/lib/models/goal_status.dart';
 import 'package:toondo/services/auth_service.dart';
 import 'package:toondo/services/user_service.dart'; // constants.dart 임포트
 

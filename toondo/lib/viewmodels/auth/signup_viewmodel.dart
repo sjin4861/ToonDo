@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:toondo/data/models/user.dart';
+import '../../../packages/data/lib/models/user.dart';
 import '../../services/auth_service.dart';
 
 class SignupViewModel extends ChangeNotifier {

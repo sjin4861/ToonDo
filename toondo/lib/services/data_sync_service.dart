@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-import 'package:toondo/data/models/goal.dart';
+import '../../packages/data/lib/models/goal.dart';
 import 'package:toondo/data/models/todo.dart';
 import 'package:toondo/services/goal_service.dart';
 import 'package:toondo/services/todo_service.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:toondo/ui/todo/todo_manage/todo_manage_view.dart';
+import '../../packages/presentaion/lib/views/todo/todo_manage_view.dart';
 import 'package:toondo/viewmodels/welcome/welcome_viewmodel.dart';
 import 'package:toondo/views/goal/goal_input_screen.dart';
 import 'package:toondo/views/goal/goal_management_screen.dart';
@@ -8,7 +8,7 @@ import 'package:toondo/views/home/home_screen.dart';
 import 'package:toondo/views/goal/goal_progress_screen.dart';
 import 'package:toondo/views/my_page/my_page_screen.dart';
 // import 'package:toondo/views/todo/todo_submission_screen.dart';
-import 'package:toondo/ui/todo/todo_manage/todo_manage_view.dart';
+import '../../packages/presentaion/lib/views/todo/todo_manage_view.dart';
 // import 'package:toondo/views/eisenhower_matrix_screen.dart';
 import 'package:toondo/views/welcome/welcome_screen.dart';
 import 'package:toondo/views/auth/signup_screen.dart';

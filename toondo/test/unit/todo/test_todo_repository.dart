@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:toondo/data/repositories/todo_repository.dart';
+import '../../../packages/data/lib/repositories/todo_repository.dart';
 import 'package:toondo/data/models/todo.dart';
 import 'package:hive/hive.dart';
 import '../../mocks/mock_todo_datasources.dart'; // TodoAdapter가 포함된 파일도 확인

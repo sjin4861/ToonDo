@@ -2,13 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:toondo/data/models/goal.dart';
-import 'package:toondo/data/models/goal_status.dart';
+import '../../../packages/data/lib/models/goal.dart';
+import '../../../packages/data/lib/models/goal_status.dart';
 import 'package:toondo/services/goal_service.dart';
 import 'package:uuid/uuid.dart';
 import 'package:provider/provider.dart';
 import 'package:toondo/viewmodels/goal/goal_viewmodel.dart';
-import 'package:toondo/widgets/calendar/calendar_bottom_sheet.dart';
+import '../../../packages/presentaion/lib/widgets/calendar/calendar_bottom_sheet.dart';
 
 class GoalInputViewModel extends ChangeNotifier {
   final TextEditingController goalNameController = TextEditingController();

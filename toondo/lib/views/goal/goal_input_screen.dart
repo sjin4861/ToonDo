@@ -3,18 +3,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:toondo/data/models/goal.dart';
+import '../../../packages/data/lib/models/goal.dart';
 import 'package:toondo/services/goal_service.dart';
 import 'package:toondo/viewmodels/goal/goal_input_viewmodel.dart';
 import 'package:toondo/viewmodels/goal/goal_viewmodel.dart';
-import 'package:toondo/widgets/app_bar/custom_app_bar.dart';
-import 'package:toondo/widgets/bottom_button/custom_button.dart';
-import 'package:toondo/widgets/calendar/calendar_bottom_sheet.dart';
-import 'package:toondo/widgets/goal/goal_icon_bottom_sheet.dart';
-import 'package:toondo/widgets/text_fields/goal_name_input_field.dart';
-import 'package:toondo/widgets/goal/goal_input_date_field.dart';
-import 'package:toondo/widgets/text_fields/tip.dart';
-import 'package:toondo/widgets/goal/goal_setting_bottom_sheet.dart';
+import '../../../packages/presentaion/lib/widgets/app_bar/custom_app_bar.dart';
+import '../../../packages/presentaion/lib/widgets/bottom_button/custom_button.dart';
+import '../../../packages/presentaion/lib/widgets/calendar/calendar_bottom_sheet.dart';
+import '../../../packages/presentaion/lib/widgets/goal/goal_icon_bottom_sheet.dart';
+import '../../../packages/presentaion/lib/widgets/text_fields/goal_name_input_field.dart';
+import '../../../packages/presentaion/lib/widgets/goal/goal_input_date_field.dart';
+import '../../../packages/presentaion/lib/widgets/text_fields/tip.dart';
+import '../../../packages/presentaion/lib/widgets/goal/goal_setting_bottom_sheet.dart';
 
 class GoalInputScreen extends StatelessWidget {
   final Goal? targetGoal;

@@ -1,6 +1,6 @@
 import 'package:mockito/mockito.dart';
-import 'package:toondo/data/datasources/local/todo_local_datasource.dart';
-import 'package:toondo/data/datasources/remote/todo_remote_datasource.dart';
+import '../../packages/data/lib/datasources/local/todo_local_datasource.dart';
+import '../../packages/data/lib/datasources/remote/todo_remote_datasource.dart';
 import 'package:toondo/data/models/todo.dart';
 
 // Mockito를 이용한 Mock 클래스 생성

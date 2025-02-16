@@ -1,7 +1,7 @@
 // lib/services/user_service.dart
 
 import 'package:hive/hive.dart';
-import 'package:toondo/data/models/user.dart';
+import '../../packages/data/lib/models/user.dart';
 
 class UserService {
   final Box<User> _userBox;

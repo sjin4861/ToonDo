@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toondo/views/auth/sms_verification_screen.dart';
-import 'package:toondo/widgets/text_fields/custom_text_field.dart';
+import '../../../packages/presentaion/lib/widgets/text_fields/custom_text_field.dart';
 import '../../viewmodels/auth/signup_viewmodel.dart';
 import 'login_screen.dart'; // 로그인 화면 임포트
-import '../../widgets/text_fields/custom_auth_text_field.dart';
+import '../../../packages/presentaion/lib/widgets/text_fields/custom_auth_text_field.dart';
 
 class SignupStep1 extends StatefulWidget {
   @override

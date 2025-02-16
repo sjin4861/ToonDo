@@ -1,6 +1,6 @@
 import 'package:mockito/mockito.dart';
 import 'package:toondo/data/models/todo.dart';
-import 'package:toondo/data/repositories/todo_repository.dart';
+import '../../packages/data/lib/repositories/todo_repository.dart';
 
 class MockTodoRepository extends Mock implements TodoRepository {
   @override
