@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:get_it/get_it.dart';
 import 'package:toondo/data/models/todo.dart';
-import '../../../../data/lib/repositories/todo_repository.dart';
-import '../../widgets/calendar/calendar_bottom_sheet.dart';
+import 'package:domain/usecases/todo/create_todo.dart';
+import 'package:domain/usecases/todo/update_todo.dart';
 
 class TodoInputViewModel extends ChangeNotifier {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -16,7 +16,7 @@ class TodoInputViewModel extends ChangeNotifier {
   DateTime? endDate;
   bool isDailyTodo = false;
   int importance = 0; // 중요도 (0 또는 1)
-  int urgency = 0;    // 긴급도 (0 또는 1)
+  int urgency = 0; // 긴급도 (0 또는 1)
   bool isTitleNotEmpty = false;
   bool showGoalDropdown = false;
   int selectedEisenhowerIndex = -1;
@@ -24,10 +24,16 @@ class TodoInputViewModel extends ChangeNotifier {
 
   Todo? todo;
   bool isDDayTodo;
-  // GetIt을 통해 TodoRepository DI
-  final TodoRepository _todoRepository = GetIt.instance<TodoRepository>();
+  final CreateTodo _createTodoUseCase;
+  final UpdateTodo _updateTodoUseCase;
 
-  TodoInputViewModel({this.todo, required this.isDDayTodo}) {
+  TodoInputViewModel({
+    this.todo,
+    required this.isDDayTodo,
+    required CreateTodo createTodoUseCase,
+    required UpdateTodo updateTodoUseCase,
+  }) : _createTodoUseCase = createTodoUseCase,
+       _updateTodoUseCase = updateTodoUseCase {
     if (todo != null) {
       // 수정 모드
       titleController.text = todo!.title;
@@ -116,8 +122,10 @@ class TodoInputViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-
-  Future<void> selectDate(BuildContext context, {required bool isStartDate}) async {
+  Future<void> selectDate(
+    BuildContext context, {
+    required bool isStartDate,
+  }) async {
     DateTime initialDate = DateTime.now();
     if (isStartDate && startDate != null) {
       initialDate = startDate!;
@@ -163,7 +171,8 @@ class TodoInputViewModel extends ChangeNotifier {
         Todo newTodo = Todo(
           id: todo?.id,
           title: title,
-          startDate: isDailyTodo ? DateTime.now() : (startDate ?? DateTime.now()),
+          startDate:
+              isDailyTodo ? DateTime.now() : (startDate ?? DateTime.now()),
           endDate: isDailyTodo ? DateTime.now() : (endDate ?? DateTime.now()),
           goalId: selectedGoalId,
           importance: importance,
@@ -171,9 +180,9 @@ class TodoInputViewModel extends ChangeNotifier {
         );
         if (todo != null) {
           todo!.updateFrom(newTodo);
-          await _todoRepository.updateTodo(todo!);
+          await _updateTodoUseCase(todo!);
         } else {
-          await _todoRepository.createTodo(newTodo);
+          await _createTodoUseCase(newTodo);
         }
         Navigator.pop(context);
       } catch (e) {
@@ -181,7 +190,7 @@ class TodoInputViewModel extends ChangeNotifier {
       }
     }
   }
-  
+
   @override
   void dispose() {
     titleController.removeListener(_onTitleChanged);

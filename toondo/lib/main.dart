@@ -1,5 +1,8 @@
 // lib/main.dart
 
+import 'package:data/models/user_model.dart';
+import 'package:data/repositories/auth_repository_impl.dart';
+import 'package:domain/repositories/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:data/models/goal.dart';
@@ -19,6 +22,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:toondo/services/notification_service.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:toondo/injection/di.dart'; // 주입 설정 가져오기
+import 'package:get_it/get_it.dart';
 // import 'package:hive/hive.dart';?
 import 'package:data/models/todo_model.dart';
 import 'package:data/models/goal_status.dart'; // GoalStatus import
@@ -38,16 +42,17 @@ Future<void> main() async {
   Hive.registerAdapter(TodoModelAdapter());
   Hive.registerAdapter(GoalStatusAdapter());
   Hive.registerAdapter(GoalAdapter()); // GoalAdapter 등록
-  Hive.registerAdapter(UserAdapter()); // UserAdapter 등록 (typeId는 User 클래스와 일치해야 함)
+  Hive.registerAdapter(UserModelAdapter());
 
   // 다른 모델의 어댑터도 여기에 등록 (예: GoalAdapter())
   // Hive.registerAdapter(GoalAdapter());
 
   // Hive 박스 열기
   final Box<TodoModel> todoBox = await Hive.openBox<TodoModel>('todos');
-  final Box<TodoModel> deletedTodoBox = await Hive.openBox<TodoModel>('deleted_todos');
+  final Box<TodoModel> deletedTodoBox =
+      await Hive.openBox<TodoModel>('deleted_todos');
   final Box<Goal> goalBox = await Hive.openBox<Goal>('goals');
-  final Box<User> userBox = await Hive.openBox<User>('user');
+  final Box<UserModel> userBox = await Hive.openBox<UserModel>('user');
 
   // await todoBox.clear(); // 기존 데이터를 모두 삭제 (개발 중에만 사용)
   // await goalBox.clear(); // 기존 데이터를 모두 삭제 (개발 중에만 사용)
@@ -56,15 +61,11 @@ Future<void> main() async {
   // 다른 박스도 여기에 열기 (예: goals 박스)
   // final Box<Goal> goalBox = await Hive.openBox<Goal>('goals');
 
-  // TodoService 인스턴스 생성
-  final userService = UserService(userBox);
-  final todoService = TodoService(todoBox, userService);
-  final goalService = GoalService(goalBox, userService); // GoalService 인스턴스 생성
-  final gptService = GptService(userService: userService);
-
-  // GetIt 주입 설정 진행
-  setupInjection();
-  final todoRepository = getIt<TodoRepository>();
+  // Remove manual instantiations
+  final authRepository = GetIt.instance<AuthRepositoryImpl>();
+  final todoRepository = GetIt.instance<TodoRepositoryImpl>();
+  final goalService = GetIt.instance<GoalService>();
+  final gptService = GetIt.instance<GptService>();
 
   runApp(
     MultiProvider(
@@ -73,16 +74,12 @@ Future<void> main() async {
           create: (_) => SignupViewModel(),
         ),
         // Provider<TodoService> 등록
-        Provider<TodoService>(
-          create: (_) => todoService),
+        Provider<TodoService>(create: (_) => todoService),
         // Provider<GoalService> 등록
-        Provider<GoalService>(
-          create: (_) => goalService),
+        Provider<GoalService>(create: (_) => goalService),
         // Provider<UserService> 등록
-        Provider<UserService>(
-          create: (_) => userService),
-        Provider<GptService>(
-          create: (_) => gptService),
+        Provider<UserService>(create: (_) => userService),
+        Provider<GptService>(create: (_) => gptService),
         Provider<TodoRepository>(
           create: (_) => todoRepository,
         ),

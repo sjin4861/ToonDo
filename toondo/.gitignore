@@ -19,7 +19,7 @@ lib/generated_plugin_registrant.dart
 # See https://dart.dev/guides/libraries/private-files#pubspeclock
 #pubspec.lock
 
-lib/constants.dart
+**/constants.dart
 
 # Android related
 **/android/**/gradle-wrapper.jar

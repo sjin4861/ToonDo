@@ -47,6 +47,13 @@ class TodoModel extends HiveObject {
     this.isSynced = false,
   });
 
+  // New getter and setter for isSynced
+  bool get synced => isSynced;
+  set synced(bool value) {
+    isSynced = value;
+    // Optionally persist change: save();
+  }
+
   // ✅ Entity → Model 변환
   factory TodoModel.fromEntity(Todo entity) {
     return TodoModel(
@@ -59,6 +66,7 @@ class TodoModel extends HiveObject {
       endDate: entity.endDate,
       urgency: entity.urgency,
       importance: entity.importance,
+      isSynced: false,
     );
   }
 
