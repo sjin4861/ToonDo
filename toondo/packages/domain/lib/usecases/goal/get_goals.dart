@@ -8,7 +8,7 @@ class GetGoalsUseCase {
 
   GetGoalsUseCase(this.repository);
 
-  Future<List<Goal>> call() {
-    return repository.getGoals();
+  List<Goal> call() {
+    return repository.getLocalGoals();
   }
 }

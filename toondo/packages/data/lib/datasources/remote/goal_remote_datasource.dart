@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:toondo/constants.dart';
-import '../../models/goal_model.dart';
+import 'package:data/constants.dart';
+import 'package:data/models/goal_model.dart';
 import 'package:get_it/get_it.dart';
-import 'package:data/repositories/auth_repository_impl.dart';
-import 'package:domain/usecases/goal/get_token_usecase.dart';
+import 'package:domain/entities/goal.dart';
+import 'package:domain/usecases/auth/get_token.dart';
 
 class GoalRemoteDataSource {
   http.Client client = http.Client();
@@ -26,7 +26,7 @@ class GoalRemoteDataSource {
     if (response.statusCode == 200) {
       final utf8Body = utf8.decode(response.bodyBytes);
       final List<dynamic> data = jsonDecode(utf8Body);
-      final models = data.map((item) => GoalModel.fromJsonApi(item)).toList();
+      final models = data.map((item) => GoalModel.fromJson(item)).toList();
       return models.map((model) => model.toEntity()).toList();
     }
     throw Exception('Failed to read goals: ${response.body}');
@@ -55,14 +55,16 @@ class GoalRemoteDataSource {
     if (response.statusCode == 200 || response.statusCode == 201) {
       final utf8Body = utf8.decode(response.bodyBytes);
       final data = jsonDecode(utf8Body);
-      final model = GoalModel.fromJsonApi(data);
+      final model = GoalModel.fromJson(data);
       return model.toEntity();
     }
     throw Exception('Failed to create goal: ${response.body}');
   }
 
   Future<void> updateGoal(Goal goal) async {
-    if (goal.id == null) throw Exception('Goal ID가 없습니다.');
+    if (goal.id == null) {
+      throw Exception('Goal ID가 없습니다.');
+    }
     final token = await getTokenUseCase();
     if (token == null) {
       throw Exception('JWT 토큰이 없습니다.');

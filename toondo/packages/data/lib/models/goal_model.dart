@@ -1,12 +1,12 @@
+import 'package:data/models/goal_status.dart';
 import 'package:hive/hive.dart';
 import 'package:domain/entities/goal.dart';
-import 'goal_status.dart'; // ensure this is consistent with your domain
 part 'goal_model.g.dart';
 
 @HiveType(typeId: 1)
 class GoalModel extends HiveObject {
   @HiveField(0)
-  String? id;
+  String id;
 
   @HiveField(1)
   String name;
@@ -33,7 +33,7 @@ class GoalModel extends HiveObject {
   bool isSynced;
 
   GoalModel({
-    this.id,
+    required this.id,
     required this.name,
     this.icon,
     this.progress = 0.0,
@@ -53,8 +53,6 @@ class GoalModel extends HiveObject {
       progress: entity.progress,
       startDate: entity.startDate,
       endDate: entity.endDate,
-      isCompleted: entity.isCompleted,
-      status: entity.status as GoalStatus,
       isSynced: false,
     );
   }
@@ -68,8 +66,6 @@ class GoalModel extends HiveObject {
       progress: progress,
       startDate: startDate,
       endDate: endDate,
-      isCompleted: isCompleted,
-      status: status as GoalStatus,
     );
   }
 
@@ -88,7 +84,7 @@ class GoalModel extends HiveObject {
 
   factory GoalModel.fromJson(Map<String, dynamic> json) {
     return GoalModel(
-      id: json['id'],
+      id: json['id'] as String,
       name: json['name'],
       icon: json['icon'],
       progress: (json['progress'] as num).toDouble(),
@@ -128,6 +124,6 @@ class GoalModel extends HiveObject {
 
   @override
   String toString() {
-    return 'Goal(name: $name, icon: $icon, progress: $progress%, start: $startDate, end: $endDate, completed: $isCompleted, status: $status)';
+    return 'Goal(id: $id, name: $name, icon: $icon, progress: $progress, startDate: $startDate, endDate: $endDate)';
   }
 }

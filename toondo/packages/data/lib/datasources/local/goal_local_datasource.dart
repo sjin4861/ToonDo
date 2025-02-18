@@ -24,4 +24,9 @@ class GoalLocalDatasource {
   Future<void> updateGoal(Goal goal) async {
     await saveGoal(goal);
   }
+
+  // New: Delete a goal locally using its ID.
+  Future<void> deleteGoal(String goalId) async {
+    await goalBox.delete(goalId);
+  }
 }

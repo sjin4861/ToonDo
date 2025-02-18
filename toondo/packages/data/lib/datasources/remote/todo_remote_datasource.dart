@@ -3,18 +3,17 @@ import 'package:http/http.dart' as http;
 import 'package:data/constants.dart';
 import 'package:domain/entities/todo.dart';
 import 'package:get_it/get_it.dart';
-import 'package:data/repositories/auth_repository_impl.dart';
+import 'package:domain/usecases/auth/get_token.dart';
 
 class TodoRemoteDataSource {
   http.Client client = http.Client();
-  // Use GetIt to get the auth repository instance.
-  final authRepository = GetIt.instance<AuthRepositoryImpl>();
+  final GetTokenUseCase getTokenUseCase = GetIt.instance<GetTokenUseCase>();
 
   Future<bool> commitTodos(
     List<Todo> unsyncedTodos,
     List<Todo> deletedTodos,
   ) async {
-    final token = await authRepository.getToken();
+    final token = await getTokenUseCase();
     if (token == null) {
       throw Exception('JWT 토큰이 없습니다. 다시 로그인해주세요.');
     }
@@ -41,7 +40,6 @@ class TodoRemoteDataSource {
       "toDoRequests": toDoRequests,
       "deletedTodoIds": deletedTodoIds,
     };
-    print(requestBody);
 
     final url = Uri.parse('${Constants.baseUrl}/todos/all/commit');
     try {
@@ -53,27 +51,22 @@ class TodoRemoteDataSource {
         },
         body: jsonEncode(requestBody),
       );
-      final decoded = jsonDecode(response.body);
-      print('Response Status Code : ${response.statusCode}');
       if (response.statusCode == 200) {
-        // 예) {"message":"투두 동기화 성공","savedTodosCount":2,"deletedCount":3}
-        print('동기화 성공: ${decoded['message']}');
         return true;
       } else if (response.statusCode == 400) {
+        final decoded = jsonDecode(response.body);
         final errMsg = decoded['message'] ?? 'Bad Request';
         throw Exception('서버 응답 400: $errMsg');
       } else {
         throw Exception('Failed to commit todos: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error commit todos: $e');
       rethrow;
     }
   }
 
-  // 서버로부터 투두 전체 목록을 fetch (전체 갱신)
   Future<List<Todo>> fetchTodos() async {
-    final token = await authRepository.getToken();
+    final token = await getTokenUseCase();
     if (token == null) throw Exception('JWT 토큰이 없습니다.');
     final url = Uri.parse('${Constants.baseUrl}/todos/all/fetch');
     final response = await client.get(
@@ -84,7 +77,7 @@ class TodoRemoteDataSource {
       final decoded = jsonDecode(response.body);
       final List<dynamic> todosJson = decoded['todos'];
       return todosJson.map((json) {
-        final String todoId = json['todoId'].toString();
+        final todoId = json['todoId'].toString();
         final dynamic goalId = json['goalId'];
         return Todo(
           id: todoId,

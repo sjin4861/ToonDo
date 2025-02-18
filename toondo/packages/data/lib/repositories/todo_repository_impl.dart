@@ -58,4 +58,20 @@ class TodoRepositoryImpl implements TodoRepository {
   List<Todo> getLocalTodos() {
     return localDatasource.getAllTodos();
   }
+
+  @override
+  Future<void> updateTodoDates(
+    Todo todo,
+    DateTime newStartDate,
+    DateTime newEndDate,
+  ) {
+    // TODO: implement updateTodoDates
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updateTodoStatus(Todo todo, double status) {
+    // TODO: implement updateTodoStatus
+    throw UnimplementedError();
+  }
 }

@@ -17,7 +17,7 @@ class GoalModelAdapter extends TypeAdapter<GoalModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return GoalModel(
-      id: fields[0] as String?,
+      id: fields[0] as String,
       name: fields[1] as String,
       icon: fields[2] as String?,
       progress: fields[3] as double,

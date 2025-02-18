@@ -58,4 +58,9 @@ class UserModel extends HiveObject {
       'points': points,
     };
   }
+
+  // get user nickname
+  String getNickname() {
+    return nickname ?? 'Anonymous';
+  }
 }

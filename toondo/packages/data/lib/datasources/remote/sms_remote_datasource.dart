@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:toondo/constants.dart';
+import 'package:data/constants.dart';
 
 abstract class SmsRemoteDataSource {
   Future<String> sendSmsCode(String phoneNumber);

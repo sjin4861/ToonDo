@@ -7,11 +7,12 @@ class GoalRepositoryImpl implements GoalRepository {
   final GoalLocalDatasource localDatasource;
   final GoalRemoteDataSource remoteDatasource;
 
-  GoalRepository({
+  GoalRepositoryImpl({
     required this.localDatasource,
     required this.remoteDatasource,
   });
 
+  @override
   Future<List<Goal>> readGoals() async {
     final goals = await remoteDatasource.readGoals();
     await localDatasource.clearGoals();
@@ -21,23 +22,26 @@ class GoalRepositoryImpl implements GoalRepository {
     return goals;
   }
 
+  @override
   Future<Goal> createGoal(Goal goal) async {
     final createdGoal = await remoteDatasource.createGoal(goal);
     await localDatasource.saveGoal(createdGoal);
     return createdGoal;
   }
 
+  @override
   Future<void> updateGoal(Goal goal) async {
     await remoteDatasource.updateGoal(goal);
     await localDatasource.updateGoal(goal);
   }
 
+  @override
   Future<void> deleteGoal(String goalId) async {
     await remoteDatasource.deleteGoal(goalId);
-    // 삭제 후 로컬에서도 제거 (goalBox.delete 사용)
-    // ...existing code for local deletion...
+    await localDatasource.deleteGoal(goalId); // 로컬에서도 삭제
   }
 
+  @override
   List<Goal> getLocalGoals() {
     return localDatasource.getAllGoals();
   }
