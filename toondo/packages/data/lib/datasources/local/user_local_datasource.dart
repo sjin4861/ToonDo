@@ -8,11 +8,11 @@ class UserLocalDatasource {
   Future<void> saveUser(User user) async {
     final model = UserModel.fromEntity(user);
     // Assuming user.id is unique and non-null.
-    await userBox.put(user.id, model);
+    await userBox.put('currentUser', model);
   }
 
-  Future<String?> getUserNickname(User user) async {
-    final model = userBox.get(user.id);
+  Future<String?> getUserNickname() async {
+    final model = userBox.get('currentUser');
     return model?.getNickname();
   }
 

@@ -2,7 +2,9 @@ import 'package:domain/repositories/todo_repository.dart';
 import 'package:domain/entities/todo.dart';
 import 'package:data/datasources/remote/todo_remote_datasource.dart';
 import 'package:data/datasources/local/todo_local_datasource.dart';
+import 'package:injectable/injectable.dart';
 
+@LazySingleton(as: TodoRepository)
 class TodoRepositoryImpl implements TodoRepository {
   final TodoRemoteDataSource remoteDatasource;
   final TodoLocalDatasource localDatasource;

@@ -1,4 +1,5 @@
 import 'package:domain/entities/goal.dart';
+import 'package:domain/usecases/goal/read_goals.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:get_it/get_it.dart';
@@ -11,7 +12,6 @@ import 'package:domain/usecases/todo/commit_todos.dart';
 import 'package:domain/usecases/todo/create_todo.dart';
 import 'package:domain/usecases/todo/get_all_todos.dart';
 import 'package:presentation/viewmodels/todo/todo_manage_viewmodel.dart';
-import 'package:presentation/viewmodels/goal/goal_viewmodel.dart';
 import 'package:presentation/widgets/app_bar/custom_app_bar.dart';
 import 'package:presentation/widgets/top_menu_bar/menu_bar.dart';
 import 'package:presentation/widgets/calendar/calendar.dart';
@@ -34,7 +34,7 @@ class TodoManageView extends StatelessWidget {
             getTodosUseCase: GetIt.instance<GetAllTodosUseCase>(),
             updateTodoStatusUseCase: GetIt.instance<UpdateTodoStatus>(),
             updateTodoDatesUseCase: GetIt.instance<UpdateTodoDates>(),
-            goalViewModel: GetIt.instance<GoalViewModel>(),
+            readGoalUseCase: GetIt.instance<ReadGoals>(),
             initialDate: selectedDate,
           )..loadTodos(),
       child: Scaffold(
@@ -65,7 +65,7 @@ class TodoManageView extends StatelessWidget {
                 ),
                 // 목표 선택 바
                 if (viewModel.selectedFilter == FilterOption.goal)
-                  _buildGoalSelectionBar(viewModel, goals),
+                  _buildGoalSelectionBar(viewModel, viewModel.goals),
                 Expanded(
                   child: SingleChildScrollView(
                     child: Column(

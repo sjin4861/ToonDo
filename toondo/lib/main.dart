@@ -1,160 +1,83 @@
-// lib/main.dart
-
-import 'package:data/models/user_model.dart';
-import 'package:data/repositories/auth_repository_impl.dart';
-import 'package:domain/repositories/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:data/models/goal.dart';
-import 'package:data/models/user.dart';
-import 'package:data/repositories/todo_repository_impl.dart'; // 수정된 import
-import 'package:toondo/services/gpt_service.dart';
-import 'package:toondo/services/user_service.dart';
-import 'package:toondo/viewmodels/auth/signup_viewmodel.dart';
-import 'package:toondo/viewmodels/goal/goal_management_viewmodel.dart';
-import 'package:toondo/viewmodels/goal/goal_viewmodel.dart';
-import 'package:toondo/services/goal_service.dart';
-import 'package:toondo/services/todo_service.dart';
-import 'package:toondo/viewmodels/home_viewmodel.dart';
-import 'package:toondo/viewmodels/todo/todo_viewmodel.dart';
-import 'package:toondo/app/router.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:toondo/services/notification_service.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:toondo/injection/di.dart'; // 주입 설정 가져오기
-import 'package:get_it/get_it.dart';
-// import 'package:hive/hive.dart';?
+import 'package:permission_handler/permission_handler.dart';
+import 'injection/di.dart'; // DI 설정 (lib/injection/di.dart)
+import 'package:get_it/get_it.dart'; // Add this import
+import 'package:injectable/injectable.dart'; // Add this import
+import 'package:presentation/navigation/router.dart'; // 네비게이션 라우터
+// Hive 어댑터 (데이터 모델) 등록을 위한 임포트
 import 'package:data/models/todo_model.dart';
-import 'package:data/models/goal_status.dart'; // GoalStatus import
+import 'package:data/models/goal_model.dart';
+import 'package:data/models/user_model.dart';
+import 'package:data/models/goal_status.dart';
+// Provider로 주입할 ViewModel들
+import 'package:presentation/viewmodels/auth/signup_viewmodel.dart';
+import 'package:presentation/viewmodels/goal/goal_viewmodel.dart';
+import 'package:presentation/viewmodels/home/home_viewmodel.dart';
+import 'package:presentation/viewmodels/todo/todo_viewmodel.dart';
+import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart';
+// NotificationService는 DI로 관리 (위 di.dart에서 등록)
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Hive 초기화
   await Hive.initFlutter();
-  configureAllDependencies();
 
-  // await Hive.deleteBoxFromDisk('todos');
-  // await Hive.deleteBoxFromDisk('goals');
-  // await Hive.deleteBoxFromDisk('user');
+  // 의존성 주입 설정 (GetIt 및 Injectable)
+  configureAllDependencies();
 
   // Hive 어댑터 등록
   Hive.registerAdapter(TodoModelAdapter());
   Hive.registerAdapter(GoalStatusAdapter());
-  Hive.registerAdapter(GoalAdapter()); // GoalAdapter 등록
+  Hive.registerAdapter(GoalModelAdapter());
   Hive.registerAdapter(UserModelAdapter());
 
-  // 다른 모델의 어댑터도 여기에 등록 (예: GoalAdapter())
-  // Hive.registerAdapter(GoalAdapter());
-
   // Hive 박스 열기
-  final Box<TodoModel> todoBox = await Hive.openBox<TodoModel>('todos');
-  final Box<TodoModel> deletedTodoBox =
-      await Hive.openBox<TodoModel>('deleted_todos');
-  final Box<Goal> goalBox = await Hive.openBox<Goal>('goals');
-  final Box<UserModel> userBox = await Hive.openBox<UserModel>('user');
+  await Hive.openBox<TodoModel>('todos');
+  await Hive.openBox<TodoModel>('deleted_todos');
+  await Hive.openBox<GoalModel>('goals');
+  await Hive.openBox<UserModel>('user');
 
-  // await todoBox.clear(); // 기존 데이터를 모두 삭제 (개발 중에만 사용)
-  // await goalBox.clear(); // 기존 데이터를 모두 삭제 (개발 중에만 사용)
-  // await userBox.clear(); // 기존 데이터를 모두 삭제 (개발 중에만 사용)
-
-  // 다른 박스도 여기에 열기 (예: goals 박스)
-  // final Box<Goal> goalBox = await Hive.openBox<Goal>('goals');
-
-  // Remove manual instantiations
-  final authRepository = GetIt.instance<AuthRepositoryImpl>();
-  final todoRepository = GetIt.instance<TodoRepositoryImpl>();
-  final goalService = GetIt.instance<GoalService>();
-  final gptService = GetIt.instance<GptService>();
-
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider<SignupViewModel>(
-          create: (_) => SignupViewModel(),
-        ),
-        // Provider<TodoService> 등록
-        Provider<TodoService>(create: (_) => todoService),
-        // Provider<GoalService> 등록
-        Provider<GoalService>(create: (_) => goalService),
-        // Provider<UserService> 등록
-        Provider<UserService>(create: (_) => userService),
-        Provider<GptService>(create: (_) => gptService),
-        Provider<TodoRepository>(
-          create: (_) => todoRepository,
-        ),
-        // ChangeNotifierProvider for GoalViewModel
-        ChangeNotifierProvider<GoalViewModel>(
-          create: (context) => GoalViewModel(
-            goalService: Provider.of<GoalService>(context, listen: false),
-          )..loadGoals(),
-        ),
-        // ChangeNotifierProvider for TodoViewModel
-        ChangeNotifierProvider<TodoViewModel>(
-          create: (context) => TodoViewModel(
-            Provider.of<TodoService>(context, listen: false),
-          )..loadTodos(),
-        ),
-        ChangeNotifierProvider<HomeViewModel>(
-          create: (context) => HomeViewModel(
-            goalViewModel: Provider.of<GoalViewModel>(context, listen: false),
-          ),
-        ),
-        ChangeNotifierProvider<GoalManagementViewModel>(
-          create: (context) => GoalManagementViewModel(
-            // 생성자에 GoalService or GoalViewModel 등 필요한 의존성 주입
-            goalViewModel: Provider.of<GoalViewModel>(context, listen: false),
-          ),
-        ),
-      ],
-      child: MyApp(),
-    ),
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // StatefulWidget으로 변경하여 NotificationService를 초기화
   @override
   _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  final NotificationService _notificationService = NotificationService();
-
-  // NavigatorKey를 사용하여 어디서나 Navigator에 접근 가능하게 함
+  // 어디서든 Navigator에 접근할 수 있도록 전역 NavigatorKey 설정
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   void initState() {
     super.initState();
-    // Delay the notification initialization until after the first frame is rendered
+    // 첫 프레임 렌더링 후 알림 초기화
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _requestPermissionsAndInitializeNotifications();
+      _initializeNotifications();
     });
   }
 
-  // 알림 권한 요청 및 알림 서비스 초기화
-  Future<void> _requestPermissionsAndInitializeNotifications() async {
-    // 알림 권한 요청
+  Future<void> _initializeNotifications() async {
+    // 알림 권한 상태 확인
     PermissionStatus status = await Permission.notification.status;
-
     if (status.isDenied || status.isRestricted) {
-      // 권한 요청
       status = await Permission.notification.request();
     }
-
     if (status.isGranted) {
-      // 권한이 부여된 경우 알림 서비스 초기화 및 알림 예약
       if (navigatorKey.currentContext != null) {
-        await _notificationService.initialize(navigatorKey.currentContext!);
-        await _notificationService.scheduleAllNotifications();
+        await getIt<NotificationService>()
+            .initialize(navigatorKey.currentContext!);
+        await getIt<NotificationService>().scheduleAllNotifications();
       } else {
         print("Navigator context is null, cannot initialize notifications.");
       }
     } else if (status.isPermanentlyDenied) {
-      // 사용자가 권한을 영구적으로 거부한 경우 설정으로 유도
       bool opened = await openAppSettings();
       if (!opened) {
         print("설정 앱을 열 수 없습니다.");
@@ -166,14 +89,34 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Todolist with Alarm',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return MultiProvider(
+      providers: [
+        // 각 ViewModel은 DI에서 주입받음 (GetIt)
+        ChangeNotifierProvider<SignupViewModel>(
+          create: (_) => getIt<SignupViewModel>(),
+        ),
+        ChangeNotifierProvider<GoalViewModel>(
+          create: (_) => getIt<GoalViewModel>()..loadGoals(),
+        ),
+        ChangeNotifierProvider<TodoViewModel>(
+          create: (_) => getIt<TodoViewModel>()..loadTodos(),
+        ),
+        ChangeNotifierProvider<HomeViewModel>(
+          create: (_) => getIt<HomeViewModel>(),
+        ),
+        ChangeNotifierProvider<GoalManagementViewModel>(
+          create: (_) => getIt<GoalManagementViewModel>(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Todolist with Alarm',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        navigatorKey: navigatorKey,
+        initialRoute: '/',
+        onGenerateRoute: AppRouter.generateRoute,
       ),
-      navigatorKey: navigatorKey, // navigatorKey 설정
-      initialRoute: '/',
-      onGenerateRoute: AppRouter.generateRoute,
     );
   }
 }

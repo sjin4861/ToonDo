@@ -3,14 +3,12 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i7;
+import 'dart:async' as _i5;
 
 import 'package:http/http.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i6;
-import 'package:toondo/services/auth_service.dart' as _i3;
-import 'package:toondo/services/todo_service.dart' as _i5;
-import 'package:toondo/services/user_service.dart' as _i4;
+import 'package:mockito/src/dummies.dart' as _i4;
+import 'package:toondo/services/todo_service.dart' as _i3;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -36,30 +34,10 @@ class _FakeClient_0 extends _i1.SmartFake implements _i2.Client {
         );
 }
 
-class _FakeAuthService_1 extends _i1.SmartFake implements _i3.AuthService {
-  _FakeAuthService_1(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-class _FakeUserService_2 extends _i1.SmartFake implements _i4.UserService {
-  _FakeUserService_2(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
 /// A class which mocks [TodoService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockTodoService extends _i1.Mock implements _i5.TodoService {
+class MockTodoService extends _i1.Mock implements _i3.TodoService {
   MockTodoService() {
     _i1.throwOnMissingStub(this);
   }
@@ -67,7 +45,7 @@ class MockTodoService extends _i1.Mock implements _i5.TodoService {
   @override
   String get baseUrl => (super.noSuchMethod(
         Invocation.getter(#baseUrl),
-        returnValue: _i6.dummyValue<String>(
+        returnValue: _i4.dummyValue<String>(
           this,
           Invocation.getter(#baseUrl),
         ),
@@ -83,64 +61,46 @@ class MockTodoService extends _i1.Mock implements _i5.TodoService {
       ) as _i2.Client);
 
   @override
-  _i3.AuthService get authService => (super.noSuchMethod(
-        Invocation.getter(#authService),
-        returnValue: _FakeAuthService_1(
-          this,
-          Invocation.getter(#authService),
-        ),
-      ) as _i3.AuthService);
-
-  @override
-  _i4.UserService get userService => (super.noSuchMethod(
-        Invocation.getter(#userService),
-        returnValue: _FakeUserService_2(
-          this,
-          Invocation.getter(#userService),
-        ),
-      ) as _i4.UserService);
-
-  @override
-  _i7.Future<List<dynamic>> loadTodoList() => (super.noSuchMethod(
+  _i5.Future<List<dynamic>> loadTodoList() => (super.noSuchMethod(
         Invocation.method(
           #loadTodoList,
           [],
         ),
-        returnValue: _i7.Future<List<dynamic>>.value(<dynamic>[]),
-      ) as _i7.Future<List<dynamic>>);
+        returnValue: _i5.Future<List<dynamic>>.value(<dynamic>[]),
+      ) as _i5.Future<List<dynamic>>);
 
   @override
-  _i7.Future<void> saveTodoList(List<dynamic>? todos) => (super.noSuchMethod(
+  _i5.Future<void> saveTodoList(List<dynamic>? todos) => (super.noSuchMethod(
         Invocation.method(
           #saveTodoList,
           [todos],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i7.Future<void> addTodo(dynamic todo) => (super.noSuchMethod(
+  _i5.Future<void> addTodo(dynamic todo) => (super.noSuchMethod(
         Invocation.method(
           #addTodo,
           [todo],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i7.Future<void> updateTodo(dynamic updatedTodo) => (super.noSuchMethod(
+  _i5.Future<void> updateTodo(dynamic updatedTodo) => (super.noSuchMethod(
         Invocation.method(
           #updateTodo,
           [updatedTodo],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i7.Future<void> updateTodoStatus(
+  _i5.Future<void> updateTodoStatus(
     String? todoId,
     double? status,
   ) =>
@@ -152,29 +112,29 @@ class MockTodoService extends _i1.Mock implements _i5.TodoService {
             status,
           ],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i7.Future<void> updateTodoDates(dynamic todo) => (super.noSuchMethod(
+  _i5.Future<void> updateTodoDates(dynamic todo) => (super.noSuchMethod(
         Invocation.method(
           #updateTodoDates,
           [todo],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i7.Future<void> deleteTodoById(String? id) => (super.noSuchMethod(
+  _i5.Future<void> deleteTodoById(String? id) => (super.noSuchMethod(
         Invocation.method(
           #deleteTodoById,
           [id],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
   dynamic getTodoById(String? id) => super.noSuchMethod(Invocation.method(
@@ -183,31 +143,31 @@ class MockTodoService extends _i1.Mock implements _i5.TodoService {
       ));
 
   @override
-  _i7.Future<void> commitTodos() => (super.noSuchMethod(
+  _i5.Future<void> commitTodos() => (super.noSuchMethod(
         Invocation.method(
           #commitTodos,
           [],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i7.Future<void> fetchTodos() => (super.noSuchMethod(
+  _i5.Future<void> fetchTodos() => (super.noSuchMethod(
         Invocation.method(
           #fetchTodos,
           [],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i7.Future<int> getUnsyncedTodosCount() => (super.noSuchMethod(
+  _i5.Future<int> getUnsyncedTodosCount() => (super.noSuchMethod(
         Invocation.method(
           #getUnsyncedTodosCount,
           [],
         ),
-        returnValue: _i7.Future<int>.value(0),
-      ) as _i7.Future<int>);
+        returnValue: _i5.Future<int>.value(0),
+      ) as _i5.Future<int>);
 }

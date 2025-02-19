@@ -3,16 +3,16 @@ import 'package:domain/repositories/user_repository.dart';
 import 'package:data/datasources/remote/user_remote_datasource.dart';
 import 'package:data/datasources/local/user_local_datasource.dart';
 import 'package:domain/usecases/auth/get_token.dart';
+import 'package:injectable/injectable.dart';
 
+@LazySingleton(as: UserRepository)
 class UserRepositoryImpl implements UserRepository {
   final UserRemoteDatasource remoteDatasource;
   final UserLocalDatasource localDatasource;
-  final GetTokenUseCase getTokenUseCase;
 
   UserRepositoryImpl({
     required this.remoteDatasource,
     required this.localDatasource,
-    required this.getTokenUseCase,
   });
 
   @override
@@ -35,8 +35,6 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<String?> getUserNickname() async {
-    // 토큰을 토대로 user를 찾는다
-    final token = await getTokenUseCase();
-    return localDatasource.getUserNickname(token);
+    return localDatasource.getUserNickname();
   }
 }

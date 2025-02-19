@@ -1,23 +1,24 @@
-import 'package:domain/usecases/todo/get_all_todos.dart';
-import 'package:flutter/material.dart';
+import 'package:domain/entities/goal.dart';
 import 'package:domain/entities/todo.dart';
+import 'package:domain/usecases/goal/read_goals.dart';
+import 'package:domain/usecases/todo/get_all_todos.dart';
 import 'package:domain/usecases/todo/fetch_todos.dart';
-import 'package:domain/usecases/todo/update_todo_status.dart';
 import 'package:domain/usecases/todo/update_todo_dates.dart';
+import 'package:domain/usecases/todo/update_todo_status.dart';
 import 'package:domain/usecases/todo/delete_todo.dart';
 import 'package:domain/usecases/todo/commit_todos.dart';
 import 'package:domain/usecases/todo/create_todo.dart';
+import 'package:flutter/material.dart'; // New dependency
 
 enum FilterOption { all, goal, importance, dDay, daily }
 
 class TodoManageViewModel extends ChangeNotifier {
   final FetchTodos _fetchTodosUseCase;
   final DeleteTodoUseCase _deleteTodoUseCase;
-  final CommitTodos _commitTodosUseCase;
-  final CreateTodo _createTodoUseCase;
   final GetAllTodosUseCase _getTodosUseCase;
   final UpdateTodoStatus _updateTodoStatusUseCase;
   final UpdateTodoDates _updateTodoDatesUseCase;
+  final ReadGoals _readGoalUseCase; // New use case dependency
 
   DateTime selectedDate;
   FilterOption selectedFilter = FilterOption.all;
@@ -25,6 +26,7 @@ class TodoManageViewModel extends ChangeNotifier {
   List<Todo> allTodos = [];
   List<Todo> dDayTodos = [];
   List<Todo> dailyTodos = [];
+  List<Goal> goals = []; // Local goals list
 
   TodoManageViewModel({
     required FetchTodos fetchTodosUseCase,
@@ -34,18 +36,20 @@ class TodoManageViewModel extends ChangeNotifier {
     required GetAllTodosUseCase getTodosUseCase,
     required UpdateTodoStatus updateTodoStatusUseCase,
     required UpdateTodoDates updateTodoDatesUseCase,
+    required ReadGoals readGoalUseCase, // New parameter
     DateTime? initialDate,
   }) : _fetchTodosUseCase = fetchTodosUseCase,
        _deleteTodoUseCase = deleteTodoUseCase,
-       _commitTodosUseCase = commitTodosUseCase,
-       _createTodoUseCase = createTodoUseCase,
        _getTodosUseCase = getTodosUseCase,
        _updateTodoStatusUseCase = updateTodoStatusUseCase,
        _updateTodoDatesUseCase = updateTodoDatesUseCase,
+       _readGoalUseCase = readGoalUseCase,
        selectedDate = initialDate ?? DateTime.now();
 
   Future<void> loadTodos() async {
     allTodos = await _fetchTodosUseCase();
+    goals =
+        await _readGoalUseCase(); // Fetch goals instead of using factored viewmodel
     _filterAndCategorizeTodos();
   }
 
@@ -66,9 +70,9 @@ class TodoManageViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateSelectedGoal(goal) {
+  void updateSelectedGoal(Goal goal) {
     selectedGoalId = goal.id;
-    updateSelectedFilter(FilterOption.goal);
+    updateSelectedFilter(FilterOption.goal, goalId: goal.id);
   }
 
   void _filterAndCategorizeTodos() {

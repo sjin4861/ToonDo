@@ -8,6 +8,6 @@ class GetUserNicknameUseCase {
   GetUserNicknameUseCase(this.repository);
 
   Future<String?> call() async {
-    return repository.getUserNickname(user);
+    return repository.getUserNickname();
   }
 }

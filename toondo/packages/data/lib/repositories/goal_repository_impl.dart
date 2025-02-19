@@ -2,7 +2,9 @@ import 'package:domain/repositories/goal_repository.dart';
 import 'package:data/datasources/local/goal_local_datasource.dart';
 import 'package:data/datasources/remote/goal_remote_datasource.dart';
 import 'package:domain/entities/goal.dart';
+import 'package:injectable/injectable.dart';
 
+@LazySingleton(as: GoalRepository)
 class GoalRepositoryImpl implements GoalRepository {
   final GoalLocalDatasource localDatasource;
   final GoalRemoteDataSource remoteDatasource;
