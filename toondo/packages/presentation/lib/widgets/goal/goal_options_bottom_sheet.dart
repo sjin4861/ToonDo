@@ -13,26 +13,27 @@ class GoalOptionsBottomSheet extends StatelessWidget {
   final Goal goal;
 
   const GoalOptionsBottomSheet({Key? key, required this.goal})
-      : super(key: key);
+    : super(key: key);
 
   void _editGoal(BuildContext context) {
     Navigator.pop(context); // 바텀 시트 닫기
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ChangeNotifierProvider<GoalInputViewModel>(
-          create: (context) => GoalInputViewModel(
-            goalService: Provider.of<GoalService>(context, listen: false),
-            targetGoal: goal,
-          ),
-          child: GoalInputScreen(targetGoal: goal), // 목표 수정 화면으로 네비게이션
-        ),
+        builder:
+            (context) => ChangeNotifierProvider<GoalInputViewModel>.value(
+              value: getIt<GoalInputViewModel>(),
+              child: GoalInputScreen(targetGoal: goal),
+            ),
       ),
     );
   }
 
   void _setProgress(BuildContext context) {
-    final goalManagementVM = Provider.of<GoalManagementViewModel>(context, listen: false);
+    final goalManagementVM = Provider.of<GoalManagementViewModel>(
+      context,
+      listen: false,
+    );
     final initialProgress = goal.progress;
     Navigator.pop(context);
 
@@ -71,7 +72,10 @@ class GoalOptionsBottomSheet extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () {
-                      goalManagementVM.updateGoalProgress(goal.id!, newProgress);
+                      goalManagementVM.updateGoalProgress(
+                        goal.id!,
+                        newProgress,
+                      );
                       Navigator.pop(dialogContext);
                     },
                     child: const Text('저장'),
@@ -86,7 +90,10 @@ class GoalOptionsBottomSheet extends StatelessWidget {
   }
 
   void _giveUpGoal(BuildContext context) {
-    final goalManagementVM = Provider.of<GoalManagementViewModel>(context, listen: false);
+    final goalManagementVM = Provider.of<GoalManagementViewModel>(
+      context,
+      listen: false,
+    );
     Navigator.pop(context);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {

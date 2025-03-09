@@ -3,9 +3,9 @@ import 'package:domain/repositories/todo_repository.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
-class UpdateTodoDates {
+class UpdateTodoDatesUseCase {
   final TodoRepository repository;
-  UpdateTodoDates(this.repository);
+  UpdateTodoDatesUseCase(this.repository);
 
   Future<void> call(
     Todo todo,

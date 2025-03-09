@@ -1,9 +1,9 @@
 import 'package:domain/repositories/todo_repository.dart';
 
-class CommitTodos {
+class CommitTodosUseCase {
   final TodoRepository repository;
 
-  CommitTodos(this.repository);
+  CommitTodosUseCase(this.repository);
 
   Future<bool> call() async {
     return await repository.commitTodos();

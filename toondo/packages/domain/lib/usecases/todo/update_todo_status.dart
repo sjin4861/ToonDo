@@ -4,10 +4,10 @@ import 'package:domain/usecases/todo/update_todo.dart';
 import 'package:injectable/injectable.dart'; // assuming this exposes a function type or class
 
 @injectable
-class UpdateTodoStatus {
+class UpdateTodoStatusUseCase {
   final TodoRepository repository;
 
-  UpdateTodoStatus(this.repository);
+  UpdateTodoStatusUseCase(this.repository);
 
   Future<void> call(Todo todo, double status) async {
     await repository.updateTodoStatus(todo, status);

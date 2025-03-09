@@ -1,30 +1,33 @@
 import 'package:flutter/material.dart';
-import '../../services/auth_service.dart';
+import 'package:domain/entities/user.dart';
+import 'package:domain/usecases/auth/login.dart'; // new import
+import 'package:injectable/injectable.dart';
 
+@LazySingleton()
 class LoginViewModel extends ChangeNotifier {
-  // 기존 컨트롤러들
   final TextEditingController phoneNumberController;
-  final TextEditingController passwordController; // 추가된 컨트롤러
+  final TextEditingController passwordController;
+
+  final LoginUseCase loginUseCase; // New dependency
 
   String? passwordError;
   String? loginError;
   bool isPasswordVisible = false;
 
-  LoginViewModel({String? phoneNumber})
-      : phoneNumberController = TextEditingController(text: phoneNumber ?? ''),
-        passwordController = TextEditingController(); // 초기화
+  LoginViewModel({
+    String? phoneNumber,
+    required this.loginUseCase, // Injected via DI
+  }) : phoneNumberController = TextEditingController(text: phoneNumber ?? ''),
+       passwordController = TextEditingController();
 
-  // 편의를 위해 getter 추가 (입력한 번호)
   String get phoneNumber => phoneNumberController.text;
 
-  // 로그인 시에는 passwordController.text 사용
   Future<bool> login() async {
     bool isValid = validateInput();
     if (!isValid) return false;
-
     try {
-      AuthService authService = AuthService();
-      await authService.login(phoneNumber, passwordController.text);
+      User user = await loginUseCase.call(phoneNumber, passwordController.text);
+      // Optionally store user info if needed.
       return true;
     } catch (e) {
       loginError = e.toString();

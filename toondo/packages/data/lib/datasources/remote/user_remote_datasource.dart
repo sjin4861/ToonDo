@@ -10,7 +10,7 @@ class UserRemoteDatasource {
   http.Client client = http.Client();
   final GetTokenUseCase getTokenUseCase = GetIt.instance<GetTokenUseCase>();
 
-  Future<User> changeNickName(User user, String newNickName) async {
+  Future<User> changeNickName(String newNickName) async {
     final token = await getTokenUseCase();
     if (token == null) throw Exception('JWT 토큰이 없습니다.');
     final url = Uri.parse('${Constants.baseUrl}/users/save-nickname');
@@ -31,7 +31,8 @@ class UserRemoteDatasource {
     throw Exception('Failed to update nickname: ${response.body}');
   }
 
-  Future<User> updateUserPoints(User user, int delta) async {
+  // Todo: 아직 벡엔드에서 구현 x
+  Future<User> updateUserPoints(int delta) async {
     final token = await getTokenUseCase();
     if (token == null) throw Exception('JWT 토큰이 없습니다.');
     final url = Uri.parse('${Constants.baseUrl}/users/points');

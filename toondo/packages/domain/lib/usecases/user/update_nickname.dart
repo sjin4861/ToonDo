@@ -7,7 +7,7 @@ class UpdateNickNameUseCase {
   final UserRepository repository;
   UpdateNickNameUseCase(this.repository);
 
-  Future<User> call(User user, String newNickName) {
-    return repository.updateNickName(user, newNickName);
+  Future<User> call(String newNickName) {
+    return repository.updateNickName(newNickName);
   }
 }

@@ -7,7 +7,7 @@ class UpdateUserPointsUseCase {
   final UserRepository repository;
   UpdateUserPointsUseCase(this.repository);
 
-  Future<User> call(User user, int delta) {
-    return repository.updateUserPoints(user, delta);
+  Future<User> call(int newPoint) {
+    return repository.updateUserPoints(newPoint);
   }
 }

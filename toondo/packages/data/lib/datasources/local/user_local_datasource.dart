@@ -16,5 +16,21 @@ class UserLocalDatasource {
     return model?.getNickname();
   }
 
+  Future<void> updateUserPoints(int newPoint) async {
+    final model = userBox.get('currentUser');
+    if (model != null) {
+      model.points += newPoint;
+      await userBox.put('currentUser', model);
+    }
+  }
+
+  Future<void> setNickName(String newNickName) async {
+    final model = userBox.get('currentUser');
+    if (model != null) {
+      model.nickname = newNickName;
+      await userBox.put('currentUser', model);
+    }
+  }
+
   // ...other local methods if needed...
 }

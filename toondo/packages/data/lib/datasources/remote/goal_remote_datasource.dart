@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:data/models/goal_status.dart';
 import 'package:http/http.dart' as http;
 import 'package:data/constants.dart';
 import 'package:data/models/goal_model.dart';
@@ -106,4 +107,8 @@ class GoalRemoteDataSource {
       throw Exception('Failed to delete goal: ${response.body}');
     }
   }
+
+  updateGoalStatus(Goal goal, GoalStatus newStatus) {}
+
+  updateGoalProgress(Goal goal, double newProgress) {}
 }

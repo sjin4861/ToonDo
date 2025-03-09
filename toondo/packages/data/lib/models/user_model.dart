@@ -12,10 +12,10 @@ class UserModel extends HiveObject {
   final String loginId;
 
   @HiveField(2)
-  final String? nickname;
+  String? nickname;
 
   @HiveField(3)
-  final int points;
+  int points;
 
   UserModel({
     required this.id,
@@ -62,5 +62,13 @@ class UserModel extends HiveObject {
   // get user nickname
   String getNickname() {
     return nickname ?? 'Anonymous';
+  }
+
+  void setNickname(String newNickName) {
+    nickname = newNickName;
+  }
+
+  void setPoints(int newPoint) {
+    points += newPoint;
   }
 }

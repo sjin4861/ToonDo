@@ -19,11 +19,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       viewModel.checkIfLoggedIn(context);
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<WelcomeViewModel>(
-      create: (_) => WelcomeViewModel(),
+    return ChangeNotifierProvider<WelcomeViewModel>.value(
+      value: getIt<WelcomeViewModel>(),
       child: Scaffold(
         body: Consumer<WelcomeViewModel>(
           builder: (context, viewModel, child) {
@@ -49,10 +49,21 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       decoration: ShapeDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topCenter, // 시작점 설정 (참고한 코드의 .top)
-                          end: Alignment.bottomCenter, // 끝점 설정 (참고한 코드의 .bottom)
+                          end:
+                              Alignment.bottomCenter, // 끝점 설정 (참고한 코드의 .bottom)
                           colors: [
-                            Color.fromRGBO(252, 241, 190, 1), // Color(red: 0.99, green: 0.99, blue: 0.99)
-                            Color.fromRGBO(249, 228, 123, 1), // Color(red: 0.99, green: 0.95, blue: 0.74)
+                            Color.fromRGBO(
+                              252,
+                              241,
+                              190,
+                              1,
+                            ), // Color(red: 0.99, green: 0.99, blue: 0.99)
+                            Color.fromRGBO(
+                              249,
+                              228,
+                              123,
+                              1,
+                            ), // Color(red: 0.99, green: 0.95, blue: 0.74)
                           ],
                         ),
                         shape: OvalBorder(),
@@ -61,7 +72,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   ),
                   // 캐릭터 및 그림자
                   Positioned(
-                    left: MediaQuery.of(context).size.width * 0.5 - 86.5, // 이미지의 절반 너비를 빼서 중앙 정렬
+                    left:
+                        MediaQuery.of(context).size.width * 0.5 -
+                        86.5, // 이미지의 절반 너비를 빼서 중앙 정렬
                     top: MediaQuery.of(context).size.height * 0.22,
                     child: Column(
                       children: [
@@ -161,7 +174,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         ),
                         SizedBox(height: 16),
                         _buildSocialButton(
-                          key: const Key('continueWithPhoneNumberButton'), // ★ 추가
+                          key: const Key(
+                            'continueWithPhoneNumberButton',
+                          ), // ★ 추가
                           context,
                           label: '휴대폰 번호로 계속하기',
                           color: Color(0xFFC9E1B4),
@@ -215,11 +230,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       key: key,
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        foregroundColor: textColor, backgroundColor: color,
+        foregroundColor: textColor,
+        backgroundColor: color,
         minimumSize: Size(double.infinity, 56),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(1000),
-          side: borderColor != null ? BorderSide(color: borderColor) : BorderSide.none,
+          side:
+              borderColor != null
+                  ? BorderSide(color: borderColor)
+                  : BorderSide.none,
         ),
         elevation: 0,
       ),
@@ -227,11 +246,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // 아이콘
-          Image.asset(
-            iconPath,
-            width: 32,
-            height: 32,
-          ),
+          Image.asset(iconPath, width: 32, height: 32),
           SizedBox(width: 16),
           // 텍스트
           Text(

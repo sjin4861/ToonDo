@@ -1,50 +1,26 @@
 // lib/viewmodels/my_page/my_page_viewmodel.dart
 
 import 'package:flutter/material.dart';
-import '../../../packages/data/lib/models/user.dart';
-import 'package:toondo/services/todo_service.dart';
-import 'package:toondo/services/goal_service.dart';
+import 'package:domain/entities/user.dart';
+import 'package:domain/usecases/todo/commit_todos.dart';
+import 'package:domain/usecases/todo/fetch_todos.dart';
+import 'package:injectable/injectable.dart';
 
+@LazySingleton()
 class MyPageViewModel extends ChangeNotifier {
   final User currentUser;
-  final TodoService todoService;
-  final GoalService goalService;
+  final CommitTodosUseCase commitTodosUseCase;
+  final FetchTodosUseCase fetchTodosUseCase;
 
   MyPageViewModel({
     required this.currentUser,
-    required this.todoService,
-    required this.goalService,
+    required this.commitTodosUseCase,
+    required this.fetchTodosUseCase,
   });
-
-  /// 1) 로컬 -> 서버: 미동기화 데이터를 서버에 반영(Commit)
-  Future<void> commitData() async {
-    try {
-      // 투두 & 목표 각각 커밋
-      await todoService.commitTodos();
-      await goalService.commitGoal();
-    } catch (e) {
-      print('Error while committing data: $e');
-    } finally {
-      notifyListeners();
-    }
-  }
-
-  /// 2) 서버 -> 로컬: 서버 데이터 전체를 받아와 로컬에 갱신(Fetch)
-  Future<void> fetchData() async {
-    try {
-      // 투두 & 목표 각각 가져오기
-      await todoService.fetchTodos();
-      await goalService.fetchGoals();
-    } catch (e) {
-      print('Error while fetching data: $e');
-    } finally {
-      notifyListeners();
-    }
-  }
 
   Future<void> fetchTodoOnly() async {
     try {
-      await todoService.fetchTodos();
+      await fetchTodosUseCase();
     } catch (e) {
       print('Error fetching todo only: $e');
     } finally {
@@ -54,7 +30,7 @@ class MyPageViewModel extends ChangeNotifier {
 
   Future<void> commitTodoOnly() async {
     try {
-      await todoService.commitTodos();
+      await commitTodosUseCase();
     } catch (e) {
       print('Error committing todo only: $e');
     } finally {

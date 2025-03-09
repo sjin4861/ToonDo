@@ -7,7 +7,9 @@ import 'package:domain/usecases/todo/create_todo.dart';
 import 'package:domain/usecases/todo/update_todo.dart';
 import 'package:presentation/viewmodels/goal/goal_viewmodel.dart';
 import 'package:presentation/widgets/calendar/calendar_bottom_sheet.dart';
+import 'package:injectable/injectable.dart';
 
+@LazySingleton()
 class TodoInputViewModel extends ChangeNotifier {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController titleController = TextEditingController();
@@ -27,15 +29,15 @@ class TodoInputViewModel extends ChangeNotifier {
 
   Todo? todo;
   bool isDDayTodo;
-  final CreateTodo _createTodoUseCase;
-  final UpdateTodo _updateTodoUseCase;
+  final CreateTodoUseCase _createTodoUseCase;
+  final UpdateTodoUseCase _updateTodoUseCase;
   final GoalViewModel _goalViewModel;
 
   TodoInputViewModel({
     this.todo,
     required this.isDDayTodo,
-    required CreateTodo createTodoUseCase,
-    required UpdateTodo updateTodoUseCase,
+    required CreateTodoUseCase createTodoUseCase,
+    required UpdateTodoUseCase updateTodoUseCase,
     required GoalViewModel goalViewModel,
   }) : _createTodoUseCase = createTodoUseCase,
        _updateTodoUseCase = updateTodoUseCase,

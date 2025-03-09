@@ -1,4 +1,5 @@
 import 'package:domain/entities/goal.dart';
+import 'package:domain/entities/goal_status.dart';
 
 abstract class GoalRepository {
   Future<List<Goal>> readGoals();
@@ -6,4 +7,6 @@ abstract class GoalRepository {
   Future<void> updateGoal(Goal goal);
   Future<void> deleteGoal(String goalId);
   List<Goal> getLocalGoals();
+  Future<bool> updateGoalStatus(Goal goal, GoalStatus newStatus);
+  Future<bool> updateGoalProgress(Goal goal, double newProgress);
 }

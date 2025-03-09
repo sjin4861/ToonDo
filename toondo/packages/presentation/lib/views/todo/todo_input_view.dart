@@ -22,15 +22,8 @@ class TodoInputView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<TodoInputViewModel>(
-      create:
-          (_) => TodoInputViewModel(
-            todo: todo,
-            isDDayTodo: isDDayTodo,
-            createTodoUseCase: GetIt.instance<CreateTodo>(),
-            updateTodoUseCase: GetIt.instance<UpdateTodo>(),
-            goalViewModel: GetIt.instance<GoalViewModel>(),
-          ),
+    return ChangeNotifierProvider<TodoInputViewModel>.value(
+      value: GetIt.instance<TodoInputViewModel>(),
       child: Scaffold(
         backgroundColor: const Color(0xFFFCFCFC),
         appBar: CustomAppBar(title: todo != null ? '투두 수정' : '투두 작성'),

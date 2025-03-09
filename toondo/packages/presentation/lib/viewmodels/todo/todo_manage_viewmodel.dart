@@ -9,16 +9,18 @@ import 'package:domain/usecases/todo/delete_todo.dart';
 import 'package:domain/usecases/todo/commit_todos.dart';
 import 'package:domain/usecases/todo/create_todo.dart';
 import 'package:flutter/material.dart'; // New dependency
+import 'package:injectable/injectable.dart';
 
 enum FilterOption { all, goal, importance, dDay, daily }
 
+@LazySingleton()
 class TodoManageViewModel extends ChangeNotifier {
-  final FetchTodos _fetchTodosUseCase;
+  final FetchTodosUseCase _fetchTodosUseCase;
   final DeleteTodoUseCase _deleteTodoUseCase;
   final GetAllTodosUseCase _getTodosUseCase;
-  final UpdateTodoStatus _updateTodoStatusUseCase;
-  final UpdateTodoDates _updateTodoDatesUseCase;
-  final ReadGoals _readGoalUseCase; // New use case dependency
+  final UpdateTodoStatusUseCase _updateTodoStatusUseCase;
+  final UpdateTodoDatesUseCase _updateTodoDatesUseCase;
+  final ReadGoalsUseCase _readGoalUseCase; // New use case dependency
 
   DateTime selectedDate;
   FilterOption selectedFilter = FilterOption.all;
@@ -29,14 +31,14 @@ class TodoManageViewModel extends ChangeNotifier {
   List<Goal> goals = []; // Local goals list
 
   TodoManageViewModel({
-    required FetchTodos fetchTodosUseCase,
+    required FetchTodosUseCase fetchTodosUseCase,
     required DeleteTodoUseCase deleteTodoUseCase,
-    required CommitTodos commitTodosUseCase,
-    required CreateTodo createTodoUseCase,
+    required CommitTodosUseCase commitTodosUseCase,
+    required CreateTodoUseCase createTodoUseCase,
     required GetAllTodosUseCase getTodosUseCase,
-    required UpdateTodoStatus updateTodoStatusUseCase,
-    required UpdateTodoDates updateTodoDatesUseCase,
-    required ReadGoals readGoalUseCase, // New parameter
+    required UpdateTodoStatusUseCase updateTodoStatusUseCase,
+    required UpdateTodoDatesUseCase updateTodoDatesUseCase,
+    required ReadGoalsUseCase readGoalUseCase, // New parameter
     DateTime? initialDate,
   }) : _fetchTodosUseCase = fetchTodosUseCase,
        _deleteTodoUseCase = deleteTodoUseCase,

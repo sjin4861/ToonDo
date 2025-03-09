@@ -16,20 +16,17 @@ class UserRepositoryImpl implements UserRepository {
   });
 
   @override
-  Future<User> updateNickName(User user, String newNickName) async {
+  Future<User> updateNickName(String newNickName) async {
     // Calls remote API
-    final updatedUser = await remoteDatasource.changeNickName(
-      user,
-      newNickName,
-    );
-    await localDatasource.saveUser(updatedUser);
+    final updatedUser = await remoteDatasource.changeNickName(newNickName);
+    await localDatasource.setNickName(newNickName);
     return updatedUser;
   }
 
   @override
-  Future<User> updateUserPoints(User user, int delta) async {
-    final updatedUser = await remoteDatasource.updateUserPoints(user, delta);
-    await localDatasource.saveUser(updatedUser);
+  Future<User> updateUserPoints(int newPoint) async {
+    final updatedUser = await remoteDatasource.updateUserPoints(newPoint);
+    await localDatasource.updateUserPoints(newPoint);
     return updatedUser;
   }
 

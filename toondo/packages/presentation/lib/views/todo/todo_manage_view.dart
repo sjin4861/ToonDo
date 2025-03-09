@@ -27,14 +27,14 @@ class TodoManageView extends StatelessWidget {
     return ChangeNotifierProvider<TodoManageViewModel>(
       create:
           (_) => TodoManageViewModel(
-            fetchTodosUseCase: GetIt.instance<FetchTodos>(),
+            fetchTodosUseCase: GetIt.instance<FetchTodosUseCase>(),
             deleteTodoUseCase: GetIt.instance<DeleteTodoUseCase>(),
-            commitTodosUseCase: GetIt.instance<CommitTodos>(),
-            createTodoUseCase: GetIt.instance<CreateTodo>(),
+            commitTodosUseCase: GetIt.instance<CommitTodosUseCase>(),
+            createTodoUseCase: GetIt.instance<CreateTodoUseCase>(),
             getTodosUseCase: GetIt.instance<GetAllTodosUseCase>(),
-            updateTodoStatusUseCase: GetIt.instance<UpdateTodoStatus>(),
-            updateTodoDatesUseCase: GetIt.instance<UpdateTodoDates>(),
-            readGoalUseCase: GetIt.instance<ReadGoals>(),
+            updateTodoStatusUseCase: GetIt.instance<UpdateTodoStatusUseCase>(),
+            updateTodoDatesUseCase: GetIt.instance<UpdateTodoDatesUseCase>(),
+            readGoalUseCase: GetIt.instance<ReadGoalsUseCase>(),
             initialDate: selectedDate,
           )..loadTodos(),
       child: Scaffold(

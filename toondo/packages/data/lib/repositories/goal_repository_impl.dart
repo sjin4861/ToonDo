@@ -1,3 +1,4 @@
+import 'package:data/models/goal_status.dart';
 import 'package:domain/repositories/goal_repository.dart';
 import 'package:data/datasources/local/goal_local_datasource.dart';
 import 'package:data/datasources/remote/goal_remote_datasource.dart';
@@ -46,5 +47,26 @@ class GoalRepositoryImpl implements GoalRepository {
   @override
   List<Goal> getLocalGoals() {
     return localDatasource.getAllGoals();
+  }
+
+  @override
+  Future<bool> updateGoalStatus(Goal goal, GoalStatus newStatus) async {
+    final updated = await remoteDatasource.updateGoalStatus(goal, newStatus);
+    if (updated) {
+      await localDatasource.updateGoalStatus(goal, newStatus);
+    }
+    return updated;
+  }
+
+  @override
+  Future<bool> updateGoalProgress(Goal goal, double newProgress) async {
+    final updated = await remoteDatasource.updateGoalProgress(
+      goal,
+      newProgress,
+    );
+    if (updated) {
+      await localDatasource.updateGoalProgress(goal, newProgress);
+    }
+    return updated;
   }
 }
