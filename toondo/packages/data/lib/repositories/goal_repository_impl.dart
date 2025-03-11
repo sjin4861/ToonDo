@@ -1,8 +1,8 @@
-import 'package:data/models/goal_status.dart';
 import 'package:domain/repositories/goal_repository.dart';
 import 'package:data/datasources/local/goal_local_datasource.dart';
 import 'package:data/datasources/remote/goal_remote_datasource.dart';
 import 'package:domain/entities/goal.dart';
+import 'package:domain/entities/goal_status.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton(as: GoalRepository)

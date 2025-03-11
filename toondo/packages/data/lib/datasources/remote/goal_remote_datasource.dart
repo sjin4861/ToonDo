@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'package:data/models/goal_status.dart';
 import 'package:http/http.dart' as http;
 import 'package:data/constants.dart';
 import 'package:data/models/goal_model.dart';
+import 'package:domain/entities/goal_status.dart';
 import 'package:get_it/get_it.dart';
 import 'package:domain/entities/goal.dart';
 import 'package:domain/usecases/auth/get_token.dart';
