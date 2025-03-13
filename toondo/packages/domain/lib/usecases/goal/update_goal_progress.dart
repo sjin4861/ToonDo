@@ -7,7 +7,7 @@ class UpdateGoalProgressUseCase {
   final GoalRepository repository;
   UpdateGoalProgressUseCase({required this.repository});
 
-  Future<bool> call(Goal goal, double newProgress) async {
+  Future<void> call(Goal goal, double newProgress) async {
     await repository.updateGoalProgress(goal, newProgress);
   }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:toondo/viewmodels/auth/signup_viewmodel.dart';
-import 'package:toondo/views/onboarding/onboarding_screen.dart';
-import 'signup_step1.dart';
-import 'signup_step2.dart';
+import 'package:presentation/viewmodels/signup/signup_viewmodel.dart';
+import 'package:presentation/views/onboarding/onboarding_screen.dart';
+import 'package:presentation/views/auth/signup_step1.dart';
+import 'package:presentation/views/auth/signup_step2.dart';
 
 class SignupScreen extends StatelessWidget {
   @override

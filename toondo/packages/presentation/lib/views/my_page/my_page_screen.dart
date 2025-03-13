@@ -1,99 +1,274 @@
-// lib/views/my_page/my_page_screen.dart
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:provider/provider.dart';
-import '../../../packages/data/lib/models/user.dart';
-import 'package:toondo/services/goal_service.dart';
-import 'package:toondo/services/todo_service.dart';
-import 'package:toondo/viewmodels/my_page/my_page_viewmodel.dart';
-import '../../../packages/presentaion/lib/widgets/my_page/sync_dialog.dart';
 
-class MyPageScreen extends StatelessWidget {
-  const MyPageScreen({Key? key}) : super(key: key);
+void main() {
+  runApp(const FigmaToCodeApp());
+}
+
+class FigmaToCodeApp extends StatelessWidget {
+  const FigmaToCodeApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // 현재 로그인한 사용자의 정보를 Hive에서 가져옵니다.
-    // (예: 'currentUser' 키로 저장되어 있다고 가정)
-    final Box<User> userBox = Hive.box<User>('user');
-    final User? currentUser = userBox.get('currentUser');
-
-    if (currentUser == null) {
-      return Scaffold(
-        appBar: AppBar(title: const Text('마이페이지')),
-        body: const Center(child: Text('사용자 정보가 없습니다.')),
-      );
-    }
-    // MultiProvider에서 이미 TodoService와 GoalService가 등록되어 있으므로
-    // Provider.of를 통해 인스턴스를 가져올 수 있습니다.
-    final todoService = Provider.of<TodoService>(context, listen: false);
-    final goalService = Provider.of<GoalService>(context, listen: false);
-    
-    return ChangeNotifierProvider<MyPageViewModel>(
-      create: (_) => MyPageViewModel(
-        currentUser: currentUser,
-        todoService: todoService,
-        goalService: goalService,
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: const Color.fromARGB(255, 18, 32, 47),
       ),
-      child: Consumer<MyPageViewModel>(
-        builder: (context, viewModel, _) {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('마이페이지'),
-            ),
-            body: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+      home: Scaffold(
+        body: Center(
+          child: MyPage(),
+        ),
+      ),
+    );
+  }
+}
+
+class MyPage extends StatelessWidget {
+  const MyPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 375,
+      height: 812,
+      clipBehavior: Clip.antiAlias,
+      decoration: const BoxDecoration(color: Color(0xFFFCFCFC)),
+      child: Stack(
+        children: [
+          // 상단 AppBar 영역: "마이페이지"
+          Positioned(
+            left: 0,
+            top: 0,
+            child: Container(
+              width: 375,
+              height: 52,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+              decoration: ShapeDecoration(
+                color: const Color(0xFFFCFCFC),
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(width: 0.5, color: const Color(0x3F1C1D1B)),
+                ),
+              ),
+              child: Row(
+                children: const [
+                  SizedBox(
+                    width: 16,
+                    height: 16,
+                    // 임시 아이콘 자리. 실제 아이콘으로 대체 가능.
+                    child: Placeholder(strokeWidth: 1),
+                  ),
+                  SizedBox(width: 8),
                   Text(
-                    '안녕하세요, ${viewModel.currentUser.username ?? '사용자'}님!',
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 24),
-                  // 기타 마이페이지 내용(예: 내 포인트, 내 정보 등)을 여기에 추가
-                  const Spacer(),
-                  // 동기화하기 버튼
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        final myPageViewModel = Provider.of<MyPageViewModel>(context, listen: false);
-                        // 다이얼로그 호출 시 viewModel 전달
-                        final bool? confirmed = await showDialog<bool>(
-                          context: context,
-                          builder: (context) => SyncDialog(viewModel: myPageViewModel),
-                        );
-                        if (confirmed == true) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('동기화가 완료되었습니다.')),
-                          );
-                        }
-                      },
-                      child: const Text('동기화하기'),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () => viewModel.fetchTodoOnly(),
-                      child: const Text('Fetch Todo'),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () => viewModel.commitTodoOnly(),
-                      child: const Text('Commit Todo'),
+                    '마이페이지',
+                    style: TextStyle(
+                      color: Color(0xFF1C1D1B),
+                      fontSize: 16,
+                      fontFamily: 'Pretendard Variable',
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: 0.24,
                     ),
                   ),
                 ],
               ),
             ),
-          );
-        },
+          ),
+          // 프로필 사진 영역
+          Positioned(
+            left: 24,
+            top: 84,
+            child: SizedBox(
+              width: 85,
+              height: 85,
+              child: Stack(
+                children: [
+                  // 바깥쪽 원 (배경)
+                  Positioned(
+                    left: 0,
+                    top: 0,
+                    child: Container(
+                      width: 85,
+                      height: 85,
+                      decoration: const ShapeDecoration(
+                        color: Color(0xFFE5E1F5),
+                        shape: OvalBorder(),
+                      ),
+                    ),
+                  ),
+                  // 중간 원 (그라데이션)
+                  Positioned(
+                    left: 13,
+                    top: 13,
+                    child: Container(
+                      width: 59,
+                      height: 59,
+                      decoration: const ShapeDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment(0.5, 0),
+                          end: Alignment(0.5, 1),
+                          colors: [Color(0xFFC0AEFF), Color(0xFFAB94FD)],
+                        ),
+                        shape: OvalBorder(),
+                      ),
+                    ),
+                  ),
+                  // 아이콘 혹은 이미지 자리
+                  Positioned(
+                    left: 0,
+                    top: 0,
+                    child: Container(
+                      width: 85,
+                      height: 85,
+                      alignment: Alignment.center,
+                      child: const Icon(
+                        Icons.person,
+                        size: 40,
+                        color: Colors.white70,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          // 프로필 텍스트 영역: 이름 및 활동 일수
+          Positioned(
+            left: 133,
+            top: 98,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '드리머즈',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontFamily: 'Pretendard Variable',
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.24,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text.rich(
+                  TextSpan(
+                    children: [
+                      const TextSpan(
+                        text: 'ToonDo',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 10,
+                          fontFamily: 'Pretendard Variable',
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.15,
+                        ),
+                      ),
+                      const TextSpan(
+                        text: '와 함께한 지 ',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 10,
+                          fontFamily: 'Pretendard Variable',
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: 0.15,
+                        ),
+                      ),
+                      const TextSpan(
+                        text: '21',
+                        style: TextStyle(
+                          color: Color(0xFF78B545),
+                          fontSize: 10,
+                          fontFamily: 'Pretendard Variable',
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: 0.15,
+                        ),
+                      ),
+                      const TextSpan(
+                        text: '일째',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 10,
+                          fontFamily: 'Pretendard Variable',
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: 0.15,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // "설정" 타이틀 영역
+          const Positioned(
+            left: 24,
+            top: 237,
+            child: Text(
+              '설정',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+                fontFamily: 'Pretendard Variable',
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.24,
+              ),
+            ),
+          ),
+          // 설정 옵션 목록
+          Positioned(
+            left: 0,
+            top: 272,
+            child: Container(
+              width: 375,
+              child: Column(
+                children: [
+                  // 옵션 Row 템플릿 (화면, 소리/알림, 계정관리, 이용안내 등)
+                  _buildSettingRow(title: '동기화'),
+                  _buildSettingRow(
+                    title: '화면',
+                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  ),
+                  _buildSettingRow(
+                    title: '소리/알림',
+                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  ),
+                  _buildSettingRow(
+                    title: '계정관리',
+                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  ),
+                  _buildSettingRow(
+                    title: '이용안내',
+                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 설정 옵션 Row 빌더
+  Widget _buildSettingRow({required String title, Widget? trailing}) {
+    return Container(
+      width: double.infinity,
+      height: 52,
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+      color: const Color(0xFFFCFCFC),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              color: Color(0xFF1C1D1B),
+              fontSize: 14,
+              fontFamily: 'Pretendard Variable',
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.21,
+            ),
+          ),
+          if (trailing != null) trailing,
+        ],
       ),
     );
   }

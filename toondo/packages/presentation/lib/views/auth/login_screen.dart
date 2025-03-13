@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../viewmodels/auth/login_viewmodel.dart';
-import '../../../packages/presentaion/lib/widgets/text_fields/custom_auth_text_field.dart';
+import 'package:presentation/viewmodels/login/login_viewmodel.dart';
+import 'package:presentation/widgets/text_fields/custom_auth_text_field.dart';
 
 class LoginScreen extends StatelessWidget {
   final String? phoneNumber; // 외부에서 전달되더라도 필드 입력이 가능하도록 함

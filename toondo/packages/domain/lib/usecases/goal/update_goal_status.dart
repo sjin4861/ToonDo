@@ -1,5 +1,5 @@
 import 'package:domain/entities/goal.dart';
-import 'package:domain/entities/goal_status.dart';
+import 'package:domain/entities/status.dart';
 import 'package:domain/repositories/goal_repository.dart';
 import 'package:injectable/injectable.dart';
 
@@ -9,7 +9,7 @@ class UpdateGoalStatusUseCase {
 
   UpdateGoalStatusUseCase({required this.repository});
 
-  Future<bool> call(Goal goal, GoalStatus newStatus) async {
+  Future<void> call(Goal goal, Status newStatus) async {
     await repository.updateGoalStatus(goal, newStatus);
   }
 }

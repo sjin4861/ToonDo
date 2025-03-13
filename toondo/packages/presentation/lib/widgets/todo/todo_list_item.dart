@@ -3,8 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:toondo/data/models/todo.dart';
-import 'package:toondo/viewmodels/goal/goal_viewmodel.dart';
+import 'package:domain/entities/todo.dart';
+import 'package:presentation/viewmodels/goal/goal_viewmodel.dart';
 import 'package:intl/intl.dart';
 import 'todo_edit_bottom_sheet.dart';
 

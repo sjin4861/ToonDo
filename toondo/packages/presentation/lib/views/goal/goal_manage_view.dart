@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:get_it/get_it.dart';
-import 'package:domain/entities/goal.dart';
-import 'package:domain/usecases/goal/read_goals.dart';
-import 'package:domain/usecases/goal/delete_goal.dart';
-import 'package:domain/usecases/goal/update_goal.dart';
-import 'package:domain/usecases/goal/create_goal.dart';
 import 'package:presentation/viewmodels/goal/goal_viewmodel.dart';
 import 'package:presentation/widgets/app_bar/custom_app_bar.dart';
 import 'package:presentation/widgets/goal/goal_list_item.dart';

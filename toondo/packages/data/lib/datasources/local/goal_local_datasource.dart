@@ -1,11 +1,13 @@
 // 로컬 저장소(Hive)에서 Goal 데이터를 관리하는 Repository
 import 'package:domain/entities/goal_status.dart';
+import 'package:domain/entities/status.dart';
 import 'package:hive/hive.dart';
 import 'package:data/models/goal_model.dart';
 import 'package:domain/entities/goal.dart';
 
 class GoalLocalDatasource {
   Box<GoalModel> goalBox = Hive.box<GoalModel>('goals');
+  Box<GoalStatus> goalStatusBox = Hive.box<GoalStatus>('goalStatus');
 
   Future<void> clearGoals() async {
     await goalBox.clear();
@@ -31,7 +33,14 @@ class GoalLocalDatasource {
     await goalBox.delete(goalId);
   }
 
-  updateGoalStatus(Goal goal, GoalStatus newStatus) {}
+  Future<void> updateGoalStatus(Goal goal, Status newStatus) async {
+    String goalId = goal.id;
+    GoalStatus goalStatus = GoalStatus(goalId: goalId, status: newStatus);
+    goalStatusBox.put(goalId, goalStatus);
+  }
 
-  updateGoalProgress(Goal goal, double newProgress) {}
+  Future<void> updateGoalProgress(Goal goal, double newProgress) async {
+    String goalId = goal.id;
+    goalBox.get(goalId)!.progress = newProgress;
+  }
 }

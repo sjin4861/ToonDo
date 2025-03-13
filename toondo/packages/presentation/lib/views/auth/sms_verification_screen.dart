@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:toondo/services/sms_service.dart';
-import '../../../packages/presentaion/lib/widgets/text_fields/custom_text_field.dart';
-import 'signup_step2.dart';
-import '../../../packages/presentaion/lib/widgets/text_fields/custom_auth_text_field.dart';
+import 'package:presentation/widgets/text_fields/custom_text_field.dart';
+import 'package:presentation/views/auth/signup_step2.dart';
+import 'package:presentation/widgets/text_fields/custom_auth_text_field.dart';
 
 class SmsVerificationScreen extends StatefulWidget {
   final String phoneNumber;
@@ -14,7 +13,6 @@ class SmsVerificationScreen extends StatefulWidget {
 
 class _SmsVerificationScreenState extends State<SmsVerificationScreen> {
   final TextEditingController _codeController = TextEditingController();
-  final SmsService _smsService = SmsService();
   String _message = "";
   bool _isLoading = false;
 

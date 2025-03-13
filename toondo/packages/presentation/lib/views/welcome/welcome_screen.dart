@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:toondo/viewmodels/welcome/welcome_viewmodel.dart';
+import 'package:get_it/get_it.dart';
+import 'package:presentation/viewmodels/welcome/welcome_viewmodel.dart';
+
+final getIt = GetIt.instance;
 
 class WelcomeScreen extends StatefulWidget {
   @override

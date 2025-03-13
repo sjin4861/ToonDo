@@ -3,31 +3,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import '../../viewmodels/onboarding/onboarding_viewmodel.dart';
-import '../../../packages/presentaion/lib/widgets/text_fields/custom_auth_text_field.dart';
-import '../home/home_screen.dart';
+import 'package:presentation/viewmodels/onboarding/onboarding_viewmodel.dart';
+import 'package:presentation/widgets/text_fields/custom_auth_text_field.dart';
+import 'package:presentation/views/home/home_screen.dart';
 
-class Onboarding2Page extends StatefulWidget {
+class Onboarding2Page extends StatelessWidget {
   final int userId;
-
-  Onboarding2Page({required this.userId});
-
-  @override
-  _Onboarding2PageState createState() => _Onboarding2PageState();
-}
-
-class _Onboarding2PageState extends State<Onboarding2Page> {
-  final TextEditingController _nicknameController = TextEditingController();
-  String? nicknameError;
-
-  @override
-  void dispose() {
-    _nicknameController.dispose();
-    super.dispose();
-  }
+  const Onboarding2Page({required this.userId, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<OnboardingViewModel>();
     return Scaffold(
       backgroundColor: Color(0xFFFCFCFC),
       appBar: AppBar(
@@ -39,9 +25,7 @@ class _Onboarding2PageState extends State<Onboarding2Page> {
             color: Color(0xFF1C1D1B),
             size: 16,
           ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           '시작하기',
@@ -116,29 +100,25 @@ class _Onboarding2PageState extends State<Onboarding2Page> {
                           ),
                         ),
                         SizedBox(height: 64),
-                        Consumer<OnboardingViewModel>(
-                          builder: (context, viewModel, child) {
-                            return CustomAuthTextField(
-                              key: const Key('onboarding2_nicknameTextField'),
-                              label: '닉네임',
-                              hintText: '8자 이내의 닉네임을 입력해주세요',
-                              controller: _nicknameController,
-                              onChanged: (value) {
-                                setState(() {
-                                  nicknameError = null;
-                                });
-                                viewModel.nickname = value;
-                              },
-                              //errorText: nicknameError,
-                              isValid: viewModel.nickname.isNotEmpty,
-                            );
+                        CustomAuthTextField(
+                          key: const Key('onboarding2_nicknameTextField'),
+                          label: '닉네임',
+                          hintText: '8자 이내의 닉네임을 입력해주세요',
+                          controller: viewModel.nicknameController,
+                          onChanged: (value) {
+                            viewModel.nickname = value;
+                            if (viewModel.nicknameError != null) {
+                              viewModel.nicknameError = null;
+                              viewModel.notifyListeners();
+                            }
                           },
+                          isValid: viewModel.nicknameController.text.isNotEmpty,
                         ),
-                        if (nicknameError != null)
+                        if (viewModel.nicknameError != null)
                           Padding(
                             padding: const EdgeInsets.only(top: 4),
                             child: Text(
-                              nicknameError!,
+                              viewModel.nicknameError!,
                               style: TextStyle(
                                 color: Color(0xFFEE0F12),
                                 fontSize: 10,
@@ -176,10 +156,7 @@ class _Onboarding2PageState extends State<Onboarding2Page> {
                         Expanded(
                           flex: 1,
                           child: ElevatedButton(
-                            onPressed: () {
-                              // 이전 화면으로 이동
-                              Navigator.pop(context);
-                            },
+                            onPressed: () => Navigator.pop(context),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xFFEEEEEE),
                               shape: RoundedRectangleBorder(
@@ -204,11 +181,8 @@ class _Onboarding2PageState extends State<Onboarding2Page> {
                           flex: 2,
                           child: ElevatedButton(
                             key: const Key('onboarding2_nextButton'),
-                            onPressed: () {
-                              _validateNickname(
-                                context.read<OnboardingViewModel>(),
-                              );
-                            },
+                            onPressed: () =>
+                                viewModel.validateNickname(context),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xFF78B545),
                               shape: RoundedRectangleBorder(
@@ -239,34 +213,5 @@ class _Onboarding2PageState extends State<Onboarding2Page> {
         ],
       ),
     );
-  }
-
-  void _validateNickname(OnboardingViewModel viewModel) async {
-    final nickname = viewModel.nickname.trim();
-    if (nickname.isEmpty) {
-      setState(() {
-        nicknameError = '닉네임을 입력해주세요.';
-      });
-    } else if (nickname.length > 8) {
-      setState(() {
-        nicknameError = '닉네임은 8자 이내로 입력해주세요.';
-      });
-    } else {
-      // 닉네임 저장 및 다음 화면으로 이동
-      try {
-        await viewModel.saveNickname(); // saveNickname 메서드 호출
-        // 홈 화면으로 이동
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
-          (route) => false,
-        );
-      } catch (e) {
-        // 에러 처리 (예: 현재 로그인된 사용자가 없음)
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('닉네임 저장 중 오류가 발생했습니다: $e')),
-        );
-      }
-    }
   }
 }
