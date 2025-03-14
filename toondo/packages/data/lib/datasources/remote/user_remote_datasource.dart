@@ -4,11 +4,15 @@ import 'package:http/http.dart' as http;
 import 'package:data/constants.dart';
 import 'package:domain/entities/user.dart';
 import 'package:get_it/get_it.dart';
-import 'package:domain/usecases/auth/get_token.dart'; // reuse if token retrieval similar
+import 'package:domain/usecases/auth/get_token.dart';
+import 'package:injectable/injectable.dart'; // reuse if token retrieval similar
 
+@LazySingleton()
 class UserRemoteDatasource {
-  http.Client client = http.Client();
-  final GetTokenUseCase getTokenUseCase = GetIt.instance<GetTokenUseCase>();
+  http.Client client;
+  final GetTokenUseCase getTokenUseCase;
+
+  UserRemoteDatasource(this.client, this.getTokenUseCase);
 
   Future<User> changeNickName(String newNickName) async {
     final token = await getTokenUseCase();

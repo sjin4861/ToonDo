@@ -1,9 +1,12 @@
 import 'package:hive/hive.dart';
 import 'package:data/models/user_model.dart';
 import 'package:domain/entities/user.dart';
-
+import 'package:injectable/injectable.dart';
+@LazySingleton()
 class UserLocalDatasource {
-  Box<UserModel> userBox = Hive.box<UserModel>('users');
+  Box<UserModel> userBox;
+
+  UserLocalDatasource(this.userBox);
 
   Future<void> saveUser(User user) async {
     final model = UserModel.fromEntity(user);

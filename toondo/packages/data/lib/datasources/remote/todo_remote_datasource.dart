@@ -4,11 +4,17 @@ import 'package:data/constants.dart';
 import 'package:domain/entities/todo.dart';
 import 'package:get_it/get_it.dart';
 import 'package:domain/usecases/auth/get_token.dart';
+import 'package:injectable/injectable.dart';
 
+@LazySingleton()
 class TodoRemoteDataSource {
-  http.Client client = http.Client();
-  final GetTokenUseCase getTokenUseCase = GetIt.instance<GetTokenUseCase>();
+  http.Client client;
+  final GetTokenUseCase getTokenUseCase;
 
+  TodoRemoteDataSource(
+    this.client,
+    this.getTokenUseCase,
+  );
   Future<bool> commitTodos(
     List<Todo> unsyncedTodos,
     List<Todo> deletedTodos,

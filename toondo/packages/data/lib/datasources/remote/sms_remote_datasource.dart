@@ -1,17 +1,14 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:data/constants.dart';
+import 'package:injectable/injectable.dart';
 
-abstract class SmsRemoteDataSource {
-  Future<String> sendSmsCode(String phoneNumber);
-  Future<String> verifySmsCode(String phoneNumber, String code);
-}
-
-class SmsRemoteDataSourceImpl implements SmsRemoteDataSource {
+@LazySingleton()
+class SmsRemoteDataSource{
   final String baseUrl = Constants.baseUrl;
   final http.Client client;
 
-  SmsRemoteDataSourceImpl({required this.client});
+  SmsRemoteDataSource({required this.client});
 
   @override
   Future<String> sendSmsCode(String phoneNumber) async {

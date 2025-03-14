@@ -2,19 +2,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:data/models/user_model.dart';
 import 'package:data/constants.dart';
+import 'package:injectable/injectable.dart';
 
-abstract class AuthRemoteDataSource {
-  Future<Map<String, dynamic>> registerUser(
-    String phoneNumber,
-    String password,
-  );
-  Future<Map<String, dynamic>> login(String phoneNumber, String password);
-  Future<bool> isPhoneNumberRegistered(String phoneNumber);
-}
-
-class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
+@LazySingleton()
+class AuthRemoteDataSource{
   final http.Client httpClient;
-  AuthRemoteDataSourceImpl(this.httpClient);
+  AuthRemoteDataSource(this.httpClient);
 
   static const String baseUrl = Constants.baseUrl;
 

@@ -1,10 +1,14 @@
 import 'package:hive/hive.dart';
 import 'package:data/models/todo_model.dart';
 import 'package:domain/entities/todo.dart';
+import 'package:injectable/injectable.dart';
 
+@LazySingleton()
 class TodoLocalDatasource {
-  Box<TodoModel> todoBox = Hive.box<TodoModel>('todos');
-  Box<TodoModel> deletedTodoBox = Hive.box<TodoModel>('deleted_todos');
+  Box<TodoModel> todoBox;
+  Box<TodoModel> deletedTodoBox;
+
+  TodoLocalDatasource(this.todoBox, this.deletedTodoBox);
 
   Future<void> clearTodos() async {
     await todoBox.clear();

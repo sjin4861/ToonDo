@@ -3,15 +3,21 @@ import 'package:domain/entities/status.dart';
 import 'package:http/http.dart' as http;
 import 'package:data/constants.dart';
 import 'package:data/models/goal_model.dart';
-import 'package:domain/entities/goal_status.dart';
 import 'package:get_it/get_it.dart';
 import 'package:domain/entities/goal.dart';
 import 'package:domain/usecases/auth/get_token.dart';
+import 'package:injectable/injectable.dart';
 
+@LazySingleton()
 class GoalRemoteDataSource {
-  http.Client client = http.Client();
-  final GetTokenUseCase getTokenUseCase = GetIt.instance<GetTokenUseCase>();
+  final http.Client client;
+  final GetTokenUseCase getTokenUseCase;
 
+  GoalRemoteDataSource(
+    this.client,
+    this.getTokenUseCase,
+  );
+  
   Future<List<Goal>> readGoals() async {
     final token = await getTokenUseCase();
     if (token == null) {

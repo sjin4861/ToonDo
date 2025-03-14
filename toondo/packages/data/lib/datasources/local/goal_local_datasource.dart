@@ -4,11 +4,14 @@ import 'package:domain/entities/status.dart';
 import 'package:hive/hive.dart';
 import 'package:data/models/goal_model.dart';
 import 'package:domain/entities/goal.dart';
+import 'package:injectable/injectable.dart';
 
+@LazySingleton()
 class GoalLocalDatasource {
-  Box<GoalModel> goalBox = Hive.box<GoalModel>('goals');
-  Box<GoalStatus> goalStatusBox = Hive.box<GoalStatus>('goalStatus');
+  Box<GoalModel> goalBox;
+  Box<GoalStatus> goalStatusBox;
 
+  GoalLocalDatasource(this.goalBox, this.goalStatusBox);
   Future<void> clearGoals() async {
     await goalBox.clear();
   }
