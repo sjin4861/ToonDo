@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import '../../../../data/lib/models/goal.dart';
+import 'package:domain/entities/goal.dart';
 
 class GoalListDropdown extends StatelessWidget {
   final String? selectedGoalId;

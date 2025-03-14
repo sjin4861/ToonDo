@@ -7,6 +7,7 @@ import 'package:domain/entities/todo.dart';
 import 'package:presentation/viewmodels/goal/goal_viewmodel.dart';
 import 'package:intl/intl.dart';
 import 'todo_edit_bottom_sheet.dart';
+import 'package:presentation/utils/get_todo_border_color.dart';
 
 class TodoListItem extends StatelessWidget {
   final Todo todo;
@@ -43,7 +44,7 @@ class TodoListItem extends StatelessWidget {
                 onStatusUpdate(todo, value ? 100 : 0);
               }
             },
-            activeColor: todo.getBorderColor(),
+            activeColor: getBorderColor(todo),
           );
 
     return Container(
@@ -57,7 +58,7 @@ class TodoListItem extends StatelessWidget {
             width: 1,
             color: isCompleted
                 ? const Color(0x7FDDDDDD)
-                : todo.getBorderColor(),
+                : getBorderColor(todo),
           ),
           // ★ 둥글기 크게
           borderRadius: BorderRadius.circular(1000),
@@ -232,7 +233,7 @@ class TodoListItem extends StatelessWidget {
     bool isCompleted = todo.status >= 100;
     final iconPath = matchedGoal?.icon; // goal.icon
 
-    return _buildGoalIcon(iconPath, todo.getBorderColor(), isSelected: !isCompleted);
+    return _buildGoalIcon(iconPath, getBorderColor(todo), isSelected: !isCompleted);
   }
 
   /// goal.icon (SVG) 표시

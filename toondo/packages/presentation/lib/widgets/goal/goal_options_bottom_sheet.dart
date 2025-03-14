@@ -1,13 +1,12 @@
 // lib/widgets/goal/goal_options_bottom_sheet.dart
 
 import 'package:flutter/material.dart';
-import '../../../../data/lib/models/goal.dart';
-import '../../../../../lib/viewmodels/goal/goal_management_viewmodel.dart';
-import '../../../../../lib/views/goal/goal_input_screen.dart';
+import 'package:domain/entities/goal.dart';
+import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart';
+import 'package:presentation/views/goal/goal_input_view.dart';
 import 'package:provider/provider.dart';
-import 'package:toondo/services/goal_service.dart';
-import 'package:toondo/viewmodels/goal/goal_input_viewmodel.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:presentation/viewmodels/goal/goal_input_viewmodel.dart';
+import 'package:get_it/get_it.dart';
 
 class GoalOptionsBottomSheet extends StatelessWidget {
   final Goal goal;
@@ -22,8 +21,8 @@ class GoalOptionsBottomSheet extends StatelessWidget {
       MaterialPageRoute(
         builder:
             (context) => ChangeNotifierProvider<GoalInputViewModel>.value(
-              value: getIt<GoalInputViewModel>(),
-              child: GoalInputScreen(targetGoal: goal),
+              value: GetIt.instance<GoalInputViewModel>(),
+              child: GoalInputView(goal: goal),
             ),
       ),
     );

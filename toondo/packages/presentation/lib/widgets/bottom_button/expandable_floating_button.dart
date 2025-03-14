@@ -2,8 +2,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import '../../views/todo/todo_manage_view.dart';
-import 'package:toondo/viewmodels/character/slime_character_viewmodel.dart';
+import 'package:presentation/views/todo/todo_manage_view.dart';
+import 'package:presentation/viewmodels/character/slime_character_viewmodel.dart';
 // import 'package:toondo/views/todo/todo_submission_screen.dart';
 
 class ExpandableFab extends StatefulWidget {

@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
-import '../../../../data/lib/models/goal.dart';
-import 'package:toondo/viewmodels/goal/goal_viewmodel.dart'; // GoalViewModel 대신 사용
+import 'package:domain/entities/status.dart';
+import 'package:domain/entities/goal.dart';
+import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart';
 
 class GoalListItem extends StatelessWidget {
   final Goal goal;
@@ -18,7 +18,7 @@ class GoalListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 완료 여부
-    final bool isCompleted = goal.isCompleted;
+    final bool isCompleted = goal.status == Status.completed;
     // 진행률
     final double progress = goal.progress.clamp(0, 100);
     // 날짜 범위
@@ -113,7 +113,7 @@ class GoalListItem extends StatelessWidget {
 
   /// 삭제 로직 (GoalViewModel로 직접 접근)
   void _onDelete(BuildContext context) {
-    final goalViewModel = Provider.of<GoalViewModel>(context, listen: false);
+    final goalViewModel = Provider.of<GoalManagementViewModel>(context, listen: false);
     goalViewModel.deleteGoal(goal.id!);
     ScaffoldMessenger.of(
       context,

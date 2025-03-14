@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:toondo/views/goal/goal_management_screen.dart';
-import 'package:toondo/views/goal/goal_progress_screen.dart';
-import 'package:toondo/views/my_page/my_page_screen.dart';
+import 'package:presentation/views/goal/goal_manage_view.dart';
+import 'package:presentation/views/goal/goal_progress_screen.dart';
+import 'package:presentation/views/mypage/my_page_screen.dart';
 
 class BottomNavigationBarWidget extends StatelessWidget {
   const BottomNavigationBarWidget({Key? key}) : super(key: key);
@@ -26,7 +26,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const GoalManagementScreen()),
+                  MaterialPageRoute(builder: (_) => const GoalManageView()),
                 );
               },
             ),

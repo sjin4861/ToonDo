@@ -1,7 +1,7 @@
 // lib/widgets/goal/goal_list_section.dart
 
 import 'package:flutter/material.dart';
-import '../../../../data/lib/models/goal.dart';
+import 'package:domain/entities/goal.dart';
 import 'goal_list_item.dart';
 
 class GoalListSection extends StatelessWidget {

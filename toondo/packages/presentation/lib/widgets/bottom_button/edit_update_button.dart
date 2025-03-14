@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:toondo/data/models/todo.dart';
-import '../../viewmodels/todo/todo_input_viewmodel.dart';
+import 'package:domain/entities/todo.dart';
+import 'package:presentation/viewmodels/todo/todo_input_viewmodel.dart';
 import 'custom_button.dart';
 
 class EditUpdateButton extends StatelessWidget {
-  final viewModel;
+  final TodoInputViewModel viewModel;
   final Todo? todo;
   final Key key;
   final VoidCallback? onPressed;
