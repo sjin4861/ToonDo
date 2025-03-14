@@ -9,6 +9,8 @@ import 'package:presentation/views/auth/signup_screen.dart';
 import 'package:presentation/navigation/route_paths.dart';
 import 'package:presentation/views/goal/goal_manage_view.dart';
 import 'package:presentation/views/goal/goal_input_view.dart';
+import 'package:presentation/views/mypage/my_page_screen.dart';
+import 'package:get_it/get_it.dart';
 
 class AppRouter {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
@@ -16,8 +18,8 @@ class AppRouter {
       case RoutePaths.root:
         return MaterialPageRoute(
           builder:
-              (_) => ChangeNotifierProvider(
-                create: (_) => WelcomeViewModel(),
+              (_) => ChangeNotifierProvider<WelcomeViewModel>.value(
+                value: GetIt.instance<WelcomeViewModel>(),
                 child: WelcomeScreen(),
               ),
         );

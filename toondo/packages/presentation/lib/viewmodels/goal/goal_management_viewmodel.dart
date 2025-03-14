@@ -91,4 +91,14 @@ class GoalManagementViewModel extends ChangeNotifier {
     await deleteGoalUseCase(goalId);
     applyFilter();
   }
+
+  List<Goal> getCompletedGoals() {
+    // 기존 goal들을 기반으로 성공한 goal 반환
+    return _allGoals.where((g) => g.status == Status.completed).toList();
+  }
+
+  List<Goal> getGivenUpGoals() {
+    // 기존 goal들을 기반으로 포기한 goal 반환
+    return _allGoals.where((g) => g.status == Status.givenUp).toList();
+  }
 }

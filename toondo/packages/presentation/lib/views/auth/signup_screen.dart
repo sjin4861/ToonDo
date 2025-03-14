@@ -3,13 +3,13 @@ import 'package:provider/provider.dart';
 import 'package:presentation/viewmodels/signup/signup_viewmodel.dart';
 import 'package:presentation/views/onboarding/onboarding_screen.dart';
 import 'package:presentation/views/auth/signup_step1.dart';
-import 'package:presentation/views/auth/signup_step2.dart';
+import 'package:get_it/get_it.dart';
 
 class SignupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => SignupViewModel(),
+    return ChangeNotifierProvider<SignupViewModel>.value(
+      value: GetIt.instance<SignupViewModel>(),
       child: Consumer<SignupViewModel>(
         builder: (context, viewModel, child) {
           if (viewModel.isSignupComplete) {
@@ -18,7 +18,7 @@ class SignupScreen extends StatelessWidget {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => OnboardingScreen(userId: viewModel.userId!),
+                  builder: (context) => OnboardingScreen(),
                 ),
               );
             });

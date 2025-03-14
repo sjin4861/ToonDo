@@ -1,15 +1,14 @@
-// lib/widgets/top_menu_bar/menu_bar2.dart
 import 'package:flutter/material.dart';
-import 'package:toondo/viewmodels/goal/goal_filter_option.dart';
+import 'package:domain/entities/status.dart'; // GoalFilterOption 제거 후 Status 사용
 
 class TwoMenuBarWidget extends StatelessWidget {
-  final GoalFilterOption selectedOption;
-  final ValueChanged<GoalFilterOption> onOptionSelected;
+  final Status selectedStatus;
+  final ValueChanged<Status> onStatusSelected;
 
   const TwoMenuBarWidget({
     Key? key,
-    required this.selectedOption,
-    required this.onOptionSelected,
+    required this.selectedStatus,
+    required this.onStatusSelected,
   }) : super(key: key);
 
   @override
@@ -25,14 +24,14 @@ class TwoMenuBarWidget extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // 진행 중
+          // 진행 중 (Status.active)
           Expanded(
             child: GestureDetector(
-              onTap: () => onOptionSelected(GoalFilterOption.inProgress),
+              onTap: () => onStatusSelected(Status.active),
               child: Container(
                 height: 40,
                 decoration: ShapeDecoration(
-                  color: selectedOption == GoalFilterOption.inProgress
+                  color: selectedStatus == Status.active
                       ? const Color(0xFF78B545)
                       : Colors.transparent,
                   shape: RoundedRectangleBorder(
@@ -46,12 +45,12 @@ class TwoMenuBarWidget extends StatelessWidget {
                   child: Text(
                     '진행 중',
                     style: TextStyle(
-                      color: selectedOption == GoalFilterOption.inProgress
+                      color: selectedStatus == Status.active
                           ? Colors.white
                           : Colors.black.withOpacity(0.5),
                       fontSize: 14,
                       fontFamily: 'Pretendard Variable',
-                      fontWeight: selectedOption == GoalFilterOption.inProgress
+                      fontWeight: selectedStatus == Status.active
                           ? FontWeight.w700
                           : FontWeight.w400,
                       letterSpacing: 0.21,
@@ -61,14 +60,14 @@ class TwoMenuBarWidget extends StatelessWidget {
               ),
             ),
           ),
-          // 진행 완료
+          // 진행 완료 (Status.completed)
           Expanded(
             child: GestureDetector(
-              onTap: () => onOptionSelected(GoalFilterOption.completed),
+              onTap: () => onStatusSelected(Status.completed),
               child: Container(
                 height: 40,
                 decoration: ShapeDecoration(
-                  color: selectedOption == GoalFilterOption.completed
+                  color: selectedStatus == Status.completed
                       ? const Color(0xFF78B545)
                       : Colors.transparent,
                   shape: RoundedRectangleBorder(
@@ -82,12 +81,12 @@ class TwoMenuBarWidget extends StatelessWidget {
                   child: Text(
                     '진행 완료',
                     style: TextStyle(
-                      color: selectedOption == GoalFilterOption.completed
+                      color: selectedStatus == Status.completed
                           ? Colors.white
                           : Colors.black.withOpacity(0.5),
                       fontSize: 14,
                       fontFamily: 'Pretendard Variable',
-                      fontWeight: selectedOption == GoalFilterOption.completed
+                      fontWeight: selectedStatus == Status.completed
                           ? FontWeight.w700
                           : FontWeight.w400,
                       letterSpacing: 0.21,

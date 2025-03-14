@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:domain/entities/user.dart';
 import 'package:domain/usecases/auth/register.dart';
+import 'package:domain/usecases/sms/send_sms_code.dart';
+import 'package:domain/usecases/sms/verify_sms_code.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton()
@@ -14,14 +16,72 @@ class SignupViewModel extends ChangeNotifier {
   int currentStep = 1;
 
   final TextEditingController phoneNumberController = TextEditingController();
+  // 추가: passwordController 필드 추가
+  final TextEditingController passwordController = TextEditingController();
+
+  // 추가: SMS 인증 관련 필드
+  final TextEditingController smsCodeController = TextEditingController();
+  String smsMessage = "";
+  bool isSmsLoading = false;
 
   final RegisterUseCase registerUserUseCase;
+  final SendSmsCode sendSmsCodeUseCase;
+  final VerifySmsCode verifySmsCodeUseCase;
 
-  SignupViewModel({required this.registerUserUseCase});
+  SignupViewModel({
+    required this.registerUserUseCase,
+    required this.sendSmsCodeUseCase,
+    required this.verifySmsCodeUseCase,
+  });
 
   VoidCallback? navigateToLogin;
   void setNavigateToLogin(VoidCallback callback) {
     navigateToLogin = callback;
+  }
+
+  Future<String> sendSmsCode() async {
+    try {
+      return await sendSmsCodeUseCase.call(phoneNumber);
+    } catch (e) {
+      throw Exception('인증번호 전송에 실패했습니다: ${e.toString()}');
+    }
+  }
+
+  Future<void> verifySmsCode(String code) async {
+    try {
+      await verifySmsCodeUseCase.call(phoneNumber, code);
+    } catch (e) {
+      throw Exception('인증번호 확인에 실패했습니다: ${e.toString()}');
+    }
+  }
+
+  Future<void> sendSmsCodeAndSetState() async {
+    isSmsLoading = true;
+    smsMessage = "인증번호 전송 중...";
+    notifyListeners();
+    try {
+      String result = await sendSmsCode();
+      smsMessage = result;
+    } catch (e) {
+      smsMessage = e.toString();
+    }
+    isSmsLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> verifySmsCodeAndSetState() async {
+    isSmsLoading = true;
+    smsMessage = "";
+    notifyListeners();
+    try {
+      await verifySmsCode(smsCodeController.text);
+      smsMessage = "인증 성공!";
+    } catch (e) {
+      smsMessage = e.toString();
+      rethrow;
+    }
+    isSmsLoading = false;
+    notifyListeners();
   }
 
   Future<bool> checkIfRegistered() async {
@@ -102,6 +162,9 @@ class SignupViewModel extends ChangeNotifier {
   @override
   void dispose() {
     phoneNumberController.dispose();
+    passwordController.dispose();
+    // 추가: smsCodeController dispose
+    smsCodeController.dispose();
     super.dispose();
   }
 }

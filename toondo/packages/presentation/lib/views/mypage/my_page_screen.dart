@@ -1,30 +1,8 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const FigmaToCodeApp());
-}
 
-class FigmaToCodeApp extends StatelessWidget {
-  const FigmaToCodeApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color.fromARGB(255, 18, 32, 47),
-      ),
-      home: Scaffold(
-        body: Center(
-          child: MyPage(),
-        ),
-      ),
-    );
-  }
-}
-
-class MyPage extends StatelessWidget {
-  const MyPage({super.key});
+class MyPageScreen extends StatelessWidget {
+  const MyPageScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

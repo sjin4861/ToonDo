@@ -2,16 +2,16 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:audioplayers/audioplayers.dart'; // 오디오 재생
-import 'package:toondo/services/gpt_service.dart';
+import 'package:domain/usecases/gpt/get_slime_response.dart';
 
 class ChatBubble extends StatefulWidget {
   final String? nickname; // 사용자 닉네임
-  final GptService gptService; // GPT 호출 객체
+  final GetSlimeResponseUseCase getSlimeResponseUseCase; // GPT 호출 객체
 
   const ChatBubble({
     Key? key,
     required this.nickname,
-    required this.gptService,
+    required this.getSlimeResponseUseCase,
   }) : super(key: key);
 
   @override
@@ -54,7 +54,7 @@ class _ChatBubbleState extends State<ChatBubble> {
 
   /// 말풍선 탭 시 GPT 호출
   Future<void> _handleBubbleTap() async {
-    final gptResponse = await widget.gptService.getSlimeResponse();
+    final gptResponse = await widget.getSlimeResponseUseCase.call();
     if (gptResponse != null) {
       // "슬라임: " 제거
       String text = gptResponse.replaceFirst('슬라임: ', '');

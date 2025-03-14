@@ -1,26 +1,26 @@
 // lib/widgets/character/slime_area.dart
 
 import 'package:flutter/material.dart';
-import 'package:toondo/viewmodels/character/slime_character_viewmodel.dart';
+import 'package:get_it/get_it.dart';
+import 'package:presentation/viewmodels/character/slime_character_viewmodel.dart';
 import 'chat_bubble.dart';
-import 'package:toondo/services/gpt_service.dart';
+import 'package:domain/usecases/gpt/get_slime_response.dart';
 import 'slime_character_widget.dart';
 
 class SlimeArea extends StatelessWidget {
   final String userNickname;
-  final GptService gptService;
-  final SlimeCharacterViewModel characterViewModel;
+  final GetSlimeResponseUseCase getSlimeResponseUseCase;
 
   const SlimeArea({
     Key? key,
     required this.userNickname,
-    required this.gptService,
-    required this.characterViewModel,
+    required this.getSlimeResponseUseCase,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final slimeCharacterViewModel = GetIt.instance<SlimeCharacterViewModel>();
 
     return Stack(
       children: [
@@ -35,7 +35,7 @@ class SlimeArea extends StatelessWidget {
               width: 500, // 기존 150에서 225으로 증가
               height: 500, // 기존 150에서 225으로 증가
               initialAnimationName : 'id',
-              viewModel: characterViewModel,
+              viewModel: slimeCharacterViewModel,
             ),
           ),
         ),
@@ -45,7 +45,7 @@ class SlimeArea extends StatelessWidget {
           bottom: 180, // 기존 180에서 270으로 증가
           child: ChatBubble(
             nickname: userNickname,
-            gptService: gptService,
+            getSlimeResponseUseCase: getSlimeResponseUseCase,
           ),
         ),
       ],

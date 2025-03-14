@@ -2,22 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'injection/di.dart'; // DI 설정 (lib/injection/di.dart)
-import 'package:get_it/get_it.dart'; // Add this import
-import 'package:injectable/injectable.dart'; // Add this import
-import 'package:presentation/navigation/router.dart'; // 네비게이션 라우터
-// Hive 어댑터 (데이터 모델) 등록을 위한 임포트
-import 'package:data/models/todo_model.dart';
-import 'package:data/models/goal_model.dart';
-import 'package:data/models/user_model.dart';
-import 'package:data/models/goal_status.dart';
-// Provider로 주입할 ViewModel들
-import 'package:presentation/viewmodels/auth/signup_viewmodel.dart';
-import 'package:presentation/viewmodels/goal/goal_viewmodel.dart';
-import 'package:presentation/viewmodels/home/home_viewmodel.dart';
-import 'package:presentation/viewmodels/todo/todo_viewmodel.dart';
-import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart';
-// NotificationService는 DI로 관리 (위 di.dart에서 등록)
+import 'package:toondo/injection/di.dart';
+import 'package:get_it/get_it.dart';
+import 'package:injectable/injectable.dart';
+import 'package:toondo/presentation/navigation/router.dart';
+import 'package:toondo/data/models/todo_model.dart';
+import 'package:toondo/data/models/goal_model.dart';
+import 'package:toondo/data/models/user_model.dart';
+import 'package:toondo/data/models/goal_status.dart';
+import 'package:toondo/presentation/viewmodels/auth/signup_viewmodel.dart';
+import 'package:toondo/presentation/viewmodels/goal/goal_viewmodel.dart';
+import 'package:toondo/presentation/viewmodels/home/home_viewmodel.dart';
+import 'package:toondo/presentation/viewmodels/todo/todo_viewmodel.dart';
+import 'package:toondo/presentation/viewmodels/goal/goal_management_viewmodel.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

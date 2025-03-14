@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:presentation/viewmodels/login/login_viewmodel.dart';
 import 'package:presentation/widgets/text_fields/custom_auth_text_field.dart';
+import 'package:get_it/get_it.dart';
 
 class LoginScreen extends StatelessWidget {
   final String? phoneNumber; // 외부에서 전달되더라도 필드 입력이 가능하도록 함
@@ -10,13 +11,13 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<LoginViewModel>(
-      create: (_) => LoginViewModel(phoneNumber: phoneNumber),
+    return ChangeNotifierProvider<LoginViewModel>.value(
+      value: GetIt.instance<LoginViewModel>(),
       child: Consumer<LoginViewModel>(
         builder: (context, viewModel, child) {
           // 전달된 휴대폰 번호가 있다면 컨트롤러에 초기값 설정
           if (phoneNumber != null && viewModel.phoneNumberController.text.isEmpty) {
-            viewModel.phoneNumberController.text = phoneNumber!;
+          viewModel.phoneNumberController.text = phoneNumber!;
           }
           return Scaffold(
             backgroundColor: Color(0xFFFCFCFC),
@@ -79,6 +80,16 @@ class LoginScreen extends StatelessWidget {
                       readOnly: phoneNumber != null,
                       hintText: phoneNumber != null ? null : '휴대폰 번호를 입력하세요',
                     ),
+                    // 휴대폰 번호 에러 메시지 (있을 경우)
+                    if (viewModel.loginError != null &&
+                        viewModel.phoneNumberController.text.trim().isEmpty)
+                      Padding(
+                        padding: EdgeInsets.only(top: 4),
+                        child: Text(
+                          viewModel.loginError!,
+                          style: TextStyle(color: Colors.red, fontSize: 12),
+                        ),
+                      ),
                     SizedBox(height: 24),
                     CustomAuthTextField(
                       key: const Key('login_passwordField'),
@@ -98,6 +109,15 @@ class LoginScreen extends StatelessWidget {
                         },
                       ),
                     ),
+                    // 비밀번호 에러 메시지 (있을 경우)
+                    if (viewModel.passwordError != null)
+                      Padding(
+                        padding: EdgeInsets.only(top: 4),
+                        child: Text(
+                          viewModel.passwordError!,
+                          style: TextStyle(color: Colors.red, fontSize: 12),
+                        ),
+                      ),
                     SizedBox(height: 32),
                   ],
                 ),

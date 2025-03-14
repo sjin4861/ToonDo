@@ -1,42 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:domain/usecases/user/update_nickname.dart';
-import 'package:domain/usecases/user/get_current_user.dart'; // 새 유스케이스 (현재 사용자 반환)
 import 'package:presentation/views/home/home_screen.dart';
 import 'package:presentation/views/onboarding/onboarding2_screen.dart';
 
 @LazySingleton()
 class OnboardingViewModel extends ChangeNotifier {
   final UpdateNickNameUseCase updateNickNameUseCase;
-  final GetCurrentUserUseCase getCurrentUserUseCase;
   bool initialized = false;
 
   String nickname = '';
   String? nicknameError; // 추가: 닉네임 에러 상태
-  int? userId; // current user id를 저장
   
   // 추가: 텍스트 컨트롤러를 ViewModel에 두어 재생성 문제 방지
   final TextEditingController nicknameController = TextEditingController();
 
   OnboardingViewModel({
     required this.updateNickNameUseCase,
-    required this.getCurrentUserUseCase,
   });
 
   Future<void> initialize(BuildContext context) async {
     if (initialized) return;
     initialized = true;
-    final currentUser = await getCurrentUserUseCase();
-    if (currentUser != null) {
-      userId = currentUser.id;
-    } else {
-      throw Exception("현재 사용자를 찾을 수 없습니다. 다시 로그인해주세요.");
-    }
     await Future.delayed(const Duration(seconds: 3));
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => Onboarding2Page(userId: userId!), // userId 전달
+        builder: (_) => Onboarding2Page(), // userId 전달
       ),
     );
   }
