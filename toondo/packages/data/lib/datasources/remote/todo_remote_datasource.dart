@@ -1,25 +1,21 @@
 import 'dart:convert';
+import 'package:domain/repositories/auth_repository.dart';
 import 'package:http/http.dart' as http;
 import 'package:data/constants.dart';
 import 'package:domain/entities/todo.dart';
-import 'package:get_it/get_it.dart';
-import 'package:domain/usecases/auth/get_token.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton()
 class TodoRemoteDataSource {
   http.Client client;
-  final GetTokenUseCase getTokenUseCase;
+  final AuthRepository authRepository;
 
-  TodoRemoteDataSource(
-    this.client,
-    this.getTokenUseCase,
-  );
+  TodoRemoteDataSource(this.client, this.authRepository);
   Future<bool> commitTodos(
     List<Todo> unsyncedTodos,
     List<Todo> deletedTodos,
   ) async {
-    final token = await getTokenUseCase();
+    final token = await authRepository.getToken();
     if (token == null) {
       throw Exception('JWT 토큰이 없습니다. 다시 로그인해주세요.');
     }
@@ -72,7 +68,7 @@ class TodoRemoteDataSource {
   }
 
   Future<List<Todo>> fetchTodos() async {
-    final token = await getTokenUseCase();
+    final token = await authRepository.getToken();
     if (token == null) throw Exception('JWT 토큰이 없습니다.');
     final url = Uri.parse('${Constants.baseUrl}/todos/all/fetch');
     final response = await client.get(

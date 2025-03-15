@@ -8,7 +8,10 @@ class TodoLocalDatasource {
   Box<TodoModel> todoBox;
   Box<TodoModel> deletedTodoBox;
 
-  TodoLocalDatasource(this.todoBox, this.deletedTodoBox);
+  TodoLocalDatasource(
+    @Named('todoBox') this.todoBox,
+    @Named('deletedTodoBox') this.deletedTodoBox,
+  );
 
   Future<void> clearTodos() async {
     await todoBox.clear();

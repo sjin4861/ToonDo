@@ -9,7 +9,6 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:domain/injection/di.dart' as _i74;
 import 'package:domain/repositories/auth_repository.dart' as _i427;
 import 'package:domain/repositories/goal_repository.dart' as _i559;
 import 'package:domain/repositories/sms_repository.dart' as _i366;
@@ -30,6 +29,7 @@ import 'package:domain/usecases/goal/update_goal.dart' as _i422;
 import 'package:domain/usecases/goal/update_goal_progress.dart' as _i739;
 import 'package:domain/usecases/goal/update_goal_status.dart' as _i856;
 import 'package:domain/usecases/sms/send_sms_code.dart' as _i461;
+import 'package:domain/usecases/sms/verify_sms_code.dart' as _i73;
 import 'package:domain/usecases/todo/add_todo.dart' as _i133;
 import 'package:domain/usecases/todo/delete_todo.dart' as _i552;
 import 'package:domain/usecases/todo/get_all_todos.dart' as _i362;
@@ -48,87 +48,81 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
-    final repositoryModule = _$RepositoryModule();
-    gh.singleton<_i158.TodoRepository>(() => repositoryModule.todoRepository);
-    gh.singleton<_i366.SmsRepository>(() => repositoryModule.smsRepository);
-    gh.singleton<_i427.AuthRepository>(() => repositoryModule.authRepository);
-    gh.singleton<_i988.UserRepository>(() => repositoryModule.userRepository);
-    gh.singleton<_i559.GoalRepository>(() => repositoryModule.goalRepository);
-    gh.factory<_i1068.LoginUseCase>(
-      () => _i1068.LoginUseCase(gh<_i427.AuthRepository>()),
-    );
     gh.factory<_i415.GetTokenUseCase>(
       () => _i415.GetTokenUseCase(gh<_i427.AuthRepository>()),
     );
-    gh.factory<_i899.RegisterUseCase>(
-      () => _i899.RegisterUseCase(gh<_i427.AuthRepository>()),
+    gh.factory<_i1068.LoginUseCase>(
+      () => _i1068.LoginUseCase(gh<_i427.AuthRepository>()),
     );
     gh.factory<_i969.LogoutUseCase>(
       () => _i969.LogoutUseCase(gh<_i427.AuthRepository>()),
     );
-    gh.factory<_i856.UpdateGoalStatusUseCase>(
-      () =>
-          _i856.UpdateGoalStatusUseCase(repository: gh<_i559.GoalRepository>()),
+    gh.factory<_i899.RegisterUseCase>(
+      () => _i899.RegisterUseCase(gh<_i427.AuthRepository>()),
     );
     gh.factory<_i739.UpdateGoalProgressUseCase>(
       () => _i739.UpdateGoalProgressUseCase(
         repository: gh<_i559.GoalRepository>(),
       ),
     );
-    gh.factory<_i552.DeleteTodoUseCase>(
-      () => _i552.DeleteTodoUseCase(gh<_i158.TodoRepository>()),
+    gh.factory<_i856.UpdateGoalStatusUseCase>(
+      () =>
+          _i856.UpdateGoalStatusUseCase(repository: gh<_i559.GoalRepository>()),
     );
     gh.factory<_i133.AddTodoUseCase>(
       () => _i133.AddTodoUseCase(gh<_i158.TodoRepository>()),
     );
+    gh.factory<_i552.DeleteTodoUseCase>(
+      () => _i552.DeleteTodoUseCase(gh<_i158.TodoRepository>()),
+    );
     gh.factory<_i362.GetAllTodosUseCase>(
       () => _i362.GetAllTodosUseCase(gh<_i158.TodoRepository>()),
-    );
-    gh.factory<_i183.UpdateTodoStatusUseCase>(
-      () => _i183.UpdateTodoStatusUseCase(gh<_i158.TodoRepository>()),
     );
     gh.factory<_i182.UpdateTodoDatesUseCase>(
       () => _i182.UpdateTodoDatesUseCase(gh<_i158.TodoRepository>()),
     );
-    gh.factory<_i292.GetGivenUpGoalsUseCase>(
-      () => _i292.GetGivenUpGoalsUseCase(gh<_i559.GoalRepository>()),
+    gh.factory<_i183.UpdateTodoStatusUseCase>(
+      () => _i183.UpdateTodoStatusUseCase(gh<_i158.TodoRepository>()),
     );
     gh.factory<_i695.CreateGoalUseCase>(
       () => _i695.CreateGoalUseCase(gh<_i559.GoalRepository>()),
     );
+    gh.factory<_i582.DeleteGoalUseCase>(
+      () => _i582.DeleteGoalUseCase(gh<_i559.GoalRepository>()),
+    );
     gh.factory<_i737.GetGoalsUseCase>(
       () => _i737.GetGoalsUseCase(gh<_i559.GoalRepository>()),
-    );
-    gh.factory<_i422.UpdateGoalUseCase>(
-      () => _i422.UpdateGoalUseCase(gh<_i559.GoalRepository>()),
-    );
-    gh.factory<_i243.GetInProgressGoalsUseCase>(
-      () => _i243.GetInProgressGoalsUseCase(gh<_i559.GoalRepository>()),
     );
     gh.factory<_i663.ReadGoalsUseCase>(
       () => _i663.ReadGoalsUseCase(gh<_i559.GoalRepository>()),
     );
-    gh.factory<_i582.DeleteGoalUseCase>(
-      () => _i582.DeleteGoalUseCase(gh<_i559.GoalRepository>()),
+    gh.factory<_i422.UpdateGoalUseCase>(
+      () => _i422.UpdateGoalUseCase(gh<_i559.GoalRepository>()),
     );
     gh.factory<_i368.GetCompletedGoalsUseCase>(
       () => _i368.GetCompletedGoalsUseCase(gh<_i559.GoalRepository>()),
     );
-    gh.factory<VerifySmsCode>(() => VerifySmsCode(gh<_i366.SmsRepository>()));
+    gh.factory<_i292.GetGivenUpGoalsUseCase>(
+      () => _i292.GetGivenUpGoalsUseCase(gh<_i559.GoalRepository>()),
+    );
+    gh.factory<_i243.GetInProgressGoalsUseCase>(
+      () => _i243.GetInProgressGoalsUseCase(gh<_i559.GoalRepository>()),
+    );
     gh.factory<_i461.SendSmsCode>(
       () => _i461.SendSmsCode(gh<_i366.SmsRepository>()),
     );
-    gh.factory<_i1049.UpdateUserPointsUseCase>(
-      () => _i1049.UpdateUserPointsUseCase(gh<_i988.UserRepository>()),
-    );
-    gh.factory<_i910.UpdateNickNameUseCase>(
-      () => _i910.UpdateNickNameUseCase(gh<_i988.UserRepository>()),
+    gh.factory<_i73.VerifySmsCode>(
+      () => _i73.VerifySmsCode(gh<_i366.SmsRepository>()),
     );
     gh.factory<_i849.GetUserNicknameUseCase>(
       () => _i849.GetUserNicknameUseCase(gh<_i988.UserRepository>()),
     );
+    gh.factory<_i910.UpdateNickNameUseCase>(
+      () => _i910.UpdateNickNameUseCase(gh<_i988.UserRepository>()),
+    );
+    gh.factory<_i1049.UpdateUserPointsUseCase>(
+      () => _i1049.UpdateUserPointsUseCase(gh<_i988.UserRepository>()),
+    );
     return this;
   }
 }
-
-class _$RepositoryModule extends _i74.RepositoryModule {}

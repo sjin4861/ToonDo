@@ -14,13 +14,17 @@ abstract class RegisterModule {
   @preResolve
   Future<Box<UserModel>> get userBox => Hive.openBox<UserModel>('users');
   @preResolve
+  @Named('todoBox')
   Future<Box<TodoModel>> get todoBox => Hive.openBox<TodoModel>('todos');
   @preResolve
-  Future<Box<TodoModel>> get deletedTodoBox => Hive.openBox<TodoModel>('deleted_todos');
+  @Named('deletedTodoBox')
+  Future<Box<TodoModel>> get deletedTodoBox =>
+      Hive.openBox<TodoModel>('deleted_todos');
   @preResolve
   Future<Box<GoalModel>> get goalBox => Hive.openBox<GoalModel>('goals');
   @preResolve
-  Future<Box<GoalStatus>> get goalStatusBox => Hive.openBox<GoalStatus>('goalStatus');
+  Future<Box<GoalStatus>> get goalStatusBox =>
+      Hive.openBox<GoalStatus>('goalStatus');
   @lazySingleton
   FlutterSecureStorage get secureStorage => FlutterSecureStorage();
 }

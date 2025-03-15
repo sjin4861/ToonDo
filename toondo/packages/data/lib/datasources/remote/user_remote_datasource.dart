@@ -1,21 +1,20 @@
 import 'dart:convert';
 import 'package:data/models/user_model.dart';
+import 'package:domain/repositories/auth_repository.dart';
 import 'package:http/http.dart' as http;
 import 'package:data/constants.dart';
 import 'package:domain/entities/user.dart';
-import 'package:get_it/get_it.dart';
-import 'package:domain/usecases/auth/get_token.dart';
 import 'package:injectable/injectable.dart'; // reuse if token retrieval similar
 
 @LazySingleton()
 class UserRemoteDatasource {
   http.Client client;
-  final GetTokenUseCase getTokenUseCase;
+  final AuthRepository authRepository;
 
-  UserRemoteDatasource(this.client, this.getTokenUseCase);
+  UserRemoteDatasource(this.client, this.authRepository);
 
   Future<User> changeNickName(String newNickName) async {
-    final token = await getTokenUseCase();
+    final token = await authRepository.getToken();
     if (token == null) throw Exception('JWT 토큰이 없습니다.');
     final url = Uri.parse('${Constants.baseUrl}/users/save-nickname');
     final requestBody = {'nickname': newNickName};
@@ -37,7 +36,7 @@ class UserRemoteDatasource {
 
   // Todo: 아직 벡엔드에서 구현 x
   Future<User> updateUserPoints(int delta) async {
-    final token = await getTokenUseCase();
+    final token = await authRepository.getToken();
     if (token == null) throw Exception('JWT 토큰이 없습니다.');
     final url = Uri.parse('${Constants.baseUrl}/users/points');
     final requestBody = {'delta': delta};

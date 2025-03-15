@@ -1,25 +1,21 @@
 import 'dart:convert';
 import 'package:domain/entities/status.dart';
+import 'package:domain/repositories/auth_repository.dart';
 import 'package:http/http.dart' as http;
 import 'package:data/constants.dart';
 import 'package:data/models/goal_model.dart';
-import 'package:get_it/get_it.dart';
 import 'package:domain/entities/goal.dart';
-import 'package:domain/usecases/auth/get_token.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton()
 class GoalRemoteDataSource {
   final http.Client client;
-  final GetTokenUseCase getTokenUseCase;
+  final AuthRepository authRepository;
 
-  GoalRemoteDataSource(
-    this.client,
-    this.getTokenUseCase,
-  );
-  
+  GoalRemoteDataSource(this.client, this.authRepository);
+
   Future<List<Goal>> readGoals() async {
-    final token = await getTokenUseCase();
+    final token = await authRepository.getToken();
     if (token == null) {
       throw Exception('JWT 토큰이 없습니다.');
     }
@@ -41,7 +37,7 @@ class GoalRemoteDataSource {
   }
 
   Future<Goal> createGoal(Goal goal) async {
-    final token = await getTokenUseCase();
+    final token = await authRepository.getToken();
     if (token == null) {
       throw Exception('JWT 토큰이 없습니다.');
     }
@@ -73,7 +69,7 @@ class GoalRemoteDataSource {
     if (goal.id == null) {
       throw Exception('Goal ID가 없습니다.');
     }
-    final token = await getTokenUseCase();
+    final token = await authRepository.getToken();
     if (token == null) {
       throw Exception('JWT 토큰이 없습니다.');
     }
@@ -98,7 +94,7 @@ class GoalRemoteDataSource {
   }
 
   Future<void> deleteGoal(String goalId) async {
-    final token = await getTokenUseCase();
+    final token = await authRepository.getToken();
     if (token == null) {
       throw Exception('JWT 토큰이 없습니다.');
     }
@@ -117,13 +113,15 @@ class GoalRemoteDataSource {
 
   // 업데이트 메서드
   Future<bool> updateGoalStatus(Goal goal, Status newStatus) async {
-    final token = await getTokenUseCase();
+    final token = await authRepository.getToken();
 
     if (token == null) {
       throw Exception('JWT 토큰이 없습니다.');
     }
 
-    final url = Uri.parse('${Constants.baseUrl}/goals/update/status/${goal.id}');
+    final url = Uri.parse(
+      '${Constants.baseUrl}/goals/update/status/${goal.id}',
+    );
 
     final response = await http.put(
       url,
@@ -151,13 +149,15 @@ class GoalRemoteDataSource {
     } else if (response.statusCode == 500) {
       throw Exception('서버 내부 오류가 발생했습니다.');
     } else {
-      throw Exception('알 수 없는 오류 발생: ${response.statusCode} / ${response.body}');
+      throw Exception(
+        '알 수 없는 오류 발생: ${response.statusCode} / ${response.body}',
+      );
     }
   }
 
   Future<bool> updateGoalProgress(Goal goal, double newProgress) async {
     // 1. 토큰 가져오기
-    final token = await getTokenUseCase();
+    final token = await authRepository.getToken();
 
     if (token == null) {
       throw Exception('JWT 토큰이 없습니다.');
@@ -169,7 +169,9 @@ class GoalRemoteDataSource {
     }
 
     // 3. URL 생성
-    final url = Uri.parse('${Constants.baseUrl}/goals/update/progress/${goal.id}');
+    final url = Uri.parse(
+      '${Constants.baseUrl}/goals/update/progress/${goal.id}',
+    );
 
     // 4. PUT 요청 보내기
     final response = await http.put(
@@ -199,7 +201,9 @@ class GoalRemoteDataSource {
     } else if (response.statusCode == 500) {
       throw Exception('서버 내부 오류가 발생했습니다.');
     } else {
-      throw Exception('알 수 없는 오류 발생: ${response.statusCode} / ${response.body}');
+      throw Exception(
+        '알 수 없는 오류 발생: ${response.statusCode} / ${response.body}',
+      );
     }
   }
 }

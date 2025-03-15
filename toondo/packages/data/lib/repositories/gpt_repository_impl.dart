@@ -1,26 +1,26 @@
 import 'dart:convert';
+import 'package:domain/repositories/user_repository.dart';
 import 'package:http/http.dart' as http;
 import 'package:injectable/injectable.dart';
 import 'package:data/constants.dart';
 import 'package:domain/repositories/gpt_repository.dart';
 import 'package:domain/repositories/character_repository.dart';
-import 'package:domain/usecases/user/get_user_nickname.dart';
 
 @LazySingleton(as: GptRepository)
 class GptRepositoryImpl implements GptRepository {
   final http.Client httpClient;
-  final GetUserNicknameUseCase getCurrentUserNickname;
+  final UserRepository userRepository;
   final CharacterRepository characterRepository;
 
   GptRepositoryImpl(
     this.httpClient,
-    this.getCurrentUserNickname,
+    this.userRepository,
     this.characterRepository,
   );
 
   @override
   Future<String?> getSlimeResponse() async {
-    final userName = await getCurrentUserNickname.call();
+    final userName = await userRepository.getUserNickname();
     final slimeCharacter = await characterRepository.getCharacter();
     final conversationLog = slimeCharacter?.conversationHistory ?? [];
     final currentTime = DateTime.now();
