@@ -3,4 +3,4 @@ import 'package:injectable/injectable.dart';
 import 'package:domain/injection/di.config.dart';
 
 @InjectableInit()
-void configureDependencies({required GetIt getIt}) => getIt.init();
+Future<void> configureDependencies ({required GetIt getIt}) async => getIt.init();

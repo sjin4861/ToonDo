@@ -1,5 +1,7 @@
 import 'package:domain/repositories/gpt_repository.dart';
+import 'package:injectable/injectable.dart';
 
+@injectable
 class GetSlimeResponseUseCase {
   final GptRepository repository;
   GetSlimeResponseUseCase(this.repository);

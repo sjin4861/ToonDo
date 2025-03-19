@@ -31,7 +31,7 @@ Future<void> main() async {
   await Hive.openBox<UserModel>('user');
 
   // 의존성 주입
-  configureAllDependencies();
+  await configureAllDependencies();
 
   runApp(const MyApp());
 }
@@ -71,8 +71,7 @@ class MyAppState extends State<MyApp> {
         navigatorKey: navigatorKey,
         initialRoute: '/',
         onGenerateRoute: AppRouter.generateRoute,
-        theme: ThemeData(),
-        home: Container(), // 필요 시 라우트에 따라 교체
+        theme: ThemeData()
       ),
     );
   }
