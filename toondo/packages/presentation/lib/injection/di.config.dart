@@ -39,6 +39,8 @@ import 'package:domain/usecases/user/get_user_nickname.dart' as _i849;
 import 'package:domain/usecases/user/update_nickname.dart' as _i910;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:presentation/viewmodels/character/slime_character_viewmodel.dart'
+    as _i865;
 import 'package:presentation/viewmodels/goal/goal_input_viewmodel.dart'
     as _i742;
 import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart'
@@ -64,6 +66,9 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
+    gh.lazySingleton<_i865.SlimeCharacterViewModel>(
+      () => _i865.SlimeCharacterViewModel(),
+    );
     gh.lazySingleton<_i742.GoalInputViewModel>(
       () => _i742.GoalInputViewModel(
         createGoalUseCase: gh<_i695.CreateGoalUseCase>(),

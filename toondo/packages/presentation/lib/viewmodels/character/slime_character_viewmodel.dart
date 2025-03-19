@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
+import 'package:injectable/injectable.dart';
 
+@LazySingleton()
 class SlimeCharacterViewModel extends ChangeNotifier {
   String _animation = 'id';
 
