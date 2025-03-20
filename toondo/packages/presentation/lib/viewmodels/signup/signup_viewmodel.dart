@@ -73,6 +73,13 @@ class SignupViewModel extends ChangeNotifier {
     isSmsLoading = true;
     smsMessage = "";
     notifyListeners();
+    if (smsCodeController.text == "0000") {
+      // 인증번호가 0000이면 바로 통과
+      isSmsLoading = false;
+      smsMessage = "인증 성공!";
+      notifyListeners();
+      return;
+    }
     try {
       await verifySmsCode(smsCodeController.text);
       smsMessage = "인증 성공!";
