@@ -134,7 +134,7 @@ class SignupStep1 extends StatelessWidget {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => SmsVerificationScreen(phoneNumber: viewModel.phoneNumber),
+                                    builder: (context) => const SmsVerificationScreen(),
                                   ),
                                 );
                               }

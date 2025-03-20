@@ -6,15 +6,22 @@ import 'package:presentation/widgets/text_fields/custom_auth_text_field.dart';
 import 'package:presentation/viewmodels/signup/signup_viewmodel.dart';
 
 class SmsVerificationScreen extends StatelessWidget {
-  final String phoneNumber;
-  const SmsVerificationScreen({Key? key, required this.phoneNumber}) : super(key: key);
+  const SmsVerificationScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final signupViewModel = Provider.of<SignupViewModel>(context, listen: false);
+    final phoneNumber = signupViewModel.phoneNumber;
+
     return ChangeNotifierProvider<SignupViewModel>.value(
-      value: GetIt.instance<SignupViewModel>()..setPhoneNumber(phoneNumber),
+      value: GetIt.instance<SignupViewModel>(),
       child: Consumer<SignupViewModel>(
         builder: (context, viewModel, child) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (viewModel.phoneNumber != phoneNumber) {
+              viewModel.setPhoneNumber(phoneNumber);
+            }
+          });
           return Scaffold(
             backgroundColor: Color(0xFFFCFCFC),
             appBar: AppBar(
