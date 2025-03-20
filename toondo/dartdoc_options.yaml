@@ -1,0 +1,37 @@
+dartdoc:
+
+  categories:
+    "Architecture":
+      markdown: lib/topics/architecture.md
+    "View":
+      markdown: lib/topics/view.md
+    "ViewModel":
+      markdown: lib/topics/viewmodel.md
+    "Widget":
+      markdown: lib/topics/widget.md
+    "Entity":
+      markdown: lib/topics/entity.md
+    "UseCase":
+      markdown: lib/topics/usecase.md
+    "Repository":
+      markdown: lib/topics/repository.md
+    "RepositoryImpl":
+      markdown: lib/topics/repositoryimpl.md
+    "DataSource":
+      markdown: lib/topics/datasource.md
+    "Model":
+      markdown: lib/topics/model.md
+    "Util":
+      markdown: lib/topics/util.md
+  categoryOrder:
+    - "Architecture"
+    - "View"
+    - "Widget"
+    - "ViewModel"
+    - "Entity"
+    - "UseCase"
+    - "Repository"
+    - "RepositoryImpl"
+    - "DataSource"
+    - "Model"
+    - "Util"
