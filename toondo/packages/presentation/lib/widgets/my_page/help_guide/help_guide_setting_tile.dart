@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 
-class MyPageSettingTile extends StatelessWidget {
+class HelpGuideSettingTile extends StatelessWidget {
   final String title;
-  final Widget? trailing;
   final VoidCallback? onTap;
 
-  const MyPageSettingTile({super.key, required this.title, this.trailing, this.onTap});
+  const HelpGuideSettingTile({super.key, required this.title, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
+      onTap: onTap, // TODO: 라우팅 추가 예정
       child: Container(
         height: 52,
         padding: const EdgeInsets.symmetric(vertical: 14),
@@ -23,12 +22,15 @@ class MyPageSettingTile extends StatelessWidget {
               style: const TextStyle(
                 color: Color(0xFF1C1D1B),
                 fontSize: 14,
-                fontFamily: 'Pretendard Variable',
                 fontWeight: FontWeight.w400,
-                letterSpacing: 0.21,
+                fontFamily: 'Pretendard Variable',
               ),
             ),
-            if (trailing != null) trailing!,
+            const Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+              color: Color(0xFFD9D9D9),
+            ),
           ],
         ),
       ),

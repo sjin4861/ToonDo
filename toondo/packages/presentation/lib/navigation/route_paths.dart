@@ -9,4 +9,8 @@ class RoutePaths {
   static const String todoInput = '/todo_input';
   static const String shop = '/shop';
   static const String mypage = '/mypage';
+  static const String notificationSetting = '/mypage/notification_setting';
+  static const String displaySetting = '/mypage/display_setting';
+  static const String accountSetting = '/mypage/account_setting';
+  static const String helpGuide = '/mypage/help_guide';
 }
