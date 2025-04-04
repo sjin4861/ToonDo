@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class MyPageProfileSection extends StatelessWidget {
   const MyPageProfileSection({super.key});
@@ -10,8 +11,8 @@ class MyPageProfileSection extends StatelessWidget {
       children: [
         Stack(
           alignment: Alignment.center,
-          children: const [
-            SizedBox(
+          children: [
+            const SizedBox(
               width: 85,
               height: 85,
               child: DecoratedBox(
@@ -21,7 +22,7 @@ class MyPageProfileSection extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 59,
               height: 59,
               child: DecoratedBox(
@@ -35,7 +36,13 @@ class MyPageProfileSection extends StatelessWidget {
                 ),
               ),
             ),
-            Icon(Icons.person, size: 40, color: Colors.white70),
+            Center(
+              child: SvgPicture.asset(
+                'assets/icons/mypage_icon.svg',
+                width: 86,
+                height: 86,
+              ),
+            ),
           ],
         ),
         const SizedBox(width: 24),
