@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:presentation/widgets/bottom_sheet/bottom_sheet_drag_indicator.dart';
 
-class CommonBottomSheet extends StatelessWidget {
+class CustomBottomSheet extends StatelessWidget {
   final String title;
   final Widget? body;
   final List<CommonBottomSheetButtonData> buttons;
 
-  const CommonBottomSheet({
+  const CustomBottomSheet({
     super.key,
     required this.title,
     this.body,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:presentation/navigation/route_paths.dart';
-import 'package:presentation/widgets/my_page/sync_bottom_sheet_dialog.dart';
+import 'package:presentation/widgets/my_page/sync_bottom_sheet.dart';
 import 'my_page_setting_tile.dart';
 
 class MyPageSettingSection extends StatelessWidget {
@@ -23,7 +23,7 @@ class MyPageSettingSection extends StatelessWidget {
               context: context,
               isScrollControlled: true,
               backgroundColor: Colors.transparent,
-              builder: (context) => const SyncBottomSheetDialog(),
+              builder: (context) => const SyncBottomSheet(),
             );
           },
         ),

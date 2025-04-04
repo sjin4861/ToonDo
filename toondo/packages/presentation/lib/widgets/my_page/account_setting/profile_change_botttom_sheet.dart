@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:presentation/widgets/bottom_sheet/common_bottom_sheet.dart';
+import 'package:presentation/widgets/bottom_sheet/custom_bottom_sheet.dart';
 
 class ProfileChangeBotttomSheet extends StatelessWidget {
   const ProfileChangeBotttomSheet({super.key});
@@ -15,7 +15,7 @@ class ProfileChangeBotttomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CommonBottomSheet(
+    return CustomBottomSheet(
       title: '프로필 바꾸기',
       buttons: [
         CommonBottomSheetButtonData(
