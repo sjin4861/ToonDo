@@ -30,7 +30,7 @@ class AccountSettingTile extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
-                    color: Color(0xFFB1B1B1),
+                    color: Color(0xff858584),
                   ),
                 ),
               const SizedBox(width: 16),

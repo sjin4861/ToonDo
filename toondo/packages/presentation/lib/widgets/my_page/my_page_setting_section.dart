@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:presentation/navigation/route_paths.dart';
+import 'package:presentation/widgets/my_page/sync_bottom_sheet_dialog.dart';
 import 'my_page_setting_tile.dart';
 
 class MyPageSettingSection extends StatelessWidget {
@@ -10,9 +11,22 @@ class MyPageSettingSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('설정', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+        const Text(
+          '설정',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ),
         const SizedBox(height: 16),
-        const MyPageSettingTile(title: '동기화'),
+        MyPageSettingTile(
+          title: '동기화',
+          onTap: () {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              builder: (context) => const SyncBottomSheetDialog(),
+            );
+          },
+        ),
         MyPageSettingTile(
           title: '화면',
           trailing: const Icon(

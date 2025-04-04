@@ -12,7 +12,7 @@ class DisplaySettingScreen extends StatelessWidget {
       appBar: CustomAppBar(title: '화면'),
       backgroundColor: const Color(0xFFFDFDFD),
       body: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [

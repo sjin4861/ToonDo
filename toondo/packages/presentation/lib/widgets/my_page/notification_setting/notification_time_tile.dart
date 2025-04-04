@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:presentation/viewmodels/my_page/notification_setting/time_picker_viewmodel.dart';
+import 'package:presentation/widgets/my_page/notification_setting/time_picker/time_picker_bottom_sheet.dart';
+import 'package:provider/provider.dart';
 
 class NotificationTimeTile extends StatelessWidget {
   final String timeText;
@@ -36,7 +39,17 @@ class NotificationTimeTile extends StatelessWidget {
         ],
       ),
       onTap: () {
-        // 시간 선택 화면 연결 예정
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: (_) {
+            return ChangeNotifierProvider(
+              create: (_) => TimePickerViewModel(),
+              child: TimePickerBottomSheet(),
+            );
+          },
+        );
       },
     );
   }
