@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:presentation/viewmodels/welcome/welcome_viewmodel.dart';
 import 'package:presentation/views/mypage/account_setting/account_setting_screen.dart';
+import 'package:presentation/views/mypage/account_setting/nickname_change_screen.dart';
+import 'package:presentation/views/mypage/account_setting/password_change_screen.dart';
+import 'package:presentation/views/mypage/account_setting/phone_number_change_screen.dart';
 import 'package:presentation/views/mypage/display_setting/display_setting_screen.dart';
 import 'package:presentation/views/mypage/help_guide/help_guide_screen.dart';
 import 'package:presentation/views/mypage/notification_setting/notification_setting_screen.dart';
@@ -49,6 +52,12 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => AccountSettingScreen());
       case RoutePaths.helpGuide:
         return MaterialPageRoute(builder: (_) => HelpGuideScreen());
+      case RoutePaths.accountSettingNicknameChange:
+        return MaterialPageRoute(builder: (_) => NicknameChangeScreen());
+      case RoutePaths.accountSettingPhoneChange:
+        return MaterialPageRoute(builder: (_) => PhoneNumberChangeScreen());
+      case RoutePaths.accountSettingPasswordChange:
+        return MaterialPageRoute(builder: (_) => PasswordChangeScreen());
       default:
         return MaterialPageRoute(
           builder:

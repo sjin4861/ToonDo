@@ -5,23 +5,25 @@ class CustomBottomSheet extends StatelessWidget {
   final String title;
   final Widget? body;
   final List<CommonBottomSheetButtonData> buttons;
+  final double initialSize;
+  final double maxSize;
 
   const CustomBottomSheet({
     super.key,
     required this.title,
     this.body,
     required this.buttons,
+    this.initialSize = 0.35,
+    this.maxSize = 0.35,
   });
 
   @override
   Widget build(BuildContext context) {
     final hasBody = body != null;
-    final initialSize = hasBody ? 0.35 : 0.35;
-    final maxSize = hasBody ? 0.35 : 0.35;
 
     return DraggableScrollableSheet(
       initialChildSize: initialSize,
-      minChildSize: 0.3,
+      minChildSize: initialSize - 0.1,
       maxChildSize: maxSize,
       expand: false,
       builder: (context, scrollController) {
