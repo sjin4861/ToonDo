@@ -1,0 +1,16 @@
+[project]
+name = "toondo-ml"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "sjin4861",email = "sjin4861@pusan.ac.kr"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
