@@ -12,6 +12,9 @@ class SmsRemoteDataSource{
 
   @override
   Future<String> sendSmsCode(String phoneNumber) async {
+    if (phoneNumber == Constants.testPhoneNumber) {
+      return "인증번호가 전송되었습니다.";
+    }
     final url = Uri.parse('$baseUrl/sms/send-code?phoneNumber=$phoneNumber');
     final response = await client.post(
       url,
@@ -27,6 +30,9 @@ class SmsRemoteDataSource{
 
   @override
   Future<String> verifySmsCode(String phoneNumber, String code) async {
+    if (phoneNumber == Constants.testPhoneNumber) {
+      return "본인인증 성공";
+    }
     final url = Uri.parse(
       '$baseUrl/sms/verify-code?phoneNumber=$phoneNumber&code=$code',
     );

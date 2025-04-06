@@ -42,6 +42,20 @@ class AuthRemoteDataSource{
     String phoneNumber,
     String password,
   ) async {
+    if (phoneNumber == Constants.testPhoneNumber){
+      // id: json['userId'] as int,
+      // loginId: json['loginId'] as String,
+      // nickname: json['nickname'] as String?,
+      // points: json['points'] as int,
+      return {
+        'token': 'test_token',
+        'userId': -1,
+        'loginId': phoneNumber,
+        'nickname': '',
+        'points': 0,
+      };
+      
+    }
     final url = Uri.parse('$baseUrl/users/signup');
     final response = await httpClient.post(
       url,

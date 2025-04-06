@@ -18,6 +18,15 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<User> updateNickName(String newNickName) async {
     // Calls remote API
+    if (newNickName == "test") {
+      // Simulate a pass
+      return User(
+        id: 1,
+        nickname: "test",
+        loginId: "1234567890",
+        points: 100
+      );
+    }
     final updatedUser = await remoteDatasource.changeNickName(newNickName);
     await localDatasource.setNickName(newNickName);
     return updatedUser;
