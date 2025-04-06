@@ -26,6 +26,7 @@ import 'package:data/repositories/auth_repository_impl.dart' as _i819;
 import 'package:data/repositories/character_repository_impl.dart' as _i919;
 import 'package:data/repositories/goal_repository_impl.dart' as _i527;
 import 'package:data/repositories/gpt_repository_impl.dart' as _i905;
+import 'package:data/repositories/sms_repository_impl.dart' as _i235;
 import 'package:data/repositories/todo_repository_impl.dart' as _i366;
 import 'package:data/repositories/user_repository_impl.dart' as _i537;
 import 'package:domain/entities/goal_status.dart' as _i281;
@@ -33,6 +34,7 @@ import 'package:domain/repositories/auth_repository.dart' as _i427;
 import 'package:domain/repositories/character_repository.dart' as _i434;
 import 'package:domain/repositories/goal_repository.dart' as _i559;
 import 'package:domain/repositories/gpt_repository.dart' as _i183;
+import 'package:domain/repositories/sms_repository.dart' as _i366;
 import 'package:domain/repositories/todo_repository.dart' as _i158;
 import 'package:domain/repositories/user_repository.dart' as _i988;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
@@ -82,10 +84,10 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i434.CharacterRepository>(
         () => _i919.CharacterRepositoryImpl());
-    gh.lazySingleton<_i116.AuthLocalDataSource>(
-        () => _i116.AuthLocalDataSource(gh<_i979.Box<_i245.UserModel>>()));
     gh.lazySingleton<_i1024.UserLocalDatasource>(
         () => _i1024.UserLocalDatasource(gh<_i979.Box<_i245.UserModel>>()));
+    gh.lazySingleton<_i116.AuthLocalDataSource>(
+        () => _i116.AuthLocalDataSource(gh<_i979.Box<_i245.UserModel>>()));
     gh.lazySingleton<_i361.SecureLocalDataSource>(
         () => _i361.SecureLocalDataSource(gh<_i558.FlutterSecureStorage>()));
     gh.lazySingleton<_i91.TodoLocalDatasource>(() => _i91.TodoLocalDatasource(
@@ -103,13 +105,15 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i116.AuthLocalDataSource>(),
           gh<_i361.SecureLocalDataSource>(),
         ));
-    gh.lazySingleton<_i417.GoalRemoteDataSource>(
-        () => _i417.GoalRemoteDataSource(
+    gh.lazySingleton<_i366.SmsRepository>(
+        () => _i235.SmsRepositoryImpl(gh<_i268.SmsRemoteDataSource>()));
+    gh.lazySingleton<_i627.TodoRemoteDataSource>(
+        () => _i627.TodoRemoteDataSource(
               gh<_i519.Client>(),
               gh<_i427.AuthRepository>(),
             ));
-    gh.lazySingleton<_i627.TodoRemoteDataSource>(
-        () => _i627.TodoRemoteDataSource(
+    gh.lazySingleton<_i417.GoalRemoteDataSource>(
+        () => _i417.GoalRemoteDataSource(
               gh<_i519.Client>(),
               gh<_i427.AuthRepository>(),
             ));
