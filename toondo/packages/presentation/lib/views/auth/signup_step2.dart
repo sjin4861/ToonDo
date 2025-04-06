@@ -9,7 +9,8 @@ import 'package:presentation/views/onboarding/onboarding_screen.dart';
 
 class SignupStep2 extends StatelessWidget {
   final String phoneNumber; // 휴대폰 번호 의존성 추가
-  const SignupStep2({Key? key, required this.phoneNumber}) : super(key: key);
+  final ValueNotifier<bool> isPasswordVisible = ValueNotifier(false);
+  SignupStep2({Key? key, required this.phoneNumber}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -63,34 +64,33 @@ class SignupStep2 extends StatelessWidget {
                     readOnly: true,
                   ),
                   SizedBox(height: 24),
-                  // 비밀번호 입력란을 StatefulBuilder로 관리
-                  StatefulBuilder(
-                    builder: (context, setState) {
-                      bool isPasswordVisible = false;
-                      return CustomAuthTextField(
-                        key: const Key('signupStep2_passwordField'),
-                        label: '비밀번호',
-                        hintText: '비밀번호를 입력하세요',
-                        obscureText: !isPasswordVisible,
-                        onChanged: (value) {
-                          signupViewModel.password = value;
-                        },
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                        suffixIcon: IconButton(
+                  // 비밀번호 입력란을 ValueNotifier로 관리
+                  CustomAuthTextField(
+                    key: const Key('signupStep2_passwordField'),
+                    label: '비밀번호',
+                    hintText: '비밀번호를 입력하세요',
+                    obscureTextNotifier: isPasswordVisible,
+                    onChanged: (value) {
+                      signupViewModel.password = value;
+                    },
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                    suffixIcon: ValueListenableBuilder<bool>(
+                      valueListenable: isPasswordVisible,
+                      builder: (context, value, child) {
+                        return IconButton(
                           icon: Icon(
-                            isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                            value ? Icons.visibility : Icons.visibility_off,
                             color: Color(0xFF1C1D1B),
                           ),
                           onPressed: () {
-                            setState(() {
-                              isPasswordVisible = !isPasswordVisible;
-                            });
+                            isPasswordVisible.value = !value;
                           },
-                        ), controller: signupViewModel.passwordController,
-                        errorText: signupViewModel.passwordError,
-                        isValid: signupViewModel.passwordError == null,
-                      );
-                    },
+                        );
+                      },
+                    ),
+                    controller: signupViewModel.passwordController,
+                    errorText: signupViewModel.passwordError,
+                    isValid: signupViewModel.passwordError == null,
                   ),
                   if (signupViewModel.passwordError != null) ...[
                     SizedBox(height: 4),

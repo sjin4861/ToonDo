@@ -12,6 +12,7 @@ class CustomAuthTextField extends StatelessWidget {
   final bool obscureText;
   final Widget? suffixIcon;
   final EdgeInsetsGeometry? contentPadding;
+  final ValueNotifier<bool>? obscureTextNotifier;
 
   const CustomAuthTextField({
     this.key,
@@ -25,6 +26,7 @@ class CustomAuthTextField extends StatelessWidget {
     this.obscureText = false,
     this.suffixIcon,
     this.contentPadding,
+    this.obscureTextNotifier,
   }) : super(key: key);
 
   @override
@@ -48,34 +50,77 @@ class CustomAuthTextField extends StatelessWidget {
           builder: (context, value, child) {
             final effectiveBorderColor =
                 value.text.isNotEmpty ? Color(0xFF78B545) : Color(0xFFDDDDDD);
-            return TextField(
-              readOnly: readOnly,
-              controller: controller,
-              obscureText: obscureText,
-              onChanged: onChanged,
-              decoration: InputDecoration(
-                contentPadding: contentPadding ?? EdgeInsets.symmetric(horizontal: 16),
-                hintText: hintText,
-                hintStyle: TextStyle(
-                  color: Color(0xFFB2B2B2),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0.18,
-                  fontFamily: 'Pretendard Variable',
+            if (obscureTextNotifier != null) {
+              return ValueListenableBuilder<bool>(
+                valueListenable: obscureTextNotifier!,
+                builder: (context, obscureVisible, child) {
+                  return TextField(
+                    readOnly: readOnly,
+                    controller: controller,
+                    obscureText: !obscureVisible,
+                    onChanged: onChanged,
+                    decoration: InputDecoration(
+                      contentPadding: contentPadding ?? EdgeInsets.symmetric(horizontal: 16),
+                      hintText: hintText,
+                      hintStyle: TextStyle(
+                        color: Color(0xFFB2B2B2),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0.18,
+                        fontFamily: 'Pretendard Variable',
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          obscureVisible ? Icons.visibility : Icons.visibility_off,
+                        ),
+                        onPressed: () {
+                          obscureTextNotifier!.value = !obscureTextNotifier!.value;
+                        },
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(1000),
+                        borderSide: BorderSide(color: effectiveBorderColor),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(1000),
+                        borderSide: BorderSide(color: effectiveBorderColor),
+                      ),
+                      errorText: errorText,
+                    ),
+                    keyboardType: TextInputType.text,
+                  );
+                },
+              );
+            } else {
+              return TextField(
+                readOnly: readOnly,
+                controller: controller,
+                obscureText: obscureText,
+                onChanged: onChanged,
+                decoration: InputDecoration(
+                  contentPadding: contentPadding ?? EdgeInsets.symmetric(horizontal: 16),
+                  hintText: hintText,
+                  hintStyle: TextStyle(
+                    color: Color(0xFFB2B2B2),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.18,
+                    fontFamily: 'Pretendard Variable',
+                  ),
+                  suffixIcon: suffixIcon,
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(1000),
+                    borderSide: BorderSide(color: effectiveBorderColor),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(1000),
+                    borderSide: BorderSide(color: effectiveBorderColor),
+                  ),
+                  errorText: errorText,
                 ),
-                suffixIcon: suffixIcon,
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(1000),
-                  borderSide: BorderSide(color: effectiveBorderColor),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(1000),
-                  borderSide: BorderSide(color: effectiveBorderColor),
-                ),
-                errorText: errorText,
-              ),
-              keyboardType: TextInputType.text,
-            );
+                keyboardType: TextInputType.text,
+              );
+            }
           },
         ),
       ],
