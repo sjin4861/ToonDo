@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:presentation/viewmodels/welcome/welcome_viewmodel.dart';
+import 'package:presentation/views/mypage/account_setting/account_setting_screen.dart';
+import 'package:presentation/views/mypage/account_setting/nickname_change_screen.dart';
+import 'package:presentation/views/mypage/account_setting/password_change_screen.dart';
+import 'package:presentation/views/mypage/account_setting/phone_number_change_screen.dart';
+import 'package:presentation/views/mypage/display_setting/display_setting_screen.dart';
+import 'package:presentation/views/mypage/help_guide/help_guide_screen.dart';
+import 'package:presentation/views/mypage/notification_setting/notification_setting_screen.dart';
 import 'package:presentation/views/todo/todo_manage_view.dart';
 import 'package:provider/provider.dart';
 import 'package:presentation/views/home/home_screen.dart';
@@ -37,6 +44,20 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => TodoManageView());
       case RoutePaths.mypage:
         return MaterialPageRoute(builder: (_) => MyPageScreen());
+      case RoutePaths.notificationSetting:
+        return MaterialPageRoute(builder: (_) => NotificationSettingScreen());
+      case RoutePaths.displaySetting:
+        return MaterialPageRoute(builder: (_) => DisplaySettingScreen());
+      case RoutePaths.accountSetting:
+        return MaterialPageRoute(builder: (_) => AccountSettingScreen());
+      case RoutePaths.helpGuide:
+        return MaterialPageRoute(builder: (_) => HelpGuideScreen());
+      case RoutePaths.accountSettingNicknameChange:
+        return MaterialPageRoute(builder: (_) => NicknameChangeScreen());
+      case RoutePaths.accountSettingPhoneChange:
+        return MaterialPageRoute(builder: (_) => PhoneNumberChangeScreen());
+      case RoutePaths.accountSettingPasswordChange:
+        return MaterialPageRoute(builder: (_) => PasswordChangeScreen());
       default:
         return MaterialPageRoute(
           builder:
