@@ -168,10 +168,10 @@ class SignupViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
-    phoneNumberController.dispose();
-    passwordController.dispose();
-    // 추가: smsCodeController dispose
-    smsCodeController.dispose();
+    // LazySingleton이므로 컨트롤러들을 dispose하지 않음.
+    // phoneNumberController.dispose();
+    // passwordController.dispose();
+    // smsCodeController.dispose();
     super.dispose();
   }
 }

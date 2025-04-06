@@ -8,6 +8,7 @@ import 'package:presentation/views/onboarding/onboarding2_screen.dart';
 class OnboardingViewModel extends ChangeNotifier {
   final UpdateNickNameUseCase updateNickNameUseCase;
   bool initialized = false;
+  bool _isDisposed = false; // 추가: disposed 상태 플래그
 
   String nickname = '';
   String? nicknameError; // 추가: 닉네임 에러 상태
@@ -72,5 +73,21 @@ class OnboardingViewModel extends ChangeNotifier {
   void setCurrentPage(int page) {
     // 페이지 변경 시 처리 로직
     notifyListeners();
+  }
+
+  @override
+  void notifyListeners() {
+    if (!_isDisposed) {
+      super.notifyListeners();
+    }
+  }
+  
+  @override
+  void dispose() {
+    _isDisposed = true;
+    // LazySingleton이므로 컨트롤러를 dispose하지 않음
+    // nicknameController.dispose();
+    // ...기타 dispose 필요한 코드...
+    super.dispose();
   }
 }
