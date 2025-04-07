@@ -15,9 +15,8 @@ class LoginViewModel extends ChangeNotifier {
   bool isPasswordVisible = false;
 
   LoginViewModel({
-    String? phoneNumber,
     required this.loginUseCase, // Injected via DI
-  }) : phoneNumberController = TextEditingController(text: phoneNumber ?? ''),
+  }) : phoneNumberController = TextEditingController(),
        passwordController = TextEditingController();
 
   String get phoneNumber => phoneNumberController.text;
