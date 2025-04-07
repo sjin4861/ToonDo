@@ -50,4 +50,9 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<String?> getToken() async {
     return await secureLocalDataSource.getToken();
   }
+
+  @override
+  Future<bool> checkPhoneNumberExists(String phoneNumber) {
+    return remoteDataSource.isPhoneNumberRegistered(phoneNumber);
+  }
 }
