@@ -127,7 +127,7 @@ class SignupStep1 extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        LoginScreen(phoneNumber: viewModel.phoneNumber),
+                                        LoginScreen(),
                                   ),
                                 );
                               } else {
