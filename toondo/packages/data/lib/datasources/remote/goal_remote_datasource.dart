@@ -19,17 +19,26 @@ class GoalRemoteDataSource {
     if (token == null) {
       throw Exception('JWT 토큰이 없습니다.');
     }
+
     final url = Uri.parse('${Constants.baseUrl}/goals/list');
+    print('📡 요청 URL: $url');
+    print('🪪 JWT: $token');
+
     final response = await client.get(
       url,
       headers: {
-        'Authorization': 'Bearer $token',
+        'Authorization': token,
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );
+
+    print('📥 응답 코드: ${response.statusCode}');
+    // 수정: allowMalformed를 사용한 Utf8Decoder로 응답 디코딩
+    final decodedBody = const Utf8Decoder(allowMalformed: true).convert(response.bodyBytes);
+    print('📥 응답 바디: $decodedBody');
+
     if (response.statusCode == 200) {
-      final utf8Body = utf8.decode(response.bodyBytes);
-      final List<dynamic> data = jsonDecode(utf8Body);
+      final List<dynamic> data = jsonDecode(decodedBody);
       final models = data.map((item) => GoalModel.fromJson(item)).toList();
       return models.map((model) => model.toEntity()).toList();
     }
@@ -41,6 +50,11 @@ class GoalRemoteDataSource {
     if (token == null) {
       throw Exception('JWT 토큰이 없습니다.');
     }
+    print('🪪 JWT 토큰: $token');
+    print('🚀 요청 헤더: ${{
+      'Authorization': token,
+      'Content-Type': 'application/json; charset=UTF-8',
+    }}');
     final url = Uri.parse('${Constants.baseUrl}/goals/create');
     final requestBody = {
       "goalName": goal.name,
@@ -51,11 +65,13 @@ class GoalRemoteDataSource {
     final response = await client.post(
       url,
       headers: {
-        'Authorization': 'Bearer $token',
+        'Authorization': token,
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(requestBody),
     );
+    print('🚀 요청 바디: $requestBody');
+    print('📥 응답 코드: ${response.statusCode}');
     if (response.statusCode == 200 || response.statusCode == 201) {
       final utf8Body = utf8.decode(response.bodyBytes);
       final data = jsonDecode(utf8Body);
@@ -83,7 +99,7 @@ class GoalRemoteDataSource {
     final response = await client.put(
       url,
       headers: {
-        'Authorization': 'Bearer $token',
+        'Authorization': token,
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(requestBody),
@@ -102,7 +118,7 @@ class GoalRemoteDataSource {
     final response = await client.delete(
       url,
       headers: {
-        'Authorization': 'Bearer $token',
+        'Authorization': token,
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );
@@ -126,7 +142,7 @@ class GoalRemoteDataSource {
     final response = await http.put(
       url,
       headers: {
-        'Authorization': 'Bearer $token',
+        'Authorization': token,
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode({
@@ -177,7 +193,7 @@ class GoalRemoteDataSource {
     final response = await http.put(
       url,
       headers: {
-        'Authorization': 'Bearer $token',
+        'Authorization': token,
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode({
