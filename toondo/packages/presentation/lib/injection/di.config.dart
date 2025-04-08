@@ -20,6 +20,7 @@ import 'package:domain/usecases/goal/create_goal.dart' as _i695;
 import 'package:domain/usecases/goal/delete_goal.dart' as _i582;
 import 'package:domain/usecases/goal/get_completed_goals.dart' as _i368;
 import 'package:domain/usecases/goal/get_givenup_goals.dart' as _i292;
+import 'package:domain/usecases/goal/get_goals.dart' as _i737;
 import 'package:domain/usecases/goal/get_inprogress_goals.dart' as _i243;
 import 'package:domain/usecases/goal/read_goals.dart' as _i663;
 import 'package:domain/usecases/goal/update_goal.dart' as _i422;
@@ -100,6 +101,15 @@ extension GetItInjectableX on _i174.GetIt {
         getSlimeResponseUseCase: gh<_i88.GetSlimeResponseUseCase>(),
       ),
     );
+    gh.lazySingleton<_i72.TodoInputViewModel>(
+      () => _i72.TodoInputViewModel(
+        todo: gh<_i429.Todo>(),
+        isDDayTodo: gh<bool>(),
+        createTodoUseCase: gh<_i834.CreateTodoUseCase>(),
+        updateTodoUseCase: gh<_i375.UpdateTodoUseCase>(),
+        getGoalsUseCase: gh<_i737.GetGoalsUseCase>(),
+      ),
+    );
     gh.lazySingleton<_i940.GoalManagementViewModel>(
       () => _i940.GoalManagementViewModel(
         readGoalsUseCase: gh<_i663.ReadGoalsUseCase>(),
@@ -149,15 +159,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i657.OnboardingViewModel>(
       () => _i657.OnboardingViewModel(
         updateNickNameUseCase: gh<_i910.UpdateNickNameUseCase>(),
-      ),
-    );
-    gh.lazySingleton<_i72.TodoInputViewModel>(
-      () => _i72.TodoInputViewModel(
-        todo: gh<_i429.Todo>(),
-        isDDayTodo: gh<bool>(),
-        createTodoUseCase: gh<_i834.CreateTodoUseCase>(),
-        updateTodoUseCase: gh<_i375.UpdateTodoUseCase>(),
-        goalViewModel: gh<_i194.GoalViewModel>(),
       ),
     );
     return this;
