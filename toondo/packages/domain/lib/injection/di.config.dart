@@ -15,6 +15,7 @@ import 'package:domain/repositories/gpt_repository.dart' as _i183;
 import 'package:domain/repositories/sms_repository.dart' as _i366;
 import 'package:domain/repositories/todo_repository.dart' as _i158;
 import 'package:domain/repositories/user_repository.dart' as _i988;
+import 'package:domain/usecases/auth/check_phone_number_exists.dart' as _i426;
 import 'package:domain/usecases/auth/get_token.dart' as _i415;
 import 'package:domain/usecases/auth/login.dart' as _i1068;
 import 'package:domain/usecases/auth/logout.dart' as _i969;
@@ -31,7 +32,7 @@ import 'package:domain/usecases/goal/update_goal_progress.dart' as _i739;
 import 'package:domain/usecases/goal/update_goal_status.dart' as _i856;
 import 'package:domain/usecases/gpt/get_slime_response.dart' as _i88;
 import 'package:domain/usecases/sms/send_sms_code.dart' as _i461;
-import 'package:domain/usecases/sms/verify_sms_code.dart';
+import 'package:domain/usecases/sms/verify_sms_code.dart' as _i73;
 import 'package:domain/usecases/todo/add_todo.dart' as _i133;
 import 'package:domain/usecases/todo/commit_todos.dart' as _i412;
 import 'package:domain/usecases/todo/create_todo.dart' as _i834;
@@ -54,6 +55,9 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
+    gh.lazySingleton<_i426.CheckPhoneNumberExistsUseCase>(
+      () => _i426.CheckPhoneNumberExistsUseCase(gh<_i427.AuthRepository>()),
+    );
     gh.factory<_i1068.LoginUseCase>(
       () => _i1068.LoginUseCase(gh<_i427.AuthRepository>()),
     );
@@ -78,26 +82,26 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i834.CreateTodoUseCase>(
       () => _i834.CreateTodoUseCase(gh<_i158.TodoRepository>()),
     );
-    gh.factory<_i375.UpdateTodoUseCase>(
-      () => _i375.UpdateTodoUseCase(gh<_i158.TodoRepository>()),
-    );
-    gh.factory<_i412.CommitTodosUseCase>(
-      () => _i412.CommitTodosUseCase(gh<_i158.TodoRepository>()),
-    );
-    gh.factory<_i314.FetchTodosUseCase>(
-      () => _i314.FetchTodosUseCase(gh<_i158.TodoRepository>()),
-    );
-    gh.factory<_i552.DeleteTodoUseCase>(
-      () => _i552.DeleteTodoUseCase(gh<_i158.TodoRepository>()),
-    );
     gh.factory<_i133.AddTodoUseCase>(
       () => _i133.AddTodoUseCase(gh<_i158.TodoRepository>()),
     );
     gh.factory<_i362.GetAllTodosUseCase>(
       () => _i362.GetAllTodosUseCase(gh<_i158.TodoRepository>()),
     );
+    gh.factory<_i375.UpdateTodoUseCase>(
+      () => _i375.UpdateTodoUseCase(gh<_i158.TodoRepository>()),
+    );
+    gh.factory<_i412.CommitTodosUseCase>(
+      () => _i412.CommitTodosUseCase(gh<_i158.TodoRepository>()),
+    );
     gh.factory<_i183.UpdateTodoStatusUseCase>(
       () => _i183.UpdateTodoStatusUseCase(gh<_i158.TodoRepository>()),
+    );
+    gh.factory<_i314.FetchTodosUseCase>(
+      () => _i314.FetchTodosUseCase(gh<_i158.TodoRepository>()),
+    );
+    gh.factory<_i552.DeleteTodoUseCase>(
+      () => _i552.DeleteTodoUseCase(gh<_i158.TodoRepository>()),
     );
     gh.factory<_i182.UpdateTodoDatesUseCase>(
       () => _i182.UpdateTodoDatesUseCase(gh<_i158.TodoRepository>()),
@@ -126,7 +130,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i368.GetCompletedGoalsUseCase>(
       () => _i368.GetCompletedGoalsUseCase(gh<_i559.GoalRepository>()),
     );
-    gh.factory<VerifySmsCode>(() => VerifySmsCode(gh<_i366.SmsRepository>()));
+    gh.factory<_i73.VerifySmsCode>(
+      () => _i73.VerifySmsCode(gh<_i366.SmsRepository>()),
+    );
     gh.factory<_i461.SendSmsCode>(
       () => _i461.SendSmsCode(gh<_i366.SmsRepository>()),
     );

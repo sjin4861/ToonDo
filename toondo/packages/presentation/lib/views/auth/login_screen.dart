@@ -5,19 +5,17 @@ import 'package:presentation/widgets/text_fields/custom_auth_text_field.dart';
 import 'package:get_it/get_it.dart';
 
 class LoginScreen extends StatelessWidget {
-  final String? phoneNumber; // 외부에서 전달되더라도 필드 입력이 가능하도록 함
-
-  LoginScreen({this.phoneNumber});
+  LoginScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final String? passedPhoneNumber = ModalRoute.of(context)?.settings.arguments as String?;
     return ChangeNotifierProvider<LoginViewModel>.value(
       value: GetIt.instance<LoginViewModel>(),
       child: Consumer<LoginViewModel>(
         builder: (context, viewModel, child) {
-          // 전달된 휴대폰 번호가 있다면 컨트롤러에 초기값 설정
-          if (phoneNumber != null && viewModel.phoneNumberController.text.isEmpty) {
-          viewModel.phoneNumberController.text = phoneNumber!;
+          if (passedPhoneNumber != null && viewModel.phoneNumberController.text.isEmpty) {
+            viewModel.phoneNumberController.text = passedPhoneNumber;
           }
           return Scaffold(
             backgroundColor: Color(0xFFFCFCFC),
@@ -77,8 +75,8 @@ class LoginScreen extends StatelessWidget {
                       key: const Key('login_phoneNumberField'),
                       label: '휴대폰 번호',
                       controller: viewModel.phoneNumberController,
-                      readOnly: phoneNumber != null,
-                      hintText: phoneNumber != null ? null : '휴대폰 번호를 입력하세요',
+                      readOnly: passedPhoneNumber != null,
+                      hintText: passedPhoneNumber != null ? null : '휴대폰 번호를 입력하세요',
                     ),
                     // 휴대폰 번호 에러 메시지 (있을 경우)
                     if (viewModel.loginError != null &&
@@ -159,6 +157,7 @@ class LoginScreen extends StatelessWidget {
                     child: ElevatedButton(
                       key: const Key('login_nextButton'),
                       onPressed: () async {
+                        print('로그인 시도 전화번호: ${viewModel.phoneNumberController.text}');
                         bool success = await viewModel.login();
                         if (success) {
                           // 로그인 성공 시 홈 화면으로 이동

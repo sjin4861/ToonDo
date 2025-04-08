@@ -5,9 +5,9 @@ import 'package:get_it/get_it.dart';
 import 'package:domain/entities/todo.dart';
 import 'package:domain/usecases/todo/create_todo.dart';
 import 'package:domain/usecases/todo/update_todo.dart';
-import 'package:presentation/viewmodels/goal/goal_viewmodel.dart';
 import 'package:presentation/widgets/calendar/calendar_bottom_sheet.dart';
 import 'package:injectable/injectable.dart';
+import 'package:domain/usecases/goal/get_goals.dart';
 
 @LazySingleton()
 class TodoInputViewModel extends ChangeNotifier {
@@ -31,17 +31,17 @@ class TodoInputViewModel extends ChangeNotifier {
   bool isDDayTodo;
   final CreateTodoUseCase _createTodoUseCase;
   final UpdateTodoUseCase _updateTodoUseCase;
-  final GoalViewModel _goalViewModel;
+  final GetGoalsUseCase _getGoalsUseCase;
 
   TodoInputViewModel({
     this.todo,
     required this.isDDayTodo,
     required CreateTodoUseCase createTodoUseCase,
     required UpdateTodoUseCase updateTodoUseCase,
-    required GoalViewModel goalViewModel,
+    required GetGoalsUseCase getGoalsUseCase,
   }) : _createTodoUseCase = createTodoUseCase,
        _updateTodoUseCase = updateTodoUseCase,
-       _goalViewModel = goalViewModel {
+       _getGoalsUseCase = getGoalsUseCase {
     if (todo != null) {
       // 수정 모드
       titleController.text = todo!.title;
@@ -65,7 +65,8 @@ class TodoInputViewModel extends ChangeNotifier {
 
   get goalNameError => null;
 
-  List<Goal> get goals => _goalViewModel.goals;
+  // 필요한 시점에 getGoalsUseCase를 호출하여 goals 를 가져옵니다.
+  Future<List<Goal>> fetchGoals() async => _getGoalsUseCase();
 
   void _onTitleChanged() {
     isTitleNotEmpty = titleController.text.isNotEmpty;
@@ -179,10 +180,9 @@ class TodoInputViewModel extends ChangeNotifier {
       formKey.currentState!.save();
       try {
         Todo newTodo = Todo(
-          id: todo!.id,
+          id: todo?.id ?? DateTime.now().millisecondsSinceEpoch.toString(), // 변경: todo가 null인 경우 새로운 id 생성
           title: title,
-          startDate:
-              isDailyTodo ? DateTime.now() : (startDate ?? DateTime.now()),
+          startDate: isDailyTodo ? DateTime.now() : (startDate ?? DateTime.now()),
           endDate: isDailyTodo ? DateTime.now() : (endDate ?? DateTime.now()),
           goalId: selectedGoalId,
           importance: importance,

@@ -21,7 +21,7 @@ class UserRemoteDatasource {
     final response = await client.put(
       url,
       headers: {
-        'Authorization': 'Bearer $token',
+        'Authorization': token,
         'Content-Type': 'application/json',
       },
       body: jsonEncode(requestBody),
@@ -43,7 +43,7 @@ class UserRemoteDatasource {
     final response = await client.put(
       url,
       headers: {
-        'Authorization': 'Bearer $token',
+        'Authorization': token,
         'Content-Type': 'application/json',
       },
       body: jsonEncode(requestBody),

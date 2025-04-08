@@ -1,3 +1,5 @@
+import 'package:domain/entities/goal.dart';
+import 'package:domain/usecases/goal/get_goals.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:get_it/get_it.dart';
@@ -22,8 +24,14 @@ class TodoInputView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<TodoInputViewModel>.value(
-      value: GetIt.instance<TodoInputViewModel>(),
+    return ChangeNotifierProvider<TodoInputViewModel>(
+      create: (_) => TodoInputViewModel(
+        todo: todo,
+        isDDayTodo: isDDayTodo,
+        createTodoUseCase: GetIt.instance<CreateTodoUseCase>(),
+        updateTodoUseCase: GetIt.instance<UpdateTodoUseCase>(),
+        getGoalsUseCase: GetIt.instance<GetGoalsUseCase>(),
+      ),
       child: Scaffold(
         backgroundColor: const Color(0xFFFCFCFC),
         appBar: CustomAppBar(title: todo != null ? '투두 수정' : '투두 작성'),
@@ -151,8 +159,9 @@ class TodoInputView extends StatelessWidget {
               letterSpacing: 0.18,
               fontFamily: 'Pretendard Variable',
             ),
+            // 변경: null 안전 연산자 사용하여 value가 null일 경우 빈 문자열 처리
             onSaved: (value) {
-              viewModel.title = value!.trim();
+              viewModel.title = (value ?? '').trim();
             },
           ),
         ),
@@ -194,15 +203,25 @@ class TodoInputView extends StatelessWidget {
     TodoInputViewModel viewModel,
     BuildContext context,
   ) {
-    // GoalListDropdown는 목표 선택 UI를 구성하는 커스텀 위젯입니다.
-    return GoalListDropdown(
-      selectedGoalId: viewModel.selectedGoalId,
-      goals: viewModel.goals,
-      isDropdownOpen: viewModel.showGoalDropdown,
-      onGoalSelected: (goalId) {
-        viewModel.selectGoal(goalId);
+    return FutureBuilder<List<Goal>>(
+      future: viewModel.fetchGoals(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return const Text('Error loading goals');
+        } else {
+          return GoalListDropdown(
+            selectedGoalId: viewModel.selectedGoalId,
+            goals: snapshot.data ?? [],
+            isDropdownOpen: viewModel.showGoalDropdown,
+            onGoalSelected: (goalId) {
+              viewModel.selectGoal(goalId);
+            },
+            toggleDropdown: viewModel.toggleGoalDropdown,
+          );
+        }
       },
-      toggleDropdown: viewModel.toggleGoalDropdown,
     );
   }
 

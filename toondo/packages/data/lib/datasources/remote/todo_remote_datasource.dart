@@ -48,7 +48,7 @@ class TodoRemoteDataSource {
       final response = await client.post(
         url,
         headers: {
-          'Authorization': 'Bearer $token',
+          'Authorization': token,
           'Content-Type': 'application/json',
         },
         body: jsonEncode(requestBody),
@@ -73,7 +73,7 @@ class TodoRemoteDataSource {
     final url = Uri.parse('${Constants.baseUrl}/todos/all/fetch');
     final response = await client.get(
       url,
-      headers: {'Authorization': 'Bearer $token'},
+      headers: {'Authorization': token},
     );
     if (response.statusCode == 200) {
       final decoded = jsonDecode(response.body);

@@ -84,14 +84,16 @@ class GoalModel extends HiveObject {
 
   factory GoalModel.fromJson(Map<String, dynamic> json) {
     return GoalModel(
-      id: json['id'] as String,
-      name: json['name'],
+      id: json['goalId'].toString(), // 변경: 'id' 대신 'goalId'
+      name: json['goalName'],        // 변경: 'name' 대신 'goalName'
       icon: json['icon'],
       progress: (json['progress'] as num).toDouble(),
       startDate: DateTime.parse(json['startDate']),
       endDate: DateTime.parse(json['endDate']),
-      isCompleted: json['isCompleted'],
-      status: json['status'],
+      isCompleted: false,            // API에서 isCompleted 미전달 시 기본값 사용
+      status: json['status'] != null
+          ? GoalStatus.values[json['status']]
+          : GoalStatus.active,       // null인 경우 기본값 처리
       isSynced: true,
     );
   }

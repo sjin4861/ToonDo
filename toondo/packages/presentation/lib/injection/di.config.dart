@@ -12,6 +12,7 @@
 import 'package:domain/entities/goal.dart' as _i876;
 import 'package:domain/entities/todo.dart' as _i429;
 import 'package:domain/entities/user.dart' as _i30;
+import 'package:domain/usecases/auth/check_phone_number_exists.dart' as _i426;
 import 'package:domain/usecases/auth/get_token.dart' as _i415;
 import 'package:domain/usecases/auth/login.dart' as _i1068;
 import 'package:domain/usecases/auth/register.dart' as _i899;
@@ -19,6 +20,7 @@ import 'package:domain/usecases/goal/create_goal.dart' as _i695;
 import 'package:domain/usecases/goal/delete_goal.dart' as _i582;
 import 'package:domain/usecases/goal/get_completed_goals.dart' as _i368;
 import 'package:domain/usecases/goal/get_givenup_goals.dart' as _i292;
+import 'package:domain/usecases/goal/get_goals.dart' as _i737;
 import 'package:domain/usecases/goal/get_inprogress_goals.dart' as _i243;
 import 'package:domain/usecases/goal/read_goals.dart' as _i663;
 import 'package:domain/usecases/goal/update_goal.dart' as _i422;
@@ -50,6 +52,8 @@ import 'package:presentation/viewmodels/home/home_viewmodel.dart' as _i370;
 import 'package:presentation/viewmodels/login/login_viewmodel.dart' as _i764;
 import 'package:presentation/viewmodels/my_page/my_page_viewmodel.dart'
     as _i272;
+import 'package:presentation/viewmodels/my_page/notification_setting/time_picker_viewmodel.dart'
+    as _i393;
 import 'package:presentation/viewmodels/onboarding/onboarding_viewmodel.dart'
     as _i657;
 import 'package:presentation/viewmodels/signup/signup_viewmodel.dart' as _i705;
@@ -69,6 +73,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i865.SlimeCharacterViewModel>(
       () => _i865.SlimeCharacterViewModel(),
     );
+    gh.lazySingleton<_i393.TimePickerViewModel>(
+      () => _i393.TimePickerViewModel(),
+    );
     gh.lazySingleton<_i742.GoalInputViewModel>(
       () => _i742.GoalInputViewModel(
         createGoalUseCase: gh<_i695.CreateGoalUseCase>(),
@@ -77,10 +84,7 @@ extension GetItInjectableX on _i174.GetIt {
       ),
     );
     gh.lazySingleton<_i764.LoginViewModel>(
-      () => _i764.LoginViewModel(
-        phoneNumber: gh<String>(),
-        loginUseCase: gh<_i1068.LoginUseCase>(),
-      ),
+      () => _i764.LoginViewModel(loginUseCase: gh<_i1068.LoginUseCase>()),
     );
     gh.lazySingleton<_i272.MyPageViewModel>(
       () => _i272.MyPageViewModel(
@@ -95,6 +99,15 @@ extension GetItInjectableX on _i174.GetIt {
         deleteGoalUseCase: gh<_i582.DeleteGoalUseCase>(),
         getUserNicknameUseCase: gh<_i849.GetUserNicknameUseCase>(),
         getSlimeResponseUseCase: gh<_i88.GetSlimeResponseUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i72.TodoInputViewModel>(
+      () => _i72.TodoInputViewModel(
+        todo: gh<_i429.Todo>(),
+        isDDayTodo: gh<bool>(),
+        createTodoUseCase: gh<_i834.CreateTodoUseCase>(),
+        updateTodoUseCase: gh<_i375.UpdateTodoUseCase>(),
+        getGoalsUseCase: gh<_i737.GetGoalsUseCase>(),
       ),
     );
     gh.lazySingleton<_i940.GoalManagementViewModel>(
@@ -114,6 +127,8 @@ extension GetItInjectableX on _i174.GetIt {
         registerUserUseCase: gh<_i899.RegisterUseCase>(),
         sendSmsCodeUseCase: gh<_i461.SendSmsCode>(),
         verifySmsCodeUseCase: gh<_i73.VerifySmsCode>(),
+        checkPhoneNumberExistsUseCase:
+            gh<_i426.CheckPhoneNumberExistsUseCase>(),
       ),
     );
     gh.lazySingleton<_i197.WelcomeViewModel>(
@@ -144,15 +159,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i657.OnboardingViewModel>(
       () => _i657.OnboardingViewModel(
         updateNickNameUseCase: gh<_i910.UpdateNickNameUseCase>(),
-      ),
-    );
-    gh.lazySingleton<_i72.TodoInputViewModel>(
-      () => _i72.TodoInputViewModel(
-        todo: gh<_i429.Todo>(),
-        isDDayTodo: gh<bool>(),
-        createTodoUseCase: gh<_i834.CreateTodoUseCase>(),
-        updateTodoUseCase: gh<_i375.UpdateTodoUseCase>(),
-        goalViewModel: gh<_i194.GoalViewModel>(),
       ),
     );
     return this;

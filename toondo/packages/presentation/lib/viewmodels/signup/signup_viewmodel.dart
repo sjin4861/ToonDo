@@ -1,3 +1,4 @@
+import 'package:domain/usecases/auth/check_phone_number_exists.dart';
 import 'package:flutter/material.dart';
 import 'package:domain/entities/user.dart';
 import 'package:domain/usecases/auth/register.dart';
@@ -27,11 +28,13 @@ class SignupViewModel extends ChangeNotifier {
   final RegisterUseCase registerUserUseCase;
   final SendSmsCode sendSmsCodeUseCase;
   final VerifySmsCode verifySmsCodeUseCase;
+  final CheckPhoneNumberExistsUseCase checkPhoneNumberExistsUseCase;
 
   SignupViewModel({
     required this.registerUserUseCase,
     required this.sendSmsCodeUseCase,
     required this.verifySmsCodeUseCase,
+    required this.checkPhoneNumberExistsUseCase,
   });
 
   VoidCallback? navigateToLogin;
@@ -92,7 +95,7 @@ class SignupViewModel extends ChangeNotifier {
   }
 
   Future<bool> checkIfRegistered() async {
-    return false;
+    return await checkPhoneNumberExistsUseCase(phoneNumber);
   }
 
   Future<bool> validatePhoneNumber() async {

@@ -5,4 +5,5 @@ abstract class AuthRepository {
   Future<User> login(String phoneNumber, String password);
   Future<void> logout();
   Future<String?> getToken();
+  Future<bool> checkPhoneNumberExists(String phoneNumber);
 }

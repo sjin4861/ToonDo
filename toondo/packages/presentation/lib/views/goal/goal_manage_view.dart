@@ -20,23 +20,13 @@ class GoalManageView extends StatelessWidget {
         builder: (context, managementVM, child) {
           return Scaffold(
             backgroundColor: const Color(0xFFFCFCFC),
-            appBar: CustomAppBar(title: '목표'),
+            appBar: CustomAppBar(title: '목표 관리하기'),
             body: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      '목표 관리하기',
-                      style: TextStyle(
-                        color: Color(0xFF111111),
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.24,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
                     TwoMenuBarWidget(
                       selectedStatus: managementVM.filterOption == GoalManagementFilterOption.inProgress
                           ? Status.active
