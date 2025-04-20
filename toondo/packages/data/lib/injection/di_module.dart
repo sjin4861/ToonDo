@@ -1,7 +1,7 @@
 import 'package:data/models/goal_model.dart';
 import 'package:data/models/todo_model.dart';
 import 'package:data/models/user_model.dart';
-import 'package:domain/entities/goal_status.dart';
+import 'package:data/models/goal_status_enum.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:injectable/injectable.dart';
@@ -23,8 +23,8 @@ abstract class RegisterModule {
   @preResolve
   Future<Box<GoalModel>> get goalBox => Hive.openBox<GoalModel>('goals');
   @preResolve
-  Future<Box<GoalStatus>> get goalStatusBox =>
-      Hive.openBox<GoalStatus>('goalStatus');
+  Future<Box<GoalStatusEnum>> get goalStatusBox =>
+      Hive.openBox<GoalStatusEnum>('goalStatus');
   @lazySingleton
   FlutterSecureStorage get secureStorage => FlutterSecureStorage();
 }
