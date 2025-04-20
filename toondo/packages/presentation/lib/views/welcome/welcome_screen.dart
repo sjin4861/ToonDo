@@ -66,8 +66,9 @@ class WelcomeScreen extends StatelessWidget {
                           SizedBox(height: 4),
                           SvgPicture.asset(
                             'assets/icons/shadow.svg',
-                            width: 130.61,
-                            height: 20.62,
+                            width: 139.30,
+                            height: 21.99,
+                            allowDrawingOutsideViewBox: true,
                           ),
                         ],
                       ),
