@@ -5,9 +5,9 @@ import 'package:injectable/injectable.dart';
 @injectable
 class UpdateGoalProgressUseCase {
   final GoalRepository repository;
-  UpdateGoalProgressUseCase({required this.repository});
+  UpdateGoalProgressUseCase(this.repository);
 
-  Future<void> call(Goal goal, double newProgress) async {
-    await repository.updateGoalProgress(goal, newProgress);
+  Future<bool> call(Goal goal, double newProgress) {
+    return repository.updateGoalProgressRemote(goal, newProgress);
   }
 }
