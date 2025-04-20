@@ -1,5 +1,5 @@
 import 'package:domain/entities/goal.dart';
-import 'package:domain/usecases/goal/read_goals.dart';
+import 'package:domain/usecases/goal/get_goals_local.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:get_it/get_it.dart';
@@ -25,16 +25,13 @@ class TodoManageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<TodoManageViewModel>(
-      create:
-          (_) => TodoManageViewModel(
+      create: (_) => TodoManageViewModel(
             fetchTodosUseCase: GetIt.instance<FetchTodosUseCase>(),
             deleteTodoUseCase: GetIt.instance<DeleteTodoUseCase>(),
-            commitTodosUseCase: GetIt.instance<CommitTodosUseCase>(),
-            createTodoUseCase: GetIt.instance<CreateTodoUseCase>(),
             getTodosUseCase: GetIt.instance<GetAllTodosUseCase>(),
             updateTodoStatusUseCase: GetIt.instance<UpdateTodoStatusUseCase>(),
             updateTodoDatesUseCase: GetIt.instance<UpdateTodoDatesUseCase>(),
-            readGoalUseCase: GetIt.instance<ReadGoalsUseCase>(),
+            getGoalsLocalUseCase: GetIt.instance<GetGoalsLocalUseCase>(),
             initialDate: selectedDate,
           )..loadTodos(),
       child: Scaffold(
@@ -242,6 +239,7 @@ class TodoManageView extends StatelessWidget {
 
     return TodoListItem(
       todo: todo,
+      goals: viewModel.goals,
       selectedDate: selectedDateOnly,
       onUpdate: () {
         Navigator.push(
