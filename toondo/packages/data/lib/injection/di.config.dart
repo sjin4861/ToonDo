@@ -20,20 +20,23 @@ import 'package:data/datasources/remote/todo_remote_datasource.dart' as _i627;
 import 'package:data/datasources/remote/user_remote_datasource.dart' as _i813;
 import 'package:data/injection/di_module.dart' as _i1048;
 import 'package:data/models/goal_model.dart' as _i798;
+import 'package:data/models/goal_status_enum.dart' as _i934;
 import 'package:data/models/todo_model.dart' as _i923;
 import 'package:data/models/user_model.dart' as _i245;
 import 'package:data/repositories/auth_repository_impl.dart' as _i819;
 import 'package:data/repositories/character_repository_impl.dart' as _i919;
 import 'package:data/repositories/goal_repository_impl.dart' as _i527;
 import 'package:data/repositories/gpt_repository_impl.dart' as _i905;
+import 'package:data/repositories/slime_character_repository_impl.dart'
+    as _i409;
 import 'package:data/repositories/sms_repository_impl.dart' as _i235;
 import 'package:data/repositories/todo_repository_impl.dart' as _i366;
 import 'package:data/repositories/user_repository_impl.dart' as _i537;
-import 'package:domain/entities/goal_status.dart' as _i281;
 import 'package:domain/repositories/auth_repository.dart' as _i427;
 import 'package:domain/repositories/character_repository.dart' as _i434;
 import 'package:domain/repositories/goal_repository.dart' as _i559;
 import 'package:domain/repositories/gpt_repository.dart' as _i183;
+import 'package:domain/repositories/slime_character_repository.dart' as _i583;
 import 'package:domain/repositories/sms_repository.dart' as _i366;
 import 'package:domain/repositories/todo_repository.dart' as _i158;
 import 'package:domain/repositories/user_repository.dart' as _i988;
@@ -63,7 +66,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => registerModule.goalBox,
       preResolve: true,
     );
-    await gh.factoryAsync<_i979.Box<_i281.GoalStatus>>(
+    await gh.factoryAsync<_i979.Box<_i934.GoalStatusEnum>>(
       () => registerModule.goalStatusBox,
       preResolve: true,
     );
@@ -82,6 +85,8 @@ extension GetItInjectableX on _i174.GetIt {
       instanceName: 'todoBox',
       preResolve: true,
     );
+    gh.lazySingleton<_i583.SlimeCharacterRepository>(
+        () => _i409.SlimeCharacterRepositoryImpl());
     gh.lazySingleton<_i434.CharacterRepository>(
         () => _i919.CharacterRepositoryImpl());
     gh.lazySingleton<_i1024.UserLocalDatasource>(
@@ -98,7 +103,7 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i268.SmsRemoteDataSource(client: gh<_i519.Client>()));
     gh.lazySingleton<_i34.GoalLocalDatasource>(() => _i34.GoalLocalDatasource(
           gh<_i979.Box<_i798.GoalModel>>(),
-          gh<_i979.Box<_i281.GoalStatus>>(),
+          gh<_i979.Box<_i934.GoalStatusEnum>>(),
         ));
     gh.lazySingleton<_i427.AuthRepository>(() => _i819.AuthRepositoryImpl(
           gh<_i954.AuthRemoteDataSource>(),
