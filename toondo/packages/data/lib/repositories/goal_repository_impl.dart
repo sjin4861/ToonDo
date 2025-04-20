@@ -3,7 +3,6 @@ import 'package:domain/repositories/goal_repository.dart';
 import 'package:data/datasources/local/goal_local_datasource.dart';
 import 'package:data/datasources/remote/goal_remote_datasource.dart';
 import 'package:domain/entities/goal.dart';
-import 'package:domain/entities/goal_status.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton(as: GoalRepository)
@@ -16,58 +15,61 @@ class GoalRepositoryImpl implements GoalRepository {
     required this.remoteDatasource,
   });
 
+  // 로컬 전용 CRUD
   @override
-  Future<List<Goal>> readGoals() async {
-    final goals = await remoteDatasource.readGoals();
-    await localDatasource.clearGoals();
-    for (var goal in goals) {
-      await localDatasource.saveGoal(goal);
-    }
-    return goals;
-  }
-
-  @override
-  Future<Goal> createGoal(Goal goal) async {
-    final createdGoal = await remoteDatasource.createGoal(goal);
-    await localDatasource.saveGoal(createdGoal);
-    return createdGoal;
-  }
-
-  @override
-  Future<void> updateGoal(Goal goal) async {
-    await remoteDatasource.updateGoal(goal);
-    await localDatasource.updateGoal(goal);
-  }
-
-  @override
-  Future<void> deleteGoal(String goalId) async {
-    await remoteDatasource.deleteGoal(goalId);
-    await localDatasource.deleteGoal(goalId); // 로컬에서도 삭제
-  }
-
-  @override
-  List<Goal> getLocalGoals() {
+  List<Goal> getGoalsLocal() {
     return localDatasource.getAllGoals();
   }
 
   @override
-  Future<bool> updateGoalStatus(Goal goal, Status newStatus) async {
-    final updated = await remoteDatasource.updateGoalStatus(goal, newStatus);
-    if (updated) {
-      await localDatasource.updateGoalStatus(goal, newStatus);
-    }
-    return updated;
+  Future<Goal?> getGoalByIdLocal(String goalId) async {
+    final list = localDatasource.getAllGoals();
+    return list.firstWhere((g) => g.id == goalId);
   }
 
   @override
-  Future<bool> updateGoalProgress(Goal goal, double newProgress) async {
-    final updated = await remoteDatasource.updateGoalProgress(
-      goal,
-      newProgress,
-    );
-    if (updated) {
-      await localDatasource.updateGoalProgress(goal, newProgress);
-    }
-    return updated;
+  Future<void> saveGoalLocal(Goal goal) async {
+    await localDatasource.saveGoal(goal);
+  }
+
+  @override
+  Future<void> updateGoalLocal(Goal goal) async {
+    await localDatasource.updateGoal(goal);
+  }
+
+  @override
+  Future<void> deleteGoalLocal(String goalId) async {
+    await localDatasource.deleteGoal(goalId);
+  }
+
+  // 원격 전용 CRUD
+  @override
+  Future<List<Goal>> fetchGoalsRemote() async {
+    return await remoteDatasource.readGoals();
+  }
+
+  @override
+  Future<Goal> createGoalRemote(Goal goal) async {
+    return await remoteDatasource.createGoal(goal);
+  }
+
+  @override
+  Future<bool> updateGoalStatusRemote(Goal goal, Status newStatus) async {
+    return await remoteDatasource.updateGoalStatus(goal, newStatus);
+  }
+
+  @override
+  Future<bool> updateGoalProgressRemote(Goal goal, double newProgress) async {
+    return await remoteDatasource.updateGoalProgress(goal, newProgress);
+  }
+
+  @override
+  Future<void> updateGoalRemote(Goal goal) async {
+    await remoteDatasource.updateGoal(goal);
+  }
+
+  @override
+  Future<void> deleteGoalRemote(String goalId) async {
+    await remoteDatasource.deleteGoal(goalId);
   }
 }
