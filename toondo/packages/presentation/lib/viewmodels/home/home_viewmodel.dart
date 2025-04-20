@@ -3,7 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:domain/entities/goal.dart';
 import 'package:domain/usecases/goal/get_inprogress_goals.dart';
-import 'package:domain/usecases/goal/delete_goal.dart';
+// removed remote delete use case to operate only on local DB
+import 'package:domain/usecases/goal/delete_goal_local.dart';
+import 'package:domain/usecases/goal/delete_goal_remote.dart';
 import 'package:injectable/injectable.dart';
 import 'package:domain/usecases/user/get_user_nickname.dart';
 import 'package:domain/usecases/gpt/get_slime_response.dart';
@@ -13,7 +15,8 @@ import 'package:get_it/get_it.dart';
 @LazySingleton()
 class HomeViewModel extends ChangeNotifier {
   final GetInProgressGoalsUseCase getInProgressGoalsUseCase;
-  final DeleteGoalUseCase deleteGoalUseCase;
+  final DeleteGoalRemoteUseCase deleteGoalRemoteUseCase;
+  final DeleteGoalLocalUseCase deleteGoalLocalUseCase;
   final GetUserNicknameUseCase getUserNicknameUseCase;
   final GetSlimeResponseUseCase getSlimeResponseUseCase;
 
@@ -47,7 +50,8 @@ class HomeViewModel extends ChangeNotifier {
 
   HomeViewModel({
     required this.getInProgressGoalsUseCase,
-    required this.deleteGoalUseCase,
+    required this.deleteGoalRemoteUseCase,
+    required this.deleteGoalLocalUseCase,
     required this.getUserNicknameUseCase,
     required this.getSlimeResponseUseCase,
   }) {
@@ -67,7 +71,9 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   Future<void> deleteGoal(String goalId) async {
-    await deleteGoalUseCase(goalId);
+    // optionally delete from remote if needed:
+    // await deleteGoalRemoteUseCase(goalId);
+    await deleteGoalLocalUseCase(goalId);
     await loadGoals();
   }
   

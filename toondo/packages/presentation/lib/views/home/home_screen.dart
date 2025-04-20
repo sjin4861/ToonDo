@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:data/models/goal_status.dart';
+import 'package:domain/entities/status.dart';
 import 'package:presentation/widgets/bottom_button/expandable_floating_button.dart';
 import 'package:presentation/widgets/character/background.dart';
 import 'package:presentation/widgets/goal/goal_list_section.dart';
@@ -22,7 +22,7 @@ class HomeScreen extends StatelessWidget {
           // homeVM에서 사용자 닉네임과 목표 리스트 직접 사용
           final String userNickname = homeVM.userNickname;
           final inProgressGoals = homeVM.goals
-              .where((g) => g.status == GoalStatus.active)
+              .where((g) => g.status == Status.active)
               .toList();
           inProgressGoals.sort((a, b) => a.endDate.compareTo(b.endDate));
           final top3Goals = inProgressGoals.take(3).toList();
