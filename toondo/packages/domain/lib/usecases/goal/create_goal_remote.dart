@@ -3,11 +3,11 @@ import 'package:domain/repositories/goal_repository.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
-class UpdateGoalProgressUseCase {
+class CreateGoalRemoteUseCase {
   final GoalRepository repository;
-  UpdateGoalProgressUseCase(this.repository);
+  CreateGoalRemoteUseCase(this.repository);
 
-  Future<bool> call(Goal goal, double newProgress) {
-    return repository.updateGoalProgressRemote(goal, newProgress);
+  Future<Goal> call(Goal goal) async {
+    return repository.createGoalRemote(goal);
   }
 }

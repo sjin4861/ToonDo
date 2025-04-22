@@ -1,5 +1,5 @@
 import 'package:domain/entities/goal.dart';
-import 'package:domain/usecases/goal/get_goals.dart';
+import 'package:domain/usecases/goal/get_goals_local.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:get_it/get_it.dart';
@@ -7,7 +7,6 @@ import 'package:domain/entities/todo.dart';
 import 'package:domain/usecases/todo/create_todo.dart';
 import 'package:domain/usecases/todo/update_todo.dart';
 import 'package:presentation/viewmodels/todo/todo_input_viewmodel.dart';
-import 'package:presentation/viewmodels/goal/goal_viewmodel.dart';
 import 'package:presentation/widgets/app_bar/custom_app_bar.dart';
 import 'package:presentation/widgets/bottom_button/edit_update_button.dart';
 import 'package:presentation/widgets/goal/goal_list_dropdown.dart';
@@ -30,7 +29,7 @@ class TodoInputView extends StatelessWidget {
         isDDayTodo: isDDayTodo,
         createTodoUseCase: GetIt.instance<CreateTodoUseCase>(),
         updateTodoUseCase: GetIt.instance<UpdateTodoUseCase>(),
-        getGoalsUseCase: GetIt.instance<GetGoalsUseCase>(),
+        getGoalsLocalUseCase: GetIt.instance<GetGoalsLocalUseCase>(),
       ),
       child: Scaffold(
         backgroundColor: const Color(0xFFFCFCFC),

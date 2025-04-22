@@ -24,7 +24,7 @@ class GoalModelAdapter extends TypeAdapter<GoalModel> {
       startDate: fields[4] as DateTime,
       endDate: fields[5] as DateTime,
       isCompleted: fields[6] as bool,
-      status: fields[7] as GoalStatus,
+      status: fields[7] as GoalStatusEnum,
       isSynced: fields[8] as bool,
     );
   }

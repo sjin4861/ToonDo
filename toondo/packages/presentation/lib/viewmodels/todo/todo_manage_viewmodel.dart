@@ -1,13 +1,11 @@
 import 'package:domain/entities/goal.dart';
 import 'package:domain/entities/todo.dart';
-import 'package:domain/usecases/goal/read_goals.dart';
+import 'package:domain/usecases/goal/get_goals_local.dart';
 import 'package:domain/usecases/todo/get_all_todos.dart';
 import 'package:domain/usecases/todo/fetch_todos.dart';
 import 'package:domain/usecases/todo/update_todo_dates.dart';
 import 'package:domain/usecases/todo/update_todo_status.dart';
 import 'package:domain/usecases/todo/delete_todo.dart';
-import 'package:domain/usecases/todo/commit_todos.dart';
-import 'package:domain/usecases/todo/create_todo.dart';
 import 'package:flutter/material.dart'; // New dependency
 import 'package:injectable/injectable.dart';
 
@@ -20,7 +18,7 @@ class TodoManageViewModel extends ChangeNotifier {
   final GetAllTodosUseCase _getTodosUseCase;
   final UpdateTodoStatusUseCase _updateTodoStatusUseCase;
   final UpdateTodoDatesUseCase _updateTodoDatesUseCase;
-  final ReadGoalsUseCase _readGoalUseCase; // New use case dependency
+  final GetGoalsLocalUseCase _getGoalsLocalUseCase;
 
   DateTime selectedDate;
   FilterOption selectedFilter = FilterOption.all;
@@ -28,31 +26,33 @@ class TodoManageViewModel extends ChangeNotifier {
   List<Todo> allTodos = [];
   List<Todo> dDayTodos = [];
   List<Todo> dailyTodos = [];
-  List<Goal> goals = []; // Local goals list
+  List<Goal> goals = [];
 
   TodoManageViewModel({
     required FetchTodosUseCase fetchTodosUseCase,
     required DeleteTodoUseCase deleteTodoUseCase,
-    required CommitTodosUseCase commitTodosUseCase,
-    required CreateTodoUseCase createTodoUseCase,
     required GetAllTodosUseCase getTodosUseCase,
     required UpdateTodoStatusUseCase updateTodoStatusUseCase,
     required UpdateTodoDatesUseCase updateTodoDatesUseCase,
-    required ReadGoalsUseCase readGoalUseCase, // New parameter
+    required GetGoalsLocalUseCase getGoalsLocalUseCase,
     DateTime? initialDate,
   }) : _fetchTodosUseCase = fetchTodosUseCase,
        _deleteTodoUseCase = deleteTodoUseCase,
        _getTodosUseCase = getTodosUseCase,
        _updateTodoStatusUseCase = updateTodoStatusUseCase,
        _updateTodoDatesUseCase = updateTodoDatesUseCase,
-       _readGoalUseCase = readGoalUseCase,
+       _getGoalsLocalUseCase = getGoalsLocalUseCase,
        selectedDate = initialDate ?? DateTime.now();
 
   Future<void> loadTodos() async {
-    allTodos = await _fetchTodosUseCase();
-    goals =
-        await _readGoalUseCase(); // Fetch goals instead of using factored viewmodel
-    _filterAndCategorizeTodos();
+    try {
+      // 원격 서버에서 가져오는 대신 로컬 데이터베이스에서만 Todo 불러오기
+      allTodos = await _getTodosUseCase();
+      goals = await _getGoalsLocalUseCase();
+      _filterAndCategorizeTodos();
+    } catch (e) {
+      print('Error loading todos from local storage: $e');
+    }
   }
 
   Future<List<Todo>> getTodos() async {

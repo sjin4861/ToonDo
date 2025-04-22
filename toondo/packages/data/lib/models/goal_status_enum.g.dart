@@ -1,39 +1,39 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'goal_status.dart';
+part of 'goal_status_enum.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class GoalStatusAdapter extends TypeAdapter<GoalStatus> {
+class GoalStatusEnumAdapter extends TypeAdapter<GoalStatusEnum> {
   @override
   final int typeId = 2;
 
   @override
-  GoalStatus read(BinaryReader reader) {
+  GoalStatusEnum read(BinaryReader reader) {
     switch (reader.readByte()) {
       case 0:
-        return GoalStatus.active;
+        return GoalStatusEnum.active;
       case 1:
-        return GoalStatus.completed;
+        return GoalStatusEnum.completed;
       case 2:
-        return GoalStatus.givenUp;
+        return GoalStatusEnum.givenUp;
       default:
-        return GoalStatus.active;
+        return GoalStatusEnum.active;
     }
   }
 
   @override
-  void write(BinaryWriter writer, GoalStatus obj) {
+  void write(BinaryWriter writer, GoalStatusEnum obj) {
     switch (obj) {
-      case GoalStatus.active:
+      case GoalStatusEnum.active:
         writer.writeByte(0);
         break;
-      case GoalStatus.completed:
+      case GoalStatusEnum.completed:
         writer.writeByte(1);
         break;
-      case GoalStatus.givenUp:
+      case GoalStatusEnum.givenUp:
         writer.writeByte(2);
         break;
     }
@@ -45,7 +45,7 @@ class GoalStatusAdapter extends TypeAdapter<GoalStatus> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is GoalStatusAdapter &&
+      other is GoalStatusEnumAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

@@ -1,28 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:domain/entities/goal.dart';
-import 'package:domain/usecases/goal/delete_goal.dart';
-import 'package:domain/usecases/goal/update_goal.dart';
-import 'package:domain/usecases/goal/read_goals.dart';
 import 'package:domain/usecases/goal/get_inprogress_goals.dart';
 import 'package:domain/usecases/goal/get_givenup_goals.dart';
-import 'package:domain/usecases/goal/get_completed_goals.dart';
-import 'package:domain/usecases/goal/update_goal_progress.dart';
-import 'package:domain/usecases/goal/update_goal_status.dart';
 import 'package:injectable/injectable.dart';
 import 'package:domain/entities/status.dart';
+import 'package:domain/usecases/goal/get_goals_local.dart';
+import 'package:domain/usecases/goal/get_goals_remote.dart';
+import 'package:domain/usecases/goal/update_goal_remote.dart';
+import 'package:domain/usecases/goal/update_goal_local.dart';
+import 'package:domain/usecases/goal/delete_goal_remote.dart';
+import 'package:domain/usecases/goal/delete_goal_local.dart';
+import 'package:domain/usecases/goal/update_goal_status.dart';
+import 'package:domain/usecases/goal/update_goal_progress.dart';
+import 'package:domain/usecases/goal/get_completed_goals.dart';
 
 enum GoalManagementFilterOption { inProgress, givenUp, completed }
 
 @LazySingleton()
 class GoalManagementViewModel extends ChangeNotifier {
-  final ReadGoalsUseCase readGoalsUseCase;
-  final UpdateGoalUseCase updateGoalUseCase;
-  final DeleteGoalUseCase deleteGoalUseCase;
+  final GetGoalsLocalUseCase getGoalsLocalUseCase;
+  final GetGoalsRemoteUseCase getGoalsRemoteUseCase;
+  final UpdateGoalRemoteUseCase updateGoalRemoteUseCase;
+  final UpdateGoalLocalUseCase updateGoalLocalUseCase;
+  final DeleteGoalRemoteUseCase deleteGoalRemoteUseCase;
+  final DeleteGoalLocalUseCase deleteGoalLocalUseCase;
   final GetInProgressGoalsUseCase getInProgressGoalsUseCase;
-  final GetGivenUpGoalsUseCase getGivenUpGoalsUseCase;
   final GetCompletedGoalsUseCase getCompletedGoalsUseCase;
-  final UpdateGoalProgressUseCase updateGoalProgressUseCase;
+  final GetGivenUpGoalsUseCase getGivenUpGoalsUseCase;
   final UpdateGoalStatusUseCase updateGoalStatusUseCase;
+  final UpdateGoalProgressUseCase updateGoalProgressUseCase;
 
   List<Goal> _allGoals = [];
   List<Goal> _filteredGoals = [];
@@ -32,22 +38,33 @@ class GoalManagementViewModel extends ChangeNotifier {
   GoalManagementFilterOption get filterOption => _filterOption;
 
   GoalManagementViewModel({
-    required this.readGoalsUseCase,
-    required this.updateGoalUseCase,
-    required this.deleteGoalUseCase,
+    required this.getGoalsLocalUseCase,
+    required this.getGoalsRemoteUseCase,
+    required this.updateGoalRemoteUseCase,
+    required this.updateGoalLocalUseCase,
+    required this.deleteGoalRemoteUseCase,
+    required this.deleteGoalLocalUseCase,
     required this.getInProgressGoalsUseCase,
-    required this.getGivenUpGoalsUseCase,
     required this.getCompletedGoalsUseCase,
-    required this.updateGoalProgressUseCase,
+    required this.getGivenUpGoalsUseCase,
     required this.updateGoalStatusUseCase,
+    required this.updateGoalProgressUseCase,
   }) {
     loadGoals();
   }
 
   Future<void> loadGoals() async {
-    // 전체 목표 목록 업데이트 (옵션)
-    _allGoals = await readGoalsUseCase();
-    await applyFilter();
+    _allGoals = await getGoalsLocalUseCase();
+    notifyListeners();
+  }
+
+  Future<void> syncGoals() async {
+    final remoteGoals = await getGoalsRemoteUseCase();
+    for (var goal in remoteGoals) {
+      await updateGoalLocalUseCase(goal);
+    }
+    _allGoals = await getGoalsLocalUseCase();
+    notifyListeners();
   }
 
   void setFilterOption(GoalManagementFilterOption newFilterOption) {
@@ -72,13 +89,17 @@ class GoalManagementViewModel extends ChangeNotifier {
 
   Future<void> updateGoalProgress(String goalId, double newProgress) async {
     final goal = _allGoals.firstWhere((g) => g.id == goalId);
-    // 신규 UpdateGoalProgressUseCase로 진행률 업데이트
     await updateGoalProgressUseCase(goal, newProgress);
+  }
+
+  Future<void> updateGoal(String goalId, Goal updated) async {
+    await updateGoalRemoteUseCase(updated);
+    await updateGoalLocalUseCase(updated);
+    await loadGoals();
   }
 
   Future<void> giveUpGoal(String goalId) async {
     final goal = _allGoals.firstWhere((g) => g.id == goalId);
-    // 신규 UpdateGoalStatusUseCase로 포기 상태 업데이트
     await updateGoalStatusUseCase(goal, Status.givenUp);
   }
 
@@ -88,17 +109,16 @@ class GoalManagementViewModel extends ChangeNotifier {
   }
 
   Future<void> deleteGoal(String goalId) async {
-    await deleteGoalUseCase(goalId);
-    applyFilter();
+    await deleteGoalRemoteUseCase(goalId);
+    await deleteGoalLocalUseCase(goalId);
+    await loadGoals();
   }
 
   List<Goal> getCompletedGoals() {
-    // 기존 goal들을 기반으로 성공한 goal 반환
     return _allGoals.where((g) => g.status == Status.completed).toList();
   }
 
   List<Goal> getGivenUpGoals() {
-    // 기존 goal들을 기반으로 포기한 goal 반환
     return _allGoals.where((g) => g.status == Status.givenUp).toList();
   }
 }

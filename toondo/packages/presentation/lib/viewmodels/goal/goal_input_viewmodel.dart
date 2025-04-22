@@ -3,11 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:domain/entities/goal.dart';
-import 'package:domain/usecases/goal/create_goal.dart';
-import 'package:domain/usecases/goal/update_goal.dart';
+import 'package:domain/usecases/goal/create_goal_remote.dart';
+import 'package:domain/usecases/goal/save_goal_local.dart';
+import 'package:domain/usecases/goal/update_goal_remote.dart';
+import 'package:domain/usecases/goal/update_goal_local.dart';
 import 'package:presentation/widgets/calendar/calendar_bottom_sheet.dart';
 import 'package:uuid/uuid.dart';
-import 'package:presentation/widgets/calendar/calendar_bottom_sheet.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton()
@@ -23,12 +24,16 @@ class GoalInputViewModel extends ChangeNotifier {
   String? dateError;
 
   final Goal? targetGoal;
-  final CreateGoalUseCase createGoalUseCase;
-  final UpdateGoalUseCase updateGoalUseCase;
+  final CreateGoalRemoteUseCase createGoalRemoteUseCase;
+  final SaveGoalLocalUseCase saveGoalLocalUseCase;
+  final UpdateGoalRemoteUseCase updateGoalRemoteUseCase;
+  final UpdateGoalLocalUseCase updateGoalLocalUseCase;
 
   GoalInputViewModel({
-    required this.createGoalUseCase,
-    required this.updateGoalUseCase,
+    required this.createGoalRemoteUseCase,
+    required this.saveGoalLocalUseCase,
+    required this.updateGoalRemoteUseCase,
+    required this.updateGoalLocalUseCase,
     this.targetGoal,
   }) {
     if (targetGoal != null) {
@@ -69,7 +74,8 @@ class GoalInputViewModel extends ChangeNotifier {
 
     try {
       if (targetGoal == null) {
-        final created = await createGoalUseCase(newGoal);
+        final created = await createGoalRemoteUseCase(newGoal);
+        await saveGoalLocalUseCase(created);
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('목표가 성공적으로 저장되었습니다.')));
@@ -81,7 +87,8 @@ class GoalInputViewModel extends ChangeNotifier {
         notifyListeners();
         return created;
       } else {
-        await updateGoalUseCase(newGoal);
+        await updateGoalRemoteUseCase(newGoal);
+        await updateGoalLocalUseCase(newGoal);
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('목표가 성공적으로 수정되었습니다.')));

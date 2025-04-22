@@ -12,6 +12,7 @@
 import 'package:domain/repositories/auth_repository.dart' as _i427;
 import 'package:domain/repositories/goal_repository.dart' as _i559;
 import 'package:domain/repositories/gpt_repository.dart' as _i183;
+import 'package:domain/repositories/slime_character_repository.dart' as _i583;
 import 'package:domain/repositories/sms_repository.dart' as _i366;
 import 'package:domain/repositories/todo_repository.dart' as _i158;
 import 'package:domain/repositories/user_repository.dart' as _i988;
@@ -20,15 +21,24 @@ import 'package:domain/usecases/auth/get_token.dart' as _i415;
 import 'package:domain/usecases/auth/login.dart' as _i1068;
 import 'package:domain/usecases/auth/logout.dart' as _i969;
 import 'package:domain/usecases/auth/register.dart' as _i899;
-import 'package:domain/usecases/goal/create_goal.dart' as _i695;
-import 'package:domain/usecases/goal/delete_goal.dart' as _i582;
+import 'package:domain/usecases/character/get_slime_character.dart' as _i26;
+import 'package:domain/usecases/character/handle_slime_interaction.dart'
+    as _i302;
+import 'package:domain/usecases/character/unlock_special_animation.dart'
+    as _i180;
+import 'package:domain/usecases/goal/create_goal_remote.dart' as _i343;
+import 'package:domain/usecases/goal/delete_goal_local.dart' as _i563;
+import 'package:domain/usecases/goal/delete_goal_remote.dart' as _i397;
 import 'package:domain/usecases/goal/get_completed_goals.dart' as _i368;
 import 'package:domain/usecases/goal/get_givenup_goals.dart' as _i292;
-import 'package:domain/usecases/goal/get_goals.dart' as _i737;
+import 'package:domain/usecases/goal/get_goal_by_id_from_local.dart' as _i901;
+import 'package:domain/usecases/goal/get_goals_local.dart' as _i477;
+import 'package:domain/usecases/goal/get_goals_remote.dart' as _i371;
 import 'package:domain/usecases/goal/get_inprogress_goals.dart' as _i243;
-import 'package:domain/usecases/goal/read_goals.dart' as _i663;
-import 'package:domain/usecases/goal/update_goal.dart' as _i422;
+import 'package:domain/usecases/goal/save_goal_local.dart' as _i881;
+import 'package:domain/usecases/goal/update_goal_local.dart' as _i1031;
 import 'package:domain/usecases/goal/update_goal_progress.dart' as _i739;
+import 'package:domain/usecases/goal/update_goal_remote.dart' as _i200;
 import 'package:domain/usecases/goal/update_goal_status.dart' as _i856;
 import 'package:domain/usecases/gpt/get_slime_response.dart' as _i88;
 import 'package:domain/usecases/sms/send_sms_code.dart' as _i461;
@@ -70,15 +80,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i969.LogoutUseCase>(
       () => _i969.LogoutUseCase(gh<_i427.AuthRepository>()),
     );
-    gh.factory<_i856.UpdateGoalStatusUseCase>(
-      () =>
-          _i856.UpdateGoalStatusUseCase(repository: gh<_i559.GoalRepository>()),
-    );
-    gh.factory<_i739.UpdateGoalProgressUseCase>(
-      () => _i739.UpdateGoalProgressUseCase(
-        repository: gh<_i559.GoalRepository>(),
-      ),
-    );
     gh.factory<_i834.CreateTodoUseCase>(
       () => _i834.CreateTodoUseCase(gh<_i158.TodoRepository>()),
     );
@@ -106,29 +107,60 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i182.UpdateTodoDatesUseCase>(
       () => _i182.UpdateTodoDatesUseCase(gh<_i158.TodoRepository>()),
     );
+    gh.factory<_i26.GetSlimeCharacterUseCase>(
+      () => _i26.GetSlimeCharacterUseCase(gh<_i583.SlimeCharacterRepository>()),
+    );
+    gh.factory<_i302.HandleSlimeInteractionUseCase>(
+      () => _i302.HandleSlimeInteractionUseCase(
+        gh<_i583.SlimeCharacterRepository>(),
+      ),
+    );
+    gh.factory<_i180.UnlockSpecialAnimationUseCase>(
+      () => _i180.UnlockSpecialAnimationUseCase(
+        gh<_i583.SlimeCharacterRepository>(),
+      ),
+    );
     gh.factory<_i292.GetGivenUpGoalsUseCase>(
       () => _i292.GetGivenUpGoalsUseCase(gh<_i559.GoalRepository>()),
-    );
-    gh.factory<_i695.CreateGoalUseCase>(
-      () => _i695.CreateGoalUseCase(gh<_i559.GoalRepository>()),
-    );
-    gh.factory<_i737.GetGoalsUseCase>(
-      () => _i737.GetGoalsUseCase(gh<_i559.GoalRepository>()),
-    );
-    gh.factory<_i422.UpdateGoalUseCase>(
-      () => _i422.UpdateGoalUseCase(gh<_i559.GoalRepository>()),
     );
     gh.factory<_i243.GetInProgressGoalsUseCase>(
       () => _i243.GetInProgressGoalsUseCase(gh<_i559.GoalRepository>()),
     );
-    gh.factory<_i663.ReadGoalsUseCase>(
-      () => _i663.ReadGoalsUseCase(gh<_i559.GoalRepository>()),
-    );
-    gh.factory<_i582.DeleteGoalUseCase>(
-      () => _i582.DeleteGoalUseCase(gh<_i559.GoalRepository>()),
-    );
     gh.factory<_i368.GetCompletedGoalsUseCase>(
       () => _i368.GetCompletedGoalsUseCase(gh<_i559.GoalRepository>()),
+    );
+    gh.factory<_i397.DeleteGoalRemoteUseCase>(
+      () => _i397.DeleteGoalRemoteUseCase(gh<_i559.GoalRepository>()),
+    );
+    gh.factory<_i1031.UpdateGoalLocalUseCase>(
+      () => _i1031.UpdateGoalLocalUseCase(gh<_i559.GoalRepository>()),
+    );
+    gh.factory<_i371.GetGoalsRemoteUseCase>(
+      () => _i371.GetGoalsRemoteUseCase(gh<_i559.GoalRepository>()),
+    );
+    gh.factory<_i563.DeleteGoalLocalUseCase>(
+      () => _i563.DeleteGoalLocalUseCase(gh<_i559.GoalRepository>()),
+    );
+    gh.factory<_i881.SaveGoalLocalUseCase>(
+      () => _i881.SaveGoalLocalUseCase(gh<_i559.GoalRepository>()),
+    );
+    gh.factory<_i477.GetGoalsLocalUseCase>(
+      () => _i477.GetGoalsLocalUseCase(gh<_i559.GoalRepository>()),
+    );
+    gh.factory<_i200.UpdateGoalRemoteUseCase>(
+      () => _i200.UpdateGoalRemoteUseCase(gh<_i559.GoalRepository>()),
+    );
+    gh.factory<_i343.CreateGoalRemoteUseCase>(
+      () => _i343.CreateGoalRemoteUseCase(gh<_i559.GoalRepository>()),
+    );
+    gh.factory<_i901.GetGoalByIdFromLocalUseCase>(
+      () => _i901.GetGoalByIdFromLocalUseCase(gh<_i559.GoalRepository>()),
+    );
+    gh.factory<_i856.UpdateGoalStatusUseCase>(
+      () => _i856.UpdateGoalStatusUseCase(gh<_i559.GoalRepository>()),
+    );
+    gh.factory<_i739.UpdateGoalProgressUseCase>(
+      () => _i739.UpdateGoalProgressUseCase(gh<_i559.GoalRepository>()),
     );
     gh.factory<_i73.VerifySmsCode>(
       () => _i73.VerifySmsCode(gh<_i366.SmsRepository>()),

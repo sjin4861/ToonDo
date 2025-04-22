@@ -78,6 +78,7 @@ class OnboardingScreen extends StatelessWidget {
                         'assets/icons/shadow.svg',
                         width: 139.30,
                         height: 21.99,
+                        allowDrawingOutsideViewBox: true,
                       ),
                     ],
                   ),

@@ -1,6 +1,8 @@
-import 'package:data/models/goal_status.dart';
+import 'package:data/utils/goal_status_mapper.dart';
 import 'package:hive/hive.dart';
 import 'package:domain/entities/goal.dart';
+import 'package:domain/entities/status.dart';
+import 'package:data/models/goal_status_enum.dart';
 part 'goal_model.g.dart';
 
 @HiveType(typeId: 1)
@@ -27,7 +29,7 @@ class GoalModel extends HiveObject {
   bool isCompleted;
 
   @HiveField(7)
-  GoalStatus status; // stores the index of GoalStatus
+  GoalStatusEnum status; // stores the index of GoalStatus
 
   @HiveField(8)
   bool isSynced;
@@ -40,7 +42,7 @@ class GoalModel extends HiveObject {
     required this.startDate,
     required this.endDate,
     this.isCompleted = false,
-    this.status = GoalStatus.active,
+    this.status = GoalStatusEnum.active,
     this.isSynced = false,
   });
 
@@ -53,6 +55,7 @@ class GoalModel extends HiveObject {
       progress: entity.progress,
       startDate: entity.startDate,
       endDate: entity.endDate,
+      status: GoalStatusMapper.fromDomain(entity.status),
       isSynced: false,
     );
   }
@@ -66,19 +69,19 @@ class GoalModel extends HiveObject {
       progress: progress,
       startDate: startDate,
       endDate: endDate,
+      status: GoalStatusMapper.toDomain(status),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'name': name,
+      'goalId': id,
+      'goalName': name,
       'icon': icon,
       'progress': progress,
-      'startDate': startDate.toIso8601String(),
-      'endDate': endDate.toIso8601String(),
-      'isCompleted': isCompleted,
-      'status': status,
+      'startDate': startDate.toIso8601String().split('T')[0], // yyyy-MM-dd 형식으로 변환
+      'endDate': endDate.toIso8601String().split('T')[0],
+      'status': status.index,  // 열거형의 인덱스 전송
     };
   }
 
@@ -92,8 +95,8 @@ class GoalModel extends HiveObject {
       endDate: DateTime.parse(json['endDate']),
       isCompleted: false,            // API에서 isCompleted 미전달 시 기본값 사용
       status: json['status'] != null
-          ? GoalStatus.values[json['status']]
-          : GoalStatus.active,       // null인 경우 기본값 처리
+          ? GoalStatusEnum.values[json['status']]
+          : GoalStatusEnum.active,       // null인 경우 기본값 처리
       isSynced: true,
     );
   }

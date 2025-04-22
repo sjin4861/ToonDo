@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:get_it/get_it.dart';
 import 'package:domain/entities/goal.dart';
-import 'package:domain/usecases/goal/create_goal.dart';
-import 'package:domain/usecases/goal/update_goal.dart';
+import 'package:domain/usecases/goal/create_goal_remote.dart';
+import 'package:domain/usecases/goal/save_goal_local.dart';
+import 'package:domain/usecases/goal/update_goal_remote.dart';
+import 'package:domain/usecases/goal/update_goal_local.dart';
 import 'package:presentation/viewmodels/goal/goal_input_viewmodel.dart';
 import 'package:presentation/widgets/app_bar/custom_app_bar.dart';
 import 'package:presentation/widgets/bottom_button/custom_button.dart';
@@ -21,8 +23,10 @@ class GoalInputView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<GoalInputViewModel>(
       create: (_) => GoalInputViewModel(
-        createGoalUseCase: GetIt.instance<CreateGoalUseCase>(),
-        updateGoalUseCase: GetIt.instance<UpdateGoalUseCase>(),
+        createGoalRemoteUseCase: GetIt.instance<CreateGoalRemoteUseCase>(),
+        saveGoalLocalUseCase: GetIt.instance<SaveGoalLocalUseCase>(),
+        updateGoalRemoteUseCase: GetIt.instance<UpdateGoalRemoteUseCase>(),
+        updateGoalLocalUseCase: GetIt.instance<UpdateGoalLocalUseCase>(),
         targetGoal: goal,
       ),
       child: const _GoalInputViewBody(),

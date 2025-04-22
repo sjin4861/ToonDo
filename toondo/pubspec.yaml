@@ -35,7 +35,6 @@ dependencies:
   get_it: ^8.0.3
   audioplayers: ^6.1.1
   injectable: ^2.5.0
-
   
 dev_dependencies:
   flutter_test:
@@ -48,7 +47,6 @@ dev_dependencies:
   hive_test: ^1.0.1
   change_app_package_name: ^1.4.0 
   injectable_generator: ^2.6.2
-
 flutter:
   uses-material-design: true
   assets:

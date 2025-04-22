@@ -10,11 +10,15 @@ import 'slime_character_widget.dart';
 class SlimeArea extends StatelessWidget {
   final String userNickname;
   final GetSlimeResponseUseCase getSlimeResponseUseCase;
+  final bool enableGestures;
+  final bool showDebugInfo;
 
   const SlimeArea({
     Key? key,
     required this.userNickname,
     required this.getSlimeResponseUseCase,
+    this.enableGestures = true,
+    this.showDebugInfo = false,
   }) : super(key: key);
 
   @override
@@ -32,10 +36,12 @@ class SlimeArea extends StatelessWidget {
             width: 500, // 기존 150에서 225으로 증가
             height: 500, // 기존 150에서 225으로 증가
             child: SlimeCharacterWidget(
-              width: 500, // 기존 150에서 225으로 증가
-              height: 500, // 기존 150에서 225으로 증가
-              initialAnimationName : 'id',
+              width: 500,
+              height: 500,
+              initialAnimationName: 'id',
               viewModel: slimeCharacterViewModel,
+              enableGestures: enableGestures,
+              showDebugInfo: showDebugInfo,
             ),
           ),
         ),

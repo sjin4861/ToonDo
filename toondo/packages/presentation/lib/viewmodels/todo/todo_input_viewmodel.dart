@@ -7,7 +7,7 @@ import 'package:domain/usecases/todo/create_todo.dart';
 import 'package:domain/usecases/todo/update_todo.dart';
 import 'package:presentation/widgets/calendar/calendar_bottom_sheet.dart';
 import 'package:injectable/injectable.dart';
-import 'package:domain/usecases/goal/get_goals.dart';
+import 'package:domain/usecases/goal/get_goals_local.dart';
 
 @LazySingleton()
 class TodoInputViewModel extends ChangeNotifier {
@@ -31,17 +31,17 @@ class TodoInputViewModel extends ChangeNotifier {
   bool isDDayTodo;
   final CreateTodoUseCase _createTodoUseCase;
   final UpdateTodoUseCase _updateTodoUseCase;
-  final GetGoalsUseCase _getGoalsUseCase;
+  final GetGoalsLocalUseCase _getGoalsLocalUseCase;
 
   TodoInputViewModel({
     this.todo,
     required this.isDDayTodo,
     required CreateTodoUseCase createTodoUseCase,
     required UpdateTodoUseCase updateTodoUseCase,
-    required GetGoalsUseCase getGoalsUseCase,
+    required GetGoalsLocalUseCase getGoalsLocalUseCase,
   }) : _createTodoUseCase = createTodoUseCase,
        _updateTodoUseCase = updateTodoUseCase,
-       _getGoalsUseCase = getGoalsUseCase {
+       _getGoalsLocalUseCase = getGoalsLocalUseCase {
     if (todo != null) {
       // 수정 모드
       titleController.text = todo!.title;
@@ -66,7 +66,7 @@ class TodoInputViewModel extends ChangeNotifier {
   get goalNameError => null;
 
   // 필요한 시점에 getGoalsUseCase를 호출하여 goals 를 가져옵니다.
-  Future<List<Goal>> fetchGoals() async => _getGoalsUseCase();
+  Future<List<Goal>> fetchGoals() async => _getGoalsLocalUseCase();
 
   void _onTitleChanged() {
     isTitleNotEmpty = titleController.text.isNotEmpty;

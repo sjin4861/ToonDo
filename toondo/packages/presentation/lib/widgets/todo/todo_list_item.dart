@@ -2,15 +2,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
 import 'package:domain/entities/todo.dart';
-import 'package:presentation/viewmodels/goal/goal_viewmodel.dart';
+import 'package:domain/entities/goal.dart';
 import 'package:intl/intl.dart';
 import 'todo_edit_bottom_sheet.dart';
 import 'package:presentation/utils/get_todo_border_color.dart';
 
 class TodoListItem extends StatelessWidget {
   final Todo todo;
+  final List<Goal> goals;
   final Function(Todo, double) onStatusUpdate; // onUpdate를 수정하여 status와 함께 전달
   final Function() onDelete;
   final Function() onPostpone;
@@ -21,6 +21,7 @@ class TodoListItem extends StatelessWidget {
   const TodoListItem({
     Key? key,
     required this.todo,
+    required this.goals,
     required this.selectedDate,
     required this.onUpdate,
     required this.onStatusUpdate,
@@ -91,14 +92,8 @@ class TodoListItem extends StatelessWidget {
     // 목표 이름 가져오기
     String? goalName;
     if (todo.goalId != null) {
-      final goalViewmodel = Provider.of<GoalViewModel>(context, listen: false);
-      final matchingGoals = goalViewmodel.goals.where((goal) => goal.id == todo.goalId);
-      if (matchingGoals.isNotEmpty) {
-        goalName = matchingGoals.first.name;
-      } else {
-        // 목표를 찾지 못한 경우 처리
-        goalName = '목표를 찾을 수 없음';
-      }
+      final matching = goals.where((g) => g.id == todo.goalId);
+      goalName = matching.isNotEmpty ? matching.first.name : '목표를 찾을 수 없음';
     }
 
     if (goalName != null) {
@@ -223,12 +218,8 @@ class TodoListItem extends StatelessWidget {
   }
   /// leading 아이콘
   Widget _buildLeading(BuildContext context) {
-    final goalViewmodel = Provider.of<GoalViewModel>(context, listen: false);
-    final matchedGoal = goalViewmodel.goals
-        .where((g) => g.id == todo.goalId)
-        .isNotEmpty
-        ? goalViewmodel.goals.firstWhere((g) => g.id == todo.goalId)
-        : null;
+    final matched = goals.where((g) => g.id == todo.goalId);
+    final matchedGoal = matched.isNotEmpty ? matched.first : null;
 
     bool isCompleted = todo.status >= 100;
     final iconPath = matchedGoal?.icon; // goal.icon

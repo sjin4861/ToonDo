@@ -145,6 +145,7 @@ class Onboarding2Page extends StatelessWidget {
                     'assets/icons/shadow.svg',
                     width: 139.30,
                     height: 21.99,
+                    allowDrawingOutsideViewBox: true,
                   ),
                   SizedBox(height: 180),
                   // 버튼 배치
