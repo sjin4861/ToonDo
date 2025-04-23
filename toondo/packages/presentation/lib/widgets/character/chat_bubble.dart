@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:audioplayers/audioplayers.dart'; // 오디오 재생
@@ -115,8 +116,7 @@ class _ChatBubbleState extends State<ChatBubble> {
         alignment: Alignment.center,
         children: [
           // 말풍선 배경
-          SvgPicture.asset(
-            'assets/icons/img_speech_bubble.svg',
+          Assets.images.imgSpeechBubble.svg(
             width: 220,
             height: 60,
           ),

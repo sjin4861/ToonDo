@@ -1,3 +1,4 @@
+import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../chip/jelly_chip.dart';
@@ -72,7 +73,7 @@ class ItemCard extends StatelessWidget {
                     chipWidth: 40,
                     chipHeight: 18,
                     // 아이콘 경로가 다르면 교체
-                    jellyIconPath: 'assets/icons/img_jelly.svg',
+                    jellyIconPath: Assets.images.imgJelly.path,
                   ),
                 ),
               ),
