@@ -136,13 +136,13 @@ class Onboarding2Page extends StatelessWidget {
               Column(
                 children: [
                   SvgPicture.asset(
-                    'assets/icons/character.svg',
+                    'assets/icons/img_character.svg',
                     width: 186.29,
                     height: 134.30,
                   ),
                   SizedBox(height: 12.44),
                   SvgPicture.asset(
-                    'assets/icons/shadow.svg',
+                    'assets/icons/img_shadow.svg',
                     width: 139.30,
                     height: 21.99,
                     allowDrawingOutsideViewBox: true,

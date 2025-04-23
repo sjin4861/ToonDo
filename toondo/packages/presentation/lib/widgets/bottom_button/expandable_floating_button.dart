@@ -127,7 +127,7 @@ class _ExpandableFabState extends State<ExpandableFab>
             child: _buildFab(
               mini: false,
               icon: SvgPicture.asset(
-                'assets/icons/plus.svg',
+                'assets/icons/ic_plus.svg',
                 width: 20,
                 height: 20,
                 color: Colors.blueAccent,

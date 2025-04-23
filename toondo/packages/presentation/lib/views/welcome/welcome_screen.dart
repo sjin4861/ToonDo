@@ -59,13 +59,13 @@ class WelcomeScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           SvgPicture.asset(
-                            'assets/icons/character.svg',
+                            'assets/icons/img_character.svg',
                             width: 173,
                             height: 124.88,
                           ),
                           SizedBox(height: 4),
                           SvgPicture.asset(
-                            'assets/icons/shadow.svg',
+                            'assets/icons/img_shadow.svg',
                             width: 139.30,
                             height: 21.99,
                             allowDrawingOutsideViewBox: true,
@@ -136,7 +136,7 @@ class WelcomeScreen extends StatelessWidget {
                             color: Colors.white,
                             textColor: Color(0xFF1C1D1B),
                             borderColor: Color(0xFFDDDDDD),
-                            iconPath: 'assets/images/google.png',
+                            iconPath: 'assets/images/img_google.png',
                             onPressed: () {
                               viewModel.navigateToOnboarding(context);
                             },
@@ -148,7 +148,7 @@ class WelcomeScreen extends StatelessWidget {
                             label: '카카오로 계속하기',
                             color: Color(0xFFFDDC3F),
                             textColor: Color(0xFF1C1D1B),
-                            iconPath: 'assets/images/kakao.png',
+                            iconPath: 'assets/images/img_kakao.png',
                             onPressed: () {
                               viewModel.continueWithoutLogin(context);
                             },
@@ -160,7 +160,7 @@ class WelcomeScreen extends StatelessWidget {
                             label: '휴대폰 번호로 계속하기',
                             color: Color(0xFFC9E1B4),
                             textColor: Color(0xFF1C1D1B),
-                            iconPath: 'assets/images/phone.png',
+                            iconPath: 'assets/images/img_phone.png',
                             onPressed: () {
                               viewModel.continueWithPhoneNumber(context);
                             },

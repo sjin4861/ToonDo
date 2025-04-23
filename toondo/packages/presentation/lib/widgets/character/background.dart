@@ -28,7 +28,7 @@ class HomeBackground extends StatelessWidget {
             left: 0,
             bottom: 80,
             child: SvgPicture.asset(
-              'assets/icons/group-2.svg',
+              'assets/icons/img_group_2.svg',
               fit: BoxFit.cover,
             ),
           ),
@@ -37,7 +37,7 @@ class HomeBackground extends StatelessWidget {
             right: 0,
             bottom: 80,
             child: SvgPicture.asset(
-              'assets/icons/group-3.svg',
+              'assets/icons/img_group_3.svg',
               fit: BoxFit.cover,
             ),
           ),

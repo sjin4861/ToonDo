@@ -8,14 +8,14 @@ class JellyChip extends StatelessWidget {
   final int jellyAmount; // 예: 100
   final double chipWidth; // 기본값 51
   final double chipHeight; // 기본값 28
-  final String jellyIconPath; // 젤리 아이콘 경로 (assets/icons/jelly.svg)
+  final String jellyIconPath; // 젤리 아이콘 경로 (assets/icons/img_jelly.svg)
 
   const JellyChip({
     Key? key,
     required this.jellyAmount,
     this.chipWidth = 51,
     this.chipHeight = 28,
-    this.jellyIconPath = 'assets/icons/jelly.svg',
+    this.jellyIconPath = 'assets/icons/img_jelly.svg',
   }) : super(key: key);
 
   @override

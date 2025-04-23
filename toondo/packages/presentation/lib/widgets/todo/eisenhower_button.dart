@@ -75,7 +75,7 @@ class EisenhowerButton extends StatelessWidget {
           'selectedBorderColor': const Color(0x7FE2DFDE),
           'selectedTextColor': const Color(0xFF423B36),
           'unselectedTextColor': const Color(0x7F1C1D1B),
-          'iconPath': 'assets/icons/face0.svg',
+          'iconPath': 'assets/icons/ic_face_0.svg',
         };
       case 1:
         return {
@@ -84,7 +84,7 @@ class EisenhowerButton extends StatelessWidget {
           'selectedBorderColor': const Color(0x7FE5F4FE),
           'selectedTextColor': const Color(0xFF497895),
           'unselectedTextColor': const Color(0x7F1C1D1B),
-          'iconPath': 'assets/icons/face1.svg',
+          'iconPath': 'assets/icons/ic_face_1.svg',
         };
       case 2:
         return {
@@ -93,7 +93,7 @@ class EisenhowerButton extends StatelessWidget {
           'selectedBorderColor': const Color(0x7FFDF8DE),
           'selectedTextColor': const Color(0xFF948436),
           'unselectedTextColor': const Color(0x7F1C1D1B),
-          'iconPath': 'assets/icons/face2.svg',
+          'iconPath': 'assets/icons/ic_face_2.svg',
         };
       case 3:
         return {
@@ -102,7 +102,7 @@ class EisenhowerButton extends StatelessWidget {
           'selectedBorderColor': const Color(0x7FFCE9EA),
           'selectedTextColor': const Color(0xFF91595A),
           'unselectedTextColor': const Color.fromARGB(126, 1, 1, 0),
-          'iconPath': 'assets/icons/face3.svg',
+          'iconPath': 'assets/icons/ic_face_3.svg',
         };
       default:
         throw ArgumentError('Invalid index');
