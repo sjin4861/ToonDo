@@ -95,8 +95,6 @@ class HomeScreen extends StatelessWidget {
                 ),
               ],
             ),
-            floatingActionButton: const ExpandableFab(),
-            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
             bottomNavigationBar: const BottomNavigationBarWidget(),
           );
         },

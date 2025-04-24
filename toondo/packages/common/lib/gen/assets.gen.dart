@@ -30,11 +30,19 @@ class $AssetsIconsGen {
   SvgGenImage get ic100point =>
       const SvgGenImage('assets/icons/ic_100point.svg');
 
+  /// File path: assets/icons/ic_ai_analysis.svg
+  SvgGenImage get icAiAnalysis =>
+      const SvgGenImage('assets/icons/ic_ai_analysis.svg');
+
   /// File path: assets/icons/ic_alien.svg
   SvgGenImage get icAlien => const SvgGenImage('assets/icons/ic_alien.svg');
 
   /// File path: assets/icons/ic_bomb.svg
   SvgGenImage get icBomb => const SvgGenImage('assets/icons/ic_bomb.svg');
+
+  /// File path: assets/icons/ic_calendar.svg
+  SvgGenImage get icCalendar =>
+      const SvgGenImage('assets/icons/ic_calendar.svg');
 
   /// File path: assets/icons/ic_eisenhower.svg
   SvgGenImage get icEisenhower =>
@@ -81,8 +89,10 @@ class $AssetsIconsGen {
   /// List of all assets
   List<SvgGenImage> get values => [
         ic100point,
+        icAiAnalysis,
         icAlien,
         icBomb,
+        icCalendar,
         icEisenhower,
         icFace0,
         icFace1,

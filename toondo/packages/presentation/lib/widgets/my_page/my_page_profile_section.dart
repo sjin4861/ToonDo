@@ -1,3 +1,4 @@
+import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -37,10 +38,10 @@ class MyPageProfileSection extends StatelessWidget {
               ),
             ),
             Center(
-              child: SvgPicture.asset(
-                'assets/icons/img_profile_default.svg',
+              child: Assets.images.imgProfileDefault.svg(
                 width: 86,
                 height: 86,
+                fit: BoxFit.cover,
               ),
             ),
           ],
