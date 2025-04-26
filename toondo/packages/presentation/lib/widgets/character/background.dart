@@ -1,7 +1,7 @@
 // lib/widgets/home_background.dart
 
+import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeBackground extends StatelessWidget {
   const HomeBackground({Key? key}) : super(key: key);
@@ -27,19 +27,13 @@ class HomeBackground extends StatelessWidget {
           Positioned(
             left: 0,
             bottom: 80,
-            child: SvgPicture.asset(
-              'assets/icons/group-2.svg',
-              fit: BoxFit.cover,
-            ),
+            child: Assets.images.imgGroup2.svg(fit: BoxFit.cover),
           ),
           // (3) 오른쪽 수풀
           Positioned(
             right: 0,
             bottom: 80,
-            child: SvgPicture.asset(
-              'assets/icons/group-3.svg',
-              fit: BoxFit.cover,
-            ),
+            child: Assets.images.imgGroup3.svg(fit: BoxFit.cover),
           ),
           // (4) 갈색 바닥(줄 3개)
           Positioned(

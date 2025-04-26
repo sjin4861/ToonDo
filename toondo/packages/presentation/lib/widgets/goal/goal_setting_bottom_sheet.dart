@@ -11,7 +11,7 @@ class GoalSettingBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const String defaultIconPath = 'assets/icons/100point.svg';
+    const String defaultIconPath = 'assets/icons/ic_100point.svg';
 
     return Container(
       width: double.infinity,

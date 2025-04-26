@@ -1,3 +1,4 @@
+import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../chip/jelly_chip.dart';
@@ -8,7 +9,7 @@ import '../chip/jelly_chip.dart';
 class ItemCard extends StatelessWidget {
   final String itemName; // 예: '커피 한 잔'
   final int price; // 예: 100
-  final String iconPath; // 예: 'assets/icons/cup_of_coffee.svg'
+  final String iconPath; // 예: 'assets/icons/img_cup_of_coffee.svg'
   final bool isSelected; // 선택된 상태 표현 등 (옵션)
   final VoidCallback? onTap; // 구매나 클릭 이벤트
 
@@ -72,7 +73,7 @@ class ItemCard extends StatelessWidget {
                     chipWidth: 40,
                     chipHeight: 18,
                     // 아이콘 경로가 다르면 교체
-                    jellyIconPath: 'assets/icons/jelly.svg',
+                    jellyIconPath: Assets.images.imgJelly.path,
                   ),
                 ),
               ),

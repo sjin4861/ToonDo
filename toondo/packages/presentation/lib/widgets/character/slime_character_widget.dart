@@ -242,7 +242,7 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> with Single
         width: widget.width,
         height: widget.height,
         child: RiveAnimation.asset(
-          'assets/rives/slime.riv',
+          'assets/rives/gif_slime.riv',
           controllers: _controller == null ? [] : [_controller!],
           fit: BoxFit.contain,
         ),
