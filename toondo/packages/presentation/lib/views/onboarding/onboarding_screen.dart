@@ -1,11 +1,11 @@
 // lib/views/onboarding/onboarding_screen.dart
 
+import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:get_it/get_it.dart';
 import 'package:presentation/viewmodels/onboarding/onboarding_viewmodel.dart';
-import 'package:presentation/views/onboarding/onboarding2_screen.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({Key? key}) : super(key: key);
@@ -68,14 +68,12 @@ class OnboardingScreen extends StatelessWidget {
                   top: MediaQuery.of(context).size.height * 0.53,
                   child: Column(
                     children: [
-                      SvgPicture.asset(
-                        'assets/icons/character.svg',
+                      Assets.images.imgCharacter.svg(
                         width: 186.29,
                         height: 134.30,
                       ),
                       SizedBox(height: 12.44),
-                      SvgPicture.asset(
-                        'assets/icons/shadow.svg',
+                      Assets.images.imgShadow.svg(
                         width: 139.30,
                         height: 21.99,
                         allowDrawingOutsideViewBox: true,

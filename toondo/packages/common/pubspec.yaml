@@ -1,0 +1,16 @@
+name: common
+description: Shared generated assets, constants, and utilities
+version: 1.0.0
+publish_to: "none"
+
+environment:
+  sdk: ^3.7.0
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_svg: ^2.0.10+1
+  rive: ^0.13.20
+  get_it: ^8.0.3
+  injectable: ^2.5.0

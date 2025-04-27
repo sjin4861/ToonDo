@@ -38,7 +38,7 @@ class MyPageProfileSection extends StatelessWidget {
             ),
             Center(
               child: SvgPicture.asset(
-                'assets/icons/mypage_icon.svg',
+                'assets/icons/img_profile_default.svg',
                 width: 86,
                 height: 86,
               ),

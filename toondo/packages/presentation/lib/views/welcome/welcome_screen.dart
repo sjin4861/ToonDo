@@ -3,6 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:presentation/viewmodels/welcome/welcome_viewmodel.dart';
 import 'package:provider/provider.dart';
+import 'package:common/gen/assets.gen.dart';
+
 
 final getIt = GetIt.instance;
 
@@ -58,18 +60,16 @@ class WelcomeScreen extends StatelessWidget {
                       top: MediaQuery.of(context).size.height * 0.22,
                       child: Column(
                         children: [
-                          SvgPicture.asset(
-                            'assets/icons/character.svg',
+                          Assets.images.imgCharacter.svg(
                             width: 173,
                             height: 124.88,
                           ),
                           SizedBox(height: 4),
-                          SvgPicture.asset(
-                            'assets/icons/shadow.svg',
+                          Assets.images.imgShadow.svg(
                             width: 139.30,
                             height: 21.99,
                             allowDrawingOutsideViewBox: true,
-                          ),
+                          )
                         ],
                       ),
                     ),
@@ -136,7 +136,7 @@ class WelcomeScreen extends StatelessWidget {
                             color: Colors.white,
                             textColor: Color(0xFF1C1D1B),
                             borderColor: Color(0xFFDDDDDD),
-                            iconPath: 'assets/images/google.png',
+                            iconPath: Assets.images.imgGoogle.path,
                             onPressed: () {
                               viewModel.navigateToOnboarding(context);
                             },
@@ -148,7 +148,7 @@ class WelcomeScreen extends StatelessWidget {
                             label: '카카오로 계속하기',
                             color: Color(0xFFFDDC3F),
                             textColor: Color(0xFF1C1D1B),
-                            iconPath: 'assets/images/kakao.png',
+                            iconPath: Assets.images.imgKakao.path,
                             onPressed: () {
                               viewModel.continueWithoutLogin(context);
                             },
@@ -160,7 +160,7 @@ class WelcomeScreen extends StatelessWidget {
                             label: '휴대폰 번호로 계속하기',
                             color: Color(0xFFC9E1B4),
                             textColor: Color(0xFF1C1D1B),
-                            iconPath: 'assets/images/phone.png',
+                            iconPath: Assets.images.imgPhone.path,
                             onPressed: () {
                               viewModel.continueWithPhoneNumber(context);
                             },

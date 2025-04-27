@@ -21,7 +21,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
             // (1) 목표 관리
             _buildNavButton(
               context,
-              iconPath: 'assets/icons/goal.svg',
+              iconPath: 'assets/icons/ic_goal.svg',
               label: '목표 관리',
               onTap: () {
                 Navigator.push(
@@ -34,7 +34,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
             // (2) 목표 분석
             _buildNavButton(
               context,
-              iconPath: 'assets/icons/stats.svg',
+              iconPath: 'assets/icons/ic_stats.svg',
               label: '목표 분석',
               onTap: () {
                 Navigator.push(
@@ -49,7 +49,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
             // (3) 상점 (임시 아이콘: eisenhower.svg 등)
             _buildNavButton(
               context,
-              iconPath: 'assets/icons/eisenhower.svg',
+              iconPath: 'assets/icons/ic_eisenhower.svg',
               label: '상점',
               onTap: () {
                 // TODO: 추후 상점 화면으로 이동
@@ -60,7 +60,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
             // (4) 마이페이지
             _buildNavButton(
               context,
-              iconPath: 'assets/icons/mypage.svg',
+              iconPath: 'assets/icons/ic_mypage.svg',
               label: '마이페이지',
               onTap: () {
                 Navigator.push(

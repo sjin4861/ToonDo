@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:audioplayers/audioplayers.dart'; // 오디오 재생
@@ -94,12 +95,12 @@ class _ChatBubbleState extends State<ChatBubble> {
       });
       currentIndex++;
 
-      // 짧은 beep.mp3 재생
+      // 짧은 sound_beep.mp3 재생
       // beep가 너무 길면 겹칠 수 있으므로 매우 짧은 파일 사용 권장
       try {
         // 이전 재생을 끊고 다시 재생하는 경우
         await _audioPlayer.stop();
-        await _audioPlayer.play(AssetSource('audios/beep.mp3'), volume: 0.4);
+        await _audioPlayer.play(AssetSource('audios/sound_beep.mp3'), volume: 0.4);
       } catch (e) {
         // 에러나면 무시
         print('오디오 재생 중 오류 발생: $e');
@@ -115,8 +116,7 @@ class _ChatBubbleState extends State<ChatBubble> {
         alignment: Alignment.center,
         children: [
           // 말풍선 배경
-          SvgPicture.asset(
-            'assets/icons/speech_bubble.svg',
+          Assets.images.imgSpeechBubble.svg(
             width: 220,
             height: 60,
           ),

@@ -4,29 +4,29 @@ import 'package:flutter_svg/flutter_svg.dart'; // SVG 사용을 위해 추가
 class GoalIconBottomSheet extends StatelessWidget {
   final Map<String, List<String>> iconCategories = {
     '수업/과제': [
-      'assets/icons/100point.svg',
-      'assets/icons/poo.svg',
-      'assets/icons/bomb.svg'
+      'assets/icons/ic_100point.svg',
+      'assets/icons/ic_poo.svg',
+      'assets/icons/ic_bomb.svg'
     ],
     '공부': [
-      'assets/icons/100point.svg',
-      'assets/icons/100point.svg',
-      'assets/icons/100point.svg'
+      'assets/icons/ic_100point.svg',
+      'assets/icons/ic_100point.svg',
+      'assets/icons/ic_100point.svg'
     ],
     '운동/건강': [
-      'assets/icons/100point.svg',
-      'assets/icons/100point.svg',
-      'assets/icons/100point.svg'
+      'assets/icons/ic_100point.svg',
+      'assets/icons/ic_100point.svg',
+      'assets/icons/ic_100point.svg'
     ],
     '취미/자기계발': [
-      'assets/icons/100point.svg',
-      'assets/icons/100point.svg',
-      'assets/icons/100point.svg'
+      'assets/icons/ic_100point.svg',
+      'assets/icons/ic_100point.svg',
+      'assets/icons/ic_100point.svg'
     ],
     '기타': [
-      'assets/icons/100point.svg',
-      'assets/icons/100point.svg',
-      'assets/icons/100point.svg'
+      'assets/icons/ic_100point.svg',
+      'assets/icons/ic_100point.svg',
+      'assets/icons/ic_100point.svg'
     ],
   };
 

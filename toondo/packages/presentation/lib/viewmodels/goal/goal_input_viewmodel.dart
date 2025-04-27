@@ -62,7 +62,7 @@ class GoalInputViewModel extends ChangeNotifier {
       return null;
     }
 
-    const String defaultIconPath = 'assets/icons/100point.svg';
+    const String defaultIconPath = 'assets/icons/ic_100point.svg';
     final newGoal = Goal(
       id: targetGoal?.id ?? const Uuid().v4(),
       name: goalNameController.text,

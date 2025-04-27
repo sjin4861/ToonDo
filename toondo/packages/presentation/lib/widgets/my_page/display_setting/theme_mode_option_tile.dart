@@ -40,7 +40,7 @@ class ThemeModeOptionTile extends StatelessWidget {
           ),
           child: Center(
             child: SvgPicture.asset(
-              'assets/icons/face0.svg',
+              'assets/icons/ic_face_0.svg',
               width: 40,
               height: 40,
               colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
