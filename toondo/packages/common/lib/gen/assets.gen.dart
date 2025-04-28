@@ -86,6 +86,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_stats.svg
   SvgGenImage get icStats => const SvgGenImage('assets/icons/ic_stats.svg');
 
+  /// File path: assets/icons/ic_store.svg
+  SvgGenImage get icStore => const SvgGenImage('assets/icons/ic_store.svg');
+
   /// List of all assets
   List<SvgGenImage> get values => [
         ic100point,
@@ -105,12 +108,21 @@ class $AssetsIconsGen {
         icPlusBold,
         icPoo,
         icSkull,
-        icStats
+        icStats,
+        icStore
       ];
 }
 
 class $AssetsImagesGen {
   const $AssetsImagesGen();
+
+  /// File path: assets/images/img_background_flowers.svg
+  SvgGenImage get imgBackgroundFlowers =>
+      const SvgGenImage('assets/images/img_background_flowers.svg');
+
+  /// File path: assets/images/img_background_grass.svg
+  SvgGenImage get imgBackgroundGrass =>
+      const SvgGenImage('assets/images/img_background_grass.svg');
 
   /// File path: assets/images/img_character.svg
   SvgGenImage get imgCharacter =>
@@ -135,6 +147,14 @@ class $AssetsImagesGen {
   /// File path: assets/images/img_group_3.svg
   SvgGenImage get imgGroup3 =>
       const SvgGenImage('assets/images/img_group_3.svg');
+
+  /// File path: assets/images/img_home_shadow.png
+  AssetGenImage get imgHomeShadowPng =>
+      const AssetGenImage('assets/images/img_home_shadow.png');
+
+  /// File path: assets/images/img_home_shadow.svg
+  SvgGenImage get imgHomeShadowSvg =>
+      const SvgGenImage('assets/images/img_home_shadow.svg');
 
   /// File path: assets/images/img_jelly.svg
   SvgGenImage get imgJelly => const SvgGenImage('assets/images/img_jelly.svg');
@@ -165,12 +185,16 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<dynamic> get values => [
+        imgBackgroundFlowers,
+        imgBackgroundGrass,
         imgCharacter,
         imgCupOfCoffee,
         imgEllipse,
         imgGoogle,
         imgGroup2,
         imgGroup3,
+        imgHomeShadowPng,
+        imgHomeShadowSvg,
         imgJelly,
         imgKakao,
         imgMainCharacter,
