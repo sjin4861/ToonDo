@@ -57,6 +57,14 @@ flutter:
     - assets/rives/
     - assets/audios/
 
+  fonts:
+    - family: Nanum OgBiCe
+      fonts:
+        - asset: assets/fonts/NanumOgBiCe.ttf
+    - family: Pretendard Variable
+      fonts:
+         - asset: assets/fonts/PretendardVariable.ttf
+
 flutter_gen:
   output: packages/common/lib/gen # Optional (default: lib/gen/)
   line_length: 80 # Optional (default: 80)

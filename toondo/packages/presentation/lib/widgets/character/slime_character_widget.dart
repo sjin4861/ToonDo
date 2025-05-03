@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:math';
+import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
@@ -9,8 +10,6 @@ import 'package:presentation/viewmodels/character/slime_character_viewmodel.dart
 import 'package:flutter/foundation.dart';
 
 class SlimeCharacterWidget extends StatefulWidget {
-  final double width;
-  final double height;
   final SlimeCharacterViewModel viewModel;
   final String initialAnimationName;
   final bool enableGestures;
@@ -18,8 +17,6 @@ class SlimeCharacterWidget extends StatefulWidget {
 
   const SlimeCharacterWidget({
     Key? key,
-    this.width = 150,
-    this.height = 150,
     this.initialAnimationName = 'id',
     required this.viewModel,
     this.enableGestures = true,
@@ -35,7 +32,9 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> with Single
   Timer? _blinkTimer;
   bool _isBlinking = false;
   Offset? _dragStartPosition;
-  double _scale = 1.0;
+  final double _baseScale = 1.4;
+  final double _pinchScale = 1.2;
+  double _scale = 1.4;
   String _lastGesture = '';
   
   // 핀치 제스처 감지용 변수
@@ -113,12 +112,12 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> with Single
   
   // 핀치 제스처 감지 메소드
   void _handleScaleStart(ScaleStartDetails details) {
-    _scale = 1.0;
+    _scale = _baseScale;
   }
   
   void _handleScaleUpdate(ScaleUpdateDetails details) {
-    // 스케일이 0.8보다 작으면 꼬집기로 간주
-    if (details.scale < 0.8 && _pointerIds.length >= 2) {
+    // 스케일이 기준보다 작으면 꼬집기로 간주
+    if (details.scale < _pinchScale && _pointerIds.length >= 2) {
       _handlePinchGesture();
     }
     setState(() {
@@ -128,7 +127,7 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> with Single
   
   void _handleScaleEnd(ScaleEndDetails details) {
     setState(() {
-      _scale = 1.0;
+      _scale = _baseScale;
     });
   }
   
@@ -163,6 +162,7 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> with Single
       _lastGesture = '탭';
     });
     widget.viewModel.handleTap();
+    setAnimation(widget.viewModel.animation);
   }
   
   void _handleDoubleTapGesture() {
@@ -170,6 +170,7 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> with Single
       _lastGesture = '더블 탭';
     });
     widget.viewModel.handleDoubleTap();
+    setAnimation(widget.viewModel.animation);
   }
   
   void _handleLongPressGesture() {
@@ -177,6 +178,7 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> with Single
       _lastGesture = '길게 누르기';
     });
     widget.viewModel.handleLongPress();
+    setAnimation(widget.viewModel.animation);
   }
   
   void _handleDragGesture() {
@@ -184,6 +186,7 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> with Single
       _lastGesture = '드래그';
     });
     widget.viewModel.handleDrag();
+    setAnimation(widget.viewModel.animation);
   }
   
   void _handlePinchGesture() {
@@ -191,6 +194,7 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> with Single
       _lastGesture = '꼬집기';
     });
     widget.viewModel.handlePinch();
+    setAnimation(widget.viewModel.animation);
   }
 
   @override
@@ -234,18 +238,13 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> with Single
       ),
     );
   }
-  
+
   Widget _buildRiveAnimation() {
     return Transform.scale(
-      scale: _scale,
-      child: SizedBox(
-        width: widget.width,
-        height: widget.height,
-        child: RiveAnimation.asset(
-          'assets/rives/gif_slime.riv',
-          controllers: _controller == null ? [] : [_controller!],
-          fit: BoxFit.contain,
-        ),
+        scale: _scale,
+        child: Assets.rives.gifSlime.rive(
+            fit: BoxFit.contain,
+            controllers: _controller == null ? [] : [_controller!],
       ),
     );
   }

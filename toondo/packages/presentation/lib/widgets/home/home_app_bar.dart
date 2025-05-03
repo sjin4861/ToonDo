@@ -1,0 +1,43 @@
+import 'package:common/gen/assets.gen.dart';
+import 'package:flutter/material.dart';
+
+class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const HomeAppBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      backgroundColor: Colors.white,
+      elevation: 0,
+      centerTitle: true,
+      title: const Text(
+        'ToonDo',
+        style: TextStyle(
+          color: Color(0xff1C1D1B),
+          fontWeight: FontWeight.w600,
+          fontFamily: 'Pretendard Variable',
+          letterSpacing: 1.2,
+          fontSize: 14,
+        ),
+      ),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 16.0),
+          child: IconButton(
+            onPressed: () {
+              // TODO 추후 상점 화면 이동
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (_) => ()),
+              // );
+            },
+            icon: Assets.icons.icStore.svg(width: 40, height: 40),
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}
