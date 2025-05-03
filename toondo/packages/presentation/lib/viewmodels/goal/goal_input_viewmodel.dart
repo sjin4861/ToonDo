@@ -42,10 +42,6 @@ class GoalInputViewModel extends ChangeNotifier {
       endDate = targetGoal!.endDate;
       selectedIcon = targetGoal!.icon;
     }
-
-    goalNameController.addListener(() {
-      notifyListeners();
-    });
   }
 
   @override
