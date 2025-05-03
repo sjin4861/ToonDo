@@ -1,3 +1,4 @@
+import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:presentation/widgets/bottom_sheet/custom_bottom_sheet.dart';
 
@@ -37,9 +38,9 @@ class CarrierSelectBottomSheet extends StatelessWidget {
               },
               child: Text(
                 carrier,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
-                  color: Color(0xFF1C1D1B),
+                  color: const Color(0xFF1C1D1B),
                   fontWeight: FontWeight.w400,
                   fontFamily: 'Pretendard Variable',
                 ),

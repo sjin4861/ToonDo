@@ -15,7 +15,7 @@ class GoalListSection extends StatelessWidget {
       return const Center(
         child: Text(
           '설정된 목표가 없습니다. 목표를 추가해보세요!',
-          style: TextStyle(fontSize: 16, color: Colors.grey),
+          style: TextStyle(fontSize: 14, color: Colors.grey),
         ),
       );
     }

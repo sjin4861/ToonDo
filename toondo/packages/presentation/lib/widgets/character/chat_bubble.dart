@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:audioplayers/audioplayers.dart'; // 오디오 재생
 import 'package:domain/usecases/gpt/get_slime_response.dart';
 
@@ -10,10 +9,10 @@ class ChatBubble extends StatefulWidget {
   final GetSlimeResponseUseCase getSlimeResponseUseCase; // GPT 호출 객체
 
   const ChatBubble({
-    Key? key,
+    super.key,
     required this.nickname,
     required this.getSlimeResponseUseCase,
-  }) : super(key: key);
+  });
 
   @override
   _ChatBubbleState createState() => _ChatBubbleState();
@@ -22,13 +21,14 @@ class ChatBubble extends StatefulWidget {
 class _ChatBubbleState extends State<ChatBubble> {
   // 전체 GPT 답변 메시지
   String _targetMessage = '';
+
   // 타이핑 중 현재까지 표시한 텍스트
   String _displayedMessage = '';
 
   // 오디오 플레이어
   late final AudioPlayer _audioPlayer;
 
-  // 타이핑용 Timer
+  // 타이핑 Timer
   Timer? _typingTimer;
 
   // 한 글자씩 나타날 간격 (ms)
@@ -38,7 +38,6 @@ class _ChatBubbleState extends State<ChatBubble> {
   void initState() {
     super.initState();
     _audioPlayer = AudioPlayer();
-    
     // 오디오 재생 모드를 stop으로 설정하면 재생 완료 후 자동으로 중단됨
     _audioPlayer.setReleaseMode(ReleaseMode.stop);
 
@@ -53,6 +52,47 @@ class _ChatBubbleState extends State<ChatBubble> {
     super.dispose();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: _handleBubbleTap,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          minWidth: 80,
+          maxWidth: 260,
+        ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // (1) 말풍선 배경
+            Positioned.fill(
+              child: Assets.images.imgSpeechBubble.svg(
+                fit: BoxFit.fill,
+              ),
+            ),
+            // (2) 텍스트
+            Padding(
+              padding: const EdgeInsets.fromLTRB(18, 8, 18, 18),
+              child: Text(
+                _displayedMessage,
+                style: const TextStyle(
+                  color: Color(0xFF605956),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  letterSpacing: 0.4,
+                  fontFamily: 'Nanum OgBiCe',
+                ),
+                textAlign: TextAlign.center,
+                softWrap: true,
+                overflow: TextOverflow.visible,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   /// 말풍선 탭 시 GPT 호출
   Future<void> _handleBubbleTap() async {
     final gptResponse = await widget.getSlimeResponseUseCase.call();
@@ -64,12 +104,6 @@ class _ChatBubbleState extends State<ChatBubble> {
 
       _startTyping(text);
     }
-  }
-
-  /// 깨진 서로게이트 코드를 삭제해 UTF-16 오류 방지
-  String _removeInvalidSurrogates(String input) {
-    // D800~DFFF 범위의 잘못된 코드 제거
-    return input.replaceAll(RegExp(r'[\uD800-\uDFFF]'), '');
   }
 
   /// 타이핑 효과 시작
@@ -100,7 +134,10 @@ class _ChatBubbleState extends State<ChatBubble> {
       try {
         // 이전 재생을 끊고 다시 재생하는 경우
         await _audioPlayer.stop();
-        await _audioPlayer.play(AssetSource('audios/sound_beep.mp3'), volume: 0.4);
+        await _audioPlayer.play(
+          AssetSource('audios/sound_beep.mp3'),
+          volume: 0.4,
+        );
       } catch (e) {
         // 에러나면 무시
         print('오디오 재생 중 오류 발생: $e');
@@ -108,37 +145,8 @@ class _ChatBubbleState extends State<ChatBubble> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: _handleBubbleTap,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // 말풍선 배경
-          Assets.images.imgSpeechBubble.svg(
-            width: 220,
-            height: 60,
-          ),
-          // 텍스트
-          Container(
-            width: 220,
-            padding: const EdgeInsets.symmetric(horizontal: 2),
-            child: Text(
-              _displayedMessage,
-              style: const TextStyle(
-                color: Color(0xFF605956),
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-                letterSpacing: 0.12,
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ),
-    );
+  /// 깨진 서로게이트 코드를 삭제해 UTF-16 오류 방지
+  String _removeInvalidSurrogates(String input) {
+    return input.replaceAll(RegExp(r'[\uD800-\uDFFF]'), '');
   }
 }
