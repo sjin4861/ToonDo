@@ -57,7 +57,11 @@ class GoalManageView extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) => const GoalInputView(),
                     ),
-                  );
+                  ).then((_) {
+                    // 새 목표 작성 후 즉시 갱신
+                    Provider.of<GoalManagementViewModel>(context, listen: false)
+                        .loadGoals();
+                  });
                 },
                 backgroundColor: const Color(0xFF78B545),
                 textColor: const Color(0xFFFCFCFC),
