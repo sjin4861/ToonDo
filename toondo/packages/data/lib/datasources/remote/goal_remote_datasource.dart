@@ -22,27 +22,51 @@ class GoalRemoteDataSource {
 
     final url = Uri.parse('${Constants.baseUrl}/goals/list');
     print('📡 요청 URL: $url');
-    print('🪪 JWT: $token');
+    
+    // 토큰 형식 확인 및 수정 (Bearer 프리픽스가 중복되지 않도록)
+    String authToken = token;
+    if (!token.startsWith('Bearer ') && !token.startsWith('bearer ')) {
+      authToken = 'Bearer $token';
+    }
+    
+    final headers = {
+      'Authorization': authToken,
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    
+    print('🚀 요청 헤더: $headers');
 
     final response = await client.get(
       url,
-      headers: {
-        'Authorization': token,
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: headers,
     );
 
     print('📥 응답 코드: ${response.statusCode}');
-    // 수정: allowMalformed를 사용한 Utf8Decoder로 응답 디코딩
-    final decodedBody = const Utf8Decoder(allowMalformed: true).convert(response.bodyBytes);
-    print('📥 응답 바디: $decodedBody');
+    
+    // UTF-8 디코딩 처리
+    String responseBody = '';
+    try {
+      responseBody = utf8.decode(response.bodyBytes);
+      print('📥 응답 바디: $responseBody');
+    } catch (e) {
+      print('📥 응답 바디 디코딩 오류: $e');
+      responseBody = response.body;
+      print('📥 원본 응답 바디: $responseBody');
+    }
 
     if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(decodedBody);
+      final List<dynamic> data = jsonDecode(responseBody);
       final models = data.map((item) => GoalModel.fromJson(item)).toList();
       return models.map((model) => model.toEntity()).toList();
+    } else if (response.statusCode == 403) {
+      throw Exception('권한 오류 (403 Forbidden): 서버가 요청을 거부했습니다. 토큰 형식이나 권한을 확인하세요. 응답: $responseBody');
+    } else if (response.statusCode == 400) {
+      throw Exception('잘못된 요청 (400 Bad Request): 요청 형식이 잘못되었습니다. 응답: $responseBody');
+    } else if (response.statusCode == 401) {
+      throw Exception('인증 오류 (401 Unauthorized): 토큰이 유효하지 않거나 만료되었습니다. 응답: $responseBody');
     }
-    throw Exception('Failed to read goals: ${response.body}');
+    
+    throw Exception('목표 목록 조회 실패 (${response.statusCode}): $responseBody');
   }
 
   Future<Goal> createGoal(Goal goal) async {
@@ -51,34 +75,65 @@ class GoalRemoteDataSource {
       throw Exception('JWT 토큰이 없습니다.');
     }
     print('🪪 JWT 토큰: $token');
-    print('🚀 요청 헤더: ${{
-      'Authorization': token,
-      'Content-Type': 'application/json; charset=UTF-8',
-    }}');
+    
     final url = Uri.parse('${Constants.baseUrl}/goals/create');
+    
+    // 토큰 형식 확인 및 수정 (Bearer 프리픽스가 중복되지 않도록)
+    String authToken = token;
+    if (!token.startsWith('Bearer ') && !token.startsWith('bearer ')) {
+      authToken = 'Bearer $token';
+    }
+    
+    final headers = {
+      'Authorization': authToken,
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    
+    print('🚀 요청 헤더: $headers');
+    
     final requestBody = {
       "goalName": goal.name,
       "startDate": goal.startDate.toIso8601String().split('T')[0],
       "endDate": goal.endDate.toIso8601String().split('T')[0],
       "icon": goal.icon ?? "",
     };
+    
+    print('🚀 요청 URL: $url');
+    print('🚀 요청 바디: $requestBody');
+    
     final response = await client.post(
       url,
-      headers: {
-        'Authorization': token,
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: headers,
       body: jsonEncode(requestBody),
     );
-    print('🚀 요청 바디: $requestBody');
+    
     print('📥 응답 코드: ${response.statusCode}');
+    print('📥 응답 헤더: ${response.headers}');
+    
+    // UTF-8 디코딩 처리
+    String responseBody = '';
+    try {
+      responseBody = utf8.decode(response.bodyBytes);
+      print('📥 응답 바디: $responseBody');
+    } catch (e) {
+      print('📥 응답 바디 디코딩 오류: $e');
+      responseBody = response.body;
+      print('📥 원본 응답 바디: $responseBody');
+    }
+    
     if (response.statusCode == 200 || response.statusCode == 201) {
-      final utf8Body = utf8.decode(response.bodyBytes);
-      final data = jsonDecode(utf8Body);
+      final data = jsonDecode(responseBody);
       final model = GoalModel.fromJson(data);
       return model.toEntity();
+    } else if (response.statusCode == 403) {
+      throw Exception('권한 오류 (403 Forbidden): 서버가 요청을 거부했습니다. 토큰 형식이나 권한을 확인하세요. 응답: $responseBody');
+    } else if (response.statusCode == 400) {
+      throw Exception('잘못된 요청 (400 Bad Request): 요청 형식이 잘못되었습니다. 응답: $responseBody');
+    } else if (response.statusCode == 401) {
+      throw Exception('인증 오류 (401 Unauthorized): 토큰이 유효하지 않거나 만료되었습니다. 응답: $responseBody');
     }
-    throw Exception('Failed to create goal: ${response.body}');
+    
+    throw Exception('목표 생성 실패 (${response.statusCode}): $responseBody');
   }
 
   Future<void> updateGoal(Goal goal) async {
@@ -89,23 +144,61 @@ class GoalRemoteDataSource {
     if (token == null) {
       throw Exception('JWT 토큰이 없습니다.');
     }
+    
     final url = Uri.parse('${Constants.baseUrl}/goals/update/${goal.id}');
+    print('🔄 목표 업데이트 요청 URL: $url');
+    
+    // 토큰 형식 확인 및 수정 (Bearer 프리픽스가 중복되지 않도록)
+    String authToken = token;
+    if (!token.startsWith('Bearer ') && !token.startsWith('bearer ')) {
+      authToken = 'Bearer $token';
+    }
+    
+    final headers = {
+      'Authorization': authToken,
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    
+    print('🚀 요청 헤더: $headers');
+    
     final requestBody = {
       "goalName": goal.name,
       "startDate": goal.startDate.toIso8601String().split('T')[0],
       "endDate": goal.endDate.toIso8601String().split('T')[0],
       "icon": goal.icon ?? "",
     };
+    
+    print('🚀 요청 바디: $requestBody');
+    
     final response = await client.put(
       url,
-      headers: {
-        'Authorization': token,
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: headers,
       body: jsonEncode(requestBody),
     );
+    
+    print('📥 응답 코드: ${response.statusCode}');
+    
+    // UTF-8 디코딩 처리
+    String responseBody = '';
+    try {
+      responseBody = utf8.decode(response.bodyBytes);
+      print('📥 응답 바디: $responseBody');
+    } catch (e) {
+      print('📥 응답 바디 디코딩 오류: $e');
+      responseBody = response.body;
+      print('📥 원본 응답 바디: $responseBody');
+    }
+    
     if (response.statusCode != 200) {
-      throw Exception('Failed to update goal: ${response.body}');
+      if (response.statusCode == 403) {
+        throw Exception('권한 오류 (403 Forbidden): 서버가 요청을 거부했습니다. 토큰 형식이나 권한을 확인하세요. 응답: $responseBody');
+      } else if (response.statusCode == 400) {
+        throw Exception('잘못된 요청 (400 Bad Request): 요청 형식이 잘못되었습니다. 응답: $responseBody');
+      } else if (response.statusCode == 401) {
+        throw Exception('인증 오류 (401 Unauthorized): 토큰이 유효하지 않거나 만료되었습니다. 응답: $responseBody');
+      } else {
+        throw Exception('목표 업데이트 실패 (${response.statusCode}): $responseBody');
+      }
     }
   }
 
@@ -114,112 +207,188 @@ class GoalRemoteDataSource {
     if (token == null) {
       throw Exception('JWT 토큰이 없습니다.');
     }
+    
     final url = Uri.parse('${Constants.baseUrl}/goals/delete/$goalId');
+    print('🗑️ 목표 삭제 요청 URL: $url');
+    
+    // 토큰 형식 확인 및 수정
+    String authToken = token;
+    if (!token.startsWith('Bearer ') && !token.startsWith('bearer ')) {
+      authToken = 'Bearer $token';
+    }
+    
+    final headers = {
+      'Authorization': authToken,
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    
+    print('🚀 요청 헤더: $headers');
+    
     final response = await client.delete(
       url,
-      headers: {
-        'Authorization': token,
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: headers,
     );
+    
+    print('📥 응답 코드: ${response.statusCode}');
+    
+    // UTF-8 디코딩 처리
+    String responseBody = '';
+    try {
+      responseBody = utf8.decode(response.bodyBytes);
+      print('📥 응답 바디: $responseBody');
+    } catch (e) {
+      print('📥 응답 바디 디코딩 오류: $e');
+      responseBody = response.body;
+      print('📥 원본 응답 바디: $responseBody');
+    }
+    
     if (response.statusCode != 200) {
-      throw Exception('Failed to delete goal: ${response.body}');
+      if (response.statusCode == 403) {
+        throw Exception('권한 오류 (403 Forbidden): 서버가 요청을 거부했습니다. 토큰 형식이나 권한을 확인하세요. 응답: $responseBody');
+      } else if (response.statusCode == 400) {
+        throw Exception('잘못된 요청 (400 Bad Request): 요청 형식이 잘못되었습니다. 응답: $responseBody');
+      } else if (response.statusCode == 401) {
+        throw Exception('인증 오류 (401 Unauthorized): 토큰이 유효하지 않거나 만료되었습니다. 응답: $responseBody');
+      } else {
+        throw Exception('목표 삭제 실패 (${response.statusCode}): $responseBody');
+      }
     }
   }
 
-  // 업데이트 메서드
   Future<bool> updateGoalStatus(Goal goal, Status newStatus) async {
     final token = await authRepository.getToken();
-
     if (token == null) {
       throw Exception('JWT 토큰이 없습니다.');
     }
+    
+    final url = Uri.parse('${Constants.baseUrl}/goals/update/status/${goal.id}');
+    print('🔄 목표 상태 업데이트 요청 URL: $url');
+    
+    // 토큰 형식 확인 및 수정 (Bearer 프리픽스가 중복되지 않도록)
+    String authToken = token;
+    if (!token.startsWith('Bearer ') && !token.startsWith('bearer ')) {
+      authToken = 'Bearer $token';
+    }
+    
+    final headers = {
+      'Authorization': authToken,
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    
+    print('🚀 요청 헤더: $headers');
+    
+    final requestBody = {
+      'status': newStatus.index, // enum의 index로 상태 전달 (0, 1, 2)
+    };
+    
+    print('🚀 요청 바디: $requestBody');
 
-    final url = Uri.parse(
-      '${Constants.baseUrl}/goals/update/status/${goal.id}',
-    );
-
-    final response = await http.put(
+    final response = await client.put(
       url,
-      headers: {
-        'Authorization': token,
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode({
-        'status': newStatus.index, // enum의 index로 상태 전달 (0, 1, 2)
-      }),
+      headers: headers,
+      body: jsonEncode(requestBody),
     );
+    
+    print('📥 응답 코드: ${response.statusCode}');
+    
+    // UTF-8 디코딩 처리
+    String responseBody = '';
+    try {
+      responseBody = utf8.decode(response.bodyBytes);
+      print('📥 응답 바디: $responseBody');
+    } catch (e) {
+      print('📥 응답 바디 디코딩 오류: $e');
+      responseBody = response.body;
+      print('📥 원본 응답 바디: $responseBody');
+    }
 
     if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-
+      final data = jsonDecode(responseBody);
       print('✅ 목표 상태 업데이트 성공');
       print('message: ${data['message']}');
       print('progress: ${data['progress']}');
       return true;
+    } else if (response.statusCode == 403) {
+      throw Exception('권한 오류 (403 Forbidden): 서버가 요청을 거부했습니다. 토큰 형식이나 권한을 확인하세요. 응답: $responseBody');
     } else if (response.statusCode == 400) {
-      final error = jsonDecode(response.body);
-      throw Exception('잘못된 요청: ${error['error']}');
+      throw Exception('잘못된 요청 (400 Bad Request): 요청 형식이 잘못되었습니다. 응답: $responseBody');
     } else if (response.statusCode == 401) {
-      throw Exception('인증 실패: JWT 토큰이 유효하지 않습니다.');
+      throw Exception('인증 오류 (401 Unauthorized): 토큰이 유효하지 않거나 만료되었습니다. 응답: $responseBody');
     } else if (response.statusCode == 500) {
-      throw Exception('서버 내부 오류가 발생했습니다.');
+      throw Exception('서버 내부 오류 (500 Internal Server Error): $responseBody');
     } else {
-      throw Exception(
-        '알 수 없는 오류 발생: ${response.statusCode} / ${response.body}',
-      );
+      throw Exception('목표 상태 업데이트 실패 (${response.statusCode}): $responseBody');
     }
   }
 
   Future<bool> updateGoalProgress(Goal goal, double newProgress) async {
-    // 1. 토큰 가져오기
     final token = await authRepository.getToken();
-
     if (token == null) {
       throw Exception('JWT 토큰이 없습니다.');
     }
-
-    // 2. progress 값 검증 (선택 사항, 서버에서 검증하지만 클라이언트에서도 한번 더)
+    
+    // progress 값 검증 (선택 사항, 서버에서 검증하지만 클라이언트에서도 한번 더)
     if (newProgress < 0 || newProgress > 100) {
       throw Exception('progress 값은 0~100 사이여야 합니다.');
     }
-
-    // 3. URL 생성
-    final url = Uri.parse(
-      '${Constants.baseUrl}/goals/update/progress/${goal.id}',
-    );
-
-    // 4. PUT 요청 보내기
-    final response = await http.put(
+    
+    final url = Uri.parse('${Constants.baseUrl}/goals/update/progress/${goal.id}');
+    print('📊 목표 진행률 업데이트 요청 URL: $url');
+    
+    // 토큰 형식 확인 및 수정 (Bearer 프리픽스가 중복되지 않도록)
+    String authToken = token;
+    if (!token.startsWith('Bearer ') && !token.startsWith('bearer ')) {
+      authToken = 'Bearer $token';
+    }
+    
+    final headers = {
+      'Authorization': authToken,
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    
+    print('🚀 요청 헤더: $headers');
+    
+    final requestBody = {
+      'progress': newProgress.toInt(), // 서버는 정수 기대할 수도 있으니 int 변환
+    };
+    
+    print('🚀 요청 바디: $requestBody');
+    
+    final response = await client.put(
       url,
-      headers: {
-        'Authorization': token,
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode({
-        'progress': newProgress.toInt(), // 서버는 정수 기대할 수도 있으니 int 변환 추천
-      }),
+      headers: headers,
+      body: jsonEncode(requestBody),
     );
-
-    // 5. 응답 처리
+    
+    print('📥 응답 코드: ${response.statusCode}');
+    
+    // UTF-8 디코딩 처리
+    String responseBody = '';
+    try {
+      responseBody = utf8.decode(response.bodyBytes);
+      print('📥 응답 바디: $responseBody');
+    } catch (e) {
+      print('📥 응답 바디 디코딩 오류: $e');
+      responseBody = response.body;
+      print('📥 원본 응답 바디: $responseBody');
+    }
+    
     if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      print('✅ 목표 progress 업데이트 성공');
+      final data = jsonDecode(responseBody);
+      print('✅ 목표 진행률 업데이트 성공');
       print('message: ${data['message']}');
       print('progress: ${data['progress']}');
       return true;
-      // 만약 로컬에서 goal 객체를 업데이트하거나 UI 반영하려면 여기에 작성하면 돼!
+    } else if (response.statusCode == 403) {
+      throw Exception('권한 오류 (403 Forbidden): 서버가 요청을 거부했습니다. 토큰 형식이나 권한을 확인하세요. 응답: $responseBody');
     } else if (response.statusCode == 400) {
-      final error = jsonDecode(response.body);
-      throw Exception('잘못된 요청: ${error['error']}');
+      throw Exception('잘못된 요청 (400 Bad Request): 요청 형식이 잘못되었습니다. 응답: $responseBody');
     } else if (response.statusCode == 401) {
-      throw Exception('인증 실패: JWT 토큰이 유효하지 않습니다.');
+      throw Exception('인증 오류 (401 Unauthorized): 토큰이 유효하지 않거나 만료되었습니다. 응답: $responseBody');
     } else if (response.statusCode == 500) {
-      throw Exception('서버 내부 오류가 발생했습니다.');
+      throw Exception('서버 내부 오류 (500 Internal Server Error): $responseBody');
     } else {
-      throw Exception(
-        '알 수 없는 오류 발생: ${response.statusCode} / ${response.body}',
-      );
+      throw Exception('목표 진행률 업데이트 실패 (${response.statusCode}): $responseBody');
     }
   }
 }
