@@ -13,6 +13,8 @@ import 'package:domain/usecases/goal/delete_goal_local.dart';
 import 'package:domain/usecases/goal/update_goal_status.dart';
 import 'package:domain/usecases/goal/update_goal_progress.dart';
 import 'package:domain/usecases/goal/get_completed_goals.dart';
+import 'package:get_it/get_it.dart';
+import 'package:presentation/viewmodels/home/home_viewmodel.dart';
 
 enum GoalManagementFilterOption { inProgress, givenUp, completed }
 
@@ -55,7 +57,7 @@ class GoalManagementViewModel extends ChangeNotifier {
 
   Future<void> loadGoals() async {
     _allGoals = await getGoalsLocalUseCase();
-    notifyListeners();
+    await applyFilter();  // _filteredGoals 갱신 및 notify
   }
 
   Future<void> syncGoals() async {
@@ -89,29 +91,51 @@ class GoalManagementViewModel extends ChangeNotifier {
 
   Future<void> updateGoalProgress(String goalId, double newProgress) async {
     final goal = _allGoals.firstWhere((g) => g.id == goalId);
+    // 1. 서버에 진행률 업데이트
     await updateGoalProgressUseCase(goal, newProgress);
+    // 2. 로컬 DB에도 진행률 저장
+    final updatedGoal = Goal(
+      id: goal.id,
+      name: goal.name,
+      icon: goal.icon,
+      progress: newProgress,
+      startDate: goal.startDate,
+      endDate: goal.endDate,
+      status: goal.status,
+    );
+    await updateGoalLocalUseCase(updatedGoal);
+    // 3. 목록 재로드 및 필터 갱신
+    await loadGoals();
+    // 4. 홈 화면에도 반영
+    GetIt.instance<HomeViewModel>().loadGoals();
   }
 
   Future<void> updateGoal(String goalId, Goal updated) async {
     await updateGoalRemoteUseCase(updated);
     await updateGoalLocalUseCase(updated);
     await loadGoals();
+    GetIt.instance<HomeViewModel>().loadGoals();
   }
 
   Future<void> giveUpGoal(String goalId) async {
     final goal = _allGoals.firstWhere((g) => g.id == goalId);
     await updateGoalStatusUseCase(goal, Status.givenUp);
+    await loadGoals();
+    GetIt.instance<HomeViewModel>().loadGoals();
   }
 
   Future<void> completeGoal(String goalId) async {
     final goal = _allGoals.firstWhere((g) => g.id == goalId);
     await updateGoalStatusUseCase(goal, Status.completed);
+    await loadGoals();
+    GetIt.instance<HomeViewModel>().loadGoals();
   }
 
   Future<void> deleteGoal(String goalId) async {
     await deleteGoalRemoteUseCase(goalId);
     await deleteGoalLocalUseCase(goalId);
     await loadGoals();
+    GetIt.instance<HomeViewModel>().loadGoals();
   }
 
   List<Goal> getCompletedGoals() {
