@@ -92,7 +92,13 @@ class _GoalInputViewBody extends StatelessWidget {
           text: '작성하기',
           onPressed: () async {
             final newGoal = await viewModel.saveGoal(context);
-            if (newGoal != null) Navigator.pop(context);
+            if (newGoal != null) {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                builder: (_) => GoalSettingBottomSheet(goal: newGoal),
+              );
+            }
           },
           backgroundColor: const Color(0xFF78B545),
           textColor: const Color(0xFFFCFCFC),
