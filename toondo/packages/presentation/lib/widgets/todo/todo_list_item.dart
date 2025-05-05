@@ -194,19 +194,17 @@ class TodoListItem extends StatelessWidget {
       builder: (context) {
         return ToDoEditBottomSheet(
           todo: todo,
+          goals: goals,
           onUpdate: () {
             Navigator.pop(context);
-            // 투두 수정 화면으로 이동
             onUpdate();
           },
           onDelete: () {
             Navigator.pop(context);
-            // 투두 삭제
             onDelete();
           },
           onPostpone: () {
             Navigator.pop(context);
-            // 투두를 내일로 미룸
             onPostpone();
           },
           onStatusUpdate: (double newStatus) {
