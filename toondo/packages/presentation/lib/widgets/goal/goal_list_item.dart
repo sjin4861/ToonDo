@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:domain/entities/status.dart';
 import 'package:domain/entities/goal.dart';
 import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart';
+import 'dart:io';
 
 class GoalListItem extends StatelessWidget {
   final Goal goal;
@@ -122,15 +123,21 @@ class GoalListItem extends StatelessWidget {
 
   /// 아이콘 표시
   Widget _buildGoalIcon(bool isCompleted) {
-    final Widget iconWidget =
-        (goal.icon != null)
-            ? SvgPicture.asset(
-              goal.icon!,
-              fit: BoxFit.cover,
-              width: 24,
-              height: 24,
-            )
-            : const Icon(Icons.flag, color: Colors.grey, size: 24);
+    final Widget iconWidget;
+    if (goal.icon != null) {
+      String raw = goal.icon!;
+      final fileName = raw.split('/').last;
+      final normalized = fileName.startsWith('ic_') ? fileName : 'ic_$fileName';
+      final path = 'assets/icons/$normalized';
+      iconWidget = SvgPicture.asset(
+        path,
+        fit: BoxFit.cover,
+        width: 24,
+        height: 24,
+      );
+    } else {
+      iconWidget = const Icon(Icons.flag, color: Colors.grey, size: 24);
+    }
 
     return Container(
       width: 32,
