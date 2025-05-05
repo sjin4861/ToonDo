@@ -179,19 +179,36 @@ class TodoInputViewModel extends ChangeNotifier {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
       try {
+        // 날짜 비교를 위해 시간 정보를 제거한 날짜만 사용
+        final now = DateTime.now();
+        final today = DateTime(now.year, now.month, now.day);
+        final normalizedStart = isDailyTodo
+            ? today
+            : (startDate != null
+                ? DateTime(startDate!.year, startDate!.month, startDate!.day)
+                : today);
+        final normalizedEnd = isDailyTodo
+            ? today
+            : (endDate != null
+                ? DateTime(endDate!.year, endDate!.month, endDate!.day)
+                : today);
         Todo newTodo = Todo(
-          id: todo?.id ?? DateTime.now().millisecondsSinceEpoch.toString(), // 변경: todo가 null인 경우 새로운 id 생성
+          id: todo?.id ?? now.millisecondsSinceEpoch.toString(),
           title: title,
-          startDate: isDailyTodo ? DateTime.now() : (startDate ?? DateTime.now()),
-          endDate: isDailyTodo ? DateTime.now() : (endDate ?? DateTime.now()),
+          startDate: normalizedStart,
+          endDate: normalizedEnd,
           goalId: selectedGoalId,
           importance: importance,
           urgency: urgency,
         );
         if (todo != null) {
-          await _updateTodoUseCase(todo!);
+          await _updateTodoUseCase(newTodo);
         } else {
-          await _createTodoUseCase(newTodo);
+          final created = await _createTodoUseCase(newTodo);
+          if (!created) {
+            print('Failed to create todo');
+            return;
+          }
         }
         Navigator.pop(context);
       } catch (e) {
