@@ -127,7 +127,21 @@ class TodoManageViewModel extends ChangeNotifier {
     try {
       await _updateTodoStatusUseCase(todo, status);
       final idx = allTodos.indexWhere((t) => t.id == todo.id);
-      if (idx != -1) allTodos[idx] = todo;
+      if (idx != -1) {
+        // 상태 변경된 새 Todo 생성 후 반영
+        final updated = Todo(
+          id: todo.id,
+          title: todo.title,
+          startDate: todo.startDate,
+          endDate: todo.endDate,
+          goalId: todo.goalId,
+          status: status,
+          comment: todo.comment,
+          urgency: todo.urgency,
+          importance: todo.importance,
+        );
+        allTodos[idx] = updated;
+      }
       _filterAndCategorizeTodos();
     } catch (e) {
       print('Error updating todo status: $e');
