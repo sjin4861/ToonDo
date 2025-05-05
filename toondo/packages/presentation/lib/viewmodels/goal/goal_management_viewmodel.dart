@@ -56,8 +56,33 @@ class GoalManagementViewModel extends ChangeNotifier {
   }
 
   Future<void> loadGoals() async {
+    // 로컬에서 모든 목표 조회
     _allGoals = await getGoalsLocalUseCase();
-    await applyFilter();  // _filteredGoals 갱신 및 notify
+    // 오늘 날짜 (시간 제거)
+    final today = DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+    );
+    // 만료된(active) 목표 자동 완료 처리
+    for (var goal in _allGoals) {
+      if (goal.endDate.isBefore(today) && goal.status != Status.completed) {
+        final updated = Goal(
+          id: goal.id,
+          name: goal.name,
+          icon: goal.icon,
+          progress: goal.progress,
+          startDate: goal.startDate,
+          endDate: goal.endDate,
+          status: Status.completed,
+        );
+        await updateGoalLocalUseCase(updated);
+      }
+    }
+    // 변경 반영 후 재조회
+    _allGoals = await getGoalsLocalUseCase();
+    // 필터 적용 및 notify
+    await applyFilter();
   }
 
   Future<void> syncGoals() async {
@@ -83,7 +108,13 @@ class GoalManagementViewModel extends ChangeNotifier {
         _filteredGoals = await getGivenUpGoalsUseCase();
         break;
       case GoalManagementFilterOption.completed:
-        _filteredGoals = await getCompletedGoalsUseCase();
+        // expired나 completed 상태인 목표 모두 포함
+        _filteredGoals = getCompletedGoals();
+        // debug: 어떤 목표들이 완료된 리스트에 포함되는지 확인
+        print('[DEBUG] Completed goals: ' +
+            _filteredGoals.map((g) =>
+              '{id:${g.id}, name:${g.name}, status:${g.status}, end:${g.endDate}}'
+            ).toList().toString());
         break;
     }
     notifyListeners();
@@ -139,7 +170,15 @@ class GoalManagementViewModel extends ChangeNotifier {
   }
 
   List<Goal> getCompletedGoals() {
-    return _allGoals.where((g) => g.status == Status.completed).toList();
+    final today = DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+    );
+    return _allGoals.where((g) {
+      return g.status == Status.completed
+          || g.endDate.isBefore(today);
+    }).toList();
   }
 
   List<Goal> getGivenUpGoals() {
