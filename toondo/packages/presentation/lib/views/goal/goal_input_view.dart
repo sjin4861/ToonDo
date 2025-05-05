@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:get_it/get_it.dart';
 import 'package:domain/entities/goal.dart';
@@ -7,6 +8,7 @@ import 'package:domain/usecases/goal/save_goal_local.dart';
 import 'package:domain/usecases/goal/update_goal_remote.dart';
 import 'package:domain/usecases/goal/update_goal_local.dart';
 import 'package:presentation/viewmodels/goal/goal_input_viewmodel.dart';
+import 'package:presentation/viewmodels/home/home_viewmodel.dart';
 import 'package:presentation/widgets/app_bar/custom_app_bar.dart';
 import 'package:presentation/widgets/bottom_button/custom_button.dart';
 import 'package:presentation/widgets/text_fields/goal_name_input_field.dart';
@@ -93,9 +95,16 @@ class _GoalInputViewBody extends StatelessWidget {
           onPressed: () async {
             final newGoal = await viewModel.saveGoal(context);
             if (newGoal != null) {
+              // 이전 화면으로 돌아가면서 콜백 실행
+              Navigator.pop(context, newGoal);
+              // Home과 GoalManage 갱신
+              GetIt.instance<HomeViewModel>().loadGoals();
+              GetIt.instance<GoalManagementViewModel>().loadGoals();
+              // BottomSheet은 rootNavigator로 띄워 상위 스코프에서 표시
               showModalBottomSheet(
                 context: context,
                 isScrollControlled: true,
+                useRootNavigator: true,
                 builder: (_) => GoalSettingBottomSheet(goal: newGoal),
               );
             }
