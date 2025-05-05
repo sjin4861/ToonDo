@@ -1,7 +1,6 @@
 import 'package:data/utils/goal_status_mapper.dart';
 import 'package:hive/hive.dart';
 import 'package:domain/entities/goal.dart';
-import 'package:domain/entities/status.dart';
 import 'package:data/models/goal_status_enum.dart';
 part 'goal_model.g.dart';
 
@@ -86,10 +85,21 @@ class GoalModel extends HiveObject {
   }
 
   factory GoalModel.fromJson(Map<String, dynamic> json) {
+    final rawIcon = json['icon'] as String?;
+    String? normalizedIcon;
+    if (rawIcon != null) {
+      if (rawIcon.startsWith('assets/')) {
+        normalizedIcon = rawIcon;
+      } else {
+        // ensure 'ic_' prefix and asset path
+        final fileName = rawIcon.startsWith('ic_') ? rawIcon : 'ic_$rawIcon';
+        normalizedIcon = 'assets/icons/$fileName';
+      }
+    }
     return GoalModel(
       id: json['goalId'].toString(), // 변경: 'id' 대신 'goalId'
       name: json['goalName'],        // 변경: 'name' 대신 'goalName'
-      icon: json['icon'],
+      icon: normalizedIcon,
       progress: (json['progress'] as num).toDouble(),
       startDate: DateTime.parse(json['startDate']),
       endDate: DateTime.parse(json['endDate']),
@@ -105,8 +115,8 @@ class GoalModel extends HiveObject {
     final totalDuration = endDate.difference(startDate).inSeconds;
     final elapsedDuration = DateTime.now().difference(startDate).inSeconds;
     if (totalDuration <= 0) return 0.0;
-    double expectedProgress = (elapsedDuration / totalDuration) * 100;
-    return expectedProgress.clamp(0.0, 100.0) as double;
+    final double expectedProgress = (elapsedDuration / totalDuration) * 100;
+    return expectedProgress.clamp(0.0, 100.0);
   }
 
   void markAsCompleted() {

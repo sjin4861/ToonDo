@@ -15,6 +15,7 @@ import 'package:domain/entities/user.dart' as _i30;
 import 'package:domain/usecases/auth/check_phone_number_exists.dart' as _i426;
 import 'package:domain/usecases/auth/get_token.dart' as _i415;
 import 'package:domain/usecases/auth/login.dart' as _i1068;
+import 'package:domain/usecases/auth/logout.dart' as _i969;
 import 'package:domain/usecases/auth/register.dart' as _i899;
 import 'package:domain/usecases/character/get_slime_character.dart' as _i26;
 import 'package:domain/usecases/character/handle_slime_interaction.dart'
@@ -38,13 +39,13 @@ import 'package:domain/usecases/gpt/get_slime_response.dart' as _i88;
 import 'package:domain/usecases/sms/send_sms_code.dart' as _i461;
 import 'package:domain/usecases/sms/verify_sms_code.dart' as _i73;
 import 'package:domain/usecases/todo/commit_todos.dart' as _i412;
-import 'package:domain/usecases/todo/create_todo.dart';
-import 'package:domain/usecases/todo/delete_todo.dart';
+import 'package:domain/usecases/todo/create_todo.dart' as _i834;
+import 'package:domain/usecases/todo/delete_todo.dart' as _i552;
 import 'package:domain/usecases/todo/fetch_todos.dart' as _i314;
-import 'package:domain/usecases/todo/get_all_todos.dart';
-import 'package:domain/usecases/todo/update_todo.dart';
-import 'package:domain/usecases/todo/update_todo_dates.dart';
-import 'package:domain/usecases/todo/update_todo_status.dart';
+import 'package:domain/usecases/todo/get_all_todos.dart' as _i362;
+import 'package:domain/usecases/todo/update_todo.dart' as _i375;
+import 'package:domain/usecases/todo/update_todo_dates.dart' as _i182;
+import 'package:domain/usecases/todo/update_todo_status.dart' as _i183;
 import 'package:domain/usecases/user/get_user_nickname.dart' as _i849;
 import 'package:domain/usecases/user/update_nickname.dart' as _i910;
 import 'package:get_it/get_it.dart' as _i174;
@@ -55,7 +56,7 @@ import 'package:presentation/viewmodels/goal/goal_input_viewmodel.dart'
     as _i742;
 import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart'
     as _i940;
-import 'package:presentation/viewmodels/home/home_viewmodel.dart';
+import 'package:presentation/viewmodels/home/home_viewmodel.dart' as _i370;
 import 'package:presentation/viewmodels/login/login_viewmodel.dart' as _i764;
 import 'package:presentation/viewmodels/my_page/my_page_viewmodel.dart'
     as _i272;
@@ -64,8 +65,9 @@ import 'package:presentation/viewmodels/my_page/notification_setting/time_picker
 import 'package:presentation/viewmodels/onboarding/onboarding_viewmodel.dart'
     as _i657;
 import 'package:presentation/viewmodels/signup/signup_viewmodel.dart' as _i705;
-import 'package:presentation/viewmodels/todo/todo_input_viewmodel.dart';
-import 'package:presentation/viewmodels/todo/todo_manage_viewmodel.dart';
+import 'package:presentation/viewmodels/todo/todo_input_viewmodel.dart' as _i72;
+import 'package:presentation/viewmodels/todo/todo_manage_viewmodel.dart'
+    as _i506;
 import 'package:presentation/viewmodels/welcome/welcome_viewmodel.dart'
     as _i197;
 
@@ -78,6 +80,12 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     gh.lazySingleton<_i393.TimePickerViewModel>(
       () => _i393.TimePickerViewModel(),
+    );
+    gh.lazySingleton<_i197.WelcomeViewModel>(
+      () => _i197.WelcomeViewModel(
+        getTokenUseCase: gh<_i415.GetTokenUseCase>(),
+        logoutUseCase: gh<_i969.LogoutUseCase>(),
+      ),
     );
     gh.lazySingleton<_i940.GoalManagementViewModel>(
       () => _i940.GoalManagementViewModel(
@@ -113,13 +121,24 @@ extension GetItInjectableX on _i174.GetIt {
         fetchTodosUseCase: gh<_i314.FetchTodosUseCase>(),
       ),
     );
-    gh.lazySingleton<TodoInputViewModel>(
-      () => TodoInputViewModel(
+    gh.lazySingleton<_i72.TodoInputViewModel>(
+      () => _i72.TodoInputViewModel(
         todo: gh<_i429.Todo>(),
         isDDayTodo: gh<bool>(),
-        createTodoUseCase: gh<CreateTodoUseCase>(),
-        updateTodoUseCase: gh<UpdateTodoUseCase>(),
+        createTodoUseCase: gh<_i834.CreateTodoUseCase>(),
+        updateTodoUseCase: gh<_i375.UpdateTodoUseCase>(),
         getGoalsLocalUseCase: gh<_i477.GetGoalsLocalUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i506.TodoManageViewModel>(
+      () => _i506.TodoManageViewModel(
+        fetchTodosUseCase: gh<_i314.FetchTodosUseCase>(),
+        deleteTodoUseCase: gh<_i552.DeleteTodoUseCase>(),
+        getTodosUseCase: gh<_i362.GetAllTodosUseCase>(),
+        updateTodoStatusUseCase: gh<_i183.UpdateTodoStatusUseCase>(),
+        updateTodoDatesUseCase: gh<_i182.UpdateTodoDatesUseCase>(),
+        getGoalsLocalUseCase: gh<_i477.GetGoalsLocalUseCase>(),
+        initialDate: gh<DateTime>(),
       ),
     );
     gh.lazySingleton<_i742.GoalInputViewModel>(
@@ -140,29 +159,14 @@ extension GetItInjectableX on _i174.GetIt {
             gh<_i426.CheckPhoneNumberExistsUseCase>(),
       ),
     );
-    gh.lazySingleton<TodoManageViewModel>(
-      () => TodoManageViewModel(
-        fetchTodosUseCase: gh<_i314.FetchTodosUseCase>(),
-        deleteTodoUseCase: gh<DeleteTodoUseCase>(),
-        getTodosUseCase: gh<GetAllTodosUseCase>(),
-        updateTodoStatusUseCase: gh<UpdateTodoStatusUseCase>(),
-        updateTodoDatesUseCase: gh<UpdateTodoDatesUseCase>(),
-        getGoalsLocalUseCase: gh<_i477.GetGoalsLocalUseCase>(),
-        initialDate: gh<DateTime>(),
-      ),
-    );
-    gh.lazySingleton<HomeViewModel>(
-      () => HomeViewModel(
+    gh.lazySingleton<_i370.HomeViewModel>(
+      () => _i370.HomeViewModel(
         getInProgressGoalsUseCase: gh<_i243.GetInProgressGoalsUseCase>(),
         deleteGoalRemoteUseCase: gh<_i397.DeleteGoalRemoteUseCase>(),
         deleteGoalLocalUseCase: gh<_i563.DeleteGoalLocalUseCase>(),
         getUserNicknameUseCase: gh<_i849.GetUserNicknameUseCase>(),
         getSlimeResponseUseCase: gh<_i88.GetSlimeResponseUseCase>(),
       ),
-    );
-    gh.lazySingleton<_i197.WelcomeViewModel>(
-      () =>
-          _i197.WelcomeViewModel(getTokenUseCase: gh<_i415.GetTokenUseCase>()),
     );
     gh.lazySingleton<_i657.OnboardingViewModel>(
       () => _i657.OnboardingViewModel(

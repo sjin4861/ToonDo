@@ -129,6 +129,16 @@ class GoalListDropdown extends StatelessWidget {
 
   // 아이콘 위젯을 생성하는 메서드
   Widget _buildIcon(String? iconPath, {required bool isSelected}) {
+    // Normalize icon path
+    Widget iconWidget;
+    if (iconPath != null) {
+      final fileName = iconPath.split('/').last;
+      final normalizedName = fileName.startsWith('ic_') ? fileName : 'ic_$fileName';
+      final path = 'assets/icons/$normalizedName';
+      iconWidget = SvgPicture.asset(path, fit: BoxFit.cover);
+    } else {
+      iconWidget = Icon(Icons.help_outline, size: 16, color: Colors.white);
+    }
     return Container(
       width: 24,
       height: 24,
@@ -139,12 +149,7 @@ class GoalListDropdown extends StatelessWidget {
             : const Color(0x7FDDDDDD),
         shape: BoxShape.circle,
       ),
-      child: iconPath != null
-          ? SvgPicture.asset(
-            iconPath,
-            fit: BoxFit.cover
-          )
-          : Icon(Icons.help_outline, size: 16, color: Colors.white),
+      child: iconWidget,
     );
   }
 }

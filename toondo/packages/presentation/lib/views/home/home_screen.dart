@@ -10,8 +10,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<HomeViewModel>(
-      create: (_) => GetIt.instance<HomeViewModel>(),
+    return ChangeNotifierProvider<HomeViewModel>.value(
+      value: GetIt.instance<HomeViewModel>(),
       child: HomeScaffold(isNewLogin: isNewLogin),
     );
   }

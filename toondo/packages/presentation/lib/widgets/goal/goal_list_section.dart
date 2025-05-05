@@ -20,18 +20,22 @@ class GoalListSection extends StatelessWidget {
       );
     }
 
-    return Column(
-      children: topGoals.map((goal) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
-          child: GoalListItem(
-            goal: goal,
-            onTap: () {
-              // TODO: 캐릭터 상호작용 등
-            },
-          ),
-        );
-      }).toList(),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Column(
+        children: topGoals.map((goal) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: GoalListItem(
+              goal: goal,
+              enableSwipeToDelete: false,
+              onTap: () {
+                // TODO: 캐릭터 상호작용 등
+              },
+            ),
+          );
+        }).toList(),
+      ),
     );
   }
 }

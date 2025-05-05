@@ -14,6 +14,7 @@ import 'package:presentation/widgets/todo/dday_daily_chip.dart';
 import 'package:presentation/widgets/todo/eisenhower_button.dart';
 import 'package:presentation/widgets/text_fields/tip.dart';
 import 'package:presentation/widgets/todo/todo_input_date_field.dart';
+import 'package:domain/entities/status.dart';
 
 class TodoInputView extends StatelessWidget {
   final bool isDDayTodo;
@@ -210,9 +211,12 @@ class TodoInputView extends StatelessWidget {
         } else if (snapshot.hasError) {
           return const Text('Error loading goals');
         } else {
+          // active 상태인 목표만 필터링
+          final allGoals = snapshot.data ?? [];
+          final activeGoals = allGoals.where((g) => g.status == Status.active).toList();
           return GoalListDropdown(
             selectedGoalId: viewModel.selectedGoalId,
-            goals: snapshot.data ?? [],
+            goals: activeGoals,
             isDropdownOpen: viewModel.showGoalDropdown,
             onGoalSelected: (goalId) {
               viewModel.selectGoal(goalId);

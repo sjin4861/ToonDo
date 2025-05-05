@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:presentation/navigation/route_paths.dart';
 import 'package:presentation/widgets/my_page/sync_bottom_sheet.dart';
+import 'package:get_it/get_it.dart';
+import 'package:domain/usecases/auth/logout.dart';
 import 'my_page_setting_tile.dart';
 
 class MyPageSettingSection extends StatelessWidget {
@@ -69,6 +71,13 @@ class MyPageSettingSection extends StatelessWidget {
           ),
           onTap: () {
             Navigator.pushNamed(context, RoutePaths.helpGuide);
+          },
+        ),
+        MyPageSettingTile(
+          title: '로그아웃',
+          onTap: () async {
+            await GetIt.instance<LogoutUseCase>()();
+            Navigator.pushNamedAndRemoveUntil(context, RoutePaths.root, (route) => false);
           },
         ),
       ],

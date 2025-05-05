@@ -2,9 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:domain/entities/todo.dart';
+import 'package:domain/entities/goal.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ToDoEditBottomSheet extends StatelessWidget {
   final Todo todo;
+  final List<Goal> goals; // 추가: 부모로부터 goals 리스트를 전달받음
   final VoidCallback onUpdate;
   final VoidCallback onDelete;
   final VoidCallback onPostpone;
@@ -13,10 +16,11 @@ class ToDoEditBottomSheet extends StatelessWidget {
   const ToDoEditBottomSheet({
     Key? key,
     required this.todo,
+    required this.goals,
     required this.onUpdate,
     required this.onDelete,
     required this.onPostpone,
-    required this.onStatusUpdate, // 생성자에 추가
+    required this.onStatusUpdate, // 생성자에 goals 추가
   }) : super(key: key);
 
   @override
@@ -28,10 +32,12 @@ class ToDoEditBottomSheet extends StatelessWidget {
     // 중요도와 긴급도에 따른 색상 설정
     Color importanceColor = _getBorderColor(importance, urgency);
 
-    // 목표 아이콘 설정
-    IconData goalIcon = _getGoalIcon(todo.goalId);
-
     bool isDDay = todo.isDDayTodo();
+
+    // 목표 아이콘 표시를 위한 matchingGoal 추출
+    final matchingGoal = goals.firstWhere(
+      (g) => g.id == todo.goalId
+    );
 
     return Container(
       height: 320,
@@ -61,41 +67,41 @@ class ToDoEditBottomSheet extends StatelessWidget {
               ),
             ),
           ),
-          // 투두 정보
+          // 목표 아이콘 및 제목 표시 (골옵션 스타일과 동일)
           Positioned(
-            left: MediaQuery.of(context).size.width / 2 - 100,
             top: 59,
+            left: 0, right: 0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                // 목표 아이콘 및 중요도 색상 표시
                 Container(
-                  width: 24,
-                  height: 24,
-                  decoration: ShapeDecoration(
-                    color: importanceColor.withOpacity(0.5),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                  width: 32,
+                  height: 32,
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: const Color(0xFF78B545), width: 1),
                   ),
-                  child: Icon(
-                    goalIcon,
-                    size: 16,
-                    color: importanceColor,
-                  ),
+                  child: matchingGoal?.icon != null
+                      ? SvgPicture.asset(
+                          matchingGoal!.icon!,
+                          fit: BoxFit.contain,
+                        )
+                      : const Icon(
+                          Icons.flag,
+                          size: 18,
+                          color: Color(0xFF78B545),
+                        ),
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 12),
                 Text(
                   todo.title,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Color(0xFF111111),
-                    fontSize: 18,
-                    fontFamily: 'Pretendard Variable',
+                  style: const TextStyle(
+                    fontSize: 20,
                     fontWeight: FontWeight.w700,
-                    letterSpacing: 0.27,
-                    decoration:
-                        todo.status >= 100 ? TextDecoration.lineThrough : null,
+                    fontFamily: 'Pretendard',
+                    color: Color(0xFF1C1D1B),
                   ),
                 ),
               ],
@@ -330,20 +336,6 @@ class ToDoEditBottomSheet extends StatelessWidget {
       return Colors.yellow; // 중요도 0, 긴급도 1
     } else {
       return Colors.black; // 중요도 0, 긴급도 0
-    }
-  }
-
-  // 목표 아이콘 반환 메서드
-  IconData _getGoalIcon(String? goalId) {
-    switch (goalId) {
-      case 'goal1':
-        return Icons.school;
-      case 'goal2':
-        return Icons.work;
-      case 'goal3':
-        return Icons.fitness_center;
-      default:
-        return Icons.flag;
     }
   }
 }

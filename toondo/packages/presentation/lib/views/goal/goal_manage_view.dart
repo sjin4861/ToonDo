@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:presentation/viewmodels/home/home_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:get_it/get_it.dart';
 import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart';
@@ -9,6 +10,7 @@ import 'package:presentation/widgets/top_menu_bar/menu_bar2.dart';
 import 'package:presentation/widgets/bottom_button/custom_button.dart';
 import 'package:presentation/widgets/goal/goal_options_bottom_sheet.dart';
 import 'package:domain/entities/status.dart';
+
 class GoalManageView extends StatelessWidget {
   const GoalManageView({super.key});
 
@@ -57,7 +59,13 @@ class GoalManageView extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) => const GoalInputView(),
                     ),
-                  );
+                  ).then((_) {
+                    // GoalManage 갱신
+                    Provider.of<GoalManagementViewModel>(context, listen: false)
+                        .loadGoals();
+                    // 홈 화면에도 즉시 반영
+                    GetIt.instance<HomeViewModel>().loadGoals();
+                  });
                 },
                 backgroundColor: const Color(0xFF78B545),
                 textColor: const Color(0xFFFCFCFC),
