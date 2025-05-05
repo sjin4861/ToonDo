@@ -12,9 +12,14 @@ import 'dart:io';
 class GoalListItem extends StatelessWidget {
   final Goal goal;
   final VoidCallback? onTap;
+  final bool enableSwipeToDelete;
 
-  const GoalListItem({Key? key, required this.goal, this.onTap})
-    : super(key: key);
+  const GoalListItem({
+    Key? key,
+    required this.goal,
+    this.onTap,
+    this.enableSwipeToDelete = true,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,52 +33,67 @@ class GoalListItem extends StatelessWidget {
     // D-Day
     final int dDay = _calculateDDay(goal.endDate);
 
+    // 리스트 아이템 컨텐츠
+    final content = Container(
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      decoration: ShapeDecoration(
+        color: isCompleted ? const Color(0xFFEEEEEE) : Colors.transparent,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(
+            width: 1,
+            color: isCompleted ? const Color(0x7FDDDDDD) : const Color(0xFF78B545),
+          ),
+          borderRadius: BorderRadius.circular(1000),
+        ),
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 8,
+        ),
+        onTap: onTap,
+        leading: _buildGoalIcon(isCompleted),
+        title: Text(
+          goal.name,
+          style: TextStyle(
+            color:
+                isCompleted
+                    ? const Color(0x4C111111)
+                    : const Color(0xFF1C1D1B),
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.20,
+            fontFamily: 'Pretendard Variable',
+            decoration: isCompleted ? TextDecoration.lineThrough : null,
+          ),
+        ),
+        subtitle: _buildDateSubtitle(dateRange, dDay),
+        trailing: _buildProgressIndicator(progress),
+      ),
+    );
+    // 스와이프 삭제 비활성화 시 단순 컨텐츠 반환
+    if (!enableSwipeToDelete) return content;
+    // 스와이프 삭제 기능 활성화
     return Dismissible(
       key: Key(goal.id ?? ''),
       direction: DismissDirection.endToStart,
-      background: _buildDismissBackground(),
-      confirmDismiss: (direction) => _confirmDelete(context),
-      onDismissed: (direction) => _onDelete(context),
-      child: Container(
+      background: Container(
         margin: const EdgeInsets.symmetric(vertical: 4),
-        decoration: ShapeDecoration(
-          color: isCompleted ? const Color(0xFFEEEEEE) : Colors.transparent,
-          shape: RoundedRectangleBorder(
-            side: BorderSide(
-              width: 1,
-              color:
-                  isCompleted
-                      ? const Color(0x7FDDDDDD)
-                      : const Color(0xFF78B545),
-            ),
-            borderRadius: BorderRadius.circular(1000),
-          ),
+        padding: const EdgeInsets.only(right: 12),
+        alignment: Alignment.centerRight,
+        decoration: BoxDecoration(
+          color: const Color(0xFFB2D59D),
+          borderRadius: BorderRadius.circular(1000),
         ),
-        child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 8,
-          ),
-          onTap: onTap,
-          leading: _buildGoalIcon(isCompleted),
-          title: Text(
-            goal.name,
-            style: TextStyle(
-              color:
-                  isCompleted
-                      ? const Color(0x4C111111)
-                      : const Color(0xFF1C1D1B),
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.20,
-              fontFamily: 'Pretendard Variable',
-              decoration: isCompleted ? TextDecoration.lineThrough : null,
-            ),
-          ),
-          subtitle: _buildDateSubtitle(dateRange, dDay),
-          trailing: _buildProgressIndicator(progress),
+        child: const Icon(
+          Icons.delete,
+          color: Colors.white,
+          size: 20,
         ),
       ),
+      confirmDismiss: (direction) => _confirmDelete(context),
+      onDismissed: (direction) => _onDelete(context),
+      child: content,
     );
   }
 
