@@ -21,19 +21,21 @@ class TestData {
 
   /// 테스트용 목표 생성
   static Goal createTestGoal({
-    String id = 'test-goal-id',
-    String title = '테스트 목표',
-    String? icon,
-    Status status = Status.active,
+    String id = 'test-id',
+    required String title,
+    String icon = 'assets/icons/ic_100point.svg',
     DateTime? startDate,
     DateTime? endDate,
+    double progress = 0.0,
+    Status status = Status.active,
   }) {
     return Goal(
       id: id,
       name: title,
       icon: icon,
-      startDate: startDate ?? DateTime(2025, 5, 1),
-      endDate: endDate ?? DateTime(2025, 5, 10),
+      startDate: startDate ?? DateTime(2025, 1, 1),
+      endDate: endDate ?? DateTime(2025, 12, 31),
+      progress: progress,
       status: status,
     );
   }
