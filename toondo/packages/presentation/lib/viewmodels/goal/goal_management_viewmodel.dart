@@ -97,24 +97,21 @@ class GoalManagementViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setFilterOption(GoalManagementFilterOption newFilterOption) {
+  Future<void> setFilterOption(GoalManagementFilterOption newFilterOption) async {
     _filterOption = newFilterOption;
-    // invoke useCase for test verification, but filter synchronously from _allGoals
+    List<Goal>? list;
     switch (_filterOption) {
       case GoalManagementFilterOption.inProgress:
-        getInProgressGoalsUseCase.call();
-        _filteredGoals = _allGoals.where((g) => g.status == Status.active).toList();
+        list = await getInProgressGoalsUseCase.call();
         break;
       case GoalManagementFilterOption.givenUp:
-        getGivenUpGoalsUseCase.call();
-        _filteredGoals = _allGoals.where((g) => g.status == Status.givenUp).toList();
+        list = await getGivenUpGoalsUseCase.call();
         break;
       case GoalManagementFilterOption.completed:
-        getCompletedGoalsUseCase.call();
-        final today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-        _filteredGoals = _allGoals.where((g) => g.status == Status.completed || g.endDate.isBefore(today)).toList();
+        list = await getCompletedGoalsUseCase.call();
         break;
     }
+    _filteredGoals = list ?? [];
     notifyListeners();
   }
 
