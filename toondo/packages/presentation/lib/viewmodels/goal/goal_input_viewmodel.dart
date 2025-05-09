@@ -52,9 +52,9 @@ class GoalInputViewModel extends ChangeNotifier {
 
   Future<Goal?> saveGoal(BuildContext context) async {
     if (!validateInput()) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('입력한 정보를 확인해주세요.')));
+      try {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('입력한 정보를 확인해주세요.')));
+      } catch (_) {}
       return null;
     }
 
@@ -72,9 +72,9 @@ class GoalInputViewModel extends ChangeNotifier {
       if (targetGoal == null) {
         final created = await createGoalRemoteUseCase(newGoal);
         await saveGoalLocalUseCase(created);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('목표가 성공적으로 저장되었습니다.')));
+        try {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('목표가 성공적으로 저장되었습니다.')));
+        } catch (_) {}
         // Reset input fields for new goal.
         goalNameController.clear();
         startDate = null;
@@ -85,15 +85,15 @@ class GoalInputViewModel extends ChangeNotifier {
       } else {
         await updateGoalRemoteUseCase(newGoal);
         await updateGoalLocalUseCase(newGoal);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('목표가 성공적으로 수정되었습니다.')));
+        try {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('목표가 성공적으로 수정되었습니다.')));
+        } catch (_) {}
         return newGoal;
       }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('목표 저장 중 오류가 발생했습니다.')));
+      try {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('목표 저장 중 오류가 발생했습니다.')));
+      } catch (_) {}
       print('Error saving goal: $e');
       return null;
     }

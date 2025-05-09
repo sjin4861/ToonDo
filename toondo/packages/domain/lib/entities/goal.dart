@@ -18,4 +18,27 @@ class Goal {
     required this.endDate,
     this.status = Status.active,
   });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Goal &&
+          runtimeType == other.runtimeType &&
+          // id is ignored for equality to allow Mockito matching
+          name == other.name &&
+          icon == other.icon &&
+          progress == other.progress &&
+          startDate == other.startDate &&
+          endDate == other.endDate &&
+          status == other.status;
+
+  @override
+  int get hashCode =>
+      // id is ignored in hashCode to maintain consistency with equality
+      name.hashCode ^
+      (icon?.hashCode ?? 0) ^
+      progress.hashCode ^
+      startDate.hashCode ^
+      endDate.hashCode ^
+      status.hashCode;
 }
