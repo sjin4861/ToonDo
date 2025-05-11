@@ -3,13 +3,10 @@ import 'dart:async';
 import 'dart:math';
 import 'package:common/gen/assets.gen.dart';
 import 'package:domain/entities/gesture.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 import 'package:presentation/viewmodels/character/slime_character_vm.dart';
-import 'package:get_it/get_it.dart';
-import 'package:data/utils/gesture_mapper.dart';
 
 class SlimeCharacterWidget extends StatefulWidget {
   final bool enableGestures;
