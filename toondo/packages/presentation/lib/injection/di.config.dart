@@ -17,11 +17,9 @@ import 'package:domain/usecases/auth/get_token.dart' as _i415;
 import 'package:domain/usecases/auth/login.dart' as _i1068;
 import 'package:domain/usecases/auth/logout.dart' as _i969;
 import 'package:domain/usecases/auth/register.dart' as _i899;
-import 'package:domain/usecases/character/get_slime_character.dart' as _i26;
-import 'package:domain/usecases/character/handle_slime_interaction.dart'
-    as _i302;
-import 'package:domain/usecases/character/unlock_special_animation.dart'
-    as _i180;
+import 'package:domain/usecases/character/slime_on_gesture.dart' as _i610;
+import 'package:domain/usecases/character/slime_on_massage.dart' as _i642;
+import 'package:domain/usecases/character/toggle_chat_mode.dart' as _i657;
 import 'package:domain/usecases/goal/create_goal_remote.dart' as _i343;
 import 'package:domain/usecases/goal/delete_goal_local.dart' as _i563;
 import 'package:domain/usecases/goal/delete_goal_remote.dart' as _i397;
@@ -35,7 +33,6 @@ import 'package:domain/usecases/goal/update_goal_local.dart' as _i1031;
 import 'package:domain/usecases/goal/update_goal_progress.dart' as _i739;
 import 'package:domain/usecases/goal/update_goal_remote.dart' as _i200;
 import 'package:domain/usecases/goal/update_goal_status.dart' as _i856;
-import 'package:domain/usecases/gpt/get_slime_response.dart' as _i88;
 import 'package:domain/usecases/sms/send_sms_code.dart' as _i461;
 import 'package:domain/usecases/sms/verify_sms_code.dart' as _i73;
 import 'package:domain/usecases/todo/commit_todos.dart' as _i412;
@@ -50,8 +47,9 @@ import 'package:domain/usecases/user/get_user_nickname.dart' as _i849;
 import 'package:domain/usecases/user/update_nickname.dart' as _i910;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
-import 'package:presentation/viewmodels/character/slime_character_viewmodel.dart'
-    as _i865;
+import 'package:presentation/viewmodels/character/chat_viewmodel.dart' as _i178;
+import 'package:presentation/viewmodels/character/slime_character_vm.dart'
+    as _i88;
 import 'package:presentation/viewmodels/goal/goal_input_viewmodel.dart'
     as _i742;
 import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart'
@@ -105,20 +103,19 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i764.LoginViewModel>(
       () => _i764.LoginViewModel(loginUseCase: gh<_i1068.LoginUseCase>()),
     );
-    gh.lazySingleton<_i865.SlimeCharacterViewModel>(
-      () => _i865.SlimeCharacterViewModel(
-        handleSlimeInteractionUseCase:
-            gh<_i302.HandleSlimeInteractionUseCase>(),
-        getSlimeCharacterUseCase: gh<_i26.GetSlimeCharacterUseCase>(),
-        unlockSpecialAnimationUseCase:
-            gh<_i180.UnlockSpecialAnimationUseCase>(),
-      ),
-    );
     gh.lazySingleton<_i272.MyPageViewModel>(
       () => _i272.MyPageViewModel(
         currentUser: gh<_i30.User>(),
         commitTodosUseCase: gh<_i412.CommitTodosUseCase>(),
         fetchTodosUseCase: gh<_i314.FetchTodosUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i370.HomeViewModel>(
+      () => _i370.HomeViewModel(
+        gh<_i243.GetInProgressGoalsUseCase>(),
+        gh<_i563.DeleteGoalLocalUseCase>(),
+        gh<_i849.GetUserNicknameUseCase>(),
+        gh<_i657.ToggleChatModeUseCase>(),
       ),
     );
     gh.lazySingleton<_i72.TodoInputViewModel>(
@@ -129,6 +126,9 @@ extension GetItInjectableX on _i174.GetIt {
         updateTodoUseCase: gh<_i375.UpdateTodoUseCase>(),
         getGoalsLocalUseCase: gh<_i477.GetGoalsLocalUseCase>(),
       ),
+    );
+    gh.factory<_i178.ChatViewModel>(
+      () => _i178.ChatViewModel(gh<_i642.SlimeOnMessageUseCase>()),
     );
     gh.lazySingleton<_i506.TodoManageViewModel>(
       () => _i506.TodoManageViewModel(
@@ -159,14 +159,8 @@ extension GetItInjectableX on _i174.GetIt {
             gh<_i426.CheckPhoneNumberExistsUseCase>(),
       ),
     );
-    gh.lazySingleton<_i370.HomeViewModel>(
-      () => _i370.HomeViewModel(
-        getInProgressGoalsUseCase: gh<_i243.GetInProgressGoalsUseCase>(),
-        deleteGoalRemoteUseCase: gh<_i397.DeleteGoalRemoteUseCase>(),
-        deleteGoalLocalUseCase: gh<_i563.DeleteGoalLocalUseCase>(),
-        getUserNicknameUseCase: gh<_i849.GetUserNicknameUseCase>(),
-        getSlimeResponseUseCase: gh<_i88.GetSlimeResponseUseCase>(),
-      ),
+    gh.factory<_i88.SlimeCharacterViewModel>(
+      () => _i88.SlimeCharacterViewModel(gh<_i610.SlimeOnGestureUseCase>()),
     );
     gh.lazySingleton<_i657.OnboardingViewModel>(
       () => _i657.OnboardingViewModel(

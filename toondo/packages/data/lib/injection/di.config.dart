@@ -72,7 +72,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => registerModule.goalStatusBox,
       preResolve: true,
     );
-    gh.singleton<_i938.AnimationLocalDataSource>(
+    gh.lazySingleton<_i938.AnimationLocalDataSource>(
         () => _i938.AnimationLocalDataSource());
     gh.lazySingleton<_i519.Client>(() => registerModule.httpClient);
     gh.lazySingleton<_i558.FlutterSecureStorage>(
@@ -146,7 +146,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i657.SlimeRepository>(() => _i409.SlimeRepositoryImpl(
           gh<_i883.GptRemoteDataSource>(),
           gh<_i938.AnimationLocalDataSource>(),
-          gh<_i587.GestureMapper>(),
         ));
     gh.lazySingleton<_i559.GoalRepository>(() => _i527.GoalRepositoryImpl(
           localDatasource: gh<_i34.GoalLocalDatasource>(),
