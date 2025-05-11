@@ -1,84 +1,72 @@
 // lib/viewmodels/home/home_viewmodel.dart
+import 'dart:async';
 
+import 'package:domain/repositories/slime_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:domain/entities/goal.dart';
 import 'package:domain/usecases/goal/get_inprogress_goals.dart';
-// removed remote delete use case to operate only on local DB
-import 'package:domain/usecases/goal/delete_goal_local.dart';
-import 'package:domain/usecases/goal/delete_goal_remote.dart';
-import 'package:injectable/injectable.dart';
 import 'package:domain/usecases/user/get_user_nickname.dart';
-import 'package:domain/usecases/gpt/get_slime_response.dart';
 import 'package:domain/usecases/auth/logout.dart';
+import 'package:injectable/injectable.dart';
 import 'package:get_it/get_it.dart';
 
 @LazySingleton()
 class HomeViewModel extends ChangeNotifier {
-  final GetInProgressGoalsUseCase getInProgressGoalsUseCase;
-  final DeleteGoalRemoteUseCase deleteGoalRemoteUseCase;
-  final DeleteGoalLocalUseCase deleteGoalLocalUseCase;
-  final GetUserNicknameUseCase getUserNicknameUseCase;
-  final GetSlimeResponseUseCase getSlimeResponseUseCase;
+  final GetInProgressGoalsUseCase _getGoals;
+  final GetUserNicknameUseCase _getNick;
 
-  List<Goal> _inProgressGoals = [];
-  List<Goal> get goals => _inProgressGoals;
-
-  // 슬라임 애니메이션 (이전 SlimeCharacterViewModel 기능 통합)
-  String _animation = 'id';
-  String get animation => _animation;
-  void setAnimation(String anim) {
-    _animation = anim;
-    notifyListeners();
-  }
-  Future<void> playSequentialAnimations() async {
-    final animations = ['id', 'eye', 'angry', 'happy', 'shine', 'melt'];
-    for (var anim in animations) {
-      setAnimation(anim);
-      await Future.delayed(const Duration(milliseconds: 500));
-    }
-    setAnimation('id');
+  HomeViewModel(
+    this._getGoals,
+    this._getNick,
+    ) {
+    _init();
   }
 
-  // 사용자 닉네임을 캐싱할 변수 추가
-  String _userNickname = '';
-  String get userNickname => _userNickname;
-  Future<void> loadUserNickname() async {
-    final nick = await getUserNicknameUseCase.call();
-    _userNickname = nick ?? '';
-    notifyListeners();
-  }
-
-  HomeViewModel({
-    required this.getInProgressGoalsUseCase,
-    required this.deleteGoalRemoteUseCase,
-    required this.deleteGoalLocalUseCase,
-    required this.getUserNicknameUseCase,
-    required this.getSlimeResponseUseCase,
-  }) {
-    loadGoals();
-    loadUserNickname();
-  }
-
+  // ─── Goal 리스트 ──────────────────────────
+  List<Goal> _goals = [];
+  List<Goal> get goals => _goals;
   Future<void> loadGoals() async {
-    _inProgressGoals = await getInProgressGoalsUseCase();
+    _goals = await _getGoals();
     notifyListeners();
   }
 
   List<Goal> get dDayClosestThree {
-    final sortedGoals = List<Goal>.from(_inProgressGoals)
+    final list = List<Goal>.from(_goals)
       ..sort((a, b) => a.endDate.compareTo(b.endDate));
-    return sortedGoals.take(3).toList();
+    return list.take(3).toList();
   }
 
-  Future<void> deleteGoal(String goalId) async {
-    // optionally delete from remote if needed:
-    // await deleteGoalRemoteUseCase(goalId);
-    await deleteGoalLocalUseCase(goalId);
-    await loadGoals();
+  // ─── 사용자 정보 ───────────────────────────
+  String _nickname = '';
+  String get nickname => _nickname;
+  Future<void> _loadNickname() async {
+    _nickname = await _getNick() ?? '';
+    notifyListeners();
   }
-  
-  // logout 유스케이스를 처리하는 메서드 추가
-  Future<void> logout() async {
-    await GetIt.instance<LogoutUseCase>()();
+
+  // ─── Chat 모드 상태 ────────────────────────
+  bool _chatEnabled = false;
+  bool get chatEnabled => _chatEnabled;
+  late final StreamSubscription _chatSub;
+  void _listenChatToggle() {
+    _chatSub = GetIt.I<SlimeRepository>().chatEnabled$.listen((v) {
+      _chatEnabled = v;
+      notifyListeners();
+    });
   }
+
+  // ─── 초기화 / 정리 ─────────────────────────
+  Future<void> _init() async {
+    await Future.wait([loadGoals(), _loadNickname()]);
+    _listenChatToggle();
+  }
+
+  @override
+  void dispose() {
+    _chatSub.cancel();
+    super.dispose();
+  }
+
+  // ─── 로그아웃 ──────────────────────────────
+  Future<void> logout() async => GetIt.I<LogoutUseCase>()();
 }

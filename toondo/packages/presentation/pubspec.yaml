@@ -37,6 +37,7 @@ dependencies:
   rive: ^0.13.20
   audioplayers: ^6.1.1
   injectable: ^2.5.0
+  rxdart: ^0.28.0
 
 dev_dependencies:
   flutter_test:

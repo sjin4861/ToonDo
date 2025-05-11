@@ -11,8 +11,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:domain/repositories/auth_repository.dart' as _i427;
 import 'package:domain/repositories/goal_repository.dart' as _i559;
-import 'package:domain/repositories/gpt_repository.dart' as _i183;
-import 'package:domain/repositories/slime_character_repository.dart' as _i583;
+import 'package:domain/repositories/slime_repository.dart' as _i657;
 import 'package:domain/repositories/sms_repository.dart' as _i366;
 import 'package:domain/repositories/todo_repository.dart' as _i158;
 import 'package:domain/repositories/user_repository.dart' as _i988;
@@ -21,11 +20,9 @@ import 'package:domain/usecases/auth/get_token.dart' as _i415;
 import 'package:domain/usecases/auth/login.dart' as _i1068;
 import 'package:domain/usecases/auth/logout.dart' as _i969;
 import 'package:domain/usecases/auth/register.dart' as _i899;
-import 'package:domain/usecases/character/get_slime_character.dart' as _i26;
-import 'package:domain/usecases/character/handle_slime_interaction.dart'
-    as _i302;
-import 'package:domain/usecases/character/unlock_special_animation.dart'
-    as _i180;
+import 'package:domain/usecases/character/slime_on_gesture.dart' as _i610;
+import 'package:domain/usecases/character/slime_on_massage.dart' as _i642;
+import 'package:domain/usecases/character/toggle_chat_mode.dart' as _i657;
 import 'package:domain/usecases/goal/create_goal_remote.dart' as _i343;
 import 'package:domain/usecases/goal/delete_goal_local.dart' as _i563;
 import 'package:domain/usecases/goal/delete_goal_remote.dart' as _i397;
@@ -40,7 +37,6 @@ import 'package:domain/usecases/goal/update_goal_local.dart' as _i1031;
 import 'package:domain/usecases/goal/update_goal_progress.dart' as _i739;
 import 'package:domain/usecases/goal/update_goal_remote.dart' as _i200;
 import 'package:domain/usecases/goal/update_goal_status.dart' as _i856;
-import 'package:domain/usecases/gpt/get_slime_response.dart' as _i88;
 import 'package:domain/usecases/sms/send_sms_code.dart' as _i461;
 import 'package:domain/usecases/sms/verify_sms_code.dart' as _i73;
 import 'package:domain/usecases/todo/add_todo.dart' as _i133;
@@ -107,27 +103,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i182.UpdateTodoDatesUseCase>(
       () => _i182.UpdateTodoDatesUseCase(gh<_i158.TodoRepository>()),
     );
-    gh.factory<_i26.GetSlimeCharacterUseCase>(
-      () => _i26.GetSlimeCharacterUseCase(gh<_i583.SlimeCharacterRepository>()),
-    );
-    gh.factory<_i302.HandleSlimeInteractionUseCase>(
-      () => _i302.HandleSlimeInteractionUseCase(
-        gh<_i583.SlimeCharacterRepository>(),
-      ),
-    );
-    gh.factory<_i180.UnlockSpecialAnimationUseCase>(
-      () => _i180.UnlockSpecialAnimationUseCase(
-        gh<_i583.SlimeCharacterRepository>(),
-      ),
-    );
     gh.factory<_i292.GetGivenUpGoalsUseCase>(
       () => _i292.GetGivenUpGoalsUseCase(gh<_i559.GoalRepository>()),
-    );
-    gh.factory<_i243.GetInProgressGoalsUseCase>(
-      () => _i243.GetInProgressGoalsUseCase(gh<_i559.GoalRepository>()),
-    );
-    gh.factory<_i368.GetCompletedGoalsUseCase>(
-      () => _i368.GetCompletedGoalsUseCase(gh<_i559.GoalRepository>()),
     );
     gh.factory<_i397.DeleteGoalRemoteUseCase>(
       () => _i397.DeleteGoalRemoteUseCase(gh<_i559.GoalRepository>()),
@@ -137,6 +114,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i371.GetGoalsRemoteUseCase>(
       () => _i371.GetGoalsRemoteUseCase(gh<_i559.GoalRepository>()),
+    );
+    gh.factory<_i243.GetInProgressGoalsUseCase>(
+      () => _i243.GetInProgressGoalsUseCase(gh<_i559.GoalRepository>()),
     );
     gh.factory<_i563.DeleteGoalLocalUseCase>(
       () => _i563.DeleteGoalLocalUseCase(gh<_i559.GoalRepository>()),
@@ -153,11 +133,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i343.CreateGoalRemoteUseCase>(
       () => _i343.CreateGoalRemoteUseCase(gh<_i559.GoalRepository>()),
     );
-    gh.factory<_i901.GetGoalByIdFromLocalUseCase>(
-      () => _i901.GetGoalByIdFromLocalUseCase(gh<_i559.GoalRepository>()),
+    gh.factory<_i368.GetCompletedGoalsUseCase>(
+      () => _i368.GetCompletedGoalsUseCase(gh<_i559.GoalRepository>()),
     );
     gh.factory<_i856.UpdateGoalStatusUseCase>(
       () => _i856.UpdateGoalStatusUseCase(gh<_i559.GoalRepository>()),
+    );
+    gh.factory<_i901.GetGoalByIdFromLocalUseCase>(
+      () => _i901.GetGoalByIdFromLocalUseCase(gh<_i559.GoalRepository>()),
     );
     gh.factory<_i739.UpdateGoalProgressUseCase>(
       () => _i739.UpdateGoalProgressUseCase(gh<_i559.GoalRepository>()),
@@ -177,8 +160,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i849.GetUserNicknameUseCase>(
       () => _i849.GetUserNicknameUseCase(gh<_i988.UserRepository>()),
     );
-    gh.factory<_i88.GetSlimeResponseUseCase>(
-      () => _i88.GetSlimeResponseUseCase(gh<_i183.GptRepository>()),
+    gh.factory<_i642.SlimeOnMessageUseCase>(
+      () => _i642.SlimeOnMessageUseCase(gh<_i657.SlimeRepository>()),
+    );
+    gh.factory<_i657.ToggleChatModeUseCase>(
+      () => _i657.ToggleChatModeUseCase(gh<_i657.SlimeRepository>()),
+    );
+    gh.factory<_i610.SlimeOnGestureUseCase>(
+      () => _i610.SlimeOnGestureUseCase(gh<_i657.SlimeRepository>()),
     );
     return this;
   }

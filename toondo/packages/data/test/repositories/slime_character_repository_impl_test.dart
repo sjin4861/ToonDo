@@ -1,110 +1,97 @@
-import 'package:data/models/slime_character_model.dart';
+// test/slime_repository_impl_test.dart
+import 'package:data/datasources/local/animation_local_datasource.dart';
+import 'package:data/datasources/remote/gpt_remote_datasource.dart';
 import 'package:data/repositories/slime_character_repository_impl.dart';
-import 'package:domain/entities/slime_character.dart';
-import 'package:domain/repositories/slime_character_repository.dart';
+import 'package:domain/entities/gesture.dart';
+import 'package:domain/entities/slime_response.dart';
+import 'package:domain/repositories/slime_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 
+import 'slime_character_repository_impl_test.mocks.dart';
+
+@GenerateMocks([
+  GptRemoteDataSource,
+  AnimationLocalDataSource,
+])
 void main() {
-  late SlimeCharacterRepository repository;
+  late SlimeRepository repository;
+  late MockGptRemoteDataSource mockGpt;
+  late MockAnimationLocalDataSource mockAnim;
 
   setUp(() {
-    repository = SlimeCharacterRepositoryImpl();
+    mockGpt  = MockGptRemoteDataSource();
+    mockAnim = MockAnimationLocalDataSource();
+
+    repository = SlimeRepositoryImpl(mockGpt, mockAnim);
   });
 
-  group('SlimeCharacterRepositoryImpl', () {
-    test('getSlimeCharacter should return default character on first call', () async {
-      // Act
-      final result = await repository.getSlimeCharacter();
-      
-      // Assert
-      expect(result, isA<SlimeCharacter>());
-      expect(result.name, equals('슬라임'));
-      expect(result.animationState, equals('idle'));
-      expect(result.props, isEmpty);
-      expect(result.conversationHistory, isEmpty);
+  group('SlimeRepositoryImpl', () {
+    group('제스처 처리', () {
+      test('processGesture는 playByGesture를 호출하고 키를 반환해야 한다', () async {
+        // Arrange
+        when(mockAnim.playByGesture(Gesture.tap))
+            .thenAnswer((_) async => 'shine');
+
+        // Act
+        final result = await repository.processGesture(Gesture.tap);
+
+        // Assert
+        expect(result, isA<SlimeResponse>());
+        expect(result.animationKey, equals('shine'));
+        verify(mockAnim.playByGesture(Gesture.tap)).called(1);
+        verifyZeroInteractions(mockGpt);
+      });
     });
-    
-    test('updateAnimationState should update the animation state', () async {
-      // Arrange
-      const newAnimation = 'happy';
-      
-      // Act
-      await repository.updateAnimationState(newAnimation);
-      final result = await repository.getSlimeCharacter();
-      
-      // Assert
-      expect(result.animationState, equals(newAnimation));
+
+    group('메시지 처리', () {
+      test('processMessage → GPT 호출 후 playBySentiment 호출 흐름', () async {
+        // Arrange
+        const input = '안녕!';
+        const gptReply = '반가워~ 😊';
+        when(mockGpt.chat(any)).thenAnswer((_) async => gptReply);
+        when(mockAnim.playBySentiment(gptReply))
+            .thenAnswer((_) async => 'happy');
+
+        // Act
+        final result = await repository.processMessage(
+          text: input,
+          goals: const [],
+          todos: const [],
+        );
+
+        // Assert
+        expect(result.message, equals(gptReply));
+        expect(result.animationKey, equals('happy'));
+        verify(mockGpt.chat(any)).called(1);
+        verify(mockAnim.playBySentiment(gptReply)).called(1);
+      });
     });
-    
-    test('addConversation should add message to conversation history', () async {
-      // Arrange
-      const message = '안녕!';
-      
-      // Act
-      await repository.addConversation(message);
-      final result = await repository.getSlimeCharacter();
-      
-      // Assert
-      expect(result.conversationHistory, contains(message));
-      expect(result.conversationHistory.length, equals(1));
+
+    group('대화 모드 토글', () {
+      test('chatEnabled 스트림은 setChatEnabled 호출에 따라 값을 방출', () async {
+        final expectStream = expectLater(
+          repository.chatEnabled$.take(2),
+          emitsInOrder([false, true]),
+        );
+
+        await repository.setChatEnabled(true);
+        await expectStream;
+      });
     });
-    
-    test('updateProps should update the props list', () async {
-      // Arrange
-      final props = ['hat', 'glasses'];
-      
-      // Act
-      await repository.updateProps(props);
-      final result = await repository.getSlimeCharacter();
-      
-      // Assert
-      expect(result.props, equals(props));
-    });
-    
-    test('isSpecialAnimationUnlocked should return true for any animation in current implementation', () async {
-      // Act
-      final result = await repository.isSpecialAnimationUnlocked('dance');
-      
-      // Assert
-      expect(result, isTrue);
-    });
-    
-    test('getAvailableAnimations should return list of basic animations', () async {
-      // Act
-      final result = await repository.getAvailableAnimations();
-      
-      // Assert
-      expect(result, isA<List<String>>());
-      expect(result, isNotEmpty);
-      // 현재 구현에서는 기본 애니메이션들이 항상 포함되어야 함
-      expect(result, containsAll(['id', 'eye', 'angry', 'happy', 'shine', 'melt']));
-    });
-    
-    test('getSlimeStateBasedOnGoals should return default state', () async {
-      // Act
-      final result = await repository.getSlimeStateBasedOnGoals();
-      
-      // Assert
-      expect(result, equals('shine'));
-    });
-    
-    test('multiple operations should maintain state correctly', () async {
-      // Arrange
-      const newAnimation = 'melt';
-      const message = '반가워!';
-      final props = ['crown'];
-      
-      // Act
-      await repository.updateAnimationState(newAnimation);
-      await repository.addConversation(message);
-      await repository.updateProps(props);
-      final result = await repository.getSlimeCharacter();
-      
-      // Assert
-      expect(result.animationState, equals(newAnimation));
-      expect(result.conversationHistory, contains(message));
-      expect(result.props, equals(props));
-      expect(result.name, equals('슬라임'));
+
+    group('예외 처리', () {
+      test('GPT 예외 발생 시 그대로 전파', () async {
+        when(mockGpt.chat(any)).thenThrow(Exception('네트워크 오류'));
+
+        expect(
+          () => repository.processMessage(text: 'hi'),
+          throwsException,
+        );
+        verify(mockGpt.chat(any)).called(1);
+        verifyNever(mockAnim.playBySentiment(any));
+      });
     });
   });
 }

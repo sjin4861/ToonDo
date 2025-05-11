@@ -1,8 +1,10 @@
 import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
+import 'package:presentation/widgets/home/chat_toggle_button.dart';
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const HomeAppBar({super.key});
+  final bool chatEnabled;
+  const HomeAppBar({super.key, required this.chatEnabled});
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +21,11 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           letterSpacing: 1.2,
           fontSize: 14,
         ),
+      ),
+      leadingWidth: 56,
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 8.0),
+        child: ChatToggleButton(enabled: chatEnabled),
       ),
       actions: [
         Padding(

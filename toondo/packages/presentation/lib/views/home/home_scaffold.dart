@@ -31,7 +31,7 @@ class HomeScaffold extends StatelessWidget {
       extendBody: true,
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
-      appBar: const HomeAppBar(),
+      appBar: HomeAppBar(chatEnabled: homeVM.chatEnabled),
       body: Stack(
         children: [
           const HomeBackground(), // (1) 배경
@@ -43,10 +43,7 @@ class HomeScaffold extends StatelessWidget {
             right: 0,
             child: SizedBox(
               height: _slimeAreaHeight,
-              child: SlimeArea(
-                userNickname: homeVM.userNickname,
-                getSlimeResponseUseCase: homeVM.getSlimeResponseUseCase,
-              ),
+              child: SlimeArea()
             ),
           ),
 

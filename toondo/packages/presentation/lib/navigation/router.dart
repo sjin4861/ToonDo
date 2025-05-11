@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:presentation/viewmodels/character/chat_viewmodel.dart';
 import 'package:presentation/viewmodels/welcome/welcome_viewmodel.dart';
+import 'package:presentation/views/chat/slime_chat_page.dart';
 import 'package:presentation/views/mypage/account_setting/account_setting_screen.dart';
 import 'package:presentation/views/mypage/account_setting/nickname_change_screen.dart';
 import 'package:presentation/views/mypage/account_setting/password_change_screen.dart';
@@ -58,6 +60,13 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => PhoneNumberChangeScreen());
       case RoutePaths.accountSettingPasswordChange:
         return MaterialPageRoute(builder: (_) => PasswordChangeScreen());
+      case RoutePaths.slimeChat:
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<ChatViewModel>.value(
+            value: GetIt.instance<ChatViewModel>(),
+            child: const SlimeChatPage(),
+          ),
+        );
       default:
         return MaterialPageRoute(
           builder:
