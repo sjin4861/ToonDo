@@ -8,6 +8,8 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:data/datasources/local/animation_local_datasource.dart'
+    as _i938;
 import 'package:data/datasources/local/auth_local_datasource.dart' as _i116;
 import 'package:data/datasources/local/goal_local_datasource.dart' as _i34;
 import 'package:data/datasources/local/secure_local_datasource.dart' as _i361;
@@ -15,6 +17,7 @@ import 'package:data/datasources/local/todo_local_datasource.dart' as _i91;
 import 'package:data/datasources/local/user_local_datasource.dart' as _i1024;
 import 'package:data/datasources/remote/auth_remote_datasource.dart' as _i954;
 import 'package:data/datasources/remote/goal_remote_datasource.dart' as _i417;
+import 'package:data/datasources/remote/gpt_remote_datasource.dart' as _i883;
 import 'package:data/datasources/remote/sms_remote_datasource.dart' as _i268;
 import 'package:data/datasources/remote/todo_remote_datasource.dart' as _i627;
 import 'package:data/datasources/remote/user_remote_datasource.dart' as _i813;
@@ -26,17 +29,16 @@ import 'package:data/models/user_model.dart' as _i245;
 import 'package:data/repositories/auth_repository_impl.dart' as _i819;
 import 'package:data/repositories/character_repository_impl.dart' as _i919;
 import 'package:data/repositories/goal_repository_impl.dart' as _i527;
-import 'package:data/repositories/gpt_repository_impl.dart' as _i905;
 import 'package:data/repositories/slime_character_repository_impl.dart'
     as _i409;
 import 'package:data/repositories/sms_repository_impl.dart' as _i235;
 import 'package:data/repositories/todo_repository_impl.dart' as _i366;
 import 'package:data/repositories/user_repository_impl.dart' as _i537;
+import 'package:data/utils/gesture_mapper.dart' as _i587;
 import 'package:domain/repositories/auth_repository.dart' as _i427;
 import 'package:domain/repositories/character_repository.dart' as _i434;
 import 'package:domain/repositories/goal_repository.dart' as _i559;
-import 'package:domain/repositories/gpt_repository.dart' as _i183;
-import 'package:domain/repositories/slime_character_repository.dart' as _i583;
+import 'package:domain/repositories/slime_repository.dart' as _i657;
 import 'package:domain/repositories/sms_repository.dart' as _i366;
 import 'package:domain/repositories/todo_repository.dart' as _i158;
 import 'package:domain/repositories/user_repository.dart' as _i988;
@@ -70,9 +72,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => registerModule.goalStatusBox,
       preResolve: true,
     );
+    gh.singleton<_i938.AnimationLocalDataSource>(
+        () => _i938.AnimationLocalDataSource());
     gh.lazySingleton<_i519.Client>(() => registerModule.httpClient);
     gh.lazySingleton<_i558.FlutterSecureStorage>(
         () => registerModule.secureStorage);
+    gh.lazySingleton<_i587.GestureMapper>(() => registerModule.gestureMapper);
     await gh.factoryAsync<_i979.Box<_i923.TodoModel>>(
       () => registerModule.deletedTodoBox,
       instanceName: 'deletedTodoBox',
@@ -85,8 +90,6 @@ extension GetItInjectableX on _i174.GetIt {
       instanceName: 'todoBox',
       preResolve: true,
     );
-    gh.lazySingleton<_i583.SlimeCharacterRepository>(
-        () => _i409.SlimeCharacterRepositoryImpl());
     gh.lazySingleton<_i434.CharacterRepository>(
         () => _i919.CharacterRepositoryImpl());
     gh.lazySingleton<_i1024.UserLocalDatasource>(
@@ -135,10 +138,15 @@ extension GetItInjectableX on _i174.GetIt {
           remoteDatasource: gh<_i813.UserRemoteDatasource>(),
           localDatasource: gh<_i1024.UserLocalDatasource>(),
         ));
-    gh.lazySingleton<_i183.GptRepository>(() => _i905.GptRepositoryImpl(
+    gh.lazySingleton<_i883.GptRemoteDataSource>(() => _i883.GptRemoteDataSource(
           gh<_i519.Client>(),
           gh<_i988.UserRepository>(),
           gh<_i434.CharacterRepository>(),
+        ));
+    gh.lazySingleton<_i657.SlimeRepository>(() => _i409.SlimeRepositoryImpl(
+          gh<_i883.GptRemoteDataSource>(),
+          gh<_i938.AnimationLocalDataSource>(),
+          gh<_i587.GestureMapper>(),
         ));
     gh.lazySingleton<_i559.GoalRepository>(() => _i527.GoalRepositoryImpl(
           localDatasource: gh<_i34.GoalLocalDatasource>(),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:get_it/get_it.dart';
-import 'package:presentation/viewmodels/character/slime_character_viewmodel.dart';
+import 'package:presentation/viewmodels/character/chat_viewmodel.dart';
 import 'package:presentation/viewmodels/onboarding/onboarding_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -65,7 +65,7 @@ class MyAppState extends State<MyApp> {
         ChangeNotifierProvider(
             create: (_) => GetIt.instance<GoalManagementViewModel>()),
         ChangeNotifierProvider(create: (_) => GetIt.instance<HomeViewModel>()),
-        ChangeNotifierProvider(create: (_) => GetIt.instance<SlimeCharacterViewModel>()),
+        ChangeNotifierProvider(create: (_) => GetIt.instance<ChatViewModel>()),
         ChangeNotifierProvider(
             create: (_) => GetIt.instance<OnboardingViewModel>()),
       ],
