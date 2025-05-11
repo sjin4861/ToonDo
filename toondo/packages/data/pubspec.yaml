@@ -33,6 +33,7 @@ dependencies:
   hive_flutter: ^1.1.0
   rive: ^0.13.20
   audioplayers: ^6.1.1
+  rxdart: ^0.28.0
 
 
 dev_dependencies:
