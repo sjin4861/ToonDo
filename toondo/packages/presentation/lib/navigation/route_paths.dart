@@ -16,4 +16,5 @@ class RoutePaths {
   static const String accountSettingNicknameChange = '/mypage/account_setting/nickname_change';
   static const String accountSettingPasswordChange = '/mypage/account_setting/password_change';
   static const String accountSettingPhoneChange = '/mypage/account_setting/phone_change';
+  static const String slimeChat = '/slime_chat';
 }
