@@ -1,65 +1,43 @@
 import 'dart:ui';
-
 import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:domain/usecases/gpt/get_slime_response.dart';
-import 'package:presentation/viewmodels/character/slime_character_viewmodel.dart';
-import 'chat_bubble.dart';
-import 'slime_character_widget.dart';
+import 'package:presentation/widgets/character/slime_character_widget.dart';
 
 class SlimeArea extends StatelessWidget {
-  final String userNickname;
-  final GetSlimeResponseUseCase getSlimeResponseUseCase;
-  final bool enableGestures;
-  final bool showDebugInfo;
-
-  const SlimeArea({
-    Key? key,
-    required this.userNickname,
-    required this.getSlimeResponseUseCase,
-    this.enableGestures = true,
-    this.showDebugInfo = false,
-  }) : super(key: key);
+  const SlimeArea({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final slimeCharacterViewModel = GetIt.instance<SlimeCharacterViewModel>();
+    const double slimeWidth  = 160;   // 실제 Rive 기준
+    const double shadowScale = 1.05;  // Rive보다 살짝 넓게
+    const double shadowDY    = 28;    // 슬라임 아랫부분 여백
 
-    return Stack(
-      alignment: Alignment.bottomCenter, // 슬라임은 바닥 기준
-      children: [
-        // // (0) 그림자
-        Positioned(
-          bottom: 176,
-          child: ClipRect(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 4, sigmaY: 2),
+    return SizedBox(
+      width: slimeWidth,
+      height: slimeWidth + 40, // 그림자 포함 높이
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // ① 그림자
+          Transform.translate(
+            offset: const Offset(0, shadowDY),
+            child: Transform.scale(
+              scale: shadowScale,
               child: Assets.images.imgHomeShadowPng.image(
-                width: 184,
-                fit: BoxFit.fitWidth
-              )
+                width: slimeWidth,
+                fit: BoxFit.contain,
+              ),
             ),
           ),
-        ),
-        // (1) 슬라임 캐릭터
-        SizedBox(
-          child: SlimeCharacterWidget(
-            initialAnimationName: 'id',
-            viewModel: slimeCharacterViewModel,
-            enableGestures: enableGestures,
-            showDebugInfo: showDebugInfo,
+
+          // ② 슬라임 본체
+          SlimeCharacterWidget(
+            initialAnimationName: 'idle',
+            enableGestures: true,
+            showDebugInfo: true, // 제스처 디버그 정보 표시
           ),
-        ),
-        // (2) 말풍선
-        Positioned(
-          bottom: 380,
-          child: ChatBubble(
-            nickname: userNickname,
-            getSlimeResponseUseCase: getSlimeResponseUseCase,
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
