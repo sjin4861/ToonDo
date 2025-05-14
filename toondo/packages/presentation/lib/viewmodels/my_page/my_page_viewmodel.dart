@@ -1,22 +1,50 @@
 // lib/viewmodels/my_page/my_page_viewmodel.dart
 
+import 'package:domain/usecases/user/get_user.dart';
 import 'package:flutter/material.dart';
-import 'package:domain/entities/user.dart';
 import 'package:domain/usecases/todo/commit_todos.dart';
 import 'package:domain/usecases/todo/fetch_todos.dart';
 import 'package:injectable/injectable.dart';
+import 'package:presentation/models/my_page_user_ui_model.dart';
 
-@LazySingleton()
+@injectable
 class MyPageViewModel extends ChangeNotifier {
-  final User currentUser;
+  final GetUserUseCase getUserUseCase;
   final CommitTodosUseCase commitTodosUseCase;
   final FetchTodosUseCase fetchTodosUseCase;
 
   MyPageViewModel({
-    required this.currentUser,
+    required this.getUserUseCase,
     required this.commitTodosUseCase,
     required this.fetchTodosUseCase,
   });
+
+  String? _errorMessage;
+  bool _isLoading = false;
+
+  String? get errorMessage => _errorMessage;
+  bool get isLoading => _isLoading;
+
+  MyPageUserUiModel? _userUiModel;
+
+  MyPageUserUiModel? get userUiModel => _userUiModel;
+
+  Future<void> loadUser() async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final user = await getUserUseCase();
+      _userUiModel = MyPageUserUiModel.fromDomain(user);
+      _errorMessage = null;
+    } catch (e) {
+      _errorMessage = '유저 정보를 불러오는 데 실패했습니다.';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
 
   Future<void> fetchTodoOnly() async {
     try {
@@ -38,3 +66,4 @@ class MyPageViewModel extends ChangeNotifier {
     }
   }
 }
+

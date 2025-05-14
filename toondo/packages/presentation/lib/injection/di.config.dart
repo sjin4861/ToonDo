@@ -11,7 +11,6 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:domain/entities/goal.dart' as _i876;
 import 'package:domain/entities/todo.dart' as _i429;
-import 'package:domain/entities/user.dart' as _i30;
 import 'package:domain/usecases/auth/check_phone_number_exists.dart' as _i426;
 import 'package:domain/usecases/auth/get_token.dart' as _i415;
 import 'package:domain/usecases/auth/login.dart' as _i1068;
@@ -42,6 +41,7 @@ import 'package:domain/usecases/todo/get_all_todos.dart' as _i362;
 import 'package:domain/usecases/todo/update_todo.dart' as _i375;
 import 'package:domain/usecases/todo/update_todo_dates.dart' as _i182;
 import 'package:domain/usecases/todo/update_todo_status.dart' as _i183;
+import 'package:domain/usecases/user/get_user.dart' as _i991;
 import 'package:domain/usecases/user/get_user_nickname.dart' as _i849;
 import 'package:domain/usecases/user/update_nickname.dart' as _i910;
 import 'package:get_it/get_it.dart' as _i174;
@@ -102,9 +102,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i764.LoginViewModel>(
       () => _i764.LoginViewModel(loginUseCase: gh<_i1068.LoginUseCase>()),
     );
-    gh.lazySingleton<_i272.MyPageViewModel>(
+    gh.factory<_i272.MyPageViewModel>(
       () => _i272.MyPageViewModel(
-        currentUser: gh<_i30.User>(),
+        getUserUseCase: gh<_i991.GetUserUseCase>(),
         commitTodosUseCase: gh<_i412.CommitTodosUseCase>(),
         fetchTodosUseCase: gh<_i314.FetchTodosUseCase>(),
       ),

@@ -48,6 +48,7 @@ import 'package:domain/usecases/todo/get_all_todos.dart' as _i362;
 import 'package:domain/usecases/todo/update_todo.dart' as _i375;
 import 'package:domain/usecases/todo/update_todo_dates.dart' as _i182;
 import 'package:domain/usecases/todo/update_todo_status.dart' as _i183;
+import 'package:domain/usecases/user/get_user.dart' as _i991;
 import 'package:domain/usecases/user/get_user_nickname.dart' as _i849;
 import 'package:domain/usecases/user/update_nickname.dart' as _i910;
 import 'package:domain/usecases/user/update_points.dart' as _i1049;
@@ -156,6 +157,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i910.UpdateNickNameUseCase>(
       () => _i910.UpdateNickNameUseCase(gh<_i988.UserRepository>()),
+    );
+    gh.factory<_i991.GetUserUseCase>(
+      () => _i991.GetUserUseCase(gh<_i988.UserRepository>()),
     );
     gh.factory<_i849.GetUserNicknameUseCase>(
       () => _i849.GetUserNicknameUseCase(gh<_i988.UserRepository>()),

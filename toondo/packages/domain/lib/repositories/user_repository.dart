@@ -4,5 +4,5 @@ abstract class UserRepository {
   Future<User> updateNickName(String newNickName);
   Future<User> updateUserPoints(int delta);
   Future<String?> getUserNickname();
-  // ...any other methods...
+  Future<User> getUser();
 }
