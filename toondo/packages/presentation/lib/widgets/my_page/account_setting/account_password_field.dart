@@ -23,6 +23,9 @@ class _AccountPasswordFieldState extends State<AccountPasswordField> {
 
   @override
   Widget build(BuildContext context) {
+    final textColor = widget.errorText != null
+        ? Colors.red
+        : Theme.of(context).textTheme.bodyMedium?.color;
     final borderColor =
     widget.errorText != null ? Colors.red : const Color(0xFFDDDDDD);
 
@@ -31,10 +34,10 @@ class _AccountPasswordFieldState extends State<AccountPasswordField> {
       children: [
         Text(
           widget.label,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Color(0xFF1C1D1B),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             fontWeight: FontWeight.w400,
+            fontSize: 12,
+            color: textColor,
             fontFamily: 'Pretendard Variable',
           ),
         ),

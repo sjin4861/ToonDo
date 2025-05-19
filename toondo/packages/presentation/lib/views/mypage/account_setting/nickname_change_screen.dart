@@ -9,8 +9,8 @@ class NicknameChangeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Color(0xFFFDFDFD),
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(title: '닉네임 변경'),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24),

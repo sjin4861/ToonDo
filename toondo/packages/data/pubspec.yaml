@@ -34,6 +34,7 @@ dependencies:
   rive: ^0.13.20
   audioplayers: ^6.1.1
   rxdart: ^0.28.0
+  shared_preferences: ^2.5.3
 
 
 dev_dependencies:

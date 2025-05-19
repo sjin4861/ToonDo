@@ -24,7 +24,7 @@ class _MyPageScaffoldState extends State<MyPageScaffold> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFDFDFD),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(title: '마이페이지'),
       body: SafeArea(
         child: SingleChildScrollView(

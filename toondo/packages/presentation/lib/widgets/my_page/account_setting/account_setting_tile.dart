@@ -9,6 +9,8 @@ class AccountSettingTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.bodyMedium?.color;
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
@@ -20,10 +22,11 @@ class AccountSettingTile extends StatelessWidget {
           children: [
             Text(
               label,
-              style: const TextStyle(
-                fontSize: 14,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w400,
-                color: Color(0xFF1C1D1B),
+                fontSize: 14,
+                color: textColor,
+                fontFamily: 'Pretendard Variable',
               ),
             ),
             Row(
@@ -31,10 +34,11 @@ class AccountSettingTile extends StatelessWidget {
                 if (value != null)
                   Text(
                     value!,
-                    style: const TextStyle(
-                      fontSize: 14,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w400,
-                      color: Color(0xff858584),
+                      fontSize: 14,
+                      color: textColor,
+                      fontFamily: 'Pretendard Variable',
                     ),
                   ),
                 const SizedBox(width: 16),

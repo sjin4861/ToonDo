@@ -33,6 +33,8 @@ import 'package:domain/usecases/goal/update_goal_remote.dart' as _i200;
 import 'package:domain/usecases/goal/update_goal_status.dart' as _i856;
 import 'package:domain/usecases/sms/send_sms_code.dart' as _i461;
 import 'package:domain/usecases/sms/verify_sms_code.dart' as _i73;
+import 'package:domain/usecases/theme/get_theme_mode.dart' as _i129;
+import 'package:domain/usecases/theme/set_theme_mode.dart' as _i366;
 import 'package:domain/usecases/todo/commit_todos.dart' as _i412;
 import 'package:domain/usecases/todo/create_todo.dart' as _i834;
 import 'package:domain/usecases/todo/delete_todo.dart' as _i552;
@@ -49,12 +51,16 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'package:presentation/viewmodels/character/chat_viewmodel.dart' as _i178;
 import 'package:presentation/viewmodels/character/slime_character_vm.dart'
     as _i88;
+import 'package:presentation/viewmodels/global/app_theme_viewmodel.dart'
+    as _i1040;
 import 'package:presentation/viewmodels/goal/goal_input_viewmodel.dart'
     as _i742;
 import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart'
     as _i940;
 import 'package:presentation/viewmodels/home/home_viewmodel.dart' as _i370;
 import 'package:presentation/viewmodels/login/login_viewmodel.dart' as _i764;
+import 'package:presentation/viewmodels/my_page/display_setting/display_setting_viewmodel.dart'
+    as _i81;
 import 'package:presentation/viewmodels/my_page/my_page_viewmodel.dart'
     as _i272;
 import 'package:presentation/viewmodels/my_page/notification_setting/time_picker_viewmodel.dart'
@@ -75,6 +81,9 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
+    gh.factory<_i81.DisplaySettingViewModel>(
+      () => _i81.DisplaySettingViewModel(),
+    );
     gh.lazySingleton<_i393.TimePickerViewModel>(
       () => _i393.TimePickerViewModel(),
     );
@@ -157,6 +166,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i370.HomeViewModel(
         gh<_i243.GetInProgressGoalsUseCase>(),
         gh<_i849.GetUserNicknameUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i1040.AppThemeViewModel>(
+      () => _i1040.AppThemeViewModel(
+        gh<_i129.GetThemeModeUseCase>(),
+        gh<_i366.SetThemeModeUseCase>(),
       ),
     );
     gh.lazySingleton<_i657.OnboardingViewModel>(

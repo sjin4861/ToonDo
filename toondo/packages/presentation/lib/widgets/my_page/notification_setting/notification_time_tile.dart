@@ -13,14 +13,16 @@ class NotificationTimeTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.bodyMedium?.color;
+
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      title: const Text(
+      title: Text(
         '리마인드 알림 시간',
-        style: TextStyle(
-          fontSize: 14,
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontWeight: FontWeight.w400,
-          color: Color(0xFF1C1D1B),
+          fontSize: 14,
+          color: textColor,
         ),
       ),
       trailing: Row(
@@ -28,14 +30,14 @@ class NotificationTimeTile extends StatelessWidget {
         children: [
           Text(
             timeText,
-            style: const TextStyle(
-              fontSize: 14,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w400,
-              color: Color(0xFF1C1D1B),
+              fontSize: 14,
+              color: textColor,
             ),
           ),
           const SizedBox(width: 8),
-          const Icon(Icons.arrow_forward_ios, size: 16, color: Color(0xFFD9D9D9)),
+          Icon(Icons.arrow_forward_ios, size: 16, color: IconTheme.of(context).color),
         ],
       ),
       onTap: () {

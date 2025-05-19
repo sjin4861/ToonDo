@@ -32,6 +32,7 @@ import 'package:data/repositories/goal_repository_impl.dart' as _i527;
 import 'package:data/repositories/slime_character_repository_impl.dart'
     as _i409;
 import 'package:data/repositories/sms_repository_impl.dart' as _i235;
+import 'package:data/repositories/theme_repository_impl.dart' as _i525;
 import 'package:data/repositories/todo_repository_impl.dart' as _i366;
 import 'package:data/repositories/user_repository_impl.dart' as _i537;
 import 'package:data/utils/gesture_mapper.dart' as _i587;
@@ -40,6 +41,7 @@ import 'package:domain/repositories/character_repository.dart' as _i434;
 import 'package:domain/repositories/goal_repository.dart' as _i559;
 import 'package:domain/repositories/slime_repository.dart' as _i657;
 import 'package:domain/repositories/sms_repository.dart' as _i366;
+import 'package:domain/repositories/theme_repository.dart' as _i578;
 import 'package:domain/repositories/todo_repository.dart' as _i158;
 import 'package:domain/repositories/user_repository.dart' as _i988;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
@@ -47,6 +49,7 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:hive/hive.dart' as _i979;
 import 'package:http/http.dart' as _i519;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -70,6 +73,10 @@ extension GetItInjectableX on _i174.GetIt {
     );
     await gh.factoryAsync<_i979.Box<_i934.GoalStatusEnum>>(
       () => registerModule.goalStatusBox,
+      preResolve: true,
+    );
+    await gh.factoryAsync<_i460.SharedPreferences>(
+      () => registerModule.sharedPreferences,
       preResolve: true,
     );
     gh.lazySingleton<_i938.AnimationLocalDataSource>(
@@ -96,6 +103,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i1024.UserLocalDatasource(gh<_i979.Box<_i245.UserModel>>()));
     gh.lazySingleton<_i116.AuthLocalDataSource>(
         () => _i116.AuthLocalDataSource(gh<_i979.Box<_i245.UserModel>>()));
+    gh.lazySingleton<_i578.ThemeRepository>(
+        () => _i525.ThemeRepositoryImpl(gh<_i460.SharedPreferences>()));
     gh.lazySingleton<_i361.SecureLocalDataSource>(
         () => _i361.SecureLocalDataSource(gh<_i558.FlutterSecureStorage>()));
     gh.lazySingleton<_i91.TodoLocalDatasource>(() => _i91.TodoLocalDatasource(

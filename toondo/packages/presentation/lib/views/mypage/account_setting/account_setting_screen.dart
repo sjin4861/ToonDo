@@ -11,7 +11,7 @@ class AccountSettingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO : 하드코딩 된 부분 뷰모델 연결 후 상태로 대체
     return Scaffold(
-      backgroundColor: const Color(0xFFFDFDFD),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: const CustomAppBar(title: '계정관리'),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),

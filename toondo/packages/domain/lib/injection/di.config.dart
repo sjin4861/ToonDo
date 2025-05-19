@@ -13,6 +13,7 @@ import 'package:domain/repositories/auth_repository.dart' as _i427;
 import 'package:domain/repositories/goal_repository.dart' as _i559;
 import 'package:domain/repositories/slime_repository.dart' as _i657;
 import 'package:domain/repositories/sms_repository.dart' as _i366;
+import 'package:domain/repositories/theme_repository.dart' as _i578;
 import 'package:domain/repositories/todo_repository.dart' as _i158;
 import 'package:domain/repositories/user_repository.dart' as _i988;
 import 'package:domain/usecases/auth/check_phone_number_exists.dart' as _i426;
@@ -39,6 +40,8 @@ import 'package:domain/usecases/goal/update_goal_remote.dart' as _i200;
 import 'package:domain/usecases/goal/update_goal_status.dart' as _i856;
 import 'package:domain/usecases/sms/send_sms_code.dart' as _i461;
 import 'package:domain/usecases/sms/verify_sms_code.dart' as _i73;
+import 'package:domain/usecases/theme/get_theme_mode.dart' as _i129;
+import 'package:domain/usecases/theme/set_theme_mode.dart' as _i366;
 import 'package:domain/usecases/todo/add_todo.dart' as _i133;
 import 'package:domain/usecases/todo/commit_todos.dart' as _i412;
 import 'package:domain/usecases/todo/create_todo.dart' as _i834;
@@ -76,6 +79,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i969.LogoutUseCase>(
       () => _i969.LogoutUseCase(gh<_i427.AuthRepository>()),
+    );
+    gh.factory<_i129.GetThemeModeUseCase>(
+      () => _i129.GetThemeModeUseCase(gh<_i578.ThemeRepository>()),
+    );
+    gh.factory<_i366.SetThemeModeUseCase>(
+      () => _i366.SetThemeModeUseCase(gh<_i578.ThemeRepository>()),
     );
     gh.factory<_i834.CreateTodoUseCase>(
       () => _i834.CreateTodoUseCase(gh<_i158.TodoRepository>()),

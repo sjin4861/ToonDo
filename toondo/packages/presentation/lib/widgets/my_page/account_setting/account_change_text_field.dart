@@ -46,18 +46,18 @@ class _LabelText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.bodyMedium?.color;
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(
         label,
-        style: const TextStyle(
-          fontSize: 12,
-          color: Color(0xFF1C1D1B),
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontWeight: FontWeight.w400,
+          fontSize: 12,
+          color: textColor,
           fontFamily: 'Pretendard Variable',
-          letterSpacing: 1.5,
-        ),
       ),
+    ),
     );
   }
 }
