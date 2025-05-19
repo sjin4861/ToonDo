@@ -31,6 +31,11 @@ import 'package:domain/usecases/goal/update_goal_local.dart' as _i1031;
 import 'package:domain/usecases/goal/update_goal_progress.dart' as _i739;
 import 'package:domain/usecases/goal/update_goal_remote.dart' as _i200;
 import 'package:domain/usecases/goal/update_goal_status.dart' as _i856;
+import 'package:domain/usecases/notification/get_notification_settings.dart'
+    as _i22;
+import 'package:domain/usecases/notification/set_notification_settings.dart'
+    as _i930;
+import 'package:domain/usecases/notification/set_reminder_time.dart' as _i236;
 import 'package:domain/usecases/sms/send_sms_code.dart' as _i461;
 import 'package:domain/usecases/sms/verify_sms_code.dart' as _i73;
 import 'package:domain/usecases/theme/get_theme_mode.dart' as _i129;
@@ -51,6 +56,8 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'package:presentation/viewmodels/character/chat_viewmodel.dart' as _i178;
 import 'package:presentation/viewmodels/character/slime_character_vm.dart'
     as _i88;
+import 'package:presentation/viewmodels/global/app_notification_viewmodel.dart'
+    as _i370;
 import 'package:presentation/viewmodels/global/app_theme_viewmodel.dart'
     as _i1040;
 import 'package:presentation/viewmodels/goal/goal_input_viewmodel.dart'
@@ -63,6 +70,8 @@ import 'package:presentation/viewmodels/my_page/display_setting/display_setting_
     as _i81;
 import 'package:presentation/viewmodels/my_page/my_page_viewmodel.dart'
     as _i272;
+import 'package:presentation/viewmodels/my_page/notification_setting/notification_setting_viewmodel.dart'
+    as _i942;
 import 'package:presentation/viewmodels/my_page/notification_setting/time_picker_viewmodel.dart'
     as _i393;
 import 'package:presentation/viewmodels/onboarding/onboarding_viewmodel.dart'
@@ -83,9 +92,6 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     gh.factory<_i81.DisplaySettingViewModel>(
       () => _i81.DisplaySettingViewModel(),
-    );
-    gh.lazySingleton<_i393.TimePickerViewModel>(
-      () => _i393.TimePickerViewModel(),
     );
     gh.lazySingleton<_i197.WelcomeViewModel>(
       () => _i197.WelcomeViewModel(
@@ -141,6 +147,15 @@ extension GetItInjectableX on _i174.GetIt {
         initialDate: gh<DateTime>(),
       ),
     );
+    gh.lazySingleton<_i370.AppNotificationViewModel>(
+      () => _i370.AppNotificationViewModel(
+        gh<_i22.GetNotificationSettingsUseCase>(),
+        gh<_i930.SetNotificationSettingsUseCase>(),
+      ),
+    );
+    gh.factory<_i393.TimePickerViewModel>(
+      () => _i393.TimePickerViewModel(gh<_i236.SetReminderTime>()),
+    );
     gh.lazySingleton<_i742.GoalInputViewModel>(
       () => _i742.GoalInputViewModel(
         createGoalRemoteUseCase: gh<_i343.CreateGoalRemoteUseCase>(),
@@ -148,6 +163,11 @@ extension GetItInjectableX on _i174.GetIt {
         updateGoalRemoteUseCase: gh<_i200.UpdateGoalRemoteUseCase>(),
         updateGoalLocalUseCase: gh<_i1031.UpdateGoalLocalUseCase>(),
         targetGoal: gh<_i876.Goal>(),
+      ),
+    );
+    gh.factory<_i942.NotificationSettingViewModel>(
+      () => _i942.NotificationSettingViewModel(
+        gh<_i370.AppNotificationViewModel>(),
       ),
     );
     gh.lazySingleton<_i705.SignupViewModel>(

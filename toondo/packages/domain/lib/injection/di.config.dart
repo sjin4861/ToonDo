@@ -11,6 +11,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:domain/repositories/auth_repository.dart' as _i427;
 import 'package:domain/repositories/goal_repository.dart' as _i559;
+import 'package:domain/repositories/notification_repository.dart' as _i267;
 import 'package:domain/repositories/slime_repository.dart' as _i657;
 import 'package:domain/repositories/sms_repository.dart' as _i366;
 import 'package:domain/repositories/theme_repository.dart' as _i578;
@@ -38,6 +39,11 @@ import 'package:domain/usecases/goal/update_goal_local.dart' as _i1031;
 import 'package:domain/usecases/goal/update_goal_progress.dart' as _i739;
 import 'package:domain/usecases/goal/update_goal_remote.dart' as _i200;
 import 'package:domain/usecases/goal/update_goal_status.dart' as _i856;
+import 'package:domain/usecases/notification/get_notification_settings.dart'
+    as _i22;
+import 'package:domain/usecases/notification/set_notification_settings.dart'
+    as _i930;
+import 'package:domain/usecases/notification/set_reminder_time.dart' as _i236;
 import 'package:domain/usecases/sms/send_sms_code.dart' as _i461;
 import 'package:domain/usecases/sms/verify_sms_code.dart' as _i73;
 import 'package:domain/usecases/theme/get_theme_mode.dart' as _i129;
@@ -79,6 +85,19 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i969.LogoutUseCase>(
       () => _i969.LogoutUseCase(gh<_i427.AuthRepository>()),
+    );
+    gh.factory<_i22.GetNotificationSettingsUseCase>(
+      () => _i22.GetNotificationSettingsUseCase(
+        gh<_i267.NotificationSettingRepository>(),
+      ),
+    );
+    gh.factory<_i930.SetNotificationSettingsUseCase>(
+      () => _i930.SetNotificationSettingsUseCase(
+        gh<_i267.NotificationSettingRepository>(),
+      ),
+    );
+    gh.factory<_i236.SetReminderTime>(
+      () => _i236.SetReminderTime(gh<_i267.NotificationSettingRepository>()),
     );
     gh.factory<_i129.GetThemeModeUseCase>(
       () => _i129.GetThemeModeUseCase(gh<_i578.ThemeRepository>()),

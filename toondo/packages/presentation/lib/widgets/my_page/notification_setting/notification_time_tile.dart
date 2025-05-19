@@ -3,16 +3,26 @@ import 'package:presentation/viewmodels/my_page/notification_setting/time_picker
 import 'package:presentation/widgets/my_page/notification_setting/time_picker/time_picker_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
-class NotificationTimeTile extends StatelessWidget {
-  final String timeText;
+import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:presentation/viewmodels/my_page/notification_setting/time_picker_viewmodel.dart';
+import 'package:presentation/widgets/my_page/notification_setting/time_picker/time_picker_bottom_sheet.dart';
+import 'package:provider/provider.dart';
 
-  const NotificationTimeTile({
-    super.key,
-    required this.timeText,
-  });
+import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:presentation/viewmodels/global/app_notification_viewmodel.dart';
+import 'package:presentation/viewmodels/my_page/notification_setting/time_picker_viewmodel.dart';
+import 'package:presentation/widgets/my_page/notification_setting/time_picker/time_picker_bottom_sheet.dart';
+import 'package:provider/provider.dart';
+
+class NotificationTimeTile extends StatelessWidget {
+  const NotificationTimeTile({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final vm = context.watch<AppNotificationViewModel>();
+    final timeText = vm.settings.time;
     final textColor = Theme.of(context).textTheme.bodyMedium?.color;
 
     return ListTile(
@@ -45,12 +55,10 @@ class NotificationTimeTile extends StatelessWidget {
           context: context,
           isScrollControlled: true,
           backgroundColor: Colors.transparent,
-          builder: (_) {
-            return ChangeNotifierProvider(
-              create: (_) => TimePickerViewModel(),
-              child: TimePickerBottomSheet(),
-            );
-          },
+          builder: (_) => ChangeNotifierProvider(
+            create: (_) => GetIt.instance<TimePickerViewModel>(),
+            child: const TimePickerBottomSheet(),
+          ),
         );
       },
     );

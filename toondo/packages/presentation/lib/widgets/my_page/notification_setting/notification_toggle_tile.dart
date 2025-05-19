@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class NotificationToggleTile extends StatelessWidget {
   final String title;
   final bool value;
+  final void Function(bool)? onChanged;
 
   const NotificationToggleTile({
     super.key,
     required this.title,
     required this.value,
+    this.onChanged,
   });
 
   @override
@@ -17,22 +19,13 @@ class NotificationToggleTile extends StatelessWidget {
     return Theme(
       data: Theme.of(context).copyWith(
         switchTheme: SwitchThemeData(
-          // 활성 상태
           thumbColor: WidgetStateProperty.resolveWith<Color>(
-                (states) {
-              if (states.contains(WidgetState.selected)) {
-                return const Color(0xFFFDFDFD); // 동그라미
-              }
-              return const Color(0xFFFDFDFD); // 비활도 동일
-            },
+                (states) => const Color(0xFFFDFDFD),
           ),
           trackColor: WidgetStateProperty.resolveWith<Color>(
-                (states) {
-              if (states.contains(MaterialState.selected)) {
-                return const Color(0xFF78B545); // 활성 배경
-              }
-              return const Color(0xFFD9D9D9); // 비활 배경
-            },
+                (states) => states.contains(MaterialState.selected)
+                ? const Color(0xFF78B545)
+                : const Color(0xFFD9D9D9),
           ),
           overlayColor: WidgetStateProperty.all(Colors.transparent),
           trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
@@ -49,7 +42,7 @@ class NotificationToggleTile extends StatelessWidget {
           ),
         ),
         value: value,
-        onChanged: (_) {}, // TODO 추후 ViewModel 연결 예정
+        onChanged: onChanged,
       ),
     );
   }

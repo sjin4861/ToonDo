@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:get_it/get_it.dart';
 import 'package:presentation/viewmodels/character/chat_viewmodel.dart';
+import 'package:presentation/viewmodels/global/app_notification_viewmodel.dart';
 import 'package:presentation/viewmodels/onboarding/onboarding_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -39,15 +40,19 @@ Future<void> main() async {
   // 테마 공통 관리
   final themeVM = GetIt.instance<AppThemeViewModel>();
   await themeVM.load();
-  print('Current theme mode: ${themeVM.mode}');
 
-  runApp(MyApp(themeVM: themeVM));
+  // 알림 공통 관리
+  final notificationVM = GetIt.instance<AppNotificationViewModel>();
+  await notificationVM.load();
+
+  runApp(MyApp(themeVM: themeVM, notificationVM: notificationVM));
 }
 
 class MyApp extends StatefulWidget {
   final AppThemeViewModel themeVM;
+  final AppNotificationViewModel notificationVM;
 
-  const MyApp({super.key, required this.themeVM});
+  const MyApp({super.key, required this.themeVM, required this.notificationVM});
 
   @override
   MyAppState createState() => MyAppState();
@@ -61,7 +66,10 @@ class MyAppState extends State<MyApp> {
     super.initState();
 
     widget.themeVM.addListener(() {
-      print('[MyAppState] themeVM changed, calling setState()'); // ✅ 추가
+      setState(() {});
+    });
+
+    widget.notificationVM.addListener(() {
       setState(() {});
     });
 
@@ -75,6 +83,7 @@ class MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => widget.themeVM),
+        ChangeNotifierProvider(create: (_) => widget.notificationVM),
         ChangeNotifierProvider(
             create: (_) => GetIt.instance<SignupViewModel>()),
         ChangeNotifierProvider(

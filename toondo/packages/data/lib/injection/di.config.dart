@@ -29,6 +29,7 @@ import 'package:data/models/user_model.dart' as _i245;
 import 'package:data/repositories/auth_repository_impl.dart' as _i819;
 import 'package:data/repositories/character_repository_impl.dart' as _i919;
 import 'package:data/repositories/goal_repository_impl.dart' as _i527;
+import 'package:data/repositories/notification_repository_impl.dart' as _i15;
 import 'package:data/repositories/slime_character_repository_impl.dart'
     as _i409;
 import 'package:data/repositories/sms_repository_impl.dart' as _i235;
@@ -39,6 +40,7 @@ import 'package:data/utils/gesture_mapper.dart' as _i587;
 import 'package:domain/repositories/auth_repository.dart' as _i427;
 import 'package:domain/repositories/character_repository.dart' as _i434;
 import 'package:domain/repositories/goal_repository.dart' as _i559;
+import 'package:domain/repositories/notification_repository.dart' as _i267;
 import 'package:domain/repositories/slime_repository.dart' as _i657;
 import 'package:domain/repositories/sms_repository.dart' as _i366;
 import 'package:domain/repositories/theme_repository.dart' as _i578;
@@ -92,6 +94,8 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i954.AuthRemoteDataSource>(
         () => _i954.AuthRemoteDataSource(gh<_i519.Client>()));
+    gh.lazySingleton<_i267.NotificationSettingRepository>(() =>
+        _i15.NotificationSettingRepositoryImpl(gh<_i460.SharedPreferences>()));
     await gh.factoryAsync<_i979.Box<_i923.TodoModel>>(
       () => registerModule.todoBox,
       instanceName: 'todoBox',
