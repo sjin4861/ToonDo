@@ -68,6 +68,8 @@ import 'package:presentation/viewmodels/home/home_viewmodel.dart' as _i370;
 import 'package:presentation/viewmodels/login/login_viewmodel.dart' as _i764;
 import 'package:presentation/viewmodels/my_page/display_setting/display_setting_viewmodel.dart'
     as _i81;
+import 'package:presentation/viewmodels/my_page/help_guide/help_guide_viewmodel.dart'
+    as _i941;
 import 'package:presentation/viewmodels/my_page/my_page_viewmodel.dart'
     as _i272;
 import 'package:presentation/viewmodels/my_page/notification_setting/notification_setting_viewmodel.dart'
@@ -90,6 +92,7 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
+    gh.factory<_i941.HelpGuideViewModel>(() => _i941.HelpGuideViewModel());
     gh.factory<_i81.DisplaySettingViewModel>(
       () => _i81.DisplaySettingViewModel(),
     );

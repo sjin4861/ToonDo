@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class HelpGuideAppVersionTile extends StatelessWidget {
-  const HelpGuideAppVersionTile({super.key});
+  final String version;
+
+  const HelpGuideAppVersionTile({super.key, required this.version});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,7 @@ class HelpGuideAppVersionTile extends StatelessWidget {
             ),
           ),
           Text(
-            '1.0.1',
+            version,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w400,
               fontSize: 14,
