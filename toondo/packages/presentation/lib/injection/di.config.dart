@@ -120,13 +120,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i764.LoginViewModel>(
       () => _i764.LoginViewModel(loginUseCase: gh<_i1068.LoginUseCase>()),
     );
-    gh.factory<_i272.MyPageViewModel>(
-      () => _i272.MyPageViewModel(
-        getUserUseCase: gh<_i991.GetUserUseCase>(),
-        commitTodosUseCase: gh<_i412.CommitTodosUseCase>(),
-        fetchTodosUseCase: gh<_i314.FetchTodosUseCase>(),
-      ),
-    );
     gh.lazySingleton<_i72.TodoInputViewModel>(
       () => _i72.TodoInputViewModel(
         todo: gh<_i429.Todo>(),
@@ -158,6 +151,14 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i393.TimePickerViewModel>(
       () => _i393.TimePickerViewModel(gh<_i236.SetReminderTime>()),
+    );
+    gh.factory<_i272.MyPageViewModel>(
+      () => _i272.MyPageViewModel(
+        getUserUseCase: gh<_i991.GetUserUseCase>(),
+        commitTodosUseCase: gh<_i412.CommitTodosUseCase>(),
+        fetchTodosUseCase: gh<_i314.FetchTodosUseCase>(),
+        logoutUseCase: gh<_i969.LogoutUseCase>(),
+      ),
     );
     gh.lazySingleton<_i742.GoalInputViewModel>(
       () => _i742.GoalInputViewModel(

@@ -1,5 +1,6 @@
 // lib/viewmodels/my_page/my_page_viewmodel.dart
 
+import 'package:domain/usecases/auth/logout.dart';
 import 'package:domain/usecases/user/get_user.dart';
 import 'package:flutter/material.dart';
 import 'package:domain/usecases/todo/commit_todos.dart';
@@ -12,11 +13,13 @@ class MyPageViewModel extends ChangeNotifier {
   final GetUserUseCase getUserUseCase;
   final CommitTodosUseCase commitTodosUseCase;
   final FetchTodosUseCase fetchTodosUseCase;
+  final LogoutUseCase logoutUseCase;
 
   MyPageViewModel({
     required this.getUserUseCase,
     required this.commitTodosUseCase,
     required this.fetchTodosUseCase,
+    required this.logoutUseCase,
   });
 
   String? _errorMessage;
@@ -63,6 +66,14 @@ class MyPageViewModel extends ChangeNotifier {
       print('Error committing todo only: $e');
     } finally {
       notifyListeners();
+    }
+  }
+
+  Future<void> logout() async {
+    try {
+      await logoutUseCase();
+    } catch (e) {
+      debugPrint('로그아웃 실패: $e');
     }
   }
 }
