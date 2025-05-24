@@ -21,7 +21,6 @@ class AppThemeViewModel extends ChangeNotifier {
 
   Future<void> update(ThemeModeType newMode) async {
     _mode = newMode;
-    print('[AppThemeViewModel] update called with: $newMode'); // 로그 추가
     await setThemeMode(newMode);
     notifyListeners();
   }

@@ -97,10 +97,12 @@ class MyAppState extends State<MyApp> {
         builder: (context, vm, _) {
           return MaterialApp(
             themeMode: vm.mode.toFlutterMode(),
+            theme: ThemeData.light().copyWith(
+              scaffoldBackgroundColor: const Color(0xFFFDFDFD), // 라이트 모드 배경색
+            ),
             navigatorKey: navigatorKey,
             initialRoute: '/',
             onGenerateRoute: AppRouter.generateRoute,
-            theme: ThemeData.light(),
             darkTheme: ThemeData.dark(),
           );
         },

@@ -4,10 +4,12 @@ class AccountChangeTextField extends StatelessWidget {
   final String label;
   final String? hintText;
   final TextEditingController? controller;
+
   final TextInputType keyboardType;
   final bool obscureText;
   final bool enabled;
   final String? initialValue;
+  final String? errorText;
 
   const AccountChangeTextField({
     super.key,
@@ -18,6 +20,7 @@ class AccountChangeTextField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.obscureText = false,
     this.initialValue,
+    this.errorText,
   });
 
   @override
@@ -33,6 +36,7 @@ class AccountChangeTextField extends StatelessWidget {
           obscureText: obscureText,
           enabled: enabled,
           initialValue: initialValue,
+          errorText: errorText,
         ),
       ],
     );
@@ -69,6 +73,7 @@ class _RoundedTextField extends StatelessWidget {
   final TextEditingController? controller;
   final TextInputType keyboardType;
   final bool obscureText;
+  final String? errorText;
 
   const _RoundedTextField({
     this.hintText,
@@ -77,6 +82,7 @@ class _RoundedTextField extends StatelessWidget {
     this.controller,
     this.keyboardType = TextInputType.text,
     this.obscureText = false,
+    this.errorText,
   });
 
   @override
@@ -90,6 +96,7 @@ class _RoundedTextField extends StatelessWidget {
       obscureText: obscureText,
       decoration: InputDecoration(
         hintText: hintText,
+        errorText: errorText,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16),
         filled: true,
         fillColor: Colors.white,

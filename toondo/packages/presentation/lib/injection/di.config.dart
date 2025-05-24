@@ -66,6 +66,8 @@ import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart'
     as _i940;
 import 'package:presentation/viewmodels/home/home_viewmodel.dart' as _i370;
 import 'package:presentation/viewmodels/login/login_viewmodel.dart' as _i764;
+import 'package:presentation/viewmodels/my_page/account_setting/account_setting_viewmodel.dart'
+    as _i501;
 import 'package:presentation/viewmodels/my_page/display_setting/display_setting_viewmodel.dart'
     as _i81;
 import 'package:presentation/viewmodels/my_page/help_guide/help_guide_viewmodel.dart'
@@ -190,6 +192,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i370.HomeViewModel(
         gh<_i243.GetInProgressGoalsUseCase>(),
         gh<_i849.GetUserNicknameUseCase>(),
+      ),
+    );
+    gh.factory<_i501.AccountSettingViewModel>(
+      () => _i501.AccountSettingViewModel(
+        getUserUseCase: gh<_i991.GetUserUseCase>(),
+        updateNickNameUseCase: gh<_i910.UpdateNickNameUseCase>(),
       ),
     );
     gh.lazySingleton<_i1040.AppThemeViewModel>(
