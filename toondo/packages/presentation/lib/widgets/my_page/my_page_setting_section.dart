@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:presentation/navigation/route_paths.dart';
+import 'package:presentation/viewmodels/my_page/my_page_viewmodel.dart';
 import 'package:presentation/widgets/my_page/sync_bottom_sheet.dart';
 import 'package:get_it/get_it.dart';
 import 'package:domain/usecases/auth/logout.dart';
+import 'package:provider/provider.dart';
 import 'my_page_setting_tile.dart';
 
 class MyPageSettingSection extends StatelessWidget {
@@ -10,12 +12,15 @@ class MyPageSettingSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final vm = context.read<MyPageViewModel>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           '설정',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
         ),
         const SizedBox(height: 16),
         MyPageSettingTile(
@@ -76,8 +81,12 @@ class MyPageSettingSection extends StatelessWidget {
         MyPageSettingTile(
           title: '로그아웃',
           onTap: () async {
-            await GetIt.instance<LogoutUseCase>()();
-            Navigator.pushNamedAndRemoveUntil(context, RoutePaths.root, (route) => false);
+            await vm.logout();
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              RoutePaths.root,
+                  (route) => false,
+            );
           },
         ),
       ],

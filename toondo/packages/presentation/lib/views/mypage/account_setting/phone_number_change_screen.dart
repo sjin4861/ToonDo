@@ -17,7 +17,7 @@ class PhoneNumberChangeScreen extends StatelessWidget {
     final codeController = TextEditingController();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFDFDFD),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: const CustomAppBar(title: '전화번호 변경'),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),

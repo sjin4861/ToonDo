@@ -1,12 +1,16 @@
-import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
+import 'package:presentation/viewmodels/my_page/my_page_viewmodel.dart';
+import 'package:common/gen/assets.gen.dart';
 
 class MyPageProfileSection extends StatelessWidget {
   const MyPageProfileSection({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final vm = context.watch<MyPageViewModel>();
+    final userUiModel = vm.userUiModel;
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -50,24 +54,24 @@ class MyPageProfileSection extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              '드리머즈',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            Text(
+              userUiModel?.displayName ?? '',
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 4),
             Text.rich(
               TextSpan(
-                children: const [
-                  TextSpan(
+                children: [
+                  const TextSpan(
                     text: 'ToonDo',
                     style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
                   ),
-                  TextSpan(text: '와 함께한 지 '),
+                  const TextSpan(text: '와 함께한 지 '),
                   TextSpan(
-                    text: '21',
-                    style: TextStyle(color: Color(0xFF78B545)),
+                    text: userUiModel?.joinedDaysText ?? '0',
+                    style: const TextStyle(color: Color(0xFF78B545)),
                   ),
-                  TextSpan(text: '일째'),
+                  const TextSpan(text: '일째'),
                 ],
               ),
               style: const TextStyle(fontSize: 10),

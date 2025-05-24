@@ -4,6 +4,18 @@ import 'package:presentation/widgets/bottom_sheet/custom_bottom_sheet.dart';
 import 'package:presentation/widgets/my_page/notification_setting/time_picker/time_picker_column.dart';
 import 'package:provider/provider.dart';
 
+import 'package:flutter/material.dart';
+import 'package:presentation/viewmodels/my_page/notification_setting/time_picker_viewmodel.dart';
+import 'package:presentation/widgets/bottom_sheet/custom_bottom_sheet.dart';
+import 'package:presentation/widgets/my_page/notification_setting/time_picker/time_picker_column.dart';
+import 'package:provider/provider.dart';
+
+import 'package:flutter/material.dart';
+import 'package:presentation/viewmodels/my_page/notification_setting/time_picker_viewmodel.dart';
+import 'package:presentation/widgets/bottom_sheet/custom_bottom_sheet.dart';
+import 'package:presentation/widgets/my_page/notification_setting/time_picker/time_picker_column.dart';
+import 'package:provider/provider.dart';
+
 class TimePickerBottomSheet extends StatelessWidget {
   const TimePickerBottomSheet({super.key});
 
@@ -15,7 +27,7 @@ class TimePickerBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.read<TimePickerViewModel>();
+    final viewModel = context.watch<TimePickerViewModel>();
 
     return CustomBottomSheet(
       title: '시간 설정',
@@ -24,11 +36,13 @@ class TimePickerBottomSheet extends StatelessWidget {
         children: [
           TimePickerColumn(
             items: ['오전', '오후'],
+            initialItem: viewModel.ampm,
             onItemSelected: viewModel.setAmPm,
           ),
           const SizedBox(width: 8),
           TimePickerColumn(
             items: _hourItems,
+            initialItem: int.parse(viewModel.hour).toString(),
             onItemSelected: viewModel.setHour,
           ),
           const Padding(
@@ -44,6 +58,7 @@ class TimePickerBottomSheet extends StatelessWidget {
           ),
           TimePickerColumn(
             items: _minuteItems,
+            initialItem: viewModel.minute,
             onItemSelected: viewModel.setMinute,
           ),
         ],
@@ -52,8 +67,8 @@ class TimePickerBottomSheet extends StatelessWidget {
         CommonBottomSheetButtonData(
           label: '저장하기',
           filled: false,
-          onPressed: () {
-            viewModel.saveSelectedTime(); // 저장 처리
+          onPressed: () async {
+            await viewModel.saveSelectedTime();
             Navigator.pop(context);
           },
         ),

@@ -9,23 +9,25 @@ class MyPageSettingTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.bodyMedium?.color;
+
     return InkWell(
       onTap: onTap,
       child: Container(
         height: 52,
         padding: const EdgeInsets.symmetric(vertical: 14),
-        color: const Color(0xFFFCFCFC),
+        color: Colors.transparent,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               title,
-              style: const TextStyle(
-                color: Color(0xFF1C1D1B),
-                fontSize: 14,
-                fontFamily: 'Pretendard Variable',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w400,
+                fontSize: 14,
+                color: textColor,
                 letterSpacing: 0.21,
+                fontFamily: 'Pretendard Variable',
               ),
             ),
             if (trailing != null) trailing!,

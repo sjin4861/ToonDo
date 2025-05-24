@@ -19,16 +19,16 @@ class AccountChangeTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.bodyMedium?.color;
     final postPosition = _getPostPosition(value);
 
     return Text(
       '$value$postPosition 입력해주세요',
-      style: const TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w700,
-        color: Color(0xFF78B545),
+      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+        fontWeight: FontWeight.w400,
+        fontSize: 14,
+        color: textColor,
         fontFamily: 'Pretendard Variable',
-        letterSpacing: 1.5,
       ),
     );
   }

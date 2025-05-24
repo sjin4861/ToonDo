@@ -5,7 +5,9 @@ class NotificationTipText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    final textColor = Theme.of(context).textTheme.bodyMedium?.color;
+
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -19,10 +21,10 @@ class NotificationTipText extends StatelessWidget {
         Expanded(
           child: Text(
             '원하는 시간에 to-do 작성 알림을 받아보세요!',
-            style: TextStyle(
-              color: Color(0xFF1C1D1B),
-              fontSize: 12,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w400,
+              fontSize: 14,
+              color: textColor,
             ),
           ),
         ),

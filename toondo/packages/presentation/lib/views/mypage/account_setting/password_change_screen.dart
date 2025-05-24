@@ -19,7 +19,7 @@ class PasswordChangeScreen extends StatelessWidget {
     final String? confirmPasswordError = '비밀번호가 일치하지 않습니다.';
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFDFDFD),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: const CustomAppBar(title: '비밀번호 변경'),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),

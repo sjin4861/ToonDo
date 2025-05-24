@@ -21,7 +21,7 @@ class GoalManageView extends StatelessWidget {
       child: Consumer<GoalManagementViewModel>(
         builder: (context, managementVM, child) {
           return Scaffold(
-            backgroundColor: const Color(0xFFFCFCFC),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             appBar: CustomAppBar(title: '목표 관리하기'),
             body: SingleChildScrollView(
               child: Padding(

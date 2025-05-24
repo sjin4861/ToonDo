@@ -5,12 +5,14 @@ class DisplaySettingTitleSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.bodyMedium?.color;
+
     return Text(
       '다크모드 설정',
-      style: TextStyle(
-        fontSize: 14,
+      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
         fontWeight: FontWeight.w600,
-        color: Color(0xFF1C1D1B),
+        fontSize: 14,
+        color: textColor,
         fontFamily: 'Pretendard Variable',
       ),
     );

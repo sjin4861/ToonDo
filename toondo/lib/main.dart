@@ -1,13 +1,16 @@
+import 'package:domain/entities/theme_mode_type.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:get_it/get_it.dart';
 import 'package:presentation/viewmodels/character/chat_viewmodel.dart';
+import 'package:presentation/viewmodels/global/app_notification_viewmodel.dart';
 import 'package:presentation/viewmodels/onboarding/onboarding_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:presentation/navigation/router.dart';
 import 'package:presentation/viewmodels/signup/signup_viewmodel.dart';
 import 'package:presentation/viewmodels/home/home_viewmodel.dart';
+import 'package:presentation/viewmodels/global/app_theme_viewmodel.dart';
 import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart';
 import 'package:data/models/todo_model.dart';
 import 'package:data/models/user_model.dart';
@@ -34,11 +37,23 @@ Future<void> main() async {
   // 의존성 주입
   await configureAllDependencies();
 
-  runApp(const MyApp());
+  // 테마 공통 관리
+  final themeVM = GetIt.instance<AppThemeViewModel>();
+  await themeVM.load();
+
+  // 알림 공통 관리
+  final notificationVM = GetIt.instance<AppNotificationViewModel>();
+  await notificationVM.load();
+
+  runApp(MyApp(themeVM: themeVM, notificationVM: notificationVM));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  final AppThemeViewModel themeVM;
+  final AppNotificationViewModel notificationVM;
+
+  const MyApp({super.key, required this.themeVM, required this.notificationVM});
+
   @override
   MyAppState createState() => MyAppState();
 }
@@ -49,10 +64,17 @@ class MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    // 알림 권한 확인 등 초기화
+
+    widget.themeVM.addListener(() {
+      setState(() {});
+    });
+
+    widget.notificationVM.addListener(() {
+      setState(() {});
+    });
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await Permission.notification.status;
-      // 필요 시 권한 요청
     });
   }
 
@@ -60,6 +82,8 @@ class MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => widget.themeVM),
+        ChangeNotifierProvider(create: (_) => widget.notificationVM),
         ChangeNotifierProvider(
             create: (_) => GetIt.instance<SignupViewModel>()),
         ChangeNotifierProvider(
@@ -69,11 +93,19 @@ class MyAppState extends State<MyApp> {
         ChangeNotifierProvider(
             create: (_) => GetIt.instance<OnboardingViewModel>()),
       ],
-      child: MaterialApp(
-        navigatorKey: navigatorKey,
-        initialRoute: '/',
-        onGenerateRoute: AppRouter.generateRoute,
-        theme: ThemeData()
+      child: Consumer<AppThemeViewModel>(
+        builder: (context, vm, _) {
+          return MaterialApp(
+            themeMode: vm.mode.toFlutterMode(),
+            theme: ThemeData.light().copyWith(
+              scaffoldBackgroundColor: const Color(0xFFFDFDFD), // 라이트 모드 배경색
+            ),
+            navigatorKey: navigatorKey,
+            initialRoute: '/',
+            onGenerateRoute: AppRouter.generateRoute,
+            darkTheme: ThemeData.dark(),
+          );
+        },
       ),
     );
   }

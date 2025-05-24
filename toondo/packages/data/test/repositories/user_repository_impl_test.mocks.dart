@@ -8,10 +8,10 @@ import 'dart:async' as _i8;
 import 'package:data/datasources/local/user_local_datasource.dart' as _i6;
 import 'package:data/datasources/remote/user_remote_datasource.dart' as _i9;
 import 'package:data/models/user_model.dart' as _i7;
-import 'package:domain/entities/user.dart' as _i5;
-import 'package:domain/repositories/auth_repository.dart' as _i4;
+import 'package:domain/entities/user.dart' as _i3;
+import 'package:domain/repositories/auth_repository.dart' as _i5;
 import 'package:hive/hive.dart' as _i2;
-import 'package:http/http.dart' as _i3;
+import 'package:http/http.dart' as _i4;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -38,8 +38,8 @@ class _FakeBox_0<E> extends _i1.SmartFake implements _i2.Box<E> {
         );
 }
 
-class _FakeClient_1 extends _i1.SmartFake implements _i3.Client {
-  _FakeClient_1(
+class _FakeUser_1 extends _i1.SmartFake implements _i3.User {
+  _FakeUser_1(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -48,9 +48,8 @@ class _FakeClient_1 extends _i1.SmartFake implements _i3.Client {
         );
 }
 
-class _FakeAuthRepository_2 extends _i1.SmartFake
-    implements _i4.AuthRepository {
-  _FakeAuthRepository_2(
+class _FakeClient_2 extends _i1.SmartFake implements _i4.Client {
+  _FakeClient_2(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -59,8 +58,9 @@ class _FakeAuthRepository_2 extends _i1.SmartFake
         );
 }
 
-class _FakeUser_3 extends _i1.SmartFake implements _i5.User {
-  _FakeUser_3(
+class _FakeAuthRepository_3 extends _i1.SmartFake
+    implements _i5.AuthRepository {
+  _FakeAuthRepository_3(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -97,7 +97,7 @@ class MockUserLocalDatasource extends _i1.Mock
       );
 
   @override
-  _i8.Future<void> saveUser(_i5.User? user) => (super.noSuchMethod(
+  _i8.Future<void> saveUser(_i3.User? user) => (super.noSuchMethod(
         Invocation.method(
           #saveUser,
           [user],
@@ -114,6 +114,21 @@ class MockUserLocalDatasource extends _i1.Mock
         ),
         returnValue: _i8.Future<String?>.value(),
       ) as _i8.Future<String?>);
+
+  @override
+  _i8.Future<_i3.User> getUser() => (super.noSuchMethod(
+        Invocation.method(
+          #getUser,
+          [],
+        ),
+        returnValue: _i8.Future<_i3.User>.value(_FakeUser_1(
+          this,
+          Invocation.method(
+            #getUser,
+            [],
+          ),
+        )),
+      ) as _i8.Future<_i3.User>);
 
   @override
   _i8.Future<void> updateUserPoints(int? newPoint) => (super.noSuchMethod(
@@ -146,16 +161,16 @@ class MockUserRemoteDatasource extends _i1.Mock
   }
 
   @override
-  _i3.Client get client => (super.noSuchMethod(
+  _i4.Client get client => (super.noSuchMethod(
         Invocation.getter(#client),
-        returnValue: _FakeClient_1(
+        returnValue: _FakeClient_2(
           this,
           Invocation.getter(#client),
         ),
-      ) as _i3.Client);
+      ) as _i4.Client);
 
   @override
-  set client(_i3.Client? _client) => super.noSuchMethod(
+  set client(_i4.Client? _client) => super.noSuchMethod(
         Invocation.setter(
           #client,
           _client,
@@ -164,42 +179,42 @@ class MockUserRemoteDatasource extends _i1.Mock
       );
 
   @override
-  _i4.AuthRepository get authRepository => (super.noSuchMethod(
+  _i5.AuthRepository get authRepository => (super.noSuchMethod(
         Invocation.getter(#authRepository),
-        returnValue: _FakeAuthRepository_2(
+        returnValue: _FakeAuthRepository_3(
           this,
           Invocation.getter(#authRepository),
         ),
-      ) as _i4.AuthRepository);
+      ) as _i5.AuthRepository);
 
   @override
-  _i8.Future<_i5.User> changeNickName(String? newNickName) =>
+  _i8.Future<_i3.User> changeNickName(String? newNickName) =>
       (super.noSuchMethod(
         Invocation.method(
           #changeNickName,
           [newNickName],
         ),
-        returnValue: _i8.Future<_i5.User>.value(_FakeUser_3(
+        returnValue: _i8.Future<_i3.User>.value(_FakeUser_1(
           this,
           Invocation.method(
             #changeNickName,
             [newNickName],
           ),
         )),
-      ) as _i8.Future<_i5.User>);
+      ) as _i8.Future<_i3.User>);
 
   @override
-  _i8.Future<_i5.User> updateUserPoints(int? delta) => (super.noSuchMethod(
+  _i8.Future<_i3.User> updateUserPoints(int? delta) => (super.noSuchMethod(
         Invocation.method(
           #updateUserPoints,
           [delta],
         ),
-        returnValue: _i8.Future<_i5.User>.value(_FakeUser_3(
+        returnValue: _i8.Future<_i3.User>.value(_FakeUser_1(
           this,
           Invocation.method(
             #updateUserPoints,
             [delta],
           ),
         )),
-      ) as _i8.Future<_i5.User>);
+      ) as _i8.Future<_i3.User>);
 }
