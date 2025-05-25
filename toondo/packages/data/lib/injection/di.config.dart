@@ -24,10 +24,10 @@ import 'package:data/datasources/remote/user_remote_datasource.dart' as _i813;
 import 'package:data/injection/di_module.dart' as _i1048;
 import 'package:data/models/goal_model.dart' as _i798;
 import 'package:data/models/goal_status_enum.dart' as _i934;
+import 'package:data/models/slime_character_model.dart' as _i147;
 import 'package:data/models/todo_model.dart' as _i923;
 import 'package:data/models/user_model.dart' as _i245;
 import 'package:data/repositories/auth_repository_impl.dart' as _i819;
-import 'package:data/repositories/character_repository_impl.dart' as _i919;
 import 'package:data/repositories/goal_repository_impl.dart' as _i527;
 import 'package:data/repositories/notification_repository_impl.dart' as _i15;
 import 'package:data/repositories/slime_character_repository_impl.dart'
@@ -38,7 +38,6 @@ import 'package:data/repositories/todo_repository_impl.dart' as _i366;
 import 'package:data/repositories/user_repository_impl.dart' as _i537;
 import 'package:data/utils/gesture_mapper.dart' as _i587;
 import 'package:domain/repositories/auth_repository.dart' as _i427;
-import 'package:domain/repositories/character_repository.dart' as _i434;
 import 'package:domain/repositories/goal_repository.dart' as _i559;
 import 'package:domain/repositories/notification_repository.dart' as _i267;
 import 'package:domain/repositories/slime_repository.dart' as _i657;
@@ -67,6 +66,10 @@ extension GetItInjectableX on _i174.GetIt {
     final registerModule = _$RegisterModule();
     await gh.factoryAsync<_i979.Box<_i245.UserModel>>(
       () => registerModule.userBox,
+      preResolve: true,
+    );
+    await gh.factoryAsync<_i979.Box<_i147.SlimeCharacterModel>>(
+      () => registerModule.characterBox,
       preResolve: true,
     );
     await gh.factoryAsync<_i979.Box<_i798.GoalModel>>(
@@ -101,8 +104,6 @@ extension GetItInjectableX on _i174.GetIt {
       instanceName: 'todoBox',
       preResolve: true,
     );
-    gh.lazySingleton<_i434.CharacterRepository>(
-        () => _i919.CharacterRepositoryImpl());
     gh.lazySingleton<_i1024.UserLocalDatasource>(
         () => _i1024.UserLocalDatasource(gh<_i979.Box<_i245.UserModel>>()));
     gh.lazySingleton<_i116.AuthLocalDataSource>(
@@ -151,18 +152,18 @@ extension GetItInjectableX on _i174.GetIt {
           remoteDatasource: gh<_i813.UserRemoteDatasource>(),
           localDatasource: gh<_i1024.UserLocalDatasource>(),
         ));
+    gh.lazySingleton<_i559.GoalRepository>(() => _i527.GoalRepositoryImpl(
+          localDatasource: gh<_i34.GoalLocalDatasource>(),
+          remoteDatasource: gh<_i417.GoalRemoteDataSource>(),
+        ));
     gh.lazySingleton<_i883.GptRemoteDataSource>(() => _i883.GptRemoteDataSource(
           gh<_i519.Client>(),
           gh<_i988.UserRepository>(),
-          gh<_i434.CharacterRepository>(),
         ));
     gh.lazySingleton<_i657.SlimeRepository>(() => _i409.SlimeRepositoryImpl(
           gh<_i883.GptRemoteDataSource>(),
           gh<_i938.AnimationLocalDataSource>(),
-        ));
-    gh.lazySingleton<_i559.GoalRepository>(() => _i527.GoalRepositoryImpl(
-          localDatasource: gh<_i34.GoalLocalDatasource>(),
-          remoteDatasource: gh<_i417.GoalRemoteDataSource>(),
+          gh<_i979.Box<_i147.SlimeCharacterModel>>(),
         ));
     return this;
   }
