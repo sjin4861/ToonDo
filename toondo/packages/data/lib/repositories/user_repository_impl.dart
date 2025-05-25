@@ -20,12 +20,7 @@ class UserRepositoryImpl implements UserRepository {
     // Calls remote API
     if (newNickName == "test") {
       // Simulate a pass
-      return User(
-        id: 1,
-        nickname: "test",
-        loginId: "1234567890",
-        points: 100
-      );
+      return User(id: 1, nickname: "test", loginId: "1234567890", points: 100);
     }
     final updatedUser = await remoteDatasource.changeNickName(newNickName);
     await localDatasource.setNickName(newNickName);
@@ -42,5 +37,16 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<String?> getUserNickname() async {
     return localDatasource.getUserNickname();
+  }
+
+  @override
+  Future<User> getUser() {
+    final model = localDatasource.getUser();
+    if (model != null) {
+      return model;
+    } else {
+      // TODO 서버에서 유저 정보 가져오기 코드 추가해야함 (아래 코드는 삭제)
+      return model;
+    }
   }
 }

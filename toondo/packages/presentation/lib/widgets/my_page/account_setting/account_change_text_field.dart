@@ -4,10 +4,12 @@ class AccountChangeTextField extends StatelessWidget {
   final String label;
   final String? hintText;
   final TextEditingController? controller;
+
   final TextInputType keyboardType;
   final bool obscureText;
   final bool enabled;
   final String? initialValue;
+  final String? errorText;
 
   const AccountChangeTextField({
     super.key,
@@ -18,6 +20,7 @@ class AccountChangeTextField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.obscureText = false,
     this.initialValue,
+    this.errorText,
   });
 
   @override
@@ -33,6 +36,7 @@ class AccountChangeTextField extends StatelessWidget {
           obscureText: obscureText,
           enabled: enabled,
           initialValue: initialValue,
+          errorText: errorText,
         ),
       ],
     );
@@ -46,18 +50,18 @@ class _LabelText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.bodyMedium?.color;
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(
         label,
-        style: const TextStyle(
-          fontSize: 12,
-          color: Color(0xFF1C1D1B),
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontWeight: FontWeight.w400,
+          fontSize: 12,
+          color: textColor,
           fontFamily: 'Pretendard Variable',
-          letterSpacing: 1.5,
-        ),
       ),
+    ),
     );
   }
 }
@@ -69,6 +73,7 @@ class _RoundedTextField extends StatelessWidget {
   final TextEditingController? controller;
   final TextInputType keyboardType;
   final bool obscureText;
+  final String? errorText;
 
   const _RoundedTextField({
     this.hintText,
@@ -77,6 +82,7 @@ class _RoundedTextField extends StatelessWidget {
     this.controller,
     this.keyboardType = TextInputType.text,
     this.obscureText = false,
+    this.errorText,
   });
 
   @override
@@ -90,6 +96,7 @@ class _RoundedTextField extends StatelessWidget {
       obscureText: obscureText,
       decoration: InputDecoration(
         hintText: hintText,
+        errorText: errorText,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16),
         filled: true,
         fillColor: Colors.white,

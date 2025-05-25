@@ -35,7 +35,7 @@ class TodoManageView extends StatelessWidget {
             initialDate: selectedDate,
           )..loadTodos(),
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: CustomAppBar(title: '투두리스트'),
         body: Consumer<TodoManageViewModel>(
           builder: (context, viewModel, child) {

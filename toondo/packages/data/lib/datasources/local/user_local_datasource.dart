@@ -19,6 +19,11 @@ class UserLocalDatasource {
     return model?.getNickname();
   }
 
+  Future<User> getUser() async {
+    final model = userBox.get('currentUser');
+    return model!.toEntity();
+  }
+
   Future<void> updateUserPoints(int newPoint) async {
     final model = userBox.get('currentUser');
     if (model != null) {
@@ -34,6 +39,4 @@ class UserLocalDatasource {
       await userBox.put('currentUser', model);
     }
   }
-
-  // ...other local methods if needed...
 }
