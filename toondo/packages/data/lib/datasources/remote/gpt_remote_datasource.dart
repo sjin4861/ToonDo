@@ -1,16 +1,15 @@
 import 'dart:convert';
+import 'package:domain/repositories/slime_repository.dart';
 import 'package:http/http.dart' as http;
 import 'package:injectable/injectable.dart';
 import 'package:data/constants.dart';
 import 'package:domain/repositories/user_repository.dart';
-import 'package:domain/repositories/character_repository.dart';
 
 @lazySingleton
 class GptRemoteDataSource {
   final http.Client httpClient;
   final UserRepository userRepo;
-  final CharacterRepository characterRepo;
-  GptRemoteDataSource(this.httpClient, this.userRepo, this.characterRepo);
+  GptRemoteDataSource(this.httpClient, this.userRepo);
 
   Future<String> chat(String prompt) async {
     // Wrap OpenAI call (similar to gpt_repository_impl)
@@ -33,7 +32,6 @@ class GptRemoteDataSource {
     if (res.statusCode == 200) {
       final data = jsonDecode(utf8.decode(res.bodyBytes));
       final reply = data['choices'][0]['message']['content'] as String;
-      await characterRepo.updateConversationHistory('슬라임: $reply');
       return reply;
     }
     throw Exception('GPT error ${res.statusCode}');
