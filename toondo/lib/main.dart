@@ -1,3 +1,4 @@
+import 'package:data/models/slime_character_model.dart';
 import 'package:domain/entities/theme_mode_type.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -27,12 +28,16 @@ Future<void> main() async {
   Hive.registerAdapter(GoalModelAdapter());
   Hive.registerAdapter(UserModelAdapter());
   Hive.registerAdapter(GoalStatusEnumAdapter());
+  Hive.registerAdapter(SlimeCharacterModelAdapter());             // ★ 추가
+
 
   // Hive 박스 열기
   await Hive.openBox<TodoModel>('todos');
   await Hive.openBox<TodoModel>('deleted_todos');
   await Hive.openBox<GoalModel>('goals');
   await Hive.openBox<UserModel>('user');
+  await Hive.openBox<SlimeCharacterModel>('character');           // ★ 추가
+
 
   // 의존성 주입
   await configureAllDependencies();
