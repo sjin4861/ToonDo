@@ -1,5 +1,6 @@
 import 'package:domain/entities/gesture.dart';
 import 'package:domain/entities/goal.dart';
+import 'package:domain/entities/llm_engine.dart';
 import 'package:domain/entities/slime_character.dart';
 import 'package:domain/entities/slime_response.dart';
 import 'package:domain/entities/todo.dart';
@@ -10,6 +11,7 @@ abstract class SlimeRepository {
     required String text,
     List<Goal> goals,
     List<Todo> todos,
+    LlmEngine? llm_engine,
   });
 
   Future<SlimeResponse> processGesture(Gesture gesture);
