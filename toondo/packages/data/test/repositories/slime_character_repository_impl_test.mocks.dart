@@ -3,17 +3,17 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i5;
-import 'dart:io' as _i8;
+import 'dart:async' as _i3;
+import 'dart:io' as _i6;
 
-import 'package:data/datasources/local/animation_local_datasource.dart' as _i7;
-import 'package:data/datasources/remote/gpt_remote_datasource.dart' as _i4;
-import 'package:domain/entities/gesture.dart' as _i9;
-import 'package:domain/repositories/user_repository.dart' as _i3;
-import 'package:hive/hive.dart' as _i10;
-import 'package:http/http.dart' as _i2;
+import 'package:data/datasources/local/animation_local_datasource.dart' as _i5;
+import 'package:data/datasources/local/settings_local_datasource.dart' as _i9;
+import 'package:domain/entities/gesture.dart' as _i7;
+import 'package:domain/entities/llm_engine.dart' as _i10;
+import 'package:domain/repositories/chat_llm.dart' as _i2;
+import 'package:hive/hive.dart' as _i8;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i6;
+import 'package:mockito/src/dummies.dart' as _i4;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -29,106 +29,66 @@ import 'package:mockito/src/dummies.dart' as _i6;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeClient_0 extends _i1.SmartFake implements _i2.Client {
-  _FakeClient_0(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-class _FakeUserRepository_1 extends _i1.SmartFake
-    implements _i3.UserRepository {
-  _FakeUserRepository_1(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-/// A class which mocks [GptRemoteDataSource].
+/// A class which mocks [ChatLLM].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockGptRemoteDataSource extends _i1.Mock
-    implements _i4.GptRemoteDataSource {
-  MockGptRemoteDataSource() {
+class MockChatLLM extends _i1.Mock implements _i2.ChatLLM {
+  MockChatLLM() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i2.Client get httpClient => (super.noSuchMethod(
-        Invocation.getter(#httpClient),
-        returnValue: _FakeClient_0(
-          this,
-          Invocation.getter(#httpClient),
-        ),
-      ) as _i2.Client);
-
-  @override
-  _i3.UserRepository get userRepo => (super.noSuchMethod(
-        Invocation.getter(#userRepo),
-        returnValue: _FakeUserRepository_1(
-          this,
-          Invocation.getter(#userRepo),
-        ),
-      ) as _i3.UserRepository);
-
-  @override
-  _i5.Future<String> chat(String? prompt) => (super.noSuchMethod(
+  _i3.Future<String> chat(String? prompt) => (super.noSuchMethod(
         Invocation.method(
           #chat,
           [prompt],
         ),
-        returnValue: _i5.Future<String>.value(_i6.dummyValue<String>(
+        returnValue: _i3.Future<String>.value(_i4.dummyValue<String>(
           this,
           Invocation.method(
             #chat,
             [prompt],
           ),
         )),
-      ) as _i5.Future<String>);
+      ) as _i3.Future<String>);
 }
 
 /// A class which mocks [AnimationLocalDataSource].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockAnimationLocalDataSource extends _i1.Mock
-    implements _i7.AnimationLocalDataSource {
+    implements _i5.AnimationLocalDataSource {
   MockAnimationLocalDataSource() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i5.Future<void> load(_i8.File? riveAsset) => (super.noSuchMethod(
+  _i3.Future<void> load(_i6.File? riveAsset) => (super.noSuchMethod(
         Invocation.method(
           #load,
           [riveAsset],
         ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
 
   @override
-  _i5.Future<String> playByGesture(_i9.Gesture? g) => (super.noSuchMethod(
+  _i3.Future<String> playByGesture(_i7.Gesture? g) => (super.noSuchMethod(
         Invocation.method(
           #playByGesture,
           [g],
         ),
-        returnValue: _i5.Future<String>.value(_i6.dummyValue<String>(
+        returnValue: _i3.Future<String>.value(_i4.dummyValue<String>(
           this,
           Invocation.method(
             #playByGesture,
             [g],
           ),
         )),
-      ) as _i5.Future<String>);
+      ) as _i3.Future<String>);
 
   @override
-  _i5.Future<String> playBySentiment(
+  _i3.Future<String> playBySentiment(
     String? text, {
     required bool? fromUser,
   }) =>
@@ -138,7 +98,7 @@ class MockAnimationLocalDataSource extends _i1.Mock
           [text],
           {#fromUser: fromUser},
         ),
-        returnValue: _i5.Future<String>.value(_i6.dummyValue<String>(
+        returnValue: _i3.Future<String>.value(_i4.dummyValue<String>(
           this,
           Invocation.method(
             #playBySentiment,
@@ -146,23 +106,23 @@ class MockAnimationLocalDataSource extends _i1.Mock
             {#fromUser: fromUser},
           ),
         )),
-      ) as _i5.Future<String>);
+      ) as _i3.Future<String>);
 
   @override
-  _i5.Future<void> playTyping() => (super.noSuchMethod(
+  _i3.Future<void> playTyping() => (super.noSuchMethod(
         Invocation.method(
           #playTyping,
           [],
         ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
 }
 
 /// A class which mocks [Box].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockBox<E> extends _i1.Mock implements _i10.Box<E> {
+class MockBox<E> extends _i1.Mock implements _i8.Box<E> {
   MockBox() {
     _i1.throwOnMissingStub(this);
   }
@@ -176,7 +136,7 @@ class MockBox<E> extends _i1.Mock implements _i10.Box<E> {
   @override
   String get name => (super.noSuchMethod(
         Invocation.getter(#name),
-        returnValue: _i6.dummyValue<String>(
+        returnValue: _i4.dummyValue<String>(
           this,
           Invocation.getter(#name),
         ),
@@ -257,14 +217,14 @@ class MockBox<E> extends _i1.Mock implements _i10.Box<E> {
       ));
 
   @override
-  _i5.Stream<_i10.BoxEvent> watch({dynamic key}) => (super.noSuchMethod(
+  _i3.Stream<_i8.BoxEvent> watch({dynamic key}) => (super.noSuchMethod(
         Invocation.method(
           #watch,
           [],
           {#key: key},
         ),
-        returnValue: _i5.Stream<_i10.BoxEvent>.empty(),
-      ) as _i5.Stream<_i10.BoxEvent>);
+        returnValue: _i3.Stream<_i8.BoxEvent>.empty(),
+      ) as _i3.Stream<_i8.BoxEvent>);
 
   @override
   bool containsKey(dynamic key) => (super.noSuchMethod(
@@ -276,7 +236,7 @@ class MockBox<E> extends _i1.Mock implements _i10.Box<E> {
       ) as bool);
 
   @override
-  _i5.Future<void> put(
+  _i3.Future<void> put(
     dynamic key,
     E? value,
   ) =>
@@ -288,12 +248,12 @@ class MockBox<E> extends _i1.Mock implements _i10.Box<E> {
             value,
           ],
         ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
 
   @override
-  _i5.Future<void> putAt(
+  _i3.Future<void> putAt(
     int? index,
     E? value,
   ) =>
@@ -305,114 +265,159 @@ class MockBox<E> extends _i1.Mock implements _i10.Box<E> {
             value,
           ],
         ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
 
   @override
-  _i5.Future<void> putAll(Map<dynamic, E>? entries) => (super.noSuchMethod(
+  _i3.Future<void> putAll(Map<dynamic, E>? entries) => (super.noSuchMethod(
         Invocation.method(
           #putAll,
           [entries],
         ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
 
   @override
-  _i5.Future<int> add(E? value) => (super.noSuchMethod(
+  _i3.Future<int> add(E? value) => (super.noSuchMethod(
         Invocation.method(
           #add,
           [value],
         ),
-        returnValue: _i5.Future<int>.value(0),
-      ) as _i5.Future<int>);
+        returnValue: _i3.Future<int>.value(0),
+      ) as _i3.Future<int>);
 
   @override
-  _i5.Future<Iterable<int>> addAll(Iterable<E>? values) => (super.noSuchMethod(
+  _i3.Future<Iterable<int>> addAll(Iterable<E>? values) => (super.noSuchMethod(
         Invocation.method(
           #addAll,
           [values],
         ),
-        returnValue: _i5.Future<Iterable<int>>.value(<int>[]),
-      ) as _i5.Future<Iterable<int>>);
+        returnValue: _i3.Future<Iterable<int>>.value(<int>[]),
+      ) as _i3.Future<Iterable<int>>);
 
   @override
-  _i5.Future<void> delete(dynamic key) => (super.noSuchMethod(
+  _i3.Future<void> delete(dynamic key) => (super.noSuchMethod(
         Invocation.method(
           #delete,
           [key],
         ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
 
   @override
-  _i5.Future<void> deleteAt(int? index) => (super.noSuchMethod(
+  _i3.Future<void> deleteAt(int? index) => (super.noSuchMethod(
         Invocation.method(
           #deleteAt,
           [index],
         ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
 
   @override
-  _i5.Future<void> deleteAll(Iterable<dynamic>? keys) => (super.noSuchMethod(
+  _i3.Future<void> deleteAll(Iterable<dynamic>? keys) => (super.noSuchMethod(
         Invocation.method(
           #deleteAll,
           [keys],
         ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
 
   @override
-  _i5.Future<void> compact() => (super.noSuchMethod(
+  _i3.Future<void> compact() => (super.noSuchMethod(
         Invocation.method(
           #compact,
           [],
         ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
 
   @override
-  _i5.Future<int> clear() => (super.noSuchMethod(
+  _i3.Future<int> clear() => (super.noSuchMethod(
         Invocation.method(
           #clear,
           [],
         ),
-        returnValue: _i5.Future<int>.value(0),
-      ) as _i5.Future<int>);
+        returnValue: _i3.Future<int>.value(0),
+      ) as _i3.Future<int>);
 
   @override
-  _i5.Future<void> close() => (super.noSuchMethod(
+  _i3.Future<void> close() => (super.noSuchMethod(
         Invocation.method(
           #close,
           [],
         ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
 
   @override
-  _i5.Future<void> deleteFromDisk() => (super.noSuchMethod(
+  _i3.Future<void> deleteFromDisk() => (super.noSuchMethod(
         Invocation.method(
           #deleteFromDisk,
           [],
         ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
 
   @override
-  _i5.Future<void> flush() => (super.noSuchMethod(
+  _i3.Future<void> flush() => (super.noSuchMethod(
         Invocation.method(
           #flush,
           [],
         ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
+}
+
+/// A class which mocks [SettingsLocalDataSource].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockSettingsLocalDataSource extends _i1.Mock
+    implements _i9.SettingsLocalDataSource {
+  MockSettingsLocalDataSource() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i3.Stream<_i10.LlmEngine> get preferredLlm$ => (super.noSuchMethod(
+        Invocation.getter(#preferredLlm$),
+        returnValue: _i3.Stream<_i10.LlmEngine>.empty(),
+      ) as _i3.Stream<_i10.LlmEngine>);
+
+  @override
+  _i10.LlmEngine getPreferredLlm() => (super.noSuchMethod(
+        Invocation.method(
+          #getPreferredLlm,
+          [],
+        ),
+        returnValue: _i10.LlmEngine.gpt,
+      ) as _i10.LlmEngine);
+
+  @override
+  _i3.Future<void> setPreferredLlm(_i10.LlmEngine? engine) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #setPreferredLlm,
+          [engine],
+        ),
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
+
+  @override
+  void dispose() => super.noSuchMethod(
+        Invocation.method(
+          #dispose,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
 }

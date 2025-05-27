@@ -1,82 +1,86 @@
-// test/slime_repository_impl_test.dart
+// test/slime_character_repository_impl_test.dart
 import 'package:data/datasources/local/animation_local_datasource.dart';
-import 'package:data/datasources/remote/gpt_remote_datasource.dart';
-import 'package:data/repositories/slime_character_repository_impl.dart';   // 파일명 교체
+import 'package:data/datasources/local/settings_local_datasource.dart';
+import 'package:data/repositories/slime_character_repository_impl.dart';
+import 'package:data/models/slime_character_model.dart';
 import 'package:domain/entities/gesture.dart';
 import 'package:domain/entities/slime_response.dart';
+import 'package:domain/repositories/chat_llm.dart';
 import 'package:domain/repositories/slime_repository.dart';
-import 'package:data/models/slime_character_model.dart';        // 캐릭터 모델
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hive/hive.dart';                                // Box
+import 'package:hive/hive.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
 import 'slime_character_repository_impl_test.mocks.dart';
 
 @GenerateMocks([
-  GptRemoteDataSource,
+  ChatLLM,                       // ✅ LLM abstraction (GPT or Gemma)
   AnimationLocalDataSource,
-  Box<SlimeCharacterModel>,   // ⭐ 추가
+  Box<SlimeCharacterModel>,
+  SettingsLocalDataSource,
 ])
 void main() {
-  late SlimeRepository repository;
-  late MockGptRemoteDataSource mockGpt;
+  late SlimeRepository            repository;
+  late MockChatLLM                mockGpt;
+  late MockChatLLM                mockGemma;
   late MockAnimationLocalDataSource mockAnim;
-  late MockBox<SlimeCharacterModel> mockBox;                    // ⭐
+  late MockBox<SlimeCharacterModel> mockBox;
+  late MockSettingsLocalDataSource  mockSettings;
 
   setUp(() {
-    mockGpt  = MockGptRemoteDataSource();
-    mockAnim = MockAnimationLocalDataSource();
-    mockBox  = MockBox<SlimeCharacterModel>();                  // ⭐
+    mockGpt      = MockChatLLM();
+    mockGemma    = MockChatLLM();
+    mockAnim     = MockAnimationLocalDataSource();
+    mockBox      = MockBox<SlimeCharacterModel>();
+    mockSettings = MockSettingsLocalDataSource();
+
+    when(mockSettings.preferredLlm$).thenAnswer((_) => const Stream.empty());
 
     repository = SlimeRepositoryImpl(
-      mockGpt,
-      mockAnim,
-      mockBox,                                                  // ⭐
+      mockGpt,       // @Named('gpt')
+      mockGemma,     // @Named('gemma')
+      mockSettings,  // SettingsLocalDataSource
+      mockAnim,      // AnimationLocalDataSource
+      mockBox,       // Character Box
     );
   });
 
   group('SlimeRepositoryImpl', () {
-    /* ─── 제스처 테스트 unchanged ─── */
-
     group('메시지 처리', () {
-      test('processMessage → GPT 호출 후 playBySentiment 호출 흐름', () async {
+      test('processMessage → LLM 호출 후 playBySentiment 호출 흐름', () async {
         // Arrange
         const input    = '안녕!';
-        const gptReply = '반가워~ 😊';
+        const llmReply = '반가워~ 😊';
 
-        when(mockGpt.chat(any)).thenAnswer((_) async => gptReply);
+        when(mockGpt.chat(any)).thenAnswer((_) async => llmReply);
 
         when(mockAnim.playBySentiment(input, fromUser: true))
             .thenAnswer((_) async => 'idle');
-        when(mockAnim.playTyping())
-            .thenAnswer((_) async {});
-        when(mockAnim.playBySentiment(gptReply, fromUser: false))
+        when(mockAnim.playTyping()).thenAnswer((_) async {});
+        when(mockAnim.playBySentiment(llmReply, fromUser: false))
             .thenAnswer((_) async => 'happy');
 
         // Act
-        final result = await repository.processMessage(
+        final SlimeResponse result = await repository.processMessage(
           text:  input,
           goals: const [],
           todos: const [],
         );
 
         // Assert
-        expect(result.message,      equals(gptReply));
+        expect(result.message,      equals(llmReply));
         expect(result.animationKey, equals('happy'));
 
         verifyInOrder([
           mockAnim.playBySentiment(input,   fromUser: true),
           mockAnim.playTyping(),
           mockGpt.chat(any),
-          mockAnim.playBySentiment(gptReply, fromUser: false),
+          mockAnim.playBySentiment(llmReply, fromUser: false),
         ]);
 
         verifyNoMoreInteractions(mockAnim);
       });
     });
-
-    /* 예외 처리·스트림 테스트 등은 동일,
-       다만 playBySentiment 호출부에 named 인수(fromUser) 포함해야 함 */
   });
 }
