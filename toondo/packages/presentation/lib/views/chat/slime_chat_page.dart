@@ -1,5 +1,7 @@
+import 'package:domain/entities/llm_engine.dart';
 import 'package:domain/usecases/character/toggle_chat_mode.dart';
 import 'package:flutter/material.dart';
+import 'package:presentation/views/chat/chat_appbar.dart';
 import 'package:provider/provider.dart';
 import 'package:get_it/get_it.dart';
 import 'package:presentation/viewmodels/character/chat_viewmodel.dart';
@@ -15,19 +17,7 @@ class SlimeChatPage extends StatelessWidget {
     return ChangeNotifierProvider.value(
       value: GetIt.I<ChatViewModel>(),
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('대화모드'),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.close, color: Colors.black87),
-            onPressed: () async {
-              await GetIt.I<ToggleChatModeUseCase>()(false); // 상태 OFF
-              // ignore: use_build_context_synchronously
-              Navigator.pop(context);
-            },
-          ),
-        ),
+        appBar: const ChatAppBar(),
         body: const _ChatScreen(),
       ),
     );
@@ -75,7 +65,9 @@ class _ChatScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: isUser
                           ? const Color(0xfffef3d4)
-                          : Colors.white,
+                          : (vm.engine == LlmEngine.gpt
+                          ? Colors.white
+                          : const Color(0xffe8f5e9)),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Text(
