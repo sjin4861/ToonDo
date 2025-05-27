@@ -57,6 +57,7 @@ flutter:
     - assets/images/
     - assets/rives/
     - assets/audios/
+    - assets/llm/
 
   fonts:
     - family: Nanum OgBiCe

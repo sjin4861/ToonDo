@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:domain/repositories/chat_llm.dart';
 import 'package:domain/repositories/slime_repository.dart';
 import 'package:http/http.dart' as http;
 import 'package:injectable/injectable.dart';
@@ -6,7 +7,7 @@ import 'package:data/constants.dart';
 import 'package:domain/repositories/user_repository.dart';
 
 @lazySingleton
-class GptRemoteDataSource {
+class GptRemoteDataSource implements ChatLLM{
   final http.Client httpClient;
   final UserRepository userRepo;
   GptRemoteDataSource(this.httpClient, this.userRepo);
@@ -15,7 +16,7 @@ class GptRemoteDataSource {
     // Wrap OpenAI call (similar to gpt_repository_impl)
     final uri = Uri.parse('${Constants.OPENAI_URL}/v1/chat/completions');
     final body = jsonEncode({
-      'model': 'gpt-4o',
+      'model': 'gpt-4o-mini',
       'messages': [
         {'role': 'system', 'content': Constants.SLIMEROLE},
         {'role': 'user', 'content': prompt},
