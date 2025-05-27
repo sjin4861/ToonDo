@@ -11,8 +11,10 @@
 import 'package:data/datasources/local/animation_local_datasource.dart'
     as _i938;
 import 'package:data/datasources/local/auth_local_datasource.dart' as _i116;
+import 'package:data/datasources/local/gemma_local_datasource.dart' as _i868;
 import 'package:data/datasources/local/goal_local_datasource.dart' as _i34;
 import 'package:data/datasources/local/secure_local_datasource.dart' as _i361;
+import 'package:data/datasources/local/settings_local_datasource.dart' as _i438;
 import 'package:data/datasources/local/todo_local_datasource.dart' as _i91;
 import 'package:data/datasources/local/user_local_datasource.dart' as _i1024;
 import 'package:data/datasources/remote/auth_remote_datasource.dart' as _i954;
@@ -38,6 +40,7 @@ import 'package:data/repositories/todo_repository_impl.dart' as _i366;
 import 'package:data/repositories/user_repository_impl.dart' as _i537;
 import 'package:data/utils/gesture_mapper.dart' as _i587;
 import 'package:domain/repositories/auth_repository.dart' as _i427;
+import 'package:domain/repositories/chat_llm.dart' as _i129;
 import 'package:domain/repositories/goal_repository.dart' as _i559;
 import 'package:domain/repositories/notification_repository.dart' as _i267;
 import 'package:domain/repositories/slime_repository.dart' as _i657;
@@ -64,6 +67,7 @@ extension GetItInjectableX on _i174.GetIt {
       environmentFilter,
     );
     final registerModule = _$RegisterModule();
+    final llmModule = _$LlmModule();
     await gh.factoryAsync<_i979.Box<_i245.UserModel>>(
       () => registerModule.userBox,
       preResolve: true,
@@ -86,10 +90,14 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i938.AnimationLocalDataSource>(
         () => _i938.AnimationLocalDataSource());
+    gh.lazySingleton<_i868.GemmaLocalDataSource>(
+        () => _i868.GemmaLocalDataSource());
     gh.lazySingleton<_i519.Client>(() => registerModule.httpClient);
     gh.lazySingleton<_i558.FlutterSecureStorage>(
         () => registerModule.secureStorage);
     gh.lazySingleton<_i587.GestureMapper>(() => registerModule.gestureMapper);
+    gh.lazySingleton<_i438.SettingsLocalDataSource>(
+        () => _i438.SettingsLocalDataSource(gh<_i460.SharedPreferences>()));
     await gh.factoryAsync<_i979.Box<_i923.TodoModel>>(
       () => registerModule.deletedTodoBox,
       instanceName: 'deletedTodoBox',
@@ -122,6 +130,10 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i979.Box<_i798.GoalModel>>(),
           gh<_i979.Box<_i934.GoalStatusEnum>>(),
         ));
+    gh.factory<_i129.ChatLLM>(
+      () => llmModule.provideGemma(gh<_i868.GemmaLocalDataSource>()),
+      instanceName: 'gemma',
+    );
     gh.lazySingleton<_i427.AuthRepository>(() => _i819.AuthRepositoryImpl(
           gh<_i954.AuthRemoteDataSource>(),
           gh<_i116.AuthLocalDataSource>(),
@@ -160,8 +172,14 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i519.Client>(),
           gh<_i988.UserRepository>(),
         ));
+    gh.factory<_i129.ChatLLM>(
+      () => llmModule.provideGpt(gh<_i883.GptRemoteDataSource>()),
+      instanceName: 'gpt',
+    );
     gh.lazySingleton<_i657.SlimeRepository>(() => _i409.SlimeRepositoryImpl(
-          gh<_i883.GptRemoteDataSource>(),
+          gh<_i129.ChatLLM>(instanceName: 'gpt'),
+          gh<_i129.ChatLLM>(instanceName: 'gemma'),
+          gh<_i438.SettingsLocalDataSource>(),
           gh<_i938.AnimationLocalDataSource>(),
           gh<_i979.Box<_i147.SlimeCharacterModel>>(),
         ));
@@ -170,3 +188,5 @@ extension GetItInjectableX on _i174.GetIt {
 }
 
 class _$RegisterModule extends _i1048.RegisterModule {}
+
+class _$LlmModule extends _i1048.LlmModule {}

@@ -1,9 +1,12 @@
+import 'package:data/datasources/local/gemma_local_datasource.dart';
+import 'package:data/datasources/remote/gpt_remote_datasource.dart';
 import 'package:data/models/goal_model.dart';
 import 'package:data/models/slime_character_model.dart';
 import 'package:data/models/todo_model.dart';
 import 'package:data/models/user_model.dart';
 import 'package:data/models/goal_status_enum.dart';
 import 'package:data/utils/gesture_mapper.dart';
+import 'package:domain/repositories/chat_llm.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:injectable/injectable.dart';
@@ -47,4 +50,12 @@ abstract class RegisterModule {
   @preResolve
   Future<SharedPreferences> get sharedPreferences =>
       SharedPreferences.getInstance();
+}
+@module
+abstract class LlmModule {
+  @Named('gpt')
+  ChatLLM provideGpt(GptRemoteDataSource impl) => impl;
+
+  @Named('gemma')
+  ChatLLM provideGemma(GemmaLocalDataSource impl) => impl;
 }
