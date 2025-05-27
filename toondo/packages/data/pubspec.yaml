@@ -35,6 +35,7 @@ dependencies:
   audioplayers: ^6.1.1
   rxdart: ^0.28.0
   shared_preferences: ^2.5.3
+  flutter_gemma: ^0.8.5
 
 
 dev_dependencies:
