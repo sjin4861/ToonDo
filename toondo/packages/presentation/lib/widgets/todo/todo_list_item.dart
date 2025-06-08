@@ -1,7 +1,5 @@
-// lib/widgets/todo_list_item.dart
-
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:domain/entities/todo.dart';
 import 'package:domain/entities/goal.dart';
 import 'package:intl/intl.dart';
@@ -11,7 +9,7 @@ import 'package:presentation/utils/get_todo_border_color.dart';
 class TodoListItem extends StatelessWidget {
   final Todo todo;
   final List<Goal> goals;
-  final Function(Todo, double) onStatusUpdate; // onUpdate를 수정하여 status와 함께 전달
+  final Function(Todo, double) onStatusUpdate;
   final Function() onDelete;
   final Function() onPostpone;
   final Function() onUpdate;
@@ -35,67 +33,90 @@ class TodoListItem extends StatelessWidget {
     bool isDDay = todo.isDDayTodo();
     bool isCompleted = todo.status >= 100;
 
-    // D-Day → 진행률 표시, Daily → Checkbox
-    Widget trailingWidget = isDDay
-        ? _buildProgressIndicator(context)
-        : Checkbox(
-            value: isCompleted,
-            onChanged: (bool? value) {
-              if (value != null) {
-                onStatusUpdate(todo, value ? 100 : 0);
-              }
-            },
-            activeColor: getBorderColor(todo),
-          );
+    Widget trailingWidget =
+        isDDay
+            ? _buildProgressIndicator(context)
+            : Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: 12,
+                height: 12,
+                child: Checkbox(
+                  value: isCompleted,
+                  onChanged: (bool? value) {
+                    if (value != null) {
+                      onStatusUpdate(todo, value ? 100 : 0);
+                    }
+                  },
+                  activeColor: getBorderColor(todo),
+                  checkColor: Colors.white,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  // 터치 영역 축소
+                  visualDensity: VisualDensity.compact,
+                  // 여백 최소화
+                  side: const BorderSide(
+                    color: Color(0x801C1D1B), // 투명도 50% 적용된 테두리 색
+                    width: 1.5,
+                  ),
+                ),
+              ),
+            );
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      // Figma 디자인처럼 키우고 싶다면 height도 지정 가능
-      // height: 56,
-      decoration: ShapeDecoration(
+      margin: EdgeInsets.only(bottom: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      decoration: BoxDecoration(
         color: isCompleted ? const Color(0xFFEEEEEE) : Colors.transparent,
-        shape: RoundedRectangleBorder(
-          side: BorderSide(
-            width: 1,
-            color: isCompleted
-                ? const Color(0x7FDDDDDD)
-                : getBorderColor(todo),
-          ),
-          // ★ 둥글기 크게
-          borderRadius: BorderRadius.circular(1000),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: isCompleted ? const Color(0x7FDDDDDD) : getBorderColor(todo),
+          width: 1.5,
         ),
       ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        leading: _buildLeading(context),
-        title: Text(
-          todo.title,
-          style: TextStyle(
-            color: isCompleted ? const Color(0x4C111111) : const Color(0xFF1C1D1B),
-            fontSize: 13,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 0.20,
-            fontFamily: 'Pretendard Variable',
-            decoration: isCompleted ? TextDecoration.lineThrough : null,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _buildLeading(context),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  todo.title,
+                  style: TextStyle(
+                    color:
+                        isCompleted
+                            ? const Color(0x4C111111)
+                            : const Color(0xFF1C1D1B),
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.15,
+                    fontFamily: 'Pretendard Variable',
+                    decoration: isCompleted ? TextDecoration.lineThrough : null,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                isDDay
+                    ? _buildDDaySubtitle()
+                    : _buildSubtitle(context) ?? const SizedBox(),
+              ],
+            ),
           ),
-        ),
-        subtitle: isDDay ? _buildDDaySubtitle() : _buildSubtitle(context),
-        trailing: trailingWidget,
-        onTap: () {
-          _showTodoOptionsDialog(context, todo);
-        },
+          const SizedBox(width: 8),
+          SizedBox(height: 36, child: Center(child: trailingWidget)),
+        ],
       ),
     );
   }
 
   Widget? _buildSubtitle(BuildContext context) {
-    // 목표 이름 가져오기
     String? goalName;
     if (todo.goalId != null) {
       final matching = goals.where((g) => g.id == todo.goalId);
       goalName = matching.isNotEmpty ? matching.first.name : '목표를 찾을 수 없음';
     }
-
     if (goalName != null) {
       return Text(
         '목표: $goalName',
@@ -115,16 +136,11 @@ class TodoListItem extends StatelessWidget {
   String _getDDayString() {
     DateTime today = selectedDate;
     int dDay = todo.endDate.difference(today).inDays;
-    if (dDay > 0) {
-      return 'D-$dDay';
-    } else if (dDay == 0) {
-      return 'D-Day';
-    } else {
-      return 'D+${-dDay}';
-    }
+    if (dDay > 0) return 'D-$dDay';
+    if (dDay == 0) return 'D-Day';
+    return 'D+${-dDay}';
   }
 
-  /// D-Day 날짜/진행률용 subtitle
   Widget _buildDDaySubtitle() {
     return Row(
       children: [
@@ -153,36 +169,37 @@ class TodoListItem extends StatelessWidget {
     );
   }
 
-  // 진행률 표시기 위젯 (디데이 투두용)
   Widget _buildProgressIndicator(BuildContext context) {
-    return SizedBox(
-      width: 100,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Expanded(
-            child: LinearProgressIndicator(
-              value: todo.status / 100,
-              backgroundColor: Colors.grey[300],
-              valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF78B545)),
-            ),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 48,
+          height: 4,
+          decoration: BoxDecoration(
+            color: Colors.grey[300],
+            borderRadius: BorderRadius.circular(2),
           ),
-          const SizedBox(width: 8),
-          Text(
-            '${todo.status.toInt()}%',
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF1C1D1B),
-            ),
+          child: LinearProgressIndicator(
+            value: todo.status / 100,
+            backgroundColor: Colors.transparent,
+            valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF78B545)),
           ),
-        ],
-      ),
+        ),
+        const SizedBox(width: 6),
+        Text(
+          '${todo.status.toInt()}%',
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF1C1D1B),
+          ),
+        ),
+      ],
     );
   }
 
   void _showTodoOptionsDialog(BuildContext context, Todo todo) {
-    // ToDoEditBottomSheet를 호출합니다.
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -214,39 +231,44 @@ class TodoListItem extends StatelessWidget {
       },
     );
   }
-  /// leading 아이콘
+
   Widget _buildLeading(BuildContext context) {
     final matched = goals.where((g) => g.id == todo.goalId);
     final matchedGoal = matched.isNotEmpty ? matched.first : null;
 
     bool isCompleted = todo.status >= 100;
-    final iconPath = matchedGoal?.icon; // goal.icon
+    final iconPath = matchedGoal?.icon;
 
-    return _buildGoalIcon(iconPath, getBorderColor(todo), isSelected: !isCompleted);
+    return _buildGoalIcon(
+      iconPath,
+      getBorderColor(todo),
+      isSelected: !isCompleted,
+    );
   }
 
-  /// goal.icon (SVG) 표시
-  Widget _buildGoalIcon(String? iconPath, Color borderColor, {bool isSelected = false}) {
+  Widget _buildGoalIcon(
+    String? iconPath,
+    Color borderColor, {
+    bool isSelected = false,
+  }) {
     return Container(
-      width: 32,
-      height: 32,
-      padding: const EdgeInsets.all(4),
+      width: 24,
+      height: 24,
       decoration: BoxDecoration(
-        color: isSelected
-            ? borderColor.withOpacity(0.2)
-            : const Color(0x7FDDDDDD),
-        borderRadius: BorderRadius.circular(16),
+        color: isSelected ? borderColor : const Color(0xFFDDDDDD),
+        borderRadius: BorderRadius.circular(12),
       ),
-      child: iconPath != null
-          ? SvgPicture.asset(
-              iconPath,
-              fit: BoxFit.cover,
-            )
-          : Icon(
-              Icons.help_outline,
-              size: 20,
-              color: borderColor,
-            ),
+      child: Center(
+        child:
+            iconPath != null
+                ? SvgPicture.asset(
+                  iconPath,
+                  width: 16,
+                  height: 16,
+                  fit: BoxFit.contain,
+                )
+                : Icon(Icons.help_outline, size: 16, color: Color(0xff1C1D1B)),
+      ),
     );
   }
 }

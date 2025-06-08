@@ -50,61 +50,59 @@ class _CalendarState extends State<Calendar> {
     return Column(
       children: [
         // 상단 바: 월 표시 및 뷰 전환 버튼
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 28.0, vertical: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0),
+              child: Text(
                 isWeeklyView
                     ? DateFormat('M월').format(currentDate)
                     : DateFormat('yyyy년 M월').format(currentDate),
-                style: TextStyle(
-                  color: Color(0xFF111111),
-                  fontSize: 16,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
-                  letterSpacing: 0.24,
                   fontFamily: 'Pretendard Variable',
+                  fontSize: 16,
+                  letterSpacing: 0.15,
                 ),
               ),
-              Row(
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.chevron_left, color: Color(0xFF1C1D1B)),
-                    onPressed: _goToPreviousPeriod,
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.chevron_right, color: Color(0xFF1C1D1B)),
-                    onPressed: _goToNextPeriod,
-                  ),
-                  SizedBox(width: 8),
-                  GestureDetector(
-                    onTap: _toggleCalendarView,
-                    child: Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                      decoration: ShapeDecoration(
-                        color: Color(0xFFE4F0D9),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+            ),
+            Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.chevron_left, color: Color(0xFF1C1D1B)),
+                  onPressed: _goToPreviousPeriod,
+                ),
+                IconButton(
+                  icon: Icon(Icons.chevron_right, color: Color(0xFF1C1D1B)),
+                  onPressed: _goToNextPeriod,
+                ),
+                SizedBox(width: 8),
+                GestureDetector(
+                  onTap: _toggleCalendarView,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    decoration: ShapeDecoration(
+                      color: Color(0xFFE4F0D9),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Text(
-                        isWeeklyView ? '주' : '월',
-                        style: TextStyle(
-                          color: Color(0xFF1C1D1B),
-                          fontSize: 10,
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 0.15,
-                          fontFamily: 'Pretendard Variable',
-                        ),
+                    ),
+                    child: Text(
+                      isWeeklyView ? '주' : '월',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Pretendard Variable',
+                        fontSize: 10,
+                        letterSpacing: 0.15,
+                        height: 1.2,
                       ),
                     ),
                   ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         ),
         isWeeklyView ? _buildWeeklyCalendar() : _buildMonthlyCalendar(),
       ],
@@ -113,100 +111,100 @@ class _CalendarState extends State<Calendar> {
 
   // 주간 캘린더 빌드
   Widget _buildWeeklyCalendar() {
-    DateTime weekStartDate =
-        currentDate.subtract(Duration(days: currentDate.weekday % 7));
-    List<DateTime> weekDates =
-        List.generate(7, (index) => weekStartDate.add(Duration(days: index)));
+    DateTime weekStartDate = currentDate.subtract(
+      Duration(days: currentDate.weekday % 7),
+    );
+    List<DateTime> weekDates = List.generate(
+      7,
+      (index) => weekStartDate.add(Duration(days: index)),
+    );
     List<String> weekDays = ['일', '월', '화', '수', '목', '금', '토'];
 
     return GestureDetector(
       onHorizontalDragEnd: (details) {
         if (details.primaryVelocity == null) return;
         if (details.primaryVelocity! < 0) {
-          // 왼쪽으로 스와이프 (다음 주)
           _goToNextPeriod();
         } else if (details.primaryVelocity! > 0) {
-          // 오른쪽으로 스와이프 (이전 주)
           _goToPreviousPeriod();
         }
       },
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          children: [
-            // 요일 및 날짜 표시
-            Row(
-              children: List.generate(7, (index) {
-                DateTime date = weekDates[index];
-                String dayLabel = weekDays[index];
-                bool isSelected = DateFormat('yyyy-MM-dd').format(date) ==
-                    DateFormat('yyyy-MM-dd').format(widget.selectedDate);
-                bool isCurrentMonth = date.month == currentDate.month;
+      child: Column(
+        children: [
+          // 요일 라벨
+          Row(
+            children: List.generate(7, (index) {
+              String dayLabel = weekDays[index];
+              int todayIndex = DateTime.now().weekday % 7;
 
-                return Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      widget.onDateSelected(date);
-                    },
-                    child: Column(
-                      children: [
-                        // 요일
-                        Text(
-                          dayLabel,
-                          textAlign: TextAlign.center,
+              return Expanded(
+                child: Center(
+                  child: Text(
+                    dayLabel,
+                    style: TextStyle(
+                      color: const Color(0xFF1C1D1B),
+                      fontSize: 10,
+                      fontFamily: 'Pretendard Variable',
+                      fontWeight: index == todayIndex ? FontWeight.w700 : FontWeight.w400,
+                      letterSpacing: 0.15,
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ),
+          const SizedBox(height: 4),
+          // 날짜 셀
+          Row(
+            children: List.generate(7, (index) {
+              DateTime date = weekDates[index];
+              bool isSelected =
+                  DateFormat('yyyy-MM-dd').format(date) ==
+                  DateFormat('yyyy-MM-dd').format(widget.selectedDate);
+              bool isCurrentMonth = date.month == currentDate.month;
+
+              return Expanded(
+                child: GestureDetector(
+                  onTap: () => widget.onDateSelected(date),
+                  child: Center(
+                    // <-- 핵심: 내부 정렬은 Center로
+                    child: Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color:
+                            isSelected
+                                ? const Color(0xFF78B545)
+                                : isCurrentMonth
+                                ? const Color(0x7FE4F0D9)
+                                : const Color(0x7FEEEEEE),
+                        borderRadius: BorderRadius.circular(1000),
+                      ),
+                      child: Center(
+                        child: Text(
+                          '${date.day}',
                           style: TextStyle(
-                            color: Color(0xFF1C1D1B),
+                            color:
+                                isSelected
+                                    ? Colors.white
+                                    : isCurrentMonth
+                                    ? const Color(0xFF535353)
+                                    : const Color(0xBF535353),
                             fontSize: 10,
                             fontFamily: 'Pretendard Variable',
-                            fontWeight: index == (DateTime.now().weekday % 7)
-                                ? FontWeight.w700
-                                : FontWeight.w400,
+                            fontWeight:
+                                isSelected ? FontWeight.w700 : FontWeight.w400,
                             letterSpacing: 0.15,
                           ),
                         ),
-                        const SizedBox(height: 4),
-                        // 날짜
-                        Container(
-                          width: 32,
-                          height: 32,
-                          decoration: ShapeDecoration(
-                            color: isSelected
-                                ? Color(0xFF78B545)
-                                : isCurrentMonth
-                                    ? Color(0x7FE4F0D9)
-                                    : Color(0x7FEEEEEE),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(1000),
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              date.day.toString(),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: isSelected
-                                    ? Colors.white
-                                    : isCurrentMonth
-                                        ? Color(0xFF535353)
-                                        : Color(0xBF535353),
-                                fontSize: 10,
-                                fontFamily: 'Pretendard Variable',
-                                fontWeight: isSelected
-                                    ? FontWeight.w600
-                                    : FontWeight.w400,
-                                letterSpacing: 0.15,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                );
-              }),
-            ),
-          ],
-        ),
+                ),
+              );
+            }),
+          ),
+        ],
       ),
     );
   }
@@ -216,107 +214,104 @@ class _CalendarState extends State<Calendar> {
     int year = currentDate.year;
     int month = currentDate.month;
 
-    // 해당 월의 첫 번째 날과 마지막 날
     DateTime firstDayOfMonth = DateTime(year, month, 1);
     DateTime lastDayOfMonth = DateTime(year, month + 1, 0);
-
-    // 캘린더에 표시될 첫 번째 날짜 (주 시작 요일에 맞게 조정)
     int weekdayOfFirstDay = firstDayOfMonth.weekday % 7;
-    DateTime calendarStartDate =
-        firstDayOfMonth.subtract(Duration(days: weekdayOfFirstDay));
 
-    // 총 표시될 주 수 계산
+    DateTime calendarStartDate = firstDayOfMonth.subtract(
+      Duration(days: weekdayOfFirstDay),
+    );
+
     int totalWeeks =
         ((lastDayOfMonth.difference(calendarStartDate).inDays + 1) / 7).ceil();
 
     List<String> weekDays = ['일', '월', '화', '수', '목', '금', '토'];
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        children: [
-          // 요일 표시
-          Row(
-            children: weekDays.map((dayLabel) {
-              return Expanded(
-                child: Center(
-                  child: Text(
-                    dayLabel,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Color(0xFF1C1D1B),
-                      fontSize: 10,
-                      fontFamily: 'Pretendard Variable',
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: 0.15,
+    return Column(
+      children: [
+        // 요일 라벨
+        Row(
+          children:
+              weekDays.map((label) {
+                return Expanded(
+                  child: Center(
+                    child: Text(
+                      label,
+                      style: const TextStyle(
+                        color: Color(0xFF1C1D1B),
+                        fontSize: 10,
+                        fontFamily: 'Pretendard Variable',
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: 0.15,
+                      ),
                     ),
                   ),
-                ),
-              );
-            }).toList(),
-          ),
-          const SizedBox(height: 8),
-          // 날짜 표시
-          Column(
-            children: List.generate(totalWeeks, (weekIndex) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween, // 날짜들 사이에 공간 추가
-                  children: List.generate(7, (dayIndex) {
-                    int daysToAdd = weekIndex * 7 + dayIndex;
-                    DateTime date =
-                        calendarStartDate.add(Duration(days: daysToAdd));
-                    bool isCurrentMonth = date.month == month;
-                    bool isSelected = DateFormat('yyyy-MM-dd').format(date) ==
-                        DateFormat('yyyy-MM-dd').format(widget.selectedDate);
+                );
+              }).toList(),
+        ),
+        const SizedBox(height: 8),
+        // 날짜 셀
+        Column(
+          children: List.generate(totalWeeks, (weekIndex) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Row(
+                children: List.generate(7, (dayIndex) {
+                  int daysToAdd = weekIndex * 7 + dayIndex;
+                  DateTime date = calendarStartDate.add(
+                    Duration(days: daysToAdd),
+                  );
+                  bool isCurrentMonth = date.month == month;
+                  bool isSelected =
+                      DateFormat('yyyy-MM-dd').format(date) ==
+                      DateFormat('yyyy-MM-dd').format(widget.selectedDate);
 
-                    return GestureDetector(
-                      onTap: () {
-                        widget.onDateSelected(date);
-                      },
-                      child: Container(
-                        width: 32, // 날짜 셀의 너비를 고정
-                        height: 32,
-                        margin: EdgeInsets.symmetric(horizontal: 2.0), // 날짜들 사이에 마진 추가
-                        decoration: ShapeDecoration(
-                          color: isSelected
-                              ? Color(0xFF78B545)
-                              : isCurrentMonth
-                                  ? Color(0x7FE4F0D9)
-                                  : Color(0x7FEEEEEE),
-                          shape: RoundedRectangleBorder(
+                  return Expanded(
+                    child: GestureDetector(
+                      onTap: () => widget.onDateSelected(date),
+                      child: Center(
+                        child: Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color:
+                                isSelected
+                                    ? const Color(0xFF78B545)
+                                    : isCurrentMonth
+                                    ? const Color(0x7FE4F0D9)
+                                    : const Color(0x7FEEEEEE),
                             borderRadius: BorderRadius.circular(1000),
                           ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            date.day.toString(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: isSelected
-                                  ? Colors.white
-                                  : isCurrentMonth
-                                      ? Color(0xFF535353)
-                                      : Color(0xBF535353),
-                              fontSize: 10,
-                              fontFamily: 'Pretendard Variable',
-                              fontWeight: isSelected
-                                  ? FontWeight.w600
-                                  : FontWeight.w400,
-                              letterSpacing: 0.15,
+                          child: Center(
+                            child: Text(
+                              '${date.day}',
+                              style: TextStyle(
+                                color:
+                                    isSelected
+                                        ? Colors.white
+                                        : isCurrentMonth
+                                        ? const Color(0xFF535353)
+                                        : const Color(0xBF535353),
+                                fontSize: 10,
+                                fontFamily: 'Pretendard Variable',
+                                fontWeight:
+                                    isSelected
+                                        ? FontWeight.w600
+                                        : FontWeight.w400,
+                                letterSpacing: 0.15,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    );
-                  }),
-                ),
-              );
-            }),
-          ),
-        ],
-      ),
+                    ),
+                  );
+                }),
+              ),
+            );
+          }),
+        ),
+      ],
     );
   }
 }
