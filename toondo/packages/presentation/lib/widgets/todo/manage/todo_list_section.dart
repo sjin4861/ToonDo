@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:presentation/viewmodels/todo/todo_manage_viewmodel.dart';
 import 'package:presentation/views/todo/todo_input_screen.dart';
-import 'package:presentation/widgets/todo/todo_list_item.dart';
+import 'package:presentation/widgets/todo/common/todo_list_item.dart';
 
 class TodoListSection extends StatelessWidget {
   final String title;

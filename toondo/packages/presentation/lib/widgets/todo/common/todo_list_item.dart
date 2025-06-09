@@ -3,8 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:domain/entities/todo.dart';
 import 'package:domain/entities/goal.dart';
 import 'package:intl/intl.dart';
-import 'todo_edit_bottom_sheet.dart';
 import 'package:presentation/utils/get_todo_border_color.dart';
+import 'package:presentation/widgets/todo/common/todo_edit_bottom_sheet.dart';
 
 class TodoListItem extends StatelessWidget {
   final Todo todo;

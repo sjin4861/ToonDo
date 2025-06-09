@@ -1,3 +1,4 @@
+import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:domain/entities/goal.dart';
@@ -20,14 +21,23 @@ class GoalListDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 기본값 설정
     final defaultGoal = Goal(
       id: '',
       name: '목표 미설정',
-      icon: null,
+      icon: Assets.icons.icAlien.path,
       startDate: DateTime.now(),
       endDate: DateTime.now(),
     );
+
+    final List<Goal> effectiveGoals =
+        goals.isEmpty ? [defaultGoal] : [...goals, defaultGoal];
+
+    final Goal? selectedGoal = goals.firstWhere(
+      (goal) => goal.id == selectedGoalId,
+      orElse: () => defaultGoal,
+    );
+
+    final bool isUnselected = selectedGoalId == null;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,35 +54,28 @@ class GoalListDropdown extends StatelessWidget {
             child: Row(
               children: [
                 _buildIcon(
-                  goals
-                      .firstWhere(
-                          (goal) => goal.id == selectedGoalId,
-                          orElse: () => defaultGoal)
-                      .icon,
+                  isUnselected ? null : selectedGoal?.icon,
                   isSelected: true,
+                  fallbackIcon: Icons.help_outline,
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
-                    selectedGoalId != null
-                        ? goals
-                            .firstWhere(
-                                (goal) => goal.id == selectedGoalId,
-                                orElse: () => defaultGoal)
-                            .name
-                        : '목표를 선택하세요.',
+                    isUnselected
+                        ? '목표를 선택하세요.'
+                        : selectedGoal?.name ?? '목표 미설정',
                     style: const TextStyle(
                       color: Color(0xFF1C1D1B),
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                       height: 1.33,
                       letterSpacing: 0.14,
-                      fontFamily: 'Pretendard',
+                      fontFamily: 'Pretendard Variable',
                     ),
                   ),
                 ),
-                const Icon(
-                  Icons.arrow_drop_down,
+                Icon(
+                  isDropdownOpen ? Icons.arrow_drop_up : Icons.arrow_drop_down,
                   color: Color(0xFF1C1D1B),
                 ),
               ],
@@ -87,66 +90,81 @@ class GoalListDropdown extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
             child: Column(
-              children: goals.map((goal) {
-                return GestureDetector(
-                  onTap: () => onGoalSelected(goal.id),
-                  child: Container(
-                    height: 40,
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    color: selectedGoalId == goal.id
-                        ? const Color(0xFFE4F0D9)
-                        : Colors.transparent,
-                    child: Row(
-                      children: [
-                        _buildIcon(goal.icon,
-                            isSelected: selectedGoalId == goal.id),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Text(
-                            goal.name,
-                            style: TextStyle(
-                              color: const Color(0xFF1C1D1B),
-                              fontSize: 12,
-                              fontWeight: selectedGoalId == goal.id
-                                  ? FontWeight.w500
-                                  : FontWeight.w400,
-                              height: 1.33,
-                              letterSpacing: 0.14,
-                              fontFamily: 'Pretendard',
-                            ),
+              children: List.generate(
+                effectiveGoals.length * 2 - 1,
+                    (index) {
+                  if (index.isOdd) {
+                    return const Divider(
+                      height: 1,
+                      thickness: 1,
+                      color: Color(0xFFDDDDDD),
+                    );
+                  } else {
+                    final goal = effectiveGoals[index ~/ 2];
+                    return GestureDetector(
+                      onTap: () => onGoalSelected(goal.id),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(6),
+                        child: Container(
+                          height: 40,
+                          color: selectedGoalId == goal.id
+                              ? const Color(0x80E4F0DA)
+                              : Colors.transparent,
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Row(
+                            children: [
+                              _buildIcon(
+                                goal.icon,
+                                isSelected: selectedGoalId == goal.id,
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Text(
+                                  goal.name,
+                                  style: TextStyle(
+                                    color: const Color(0xFF1C1D1B),
+                                    fontSize: 12,
+                                    fontWeight: selectedGoalId == goal.id
+                                        ? FontWeight.w500
+                                        : FontWeight.w400,
+                                    height: 1.33,
+                                    letterSpacing: 0.14,
+                                    fontFamily: 'Pretendard Variable',
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                );
-              }).toList(),
+                      ),
+                    );
+                  }
+                },
+              ),
             ),
           ),
       ],
     );
   }
 
-  // 아이콘 위젯을 생성하는 메서드
-  Widget _buildIcon(String? iconPath, {required bool isSelected}) {
-    // Normalize icon path
+  Widget _buildIcon(
+    String? iconPath, {
+    required bool isSelected,
+    IconData fallbackIcon = Icons.help_outline,
+  }) {
     Widget iconWidget;
-    if (iconPath != null) {
-      final fileName = iconPath.split('/').last;
-      final normalizedName = fileName.startsWith('ic_') ? fileName : 'ic_$fileName';
-      final path = 'assets/icons/$normalizedName';
-      iconWidget = SvgPicture.asset(path, fit: BoxFit.cover);
+    if (iconPath != null && iconPath.endsWith('.svg')) {
+      iconWidget = SvgPicture.asset(iconPath, fit: BoxFit.cover);
     } else {
-      iconWidget = Icon(Icons.help_outline, size: 16, color: Colors.white);
+      iconWidget = Icon(fallbackIcon, size: 16, color: Colors.white);
     }
+
     return Container(
       width: 24,
       height: 24,
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: isSelected
-            ? const Color(0x7FAED28F)
-            : const Color(0x7FDDDDDD),
+        color: isSelected ? const Color(0x7FAED28F) : const Color(0x7FDDDDDD),
         shape: BoxShape.circle,
       ),
       child: iconWidget,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:presentation/widgets/app_bar/custom_app_bar.dart';
-import 'package:presentation/widgets/todo/bottom_spacer.dart';
+import 'package:presentation/widgets/todo/common/bottom_spacer.dart';
 import 'package:presentation/widgets/todo/manage/goal_selection_bar.dart';
 import 'package:presentation/widgets/todo/manage/todo_filter_section.dart';
 import 'package:presentation/widgets/todo/manage/todo_list_section.dart';
