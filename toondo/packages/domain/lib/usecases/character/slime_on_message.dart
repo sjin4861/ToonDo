@@ -1,4 +1,5 @@
 import 'package:domain/entities/gesture.dart';
+import 'package:domain/entities/llm_engine.dart';
 import 'package:domain/entities/slime_response.dart';
 import 'package:domain/entities/goal.dart';
 import 'package:domain/entities/todo.dart';
@@ -14,6 +15,8 @@ class SlimeOnMessageUseCase {
     required String text,
     List<Goal> goals = const [],
     List<Todo> todos = const [],
+    LlmEngine? engine,
   }) =>
-      _repo.processMessage(text: text, goals: goals, todos: todos);
+      _repo.processMessage(text: text, goals: goals, todos: todos, llm_engine: engine,
+);
 }
