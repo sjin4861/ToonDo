@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:presentation/viewmodels/todo/todo_manage_viewmodel.dart';
-import 'package:presentation/views/todo/todo_input_view.dart';
+import 'package:presentation/views/todo/todo_input_screen.dart';
 import 'package:presentation/widgets/todo/todo_list_item.dart';
 
 class TodoListSection extends StatelessWidget {
@@ -30,7 +30,7 @@ class TodoListSection extends StatelessWidget {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => TodoInputView(isDDayTodo: isDDay),
+                  builder: (_) => TodoInputScreen(isDDayTodo: isDDay),
                 ),
               );
               viewModel.loadTodos();
@@ -86,7 +86,7 @@ class TodoListSection extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder:
-                                (_) => TodoInputView(
+                                (_) => TodoInputScreen(
                                   todo: todo,
                                   isDDayTodo: isDDay,
                                 ),

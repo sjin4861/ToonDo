@@ -16,11 +16,11 @@ import 'package:presentation/widgets/text_fields/tip.dart';
 import 'package:presentation/widgets/todo/todo_input_date_field.dart';
 import 'package:domain/entities/status.dart';
 
-class TodoInputView extends StatelessWidget {
+class TodoInputScreen extends StatelessWidget {
   final bool isDDayTodo;
   final Todo? todo;
 
-  const TodoInputView({super.key, this.isDDayTodo = true, this.todo});
+  const TodoInputScreen({super.key, this.isDDayTodo = true, this.todo});
 
   @override
   Widget build(BuildContext context) {
