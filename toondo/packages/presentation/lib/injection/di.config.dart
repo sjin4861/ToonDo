@@ -198,6 +198,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i501.AccountSettingViewModel(
         getUserUseCase: gh<_i991.GetUserUseCase>(),
         updateNickNameUseCase: gh<_i910.UpdateNickNameUseCase>(),
+        myPageViewModel: gh<_i272.MyPageViewModel>(),
       ),
     );
     gh.lazySingleton<_i1040.AppThemeViewModel>(

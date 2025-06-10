@@ -22,7 +22,7 @@ class DateField extends StatelessWidget {
             style: TextStyle(
               color: Color(0xFF1C1D1B),
               fontSize: 10,
-              fontWeight: FontWeight.w400,
+              fontWeight: FontWeight.w500,
               letterSpacing: 0.15,
               fontFamily: 'Pretendard Variable',
             ),
@@ -43,12 +43,14 @@ class DateField extends StatelessWidget {
                 ),
               ),
               child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.calendar_today,
+                  Icon(Icons.calendar_today_outlined,
                       size: 15,
                       color: Color(0xFFDDDDDD)),
                   SizedBox(width: 8),
-                  Expanded(
+                  SizedBox(
+                    width: 108,
                     child: Text(
                       date != null
                           ? viewModel.dateFormat.format(date)

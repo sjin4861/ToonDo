@@ -11,7 +11,7 @@ class NicknameChangeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<AccountSettingViewModel>();
+    final viewModel = context.read<AccountSettingViewModel>();
     final nickname = viewModel.userUiModel?.nickname ?? '';
     final nicknameController = TextEditingController();
 

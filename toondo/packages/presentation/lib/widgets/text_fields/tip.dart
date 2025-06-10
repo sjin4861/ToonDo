@@ -24,7 +24,7 @@ class TipWidget extends StatelessWidget {
             letterSpacing: 0.15,
           ),
         ),
-        SizedBox(width: 12),
+        SizedBox(width: 14),
         Expanded(
           child: Text(
             description,

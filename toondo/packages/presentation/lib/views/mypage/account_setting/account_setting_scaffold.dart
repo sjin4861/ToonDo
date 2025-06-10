@@ -39,8 +39,8 @@ class AccountSettingScaffold extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (_) => ChangeNotifierProvider.value(
-                              value: viewModel, // 기존 ViewModel 그대로 전달
-                              child: NicknameChangeScreen(),
+                              value: viewModel,
+                              child: const NicknameChangeScreen(),
                             ),
                           ),
                         );

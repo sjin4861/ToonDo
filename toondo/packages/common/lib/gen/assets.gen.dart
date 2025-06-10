@@ -67,6 +67,9 @@ class $AssetsIconsGen {
   SvgGenImage get icHeartWithArrow =>
       const SvgGenImage('assets/icons/ic_heart_with_arrow.svg');
 
+  /// File path: assets/icons/ic_monster.svg
+  SvgGenImage get icMonster => const SvgGenImage('assets/icons/ic_monster.svg');
+
   /// File path: assets/icons/ic_mypage.svg
   SvgGenImage get icMypage => const SvgGenImage('assets/icons/ic_mypage.svg');
 
@@ -103,6 +106,7 @@ class $AssetsIconsGen {
         icFace3,
         icGoal,
         icHeartWithArrow,
+        icMonster,
         icMypage,
         icPlus,
         icPlusBold,
