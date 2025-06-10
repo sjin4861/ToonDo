@@ -8,8 +8,7 @@ class MyPageProfileSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final vm = context.watch<MyPageViewModel>();
-    final userUiModel = vm.userUiModel;
+    final userUiModel = context.watch<MyPageViewModel>().userUiModel;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -56,7 +55,11 @@ class MyPageProfileSection extends StatelessWidget {
           children: [
             Text(
               userUiModel?.displayName ?? '',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                fontFamily: 'Pretendard Variable',
+              ),
             ),
             const SizedBox(height: 4),
             Text.rich(

@@ -23,6 +23,7 @@ class NicknameChangeButton extends StatelessWidget {
       onPressed: () async {
         final success = await viewModel.updateNickname(controller.text);
         if (success && context.mounted) {
+          await viewModel.loadUser();
           Navigator.pop(context);
         }
       },

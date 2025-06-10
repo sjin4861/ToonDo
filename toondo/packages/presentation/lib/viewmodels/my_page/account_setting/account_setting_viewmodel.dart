@@ -3,15 +3,18 @@ import 'package:domain/usecases/user/update_nickname.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:presentation/models/account_setting_user_ui_model.dart';
+import 'package:presentation/viewmodels/my_page/my_page_viewmodel.dart';
 
 @injectable
 class AccountSettingViewModel extends ChangeNotifier {
   final GetUserUseCase getUserUseCase;
   final UpdateNickNameUseCase updateNickNameUseCase;
+  final MyPageViewModel myPageViewModel;
 
   AccountSettingViewModel({
     required this.getUserUseCase,
     required this.updateNickNameUseCase,
+    required this.myPageViewModel,
   });
 
   String? _errorMessage;
@@ -58,6 +61,7 @@ class AccountSettingViewModel extends ChangeNotifier {
     try {
       final updatedUser = await updateNickNameUseCase(newNickname);
       _userUiModel = AccountSettingUserUiModel.fromDomain(updatedUser);
+      myPageViewModel.loadUser();
       _nicknameErrorMessage = null;
       notifyListeners();
       return true;
