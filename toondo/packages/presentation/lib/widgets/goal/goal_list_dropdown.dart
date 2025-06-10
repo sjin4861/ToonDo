@@ -24,7 +24,7 @@ class GoalListDropdown extends StatelessWidget {
     final defaultGoal = Goal(
       id: '',
       name: '목표 미설정',
-      icon: Assets.icons.icAlien.path,
+      icon: Assets.icons.icMonster.path,
       startDate: DateTime.now(),
       endDate: DateTime.now(),
     );
@@ -75,7 +75,7 @@ class GoalListDropdown extends StatelessWidget {
                   ),
                 ),
                 Icon(
-                  isDropdownOpen ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                  isDropdownOpen ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                   color: Color(0xFF1C1D1B),
                 ),
               ],
