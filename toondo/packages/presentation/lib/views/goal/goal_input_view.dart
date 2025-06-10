@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart';
+import 'package:presentation/widgets/goal/input/goal_input_date_field.dart';
 import 'package:provider/provider.dart';
 import 'package:get_it/get_it.dart';
 import 'package:domain/entities/goal.dart';
@@ -12,9 +13,8 @@ import 'package:presentation/viewmodels/home/home_viewmodel.dart';
 import 'package:presentation/widgets/app_bar/custom_app_bar.dart';
 import 'package:presentation/widgets/bottom_button/custom_button.dart';
 import 'package:presentation/widgets/text_fields/goal_name_input_field.dart';
-import 'package:presentation/widgets/goal/goal_input_date_field.dart';
 import 'package:presentation/widgets/text_fields/tip.dart';
-import 'package:presentation/widgets/goal/goal_setting_bottom_sheet.dart';
+import 'package:presentation/widgets/goal/input/goal_setting_bottom_sheet.dart';
 
 class GoalInputView extends StatelessWidget {
   final Goal? goal;

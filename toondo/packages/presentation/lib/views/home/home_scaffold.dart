@@ -3,7 +3,7 @@ import 'package:domain/entities/status.dart';
 import 'package:flutter/material.dart';
 import 'package:presentation/viewmodels/home/home_viewmodel.dart';
 import 'package:presentation/widgets/character/slime_area.dart';
-import 'package:presentation/widgets/goal/goal_list_section.dart';
+import 'package:presentation/widgets/home/home_goal_list_section.dart';
 import 'package:presentation/widgets/home/home_app_bar.dart';
 import 'package:presentation/widgets/home/home_background.dart';
 import 'package:presentation/widgets/navigation/bottom_navigation_bar_widget.dart';
@@ -60,7 +60,7 @@ class HomeScaffold extends StatelessWidget {
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.only(bottom: _slimeAreaHeight),
-              child: GoalListSection(topGoals: top3Goals),
+              child: HomeGoalListSection(goals: top3Goals),
             ),
           ),
         ],

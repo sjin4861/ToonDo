@@ -1,6 +1,5 @@
-// 1. TodoInputScreen
 import 'package:flutter/material.dart';
-import 'package:presentation/views/todo/todo_input_scaffold.dart';
+import 'package:presentation/views/todo/input/todo_input_scaffold.dart';
 import 'package:provider/provider.dart';
 import 'package:get_it/get_it.dart';
 import 'package:domain/usecases/todo/create_todo.dart';

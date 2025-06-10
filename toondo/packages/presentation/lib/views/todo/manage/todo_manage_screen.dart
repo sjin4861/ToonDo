@@ -8,7 +8,8 @@ import 'package:domain/usecases/todo/update_todo_status.dart';
 import 'package:domain/usecases/todo/update_todo_dates.dart';
 import 'package:domain/usecases/goal/get_goals_local.dart';
 import 'package:presentation/viewmodels/todo/todo_manage_viewmodel.dart';
-import 'package:presentation/views/todo/todo_manage_scaffold.dart';
+
+import 'todo_manage_scaffold.dart';
 
 class TodoManageScreen extends StatelessWidget {
   final DateTime? selectedDate;
