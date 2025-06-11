@@ -66,7 +66,7 @@ class _GoalCategoryList extends StatelessWidget {
           itemBuilder: (context, index) {
             final goal = goals[index];
             return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
+              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
               child: GoalListItem(
                 goal: goal,
                 onTap: () => showModalBottomSheet(

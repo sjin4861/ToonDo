@@ -94,7 +94,7 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> with Single
           final controllers = [controller];
           return Transform.scale(
             scale: _scale,
-            child: Assets.rives.gifSlime.rive(
+            child: Assets.rives.gifYellowSlime.rive(
               fit: BoxFit.contain,
               controllers: controllers,
             ),

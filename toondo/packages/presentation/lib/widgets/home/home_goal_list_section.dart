@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:domain/entities/goal.dart';
-import 'package:presentation/widgets/goal/common/goal_list_item.dart';
+import 'package:presentation/widgets/home/home_goal_list_item.dart';
 
 class HomeGoalListSection extends StatelessWidget {
   final List<Goal> goals;
@@ -27,9 +27,8 @@ class HomeGoalListSection extends StatelessWidget {
         children: goals.map((goal) {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 4),
-            child: GoalListItem(
+            child: HomeGoalListItem(
               goal: goal,
-              enableSwipeToDelete: false,
               onTap: () {
                 // TODO: 캐릭터 상호작용 등 홈 화면 전용 로직
               },

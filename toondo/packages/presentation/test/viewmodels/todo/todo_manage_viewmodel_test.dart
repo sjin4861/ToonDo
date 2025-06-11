@@ -1,3 +1,4 @@
+import 'package:domain/entities/todo_filter_option.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 // Add annotations for generating mocks
@@ -68,7 +69,7 @@ void main() {
       test('초기 상태는 선택된 날짜와 기본 필터 설정을 가져야 한다', () {
         // Then
         expect(viewModel.selectedDate, equals(testDate));
-        expect(viewModel.selectedFilter, equals(FilterOption.all));
+        expect(viewModel.selectedFilter, equals(TodoFilterOption.all));
         expect(viewModel.selectedGoalId, isNull);
         expect(viewModel.allTodos.isEmpty, isTrue);
         expect(viewModel.dDayTodos.isEmpty, isTrue);
@@ -124,10 +125,10 @@ void main() {
         const targetGoalId = 'goal-1';
         
         // When
-        viewModel.updateSelectedFilter(FilterOption.goal, goalId: targetGoalId);
+        viewModel.updateSelectedFilter(TodoFilterOption.goal, goalId: targetGoalId);
         
         // Then
-        expect(viewModel.selectedFilter, FilterOption.goal);
+        expect(viewModel.selectedFilter, TodoFilterOption.goal);
         expect(viewModel.selectedGoalId, targetGoalId);
         
         // goal-1에 해당하는 투두만 필터링되어야 함
@@ -139,10 +140,10 @@ void main() {
     
       test('중요도별 필터링 시 중요도가 높은 투두만 표시되어야 한다', () {
         // When
-        viewModel.updateSelectedFilter(FilterOption.importance);
+        viewModel.updateSelectedFilter(TodoFilterOption.importance);
         
         // Then
-        expect(viewModel.selectedFilter, FilterOption.importance);
+        expect(viewModel.selectedFilter, TodoFilterOption.importance);
         
         // 중요도(importance)가 1인 투두만 필터링되어야 함
         expect(viewModel.dDayTodos.length, 1);
@@ -153,10 +154,10 @@ void main() {
     
       test('D-Day 투두 필터링 시 D-Day 투두만 표시되어야 한다', () {
         // When
-        viewModel.updateSelectedFilter(FilterOption.dDay);
+        viewModel.updateSelectedFilter(TodoFilterOption.dDay);
         
         // Then
-        expect(viewModel.selectedFilter, FilterOption.dDay);
+        expect(viewModel.selectedFilter, TodoFilterOption.dDay);
         
         // D-Day 투두만 있어야 함
         expect(viewModel.dDayTodos.length, 2);
@@ -165,10 +166,10 @@ void main() {
     
       test('데일리 투두 필터링 시 데일리 투두만 표시되어야 한다', () {
         // When
-        viewModel.updateSelectedFilter(FilterOption.daily);
+        viewModel.updateSelectedFilter(TodoFilterOption.daily);
         
         // Then
-        expect(viewModel.selectedFilter, FilterOption.daily);
+        expect(viewModel.selectedFilter, TodoFilterOption.daily);
         
         // 데일리 투두만 있어야 함
         expect(viewModel.dDayTodos.length, 0);
@@ -184,7 +185,7 @@ void main() {
         
         // Then
         expect(viewModel.selectedGoalId, 'goal-2');
-        expect(viewModel.selectedFilter, FilterOption.goal);
+        expect(viewModel.selectedFilter, TodoFilterOption.goal);
         
         // goal-2에 해당하는 투두만 필터링되어야 함
         expect(viewModel.dDayTodos.length, 1);

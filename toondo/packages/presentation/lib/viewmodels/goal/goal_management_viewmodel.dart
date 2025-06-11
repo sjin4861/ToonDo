@@ -18,7 +18,7 @@ import 'package:presentation/viewmodels/home/home_viewmodel.dart';
 
 enum GoalManagementFilterOption { inProgress, givenUp, completed }
 
-@LazySingleton()
+@injectable
 class GoalManagementViewModel extends ChangeNotifier {
   final GetGoalsLocalUseCase getGoalsLocalUseCase;
   final GetGoalsRemoteUseCase getGoalsRemoteUseCase;

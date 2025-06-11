@@ -41,7 +41,7 @@ class _SlimeStack extends StatelessWidget {
           const SlimeCharacterWidget(
             enableGestures: true,
             showDebugInfo: true, 
-            initialAnimationName: 'idle',
+            initialAnimationName: 'id',
           ),
         ],
       ),

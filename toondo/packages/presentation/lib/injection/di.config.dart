@@ -104,7 +104,7 @@ extension GetItInjectableX on _i174.GetIt {
         logoutUseCase: gh<_i969.LogoutUseCase>(),
       ),
     );
-    gh.lazySingleton<_i940.GoalManagementViewModel>(
+    gh.factory<_i940.GoalManagementViewModel>(
       () => _i940.GoalManagementViewModel(
         getGoalsLocalUseCase: gh<_i477.GetGoalsLocalUseCase>(),
         getGoalsRemoteUseCase: gh<_i371.GetGoalsRemoteUseCase>(),

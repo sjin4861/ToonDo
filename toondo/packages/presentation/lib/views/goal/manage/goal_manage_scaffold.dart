@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:presentation/views/goal/goal_manage_body.dart';
+import 'package:presentation/views/goal/manage/goal_manage_body.dart';
 import 'package:presentation/widgets/app_bar/custom_app_bar.dart';
 import 'package:presentation/widgets/goal/manage/goal_manage_button.dart';
 
@@ -10,7 +10,7 @@ class GoalManageScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: CustomAppBar(title: '목표 관리하기'),
+      appBar: CustomAppBar(title: '목표'),
       body: const GoalManageBody(),
       bottomNavigationBar: const GoalManageButton(),
     );

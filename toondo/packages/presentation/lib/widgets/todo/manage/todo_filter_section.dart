@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:presentation/widgets/top_menu_bar/menu_bar.dart';
-import 'package:presentation/viewmodels/todo/todo_manage_viewmodel.dart';
+import 'package:domain/entities/todo_filter_option.dart';
+import 'package:presentation/widgets/top_menu_bar/tab_menu_bar.dart';
 
 class TodoFilterSection extends StatelessWidget {
-  final FilterOption selectedFilter;
-  final void Function(FilterOption) onFilterSelected;
+  final TodoFilterOption selectedFilter;
+  final void Function(TodoFilterOption) onFilterSelected;
 
   const TodoFilterSection({
     super.key,
@@ -14,35 +14,30 @@ class TodoFilterSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MenuBarWidget(
-          selectedMenu: _filterOptionToMenuOption(selectedFilter),
-          onItemSelected: (option) => onFilterSelected(
-            _menuOptionToFilterOption(option),
-          ),
+    return TabMenuBar<TodoFilterOption>(
+      options: const [
+        TodoFilterOption.all,
+        TodoFilterOption.goal,
+        TodoFilterOption.importance,
+      ],
+      selected: selectedFilter,
+      onSelected: onFilterSelected,
+      labelBuilder: _buildLabel,
     );
   }
 
-  MenuOption _filterOptionToMenuOption(FilterOption filter) {
-    switch (filter) {
-      case FilterOption.all:
-        return MenuOption.all;
-      case FilterOption.goal:
-        return MenuOption.goal;
-      case FilterOption.importance:
-        return MenuOption.importance;
-      default:
-        return MenuOption.all;
-    }
-  }
-
-  FilterOption _menuOptionToFilterOption(MenuOption option) {
+  String _buildLabel(TodoFilterOption option) {
     switch (option) {
-      case MenuOption.all:
-        return FilterOption.all;
-      case MenuOption.goal:
-        return FilterOption.goal;
-      case MenuOption.importance:
-        return FilterOption.importance;
+      case TodoFilterOption.all:
+        return '전체';
+      case TodoFilterOption.goal:
+        return '목표';
+      case TodoFilterOption.importance:
+        return '중요';
+      case TodoFilterOption.dDay:
+        return 'D-Day';
+      case TodoFilterOption.daily:
+        return '일반';
     }
   }
 }
