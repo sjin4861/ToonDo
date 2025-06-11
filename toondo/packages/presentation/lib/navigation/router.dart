@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:presentation/viewmodels/character/chat_viewmodel.dart';
 import 'package:presentation/viewmodels/welcome/welcome_viewmodel.dart';
 import 'package:presentation/views/chat/slime_chat_page.dart';
+import 'package:presentation/views/goal/input/goal_input_screen.dart';
 import 'package:presentation/views/mypage/account_setting/account_setting_screen.dart';
 import 'package:presentation/views/mypage/account_setting/nickname_change_screen.dart';
 import 'package:presentation/views/mypage/account_setting/password_change_screen.dart';
@@ -17,7 +18,6 @@ import 'package:presentation/views/welcome/welcome_screen.dart';
 import 'package:presentation/views/auth/signup_screen.dart';
 import 'package:presentation/navigation/route_paths.dart';
 import 'package:presentation/views/goal/manage/goal_manage_screen.dart';
-import 'package:presentation/views/goal/goal_input_view.dart';
 import 'package:presentation/views/mypage/my_page_screen.dart';
 import 'package:get_it/get_it.dart';
 
@@ -39,7 +39,7 @@ class AppRouter {
       case RoutePaths.goalManage:
         return MaterialPageRoute(builder: (_) => GoalManageScreen());
       case RoutePaths.goalInput:
-        return MaterialPageRoute(builder: (_) => GoalInputView());
+        return MaterialPageRoute(builder: (_) => GoalInputScreen());
       case RoutePaths.goalAnalisys:
         return MaterialPageRoute(builder: (_) => GoalProgressScreen());
       case RoutePaths.todoManage:

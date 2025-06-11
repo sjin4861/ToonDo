@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart';
 import 'package:presentation/viewmodels/home/home_viewmodel.dart';
-import 'package:presentation/views/goal/goal_input_view.dart';
+import 'package:presentation/views/goal/input/goal_input_screen.dart';
 import 'package:presentation/widgets/bottom_button/custom_button.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +19,7 @@ class GoalManageButton extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const GoalInputView(),
+              builder: (context) => const GoalInputScreen(),
             ),
           ).then((_) {
             final viewModel = Provider.of<GoalManagementViewModel>(context, listen: false);
