@@ -16,20 +16,31 @@ class HomeBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final homeVM = context.watch<HomeViewModel>();
 
-    final inProgressGoals =
-        homeVM.goals.where((g) => g.status == Status.active).toList()
-          ..sort((a, b) => a.endDate.compareTo(b.endDate));
+    final inProgressGoals = homeVM.goals
+        .where((g) => g.status == Status.active)
+        .toList()
+      ..sort((a, b) => a.endDate.compareTo(b.endDate));
     final top3Goals = inProgressGoals.take(3).toList();
 
     return Stack(
       children: [
         const HomeBackground(),
 
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: SizedBox(height: _slimeAreaHeight, child: const SlimeArea()),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 24.0),
+          child: Column(
+              children: [
+                Expanded(child: HomeGoalListSection(goals: top3Goals)),
+              ],
+            ),
+        ),
+
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: FractionalTranslation(
+            translation: const Offset(0, -0.18),
+            child: const SlimeArea(),
+          ),
         ),
 
         Positioned(
@@ -37,17 +48,9 @@ class HomeBody extends StatelessWidget {
           left: 10,
           child: Assets.images.imgBackgroundFlowers.svg(),
         ),
-
-        SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(
-              top: 40,
-              bottom: _slimeAreaHeight + 20,
-            ),
-            child: HomeGoalListSection(goals: top3Goals),
-          ),
-        ),
       ],
     );
+
   }
+
 }

@@ -15,7 +15,6 @@ class HomeScaffold extends StatelessWidget {
 
     return Scaffold(
       extendBody: true,
-      extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
       appBar: HomeAppBar(chatEnabled: homeVM.chatEnabled),
       body: const HomeBody(),

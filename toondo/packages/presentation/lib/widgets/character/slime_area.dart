@@ -23,7 +23,7 @@ class _SlimeStack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const w = 300.0, shadowDy = 25.0, shadowScale = 1.0;
+    const w = 300.0, shadowDx = -10.0, shadowDy = 24.0, shadowScale = 0.96;
 
     return SizedBox(
       width: w,
@@ -32,15 +32,15 @@ class _SlimeStack extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           Transform.translate(
-            offset: const Offset(0, shadowDy),
+            offset: const Offset(shadowDx, shadowDy),
             child: Transform.scale(
               scale: shadowScale,
-              child: Assets.images.imgHomeShadowPng.image(width: w),
+              child: Assets.images.imgHomeShadowPng.image(width: w - 120),
             ),
           ),
           const SlimeCharacterWidget(
             enableGestures: true,
-            showDebugInfo: true, 
+            showDebugInfo: true,
             initialAnimationName: 'id',
           ),
         ],

@@ -22,11 +22,10 @@ class HomeGoalListSection extends StatelessWidget {
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Column(
         children: goals.map((goal) {
           return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
+            padding: const EdgeInsets.symmetric(vertical: 8),
             child: HomeGoalListItem(
               goal: goal,
               onTap: () {
