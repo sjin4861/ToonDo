@@ -18,7 +18,7 @@ class GoalInputScaffold extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFFCFCFC),
       appBar: CustomAppBar(
-        title: viewModel.targetGoal != null ? '목표 수정' : '목표 작성',
+        title: viewModel.targetGoal != null ? '목표 수정하기' : '목표 설정하기',
       ),
       body: const GoalInputBody(),
       bottomNavigationBar: Padding(

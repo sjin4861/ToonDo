@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:presentation/views/goal/input/goal_input_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:domain/entities/status.dart';
@@ -20,13 +21,34 @@ class GoalListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Dismissible(
+      key: Key(goal.id ?? ''),
+      direction: enableSwipeToDelete ? DismissDirection.endToStart : DismissDirection.none,
+      background: _buildDismissBackground(),
+      confirmDismiss: (direction) => _confirmDelete(context),
+      onDismissed: (direction) => _onDelete(context),
+      child: GestureDetector(
+        onTap: onTap ?? () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => GoalInputScreen(goal: goal),
+            ),
+          );
+        },
+        child: _buildContent(context),
+      ),
+    );
+  }
+
+  Widget _buildContent(BuildContext context) {
     final bool isCompleted = goal.status == Status.completed;
     final double progress = goal.progress.clamp(0, 100);
     final String dateRange =
         '${DateFormat('yy.MM.dd').format(goal.startDate)} ~ ${DateFormat('yy.MM.dd').format(goal.endDate)}';
     final int dDay = _calculateDDay(goal.endDate);
 
-    final content = Container(
+    return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
@@ -40,7 +62,6 @@ class GoalListItem extends StatelessWidget {
           const SizedBox(width: 12),
           Expanded(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
@@ -61,17 +82,6 @@ class GoalListItem extends StatelessWidget {
         ],
       ),
     );
-
-    return enableSwipeToDelete
-        ? Dismissible(
-          key: Key(goal.id ?? ''),
-          direction: DismissDirection.endToStart,
-          background: _buildDismissBackground(),
-          confirmDismiss: (direction) => _confirmDelete(context),
-          onDismissed: (direction) => _onDelete(context),
-          child: content,
-        )
-        : content;
   }
 
   Widget _buildDismissBackground() {
