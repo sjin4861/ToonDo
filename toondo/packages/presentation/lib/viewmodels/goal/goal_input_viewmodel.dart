@@ -14,6 +14,7 @@ import 'package:injectable/injectable.dart';
 @LazySingleton()
 class GoalInputViewModel extends ChangeNotifier {
   final TextEditingController goalNameController = TextEditingController();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final DateFormat dateFormat = DateFormat('yyyy년 M월 d일');
 
   DateTime? startDate;
