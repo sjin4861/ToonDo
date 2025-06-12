@@ -9,14 +9,14 @@ import 'package:presentation/views/mypage/account_setting/phone_number_change_sc
 import 'package:presentation/views/mypage/display_setting/display_setting_screen.dart';
 import 'package:presentation/views/mypage/help_guide/help_guide_screen.dart';
 import 'package:presentation/views/mypage/notification_setting/notification_setting_screen.dart';
-import 'package:presentation/views/todo/todo_manage_screen.dart';
+import 'package:presentation/views/todo/manage/todo_manage_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:presentation/views/home/home_screen.dart';
 import 'package:presentation/views/goal/goal_progress_screen.dart';
 import 'package:presentation/views/welcome/welcome_screen.dart';
 import 'package:presentation/views/auth/signup_screen.dart';
 import 'package:presentation/navigation/route_paths.dart';
-import 'package:presentation/views/goal/goal_manage_view.dart';
+import 'package:presentation/views/goal/manage/goal_manage_screen.dart';
 import 'package:presentation/views/goal/goal_input_view.dart';
 import 'package:presentation/views/mypage/my_page_screen.dart';
 import 'package:get_it/get_it.dart';
@@ -37,7 +37,7 @@ class AppRouter {
       case RoutePaths.home:
         return MaterialPageRoute(builder: (_) => HomeScreen());
       case RoutePaths.goalManage:
-        return MaterialPageRoute(builder: (_) => GoalManageView());
+        return MaterialPageRoute(builder: (_) => GoalManageScreen());
       case RoutePaths.goalInput:
         return MaterialPageRoute(builder: (_) => GoalInputView());
       case RoutePaths.goalAnalisys:

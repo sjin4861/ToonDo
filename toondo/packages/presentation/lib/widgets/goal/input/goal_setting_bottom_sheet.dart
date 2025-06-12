@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../bottom_button/custom_button.dart';
+import '../../bottom_button/custom_button.dart';
 import 'package:domain/entities/goal.dart';
 
 /// 목표 작성 성공 시 표시할 BottomSheet 위젯

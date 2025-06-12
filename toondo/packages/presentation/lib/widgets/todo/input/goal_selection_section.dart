@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:presentation/viewmodels/todo/todo_input_viewmodel.dart';
-import 'package:presentation/widgets/goal/goal_list_dropdown.dart';
+import 'package:presentation/widgets/goal/common/goal_list_dropdown.dart';
 import 'package:domain/entities/status.dart';
 
 class GoalSelectionSection extends StatelessWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:presentation/viewmodels/goal/goal_input_viewmodel.dart';
-import 'package:presentation/widgets/goal/goal_icon_bottom_sheet.dart';
+import 'package:presentation/widgets/goal/input/goal_icon_bottom_sheet.dart';
 import 'package:flutter_svg/flutter_svg.dart'; // SVG 사용을 위해 추가
 
 class GoalNameInputField extends StatefulWidget {

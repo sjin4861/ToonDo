@@ -1,5 +1,6 @@
 import 'package:domain/entities/goal.dart';
 import 'package:domain/entities/todo.dart';
+import 'package:domain/entities/todo_filter_option.dart';
 import 'package:domain/usecases/goal/get_goals_local.dart';
 import 'package:domain/usecases/todo/get_all_todos.dart';
 import 'package:domain/usecases/todo/fetch_todos.dart';
@@ -9,7 +10,6 @@ import 'package:domain/usecases/todo/delete_todo.dart';
 import 'package:flutter/material.dart'; // New dependency
 import 'package:injectable/injectable.dart';
 
-enum FilterOption { all, goal, importance, dDay, daily }
 
 @LazySingleton()
 class TodoManageViewModel extends ChangeNotifier {
@@ -21,7 +21,7 @@ class TodoManageViewModel extends ChangeNotifier {
   final GetGoalsLocalUseCase _getGoalsLocalUseCase;
 
   DateTime selectedDate;
-  FilterOption selectedFilter = FilterOption.all;
+  TodoFilterOption selectedFilter = TodoFilterOption.all;
   String? selectedGoalId;
   List<Todo> allTodos = [];
   List<Todo> dDayTodos = [];
@@ -65,7 +65,7 @@ class TodoManageViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateSelectedFilter(FilterOption filter, {String? goalId}) {
+  void updateSelectedFilter(TodoFilterOption filter, {String? goalId}) {
     selectedFilter = filter;
     selectedGoalId = goalId;
     _filterAndCategorizeTodos();
@@ -74,7 +74,7 @@ class TodoManageViewModel extends ChangeNotifier {
 
   void updateSelectedGoal(Goal goal) {
     selectedGoalId = goal.id;
-    updateSelectedFilter(FilterOption.goal, goalId: goal.id);
+    updateSelectedFilter(TodoFilterOption.goal, goalId: goal.id);
   }
 
   void _filterAndCategorizeTodos() {
@@ -91,18 +91,18 @@ class TodoManageViewModel extends ChangeNotifier {
                   todo.endDate.isAtSameMomentAs(selectedDateOnly));
         }).toList();
 
-    if (selectedFilter == FilterOption.goal && selectedGoalId != null) {
+    if (selectedFilter == TodoFilterOption.goal && selectedGoalId != null) {
       todosForSelectedDate =
           todosForSelectedDate
               .where((todo) => todo.goalId == selectedGoalId)
               .toList();
-    } else if (selectedFilter == FilterOption.importance) {
+    } else if (selectedFilter == TodoFilterOption.importance) {
       todosForSelectedDate =
           todosForSelectedDate.where((todo) => todo.importance == 1).toList();
-    } else if (selectedFilter == FilterOption.dDay) {
+    } else if (selectedFilter == TodoFilterOption.dDay) {
       todosForSelectedDate =
           todosForSelectedDate.where((todo) => todo.isDDayTodo()).toList();
-    } else if (selectedFilter == FilterOption.daily) {
+    } else if (selectedFilter == TodoFilterOption.daily) {
       todosForSelectedDate =
           todosForSelectedDate.where((todo) => !todo.isDDayTodo()).toList();
     }

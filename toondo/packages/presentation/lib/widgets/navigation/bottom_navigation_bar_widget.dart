@@ -1,9 +1,9 @@
 import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:presentation/views/goal/goal_manage_view.dart';
+import 'package:presentation/views/goal/manage/goal_manage_screen.dart';
 import 'package:presentation/views/mypage/my_page_screen.dart';
-import 'package:presentation/views/todo/todo_manage_screen.dart';
+import 'package:presentation/views/todo/manage/todo_manage_screen.dart';
 
 class BottomNavigationBarWidget extends StatelessWidget {
   const BottomNavigationBarWidget({Key? key}) : super(key: key);
@@ -47,7 +47,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => GoalManageView()),
+                  MaterialPageRoute(builder: (_) => GoalManageScreen()),
                 );
               },
             ),

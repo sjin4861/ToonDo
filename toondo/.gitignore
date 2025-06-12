@@ -67,6 +67,10 @@ lib/generated_plugin_registrant.dart
 !**/ios/**/default.pbxuser
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+!ios/Podfile
+!ios/Podfile.lock
+!ios/Runner.xcodeproj/
+!ios/Runner/Info.plist
 
 # End of https://www.toptal.com/developers/gitignore/api/flutter
 

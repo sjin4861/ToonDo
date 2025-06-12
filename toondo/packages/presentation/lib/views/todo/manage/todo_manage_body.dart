@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:presentation/widgets/todo/common/bottom_spacer.dart';
 import 'package:presentation/widgets/todo/manage/goal_selection_bar.dart';
 import 'package:presentation/widgets/todo/manage/todo_filter_section.dart';
 import 'package:presentation/widgets/todo/manage/todo_list_section.dart';
 import 'package:presentation/widgets/todo/manage/week_selector_section.dart';
 import 'package:presentation/viewmodels/todo/todo_manage_viewmodel.dart';
 import 'package:provider/provider.dart';
+import 'package:domain/entities/todo_filter_option.dart';
 
 class TodoManageBody extends StatelessWidget {
   const TodoManageBody({super.key});
@@ -30,13 +30,13 @@ class TodoManageBody extends StatelessWidget {
                 selectedFilter: viewModel.selectedFilter,
                 onFilterSelected: viewModel.updateSelectedFilter,
               ),
-              if (viewModel.selectedFilter == FilterOption.goal)
+              if (viewModel.selectedFilter == TodoFilterOption.goal)
                 GoalSelectionBar(
                   goals: viewModel.goals,
                   selectedGoalId: viewModel.selectedGoalId,
                   onGoalSelected:
                       (goalId) => viewModel.updateSelectedFilter(
-                        FilterOption.goal,
+                        TodoFilterOption.goal,
                         goalId: goalId,
                       ),
                 ),
@@ -54,7 +54,7 @@ class TodoManageBody extends StatelessWidget {
                     viewModel: viewModel,
                     isDDay: true,
                   ),
-                  const SizedBox(height: 8.0),
+                  const SizedBox(height: 12.0),
                   TodoListSection(
                     title: '데일리 투두',
                     todos: viewModel.dailyTodos,

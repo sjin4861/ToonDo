@@ -27,7 +27,7 @@ class SlimeCharacterWidget extends StatefulWidget {
 }
 
 class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> with SingleTickerProviderStateMixin {
-  final double _scale = 1.0;
+  final double _scale = 1.6;
   Timer? _blinkTimer;
   bool _isBlinking = false;
   String? _localAnimKey;
@@ -126,9 +126,19 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> with Single
           final controllers = [controller];
           return Transform.scale(
             scale: _scale,
-            child: Assets.rives.gifSlime.rive(
-              fit: BoxFit.contain,
-              controllers: controllers,
+            child: Opacity(
+              opacity: 0.9,
+              child:
+                Assets.rives.gifYellowSlime.rive(
+                  fit: BoxFit.contain,
+                  controllers: controllers,
+                  alignment: Alignment.center,
+                  animations: [
+                    if (widget.showDebugInfo) 'debug',
+                    if (widget.initialAnimationName.isNotEmpty) widget.initialAnimationName,
+                    if (rawKey.isNotEmpty && rawKey != 'id') rawKey,
+                  ]
+                ),
             ),
           );
         },
