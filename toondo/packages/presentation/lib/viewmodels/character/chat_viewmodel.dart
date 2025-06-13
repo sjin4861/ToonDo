@@ -28,12 +28,13 @@ class ChatViewModel extends ChangeNotifier {
     notifyListeners();
 
     // 사용자 말 먼저 추가
-    _messages.add(SlimeResponse(message: text, animationKey: 'idle'));
+    _messages.add(SlimeResponse(message: text, animationKey: 'id'));
+    _messages.add(const SlimeResponse(message: '…', animationKey: 'id'));
     notifyListeners();
 
     final reply =
         await _onMessage(text: text, goals: goals, todos: todos);
-
+    _messages.removeLast();   
     _messages.add(reply);
     _isSending = false;
     notifyListeners();
