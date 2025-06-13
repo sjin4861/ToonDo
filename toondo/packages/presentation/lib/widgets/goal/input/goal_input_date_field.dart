@@ -1,3 +1,4 @@
+import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 
 class GoalInputDateField extends StatelessWidget {
@@ -12,6 +13,10 @@ class GoalInputDateField extends StatelessWidget {
     bool isStartDate = label == '시작일';
     // label에 따라 표시할 날짜 결정
     DateTime? date = isStartDate ? viewModel.startDate : viewModel.endDate;
+    final Color borderColor = date != null ? const Color(0xFF78B545) : const Color(0xFFDDDDDD);
+    final Color textColor = date != null ? const Color(0xFF1C1D1B) : const Color(0x3F1C1D1B);
+    final Color iconColor = date != null ? const Color(0xFF1C1D1B) : const Color(0xFFDDDDDD);
+
 
     return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -19,7 +24,6 @@ class GoalInputDateField extends StatelessWidget {
           Text(
             label,
             style: TextStyle(
-              color: Color(0xFF1C1D1B),
               fontSize: 10,
               fontWeight: FontWeight.w400,
               letterSpacing: 0.15,
@@ -36,16 +40,21 @@ class GoalInputDateField extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   side: BorderSide(
                       width: 1,
-                      color: Color(0xFFDDDDDD)),
+                      color: borderColor),
                   borderRadius:
                       BorderRadius.circular(1000),
                 ),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.calendar_today,
-                      size: 15,
-                      color: Color(0xFFDDDDDD)),
+                  Assets.icons.icCalendar.svg(
+                    width: 15,
+                    height: 15,
+                    colorFilter: ColorFilter.mode(
+                      iconColor,
+                      BlendMode.srcIn,
+                    ),
+                  ),
                   SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -53,9 +62,7 @@ class GoalInputDateField extends StatelessWidget {
                           ? viewModel.dateFormat.format(date)
                           : '${label}을 선택하세요',
                       style: TextStyle(
-                        color: date != null
-                            ? Color(0xFF1C1D1B)
-                            : Color(0x3F1C1D1B),
+                        color: textColor,
                         fontSize: 10,
                         fontWeight: FontWeight.w500,
                         letterSpacing: 0.15,
