@@ -71,64 +71,57 @@ class GoalIconBottomSheet extends StatelessWidget {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                category,
-                                style: const TextStyle(
-                                  color: Color(0xFF1C1D1B),
-                                  fontSize: 10,
-                                  fontFamily: 'Pretendard Variable',
-                                  fontWeight: FontWeight.w400,
-                                  letterSpacing: 0.15,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              GridView.count(
-                                crossAxisCount: 6,
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                crossAxisSpacing: 12,
-                                mainAxisSpacing: 12,
-                                children: List.generate(6, (index) {
-                                  if (index < icons.length) {
-                                    final iconPath = icons[index];
-                                    return GestureDetector(
-                                      onTap:
-                                          () =>
-                                              Navigator.pop(context, iconPath),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(4),
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                            color: const Color(0xFFDDDDDD),
-                                            width: 1,
-                                          ),
-                                        ),
-                                        child: SvgPicture.asset(
-                                          iconPath,
-                                          width: 24,
-                                          height: 24,
-                                        ),
+                          Text(
+                            category,
+                            style: const TextStyle(
+                              color: Color(0xFF1C1D1B),
+                              fontSize: 10,
+                              fontFamily: 'Pretendard Variable',
+                              fontWeight: FontWeight.w400,
+                              letterSpacing: 0.15,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          GridView.count(
+                            crossAxisCount: 6,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                            children: List.generate(6, (index) {
+                              if (index < icons.length) {
+                                final iconPath = icons[index];
+                                return GestureDetector(
+                                  onTap: () => Navigator.pop(context, iconPath),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(4),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: const Color(0xFFDDDDDD),
+                                        width: 1,
                                       ),
-                                    );
-                                  } else {
-                                    // 빈 아이템 (터치 불가)
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: const Color(0xFFDDDDDD),
-                                          width: 1,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                }),
-                              ),
-                            ],
+                                    ),
+                                    child: SvgPicture.asset(
+                                      iconPath,
+                                      width: 24,
+                                      height: 24,
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                // 빈 아이템 (터치 불가)
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: const Color(0xFFDDDDDD),
+                                      width: 1,
+                                    ),
+                                  ),
+                                );
+                              }
+                            }),
                           ),
                         ],
                       );

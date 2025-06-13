@@ -22,20 +22,23 @@ class GoalListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: Key(goal.id ?? ''),
-      direction: enableSwipeToDelete ? DismissDirection.endToStart : DismissDirection.none,
+      key: goal.id != null ? Key(goal.id!) : UniqueKey(),
+      direction:
+          enableSwipeToDelete
+              ? DismissDirection.endToStart
+              : DismissDirection.none,
       background: _buildDismissBackground(),
       confirmDismiss: (direction) => _confirmDelete(context),
       onDismissed: (direction) => _onDelete(context),
       child: GestureDetector(
-        onTap: onTap ?? () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => GoalInputScreen(goal: goal),
-            ),
-          );
-        },
+        onTap:
+            onTap ??
+            () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => GoalInputScreen(goal: goal)),
+              );
+            },
         child: _buildContent(context),
       ),
     );
