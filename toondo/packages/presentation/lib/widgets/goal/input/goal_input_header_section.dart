@@ -11,7 +11,7 @@ class GoalInputHeaderSection extends StatelessWidget {
     final isEditing = viewModel.targetGoal != null;
 
     final title = isEditing ? '목표를 발전시켜봐요' : '목표를 정해주세요!';
-    const subtitle = '앞으로 투둡와 함께 달려 나갈 목표를 입력해주세요.';
+    const subtitle = '앞으로 툰두와 함께 달려 나갈 목표를 입력해주세요.';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
