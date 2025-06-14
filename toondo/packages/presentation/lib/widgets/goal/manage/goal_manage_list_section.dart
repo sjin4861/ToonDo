@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:domain/entities/goal.dart';
 import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart';
+import 'package:presentation/views/goal/input/goal_input_screen.dart';
 import 'package:presentation/widgets/goal/common/goal_list_item.dart';
 import 'package:presentation/widgets/goal/manage/goal_options_bottom_sheet.dart';
 
@@ -69,11 +70,14 @@ class _GoalCategoryList extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
               child: GoalListItem(
                 goal: goal,
-                onTap: () => showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  builder: (context) => GoalOptionsBottomSheet(goal: goal),
-                ),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                      builder: (_) => GoalInputScreen(goal: goal),
+                  ),
+                  );
+                }
               ),
             );
           },

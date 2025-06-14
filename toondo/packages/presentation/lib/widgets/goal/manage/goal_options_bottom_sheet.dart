@@ -1,9 +1,7 @@
-// lib/widgets/goal/goal_options_bottom_sheet.dart
-
 import 'package:flutter/material.dart';
 import 'package:domain/entities/goal.dart';
 import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart';
-import 'package:presentation/views/goal/goal_input_view.dart';
+import 'package:presentation/views/goal/input/goal_input_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:presentation/viewmodels/goal/goal_input_viewmodel.dart';
 import 'package:get_it/get_it.dart';
@@ -32,7 +30,7 @@ class GoalOptionsBottomSheet extends StatelessWidget {
             updateGoalLocalUseCase: GetIt.instance<UpdateGoalLocalUseCase>(),
             targetGoal: goal,
           ),
-          child: GoalInputView(goal: goal),
+          child: GoalInputScreen(goal: goal),
         ),
       ),
     );

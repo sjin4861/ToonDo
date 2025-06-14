@@ -62,51 +62,58 @@ class TodoListItem extends StatelessWidget {
               ),
             );
 
-    return Container(
-      margin: EdgeInsets.only(bottom: 8.0),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-      decoration: BoxDecoration(
-        color: isCompleted ? const Color(0xFFEEEEEE) : Colors.transparent,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onUpdate,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: isCompleted ? const Color(0x7FDDDDDD) : getBorderColor(todo),
-          width: 1.5,
-        ),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _buildLeading(context),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  todo.title,
-                  style: TextStyle(
-                    color:
-                        isCompleted
-                            ? const Color(0x4C111111)
-                            : const Color(0xFF1C1D1B),
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.15,
-                    fontFamily: 'Pretendard Variable',
-                    decoration: isCompleted ? TextDecoration.lineThrough : null,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                isDDay
-                    ? _buildDDaySubtitle()
-                    : _buildSubtitle(context) ?? const SizedBox(),
-              ],
+        child: Container(
+          margin: EdgeInsets.only(bottom: 8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          decoration: BoxDecoration(
+            color: isCompleted ? const Color(0xFFEEEEEE) : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: isCompleted ? const Color(0x7FDDDDDD) : getBorderColor(todo),
+              width: 1.5,
             ),
           ),
-          const SizedBox(width: 8),
-          SizedBox(height: 36, child: Center(child: trailingWidget)),
-        ],
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _buildLeading(context),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      todo.title,
+                      style: TextStyle(
+                        color:
+                            isCompleted
+                                ? const Color(0x4C111111)
+                                : const Color(0xFF1C1D1B),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.15,
+                        fontFamily: 'Pretendard Variable',
+                        decoration: isCompleted ? TextDecoration.lineThrough : null,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    isDDay
+                        ? _buildDDaySubtitle()
+                        : _buildSubtitle(context) ?? const SizedBox(),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              SizedBox(height: 36, child: Center(child: trailingWidget)),
+            ],
+          ),
+        ),
       ),
     );
   }

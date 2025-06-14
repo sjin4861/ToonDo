@@ -136,7 +136,7 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> with Single
                   animations: [
                     if (widget.showDebugInfo) 'debug',
                     if (widget.initialAnimationName.isNotEmpty) widget.initialAnimationName,
-                    if (rawKey.isNotEmpty && rawKey != 'id') rawKey,
+                    if (key != 'id') key,
                   ]
                 ),
             ),
