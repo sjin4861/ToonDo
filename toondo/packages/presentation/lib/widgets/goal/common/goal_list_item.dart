@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:presentation/views/goal/input/goal_input_screen.dart';
+import 'package:presentation/widgets/goal/manage/goal_edit_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:domain/entities/status.dart';
@@ -30,17 +31,34 @@ class GoalListItem extends StatelessWidget {
       background: _buildDismissBackground(),
       confirmDismiss: (direction) => _confirmDelete(context),
       onDismissed: (direction) => _onDelete(context),
-      child: GestureDetector(
-        onTap:
-            onTap ??
-            () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => GoalInputScreen(goal: goal)),
-              );
-            },
-        child: _buildContent(context),
-      ),
+        child: GestureDetector(
+          onTap: () {
+            showModalBottomSheet(
+              context: context,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+              ),
+              builder: (context) => GoalEditBottomSheet(
+                iconPath: _resolveGoalIconPath(goal.icon),
+                title: goal.name,
+                onRetry: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => GoalInputScreen(goal: goal),
+                    ),
+                  );
+                },
+                onDelete: () {
+                  Navigator.pop(context);
+                  _onDelete(context);
+                },
+              ),
+            );
+          },
+          child: _buildContent(context),
+        ),
     );
   }
 
@@ -205,6 +223,17 @@ class GoalListItem extends StatelessWidget {
     final int difference = endDate.difference(today).inDays;
     return difference >= 0 ? difference : 0;
   }
+
+  String _resolveGoalIconPath(String? iconName) {
+    if (iconName == null || iconName.isEmpty) {
+      return 'assets/icons/ic_default.svg';
+    }
+
+    final fileName = iconName.split('/').last;
+    final normalized = fileName.startsWith('ic_') ? fileName : 'ic_$fileName';
+    return 'assets/icons/$normalized';
+  }
+
 
   TextStyle get _titleStyle => const TextStyle(
     fontSize: 13,

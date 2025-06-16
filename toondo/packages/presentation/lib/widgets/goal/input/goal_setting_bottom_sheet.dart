@@ -55,16 +55,32 @@ class GoalSettingBottomSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
+          // 아이콘 표시 부분
           Positioned(
-            top: 100, // 디자인에 맞춘 위치 조정
+            top: 100,
             left: 0,
             right: 0,
             child: Center(
-              child: SvgPicture.asset(
-                goal.icon ?? defaultIconPath, // 아이콘이 null일 경우 기본 아이콘 사용
+              child: Container(
                 width: 60,
                 height: 60,
-                placeholderBuilder: (context) => const CircularProgressIndicator(),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: const Color(0xFF78B545),
+                    width: 1.0,
+                  ),
+                  color: Colors.transparent,
+                ),
+                child: ClipOval(
+                  child: SvgPicture.asset(
+                    goal.icon ?? defaultIconPath,
+                    fit: BoxFit.cover,
+                    width: 60,
+                    height: 60,
+                    placeholderBuilder: (context) => const CircularProgressIndicator(),
+                  ),
+                ),
               ),
             ),
           ),
@@ -96,8 +112,6 @@ class GoalSettingBottomSheet extends StatelessWidget {
             right: 0,
             child: Center(
               child: Text(
-                // 아래처럼 목표의 설정 일자가 나오게 해야함
-                //'24.12.25 - 25.01.09',
                 '${goal.startDate.toLocal().toString().split(' ')[0]} - ${goal.endDate.toLocal().toString().split(' ')[0]}', // 목표 시작일과 종료일 표시
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -113,7 +127,7 @@ class GoalSettingBottomSheet extends StatelessWidget {
           ),
           // 확인 버튼
           Positioned(
-            bottom: 24,
+            bottom: 32,
             left: 82,
             right: 82,
             child: CustomButton(
