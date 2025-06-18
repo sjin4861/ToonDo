@@ -13,10 +13,14 @@ class HomeGoalListSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (goals.isEmpty) {
-      return const Center(
-        child: Text(
-          '설정된 목표가 없습니다. 목표를 추가해보세요!',
-          style: TextStyle(fontSize: 14, color: Colors.grey),
+      return Padding(
+        padding: const EdgeInsets.only(top: 40),
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: Text(
+            '설정된 목표가 없습니다. 목표를 추가해보세요!',
+            style: TextStyle(fontSize: 14, color: Colors.grey),
+          ),
         ),
       );
     }

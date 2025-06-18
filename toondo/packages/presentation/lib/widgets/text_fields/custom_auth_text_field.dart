@@ -55,12 +55,15 @@ class CustomAuthTextField extends StatelessWidget {
                 valueListenable: obscureTextNotifier!,
                 builder: (context, obscureVisible, child) {
                   return TextField(
+                    cursorColor: Color(0xFF78B545),
                     readOnly: readOnly,
                     controller: controller,
                     obscureText: !obscureVisible,
                     onChanged: onChanged,
                     decoration: InputDecoration(
-                      contentPadding: contentPadding ?? EdgeInsets.symmetric(horizontal: 16),
+                      contentPadding:
+                          contentPadding ??
+                          EdgeInsets.symmetric(horizontal: 16),
                       hintText: hintText,
                       hintStyle: TextStyle(
                         color: Color(0xFFB2B2B2),
@@ -71,10 +74,13 @@ class CustomAuthTextField extends StatelessWidget {
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(
-                          obscureVisible ? Icons.visibility : Icons.visibility_off,
+                          obscureVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
                         ),
                         onPressed: () {
-                          obscureTextNotifier!.value = !obscureTextNotifier!.value;
+                          obscureTextNotifier!.value =
+                              !obscureTextNotifier!.value;
                         },
                       ),
                       enabledBorder: OutlineInputBorder(
@@ -97,8 +103,10 @@ class CustomAuthTextField extends StatelessWidget {
                 controller: controller,
                 obscureText: obscureText,
                 onChanged: onChanged,
+                cursorColor: Color(0xFF78B545),
                 decoration: InputDecoration(
-                  contentPadding: contentPadding ?? EdgeInsets.symmetric(horizontal: 16),
+                  contentPadding:
+                      contentPadding ?? EdgeInsets.symmetric(horizontal: 16),
                   hintText: hintText,
                   hintStyle: TextStyle(
                     color: Color(0xFFB2B2B2),

@@ -21,7 +21,7 @@ class GoalFilterMenu extends StatelessWidget {
       labelBuilder: (status) {
         switch (status) {
           case Status.active:
-            return '전체';
+            return '진행 중';
           case Status.completed:
             return '완료';
           default:
