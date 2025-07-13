@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:data/constants.dart';
 import 'package:injectable/injectable.dart';
@@ -10,7 +9,6 @@ class SmsRemoteDataSource{
 
   SmsRemoteDataSource({required this.client});
 
-  @override
   Future<String> sendSmsCode(String phoneNumber) async {
     if (phoneNumber == Constants.testPhoneNumber) {
       return "인증번호가 전송되었습니다.";
@@ -28,7 +26,6 @@ class SmsRemoteDataSource{
     }
   }
 
-  @override
   Future<String> verifySmsCode(String phoneNumber, String code) async {
     if (phoneNumber == Constants.testPhoneNumber) {
       return "본인인증 성공";
