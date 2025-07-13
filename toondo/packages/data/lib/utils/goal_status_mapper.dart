@@ -10,8 +10,9 @@ class GoalStatusMapper {
         return GoalStatusEnum.completed;
       case Status.givenUp:
         return GoalStatusEnum.givenUp;
+      case Status.paused:
+      case Status.restarted:
       case Status.active:
-      default:
         return GoalStatusEnum.active;
     }
   }
@@ -23,7 +24,6 @@ class GoalStatusMapper {
       case GoalStatusEnum.givenUp:
         return Status.givenUp;
       case GoalStatusEnum.active:
-      default:
         return Status.active;
     }
   }
