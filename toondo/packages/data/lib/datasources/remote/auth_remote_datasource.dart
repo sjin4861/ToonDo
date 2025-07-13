@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:data/models/user_model.dart';
 import 'package:data/constants.dart';
 import 'package:injectable/injectable.dart';
 
@@ -37,7 +36,6 @@ class AuthRemoteDataSource{
   ///   print('회원가입 실패: $e');
   /// }
   /// ```
-  @override
   Future<Map<String, dynamic>> registerUser(
     String phoneNumber,
     String password,
@@ -71,7 +69,6 @@ class AuthRemoteDataSource{
     }
   }
 
-  @override
   Future<Map<String, dynamic>> login(
     String phoneNumber,
     String password,
@@ -91,7 +88,6 @@ class AuthRemoteDataSource{
     }
   }
 
-  @override
   Future<bool> isPhoneNumberRegistered(String phoneNumber) async {
     final url = Uri.parse('$baseUrl/users/check-phone-number');
     final response = await httpClient.post(
