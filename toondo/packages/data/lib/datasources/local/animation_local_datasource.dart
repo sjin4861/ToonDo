@@ -23,7 +23,6 @@ class AnimationLocalDataSource {
   };
 
   static const _idle  = 'id';
-  static const _blink = 's';
 
   /* ─── Rive 로드 ─── */
   Future<void> load(File riveAsset) async {
