@@ -14,13 +14,13 @@ class ItemCard extends StatelessWidget {
   final VoidCallback? onTap; // 구매나 클릭 이벤트
 
   const ItemCard({
-    Key? key,
+    super.key,
     required this.itemName,
     required this.price,
     required this.iconPath,
     this.isSelected = false,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

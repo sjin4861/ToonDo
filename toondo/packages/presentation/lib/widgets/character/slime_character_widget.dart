@@ -1,6 +1,5 @@
 // lib/presentation/widgets/character/slime_character_widget.dart
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
 import 'package:common/gen/assets.gen.dart';
 import 'package:domain/entities/gesture.dart';

@@ -99,19 +99,31 @@ class GoalManagementViewModel extends ChangeNotifier {
 
   Future<void> setFilterOption(GoalManagementFilterOption newFilterOption) async {
     _filterOption = newFilterOption;
-    List<Goal>? list;
+    List<Goal> list;
     switch (_filterOption) {
       case GoalManagementFilterOption.inProgress:
-        list = await getInProgressGoalsUseCase.call();
+        try {
+          list = await getInProgressGoalsUseCase.call();
+        } catch (_) {
+          list = [];
+        }
         break;
       case GoalManagementFilterOption.givenUp:
-        list = await getGivenUpGoalsUseCase.call();
+        try {
+          list = await getGivenUpGoalsUseCase.call();
+        } catch (_) {
+          list = [];
+        }
         break;
       case GoalManagementFilterOption.completed:
-        list = await getCompletedGoalsUseCase.call();
+        try {
+          list = await getCompletedGoalsUseCase.call();
+        } catch (_) {
+          list = [];
+        }
         break;
     }
-    _filteredGoals = list ?? [];
+    _filteredGoals = list;
     notifyListeners();
   }
 
@@ -122,8 +134,10 @@ class GoalManagementViewModel extends ChangeNotifier {
           List<Goal>? list;
           try {
             list = await getInProgressGoalsUseCase();
-          } catch (_) {}
-          _filteredGoals = list ?? [];
+          } catch (_) {
+            list = [];
+          }
+          _filteredGoals = list;
         }
         break;
       case GoalManagementFilterOption.givenUp:
@@ -131,8 +145,10 @@ class GoalManagementViewModel extends ChangeNotifier {
           List<Goal>? list;
           try {
             list = await getGivenUpGoalsUseCase();
-          } catch (_) {}
-          _filteredGoals = list ?? [];
+          } catch (_) {
+            list = [];
+          }
+          _filteredGoals = list;
         }
         break;
       case GoalManagementFilterOption.completed:
@@ -141,8 +157,10 @@ class GoalManagementViewModel extends ChangeNotifier {
           List<Goal>? list;
           try {
             list = await getCompletedGoalsUseCase();
-          } catch (_) {}
-          _filteredGoals = list ?? [];
+          } catch (_) {
+            list = [];
+          }
+          _filteredGoals = list;
         }
         break;
     }

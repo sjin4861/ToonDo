@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:domain/entities/user.dart';
 import 'package:domain/usecases/auth/register.dart';
 import 'package:domain/usecases/auth/check_phone_number_exists.dart';
 import 'package:domain/usecases/sms/send_sms_code.dart';

@@ -5,7 +5,7 @@ import 'package:presentation/widgets/text_fields/custom_auth_text_field.dart';
 import 'package:get_it/get_it.dart';
 
 class LoginScreen extends StatelessWidget {
-  LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

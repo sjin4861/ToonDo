@@ -105,7 +105,7 @@ class TodoRemoteDataSource {
         final dynamic goalId = json['goalId'];
         return Todo(
           id: todoId,
-          goalId: goalId != null ? goalId.toString() : null,
+          goalId: goalId?.toString(),
           title: json['title'],
           status: (json['status'] as num).toDouble(),
           startDate: DateTime.parse(json['startDate']),

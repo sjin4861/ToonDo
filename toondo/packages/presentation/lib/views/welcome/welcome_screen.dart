@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:presentation/viewmodels/welcome/welcome_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +8,8 @@ import 'package:common/gen/assets.gen.dart';
 final getIt = GetIt.instance;
 
 class WelcomeScreen extends StatelessWidget {
+  const WelcomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     // Provide WelcomeViewModel using getIt

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:presentation/viewmodels/my_page/account_setting/account_setting_viewmodel.dart';
-import 'package:presentation/widgets/bottom_button/green_button.dart';
 import 'package:provider/provider.dart';
 
 class NicknameChangeButton extends StatelessWidget {

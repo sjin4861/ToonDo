@@ -9,7 +9,6 @@ import 'package:domain/entities/goal.dart';
 import 'package:domain/entities/todo.dart';
 import 'package:domain/usecases/goal/get_goals_local.dart';
 import 'package:domain/usecases/todo/get_all_todos.dart';
-import 'package:domain/usecases/todo/fetch_todos.dart';
 import 'package:domain/usecases/todo/update_todo_dates.dart';
 import 'package:domain/usecases/todo/update_todo_status.dart';
 import 'package:domain/usecases/todo/delete_todo.dart';
@@ -18,7 +17,6 @@ import '../../helpers/test_data.dart';
 
 // Generate mock classes for use cases
 @GenerateMocks([
-  FetchTodosUseCase,
   DeleteTodoUseCase,
   GetAllTodosUseCase,
   UpdateTodoStatusUseCase,
@@ -28,7 +26,6 @@ import '../../helpers/test_data.dart';
 
 void main() {
   late TodoManageViewModel viewModel;
-  late MockFetchTodosUseCase mockFetchTodosUseCase;
   late MockDeleteTodoUseCase mockDeleteTodoUseCase;
   late MockGetAllTodosUseCase mockGetAllTodosUseCase;
   late MockUpdateTodoStatusUseCase mockUpdateTodoStatusUseCase;
@@ -40,7 +37,6 @@ void main() {
   late List<Goal> testGoals;
   
   setUp(() {
-    mockFetchTodosUseCase = MockFetchTodosUseCase();
     mockDeleteTodoUseCase = MockDeleteTodoUseCase();
     mockGetAllTodosUseCase = MockGetAllTodosUseCase();
     mockUpdateTodoStatusUseCase = MockUpdateTodoStatusUseCase();
@@ -54,7 +50,6 @@ void main() {
     when(mockGetGoalsLocalUseCase.call()).thenAnswer((_) async => testGoals);
     
     viewModel = TodoManageViewModel(
-      fetchTodosUseCase: mockFetchTodosUseCase,
       deleteTodoUseCase: mockDeleteTodoUseCase,
       getTodosUseCase: mockGetAllTodosUseCase,
       updateTodoStatusUseCase: mockUpdateTodoStatusUseCase,

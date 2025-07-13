@@ -5,7 +5,7 @@ class GoalInputDateField extends StatelessWidget {
   final viewModel;
   final String label;
 
-  GoalInputDateField({required this.viewModel, required this.label});
+  const GoalInputDateField({super.key, required this.viewModel, required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +60,7 @@ class GoalInputDateField extends StatelessWidget {
                     child: Text(
                       date != null
                           ? viewModel.dateFormat.format(date)
-                          : '${label}을 선택하세요',
+                          : '$label을 선택하세요',
                       style: TextStyle(
                         color: textColor,
                         fontSize: 10,

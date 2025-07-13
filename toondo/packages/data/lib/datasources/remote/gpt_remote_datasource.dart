@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:domain/repositories/slime_repository.dart';
 import 'package:http/http.dart' as http;
 import 'package:injectable/injectable.dart';
 import 'package:data/constants.dart';

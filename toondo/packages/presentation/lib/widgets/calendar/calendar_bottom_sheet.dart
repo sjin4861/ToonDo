@@ -4,7 +4,7 @@ import 'package:table_calendar/table_calendar.dart';
 class SelectDateBottomSheet extends StatefulWidget {
   final DateTime initialDate;
 
-  const SelectDateBottomSheet({Key? key, required this.initialDate}) : super(key: key);
+  const SelectDateBottomSheet({super.key, required this.initialDate});
 
   @override
   _SelectDateBottomSheetState createState() => _SelectDateBottomSheetState();

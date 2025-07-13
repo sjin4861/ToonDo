@@ -5,7 +5,7 @@ class DateField extends StatelessWidget {
   final viewModel;
   final String label;
 
-  DateField({required this.viewModel, required this.label});
+  const DateField({super.key, required this.viewModel, required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +61,7 @@ class DateField extends StatelessWidget {
                     child: Text(
                       date != null
                           ? viewModel.dateFormat.format(date)
-                          : '${label}을 선택하세요',
+                          : '$label을 선택하세요',
                       style: TextStyle(
                         color: textColor,
                         fontSize: 10,

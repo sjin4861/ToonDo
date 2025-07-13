@@ -10,8 +10,6 @@ import 'package:domain/entities/status.dart';
 class HomeBody extends StatelessWidget {
   const HomeBody({super.key});
 
-  static const double _slimeAreaHeight = 500;
-
   @override
   Widget build(BuildContext context) {
     final homeVM = context.watch<HomeViewModel>();

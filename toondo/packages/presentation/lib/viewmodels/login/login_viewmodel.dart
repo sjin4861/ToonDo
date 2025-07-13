@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:domain/entities/user.dart';
 import 'package:domain/usecases/auth/login.dart'; // new import
 import 'package:injectable/injectable.dart';
 
@@ -25,7 +24,7 @@ class LoginViewModel extends ChangeNotifier {
     bool isValid = validateInput();
     if (!isValid) return false;
     try {
-      User user = await loginUseCase.call(phoneNumber, passwordController.text);
+      await loginUseCase.call(phoneNumber, passwordController.text);
       // Optionally store user info if needed.
       return true;
     } catch (e) {

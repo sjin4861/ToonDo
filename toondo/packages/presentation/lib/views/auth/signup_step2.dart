@@ -10,7 +10,7 @@ import 'package:presentation/views/onboarding/onboarding_screen.dart';
 class SignupStep2 extends StatelessWidget {
   final String phoneNumber; // 휴대폰 번호 의존성 추가
   final ValueNotifier<bool> isPasswordVisible = ValueNotifier(false);
-  SignupStep2({Key? key, required this.phoneNumber}) : super(key: key);
+  SignupStep2({super.key, required this.phoneNumber});
 
   @override
   Widget build(BuildContext context) {

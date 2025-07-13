@@ -7,6 +7,8 @@ import 'package:presentation/views/auth/login_screen.dart'; // 로그인 화면 
 import 'package:presentation/widgets/text_fields/custom_auth_text_field.dart';
 
 class SignupStep1 extends StatelessWidget {
+  const SignupStep1({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<SignupViewModel>.value(

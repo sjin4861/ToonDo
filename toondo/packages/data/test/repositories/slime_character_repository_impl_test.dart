@@ -2,8 +2,6 @@
 import 'package:data/datasources/local/animation_local_datasource.dart';
 import 'package:data/datasources/remote/gpt_remote_datasource.dart';
 import 'package:data/repositories/slime_character_repository_impl.dart';   // 파일명 교체
-import 'package:domain/entities/gesture.dart';
-import 'package:domain/entities/slime_response.dart';
 import 'package:domain/repositories/slime_repository.dart';
 import 'package:data/models/slime_character_model.dart';        // 캐릭터 모델
 import 'package:flutter_test/flutter_test.dart';

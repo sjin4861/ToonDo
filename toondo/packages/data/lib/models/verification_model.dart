@@ -1,8 +1,7 @@
 import 'package:domain/entities/verification.dart';
 
 class VerificationModel extends Verification {
-  VerificationModel({required String phoneNumber, String? code})
-    : super(phoneNumber: phoneNumber, code: code);
+  VerificationModel({required super.phoneNumber, super.code});
 
   factory VerificationModel.fromJson(Map<String, dynamic> json) {
     return VerificationModel(

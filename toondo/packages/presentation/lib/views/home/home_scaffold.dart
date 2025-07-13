@@ -7,7 +7,7 @@ import 'package:presentation/viewmodels/home/home_viewmodel.dart';
 
 class HomeScaffold extends StatelessWidget {
   final bool isNewLogin;
-  const HomeScaffold({Key? key, required this.isNewLogin}) : super(key: key);
+  const HomeScaffold({super.key, required this.isNewLogin});
 
   @override
   Widget build(BuildContext context) {

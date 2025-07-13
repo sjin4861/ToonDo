@@ -136,7 +136,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i506.TodoManageViewModel>(
       () => _i506.TodoManageViewModel(
-        fetchTodosUseCase: gh<_i314.FetchTodosUseCase>(),
         deleteTodoUseCase: gh<_i552.DeleteTodoUseCase>(),
         getTodosUseCase: gh<_i362.GetAllTodosUseCase>(),
         updateTodoStatusUseCase: gh<_i183.UpdateTodoStatusUseCase>(),

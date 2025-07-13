@@ -219,7 +219,7 @@ void main() {
             .thenAnswer((_) => Future<void>.value());
         
         // When
-        await viewModel.updateGoalProgress(targetGoal.id!, newProgress);
+        await viewModel.updateGoalProgress(targetGoal.id, newProgress);
         
         // Then
         verify(mockUpdateGoalProgressUseCase.call(targetGoal, newProgress)).called(1);
@@ -235,7 +235,7 @@ void main() {
             .thenAnswer((_) => Future<bool>.value(true));
         
         // When
-        await viewModel.giveUpGoal(targetGoal.id!);
+        await viewModel.giveUpGoal(targetGoal.id);
         
         // Then
         verify(mockUpdateGoalStatusUseCase.call(targetGoal, Status.givenUp)).called(1);
@@ -250,7 +250,7 @@ void main() {
             .thenAnswer((_) => Future<bool>.value(true));
         
         // When
-        await viewModel.completeGoal(targetGoal.id!);
+        await viewModel.completeGoal(targetGoal.id);
         
         // Then
         verify(mockUpdateGoalStatusUseCase.call(targetGoal, Status.completed)).called(1);

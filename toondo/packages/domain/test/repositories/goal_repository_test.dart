@@ -1,4 +1,3 @@
-import 'package:domain/entities/goal.dart';
 import 'package:domain/entities/status.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -57,7 +56,7 @@ void main() {
     test('saveGoalLocal 메서드는 로컬에 목표를 저장해야 한다', () async {
       // Arrange
       final goal = TestData.createTestGoal(id: 'test_goal_save');
-      when(repository.saveGoalLocal(goal)).thenAnswer((_) async => null);
+      when(repository.saveGoalLocal(goal)).thenAnswer((_) async {});
       
       // Act
       await repository.saveGoalLocal(goal);
@@ -73,7 +72,7 @@ void main() {
         name: '업데이트된 목표',
         progress: 0.5,
       );
-      when(repository.updateGoalLocal(goal)).thenAnswer((_) async => null);
+      when(repository.updateGoalLocal(goal)).thenAnswer((_) async {});
       
       // Act
       await repository.updateGoalLocal(goal);
@@ -85,7 +84,7 @@ void main() {
     test('deleteGoalLocal 메서드는 로컬에서 목표를 삭제해야 한다', () async {
       // Arrange
       const goalId = 'test_goal_delete';
-      when(repository.deleteGoalLocal(goalId)).thenAnswer((_) async => null);
+      when(repository.deleteGoalLocal(goalId)).thenAnswer((_) async {});
       
       // Act
       await repository.deleteGoalLocal(goalId);
@@ -175,7 +174,7 @@ void main() {
       );
       
       when(repository.updateGoalRemote(goal))
-          .thenAnswer((_) async => null);
+          .thenAnswer((_) async {});
       
       // Act
       await repository.updateGoalRemote(goal);
@@ -188,7 +187,7 @@ void main() {
       // Arrange
       const goalId = 'remote_delete_goal';
       when(repository.deleteGoalRemote(goalId))
-          .thenAnswer((_) async => null);
+          .thenAnswer((_) async {});
       
       // Act
       await repository.deleteGoalRemote(goalId);
@@ -216,7 +215,7 @@ void main() {
       final fetchedGoals = await repository.fetchGoalsRemote();
       for (final goal in fetchedGoals) {
         when(repository.saveGoalLocal(goal))
-            .thenAnswer((_) async => null);
+            .thenAnswer((_) async {});
         await repository.saveGoalLocal(goal);
       }
       
@@ -243,7 +242,7 @@ void main() {
           
       // 로컬 저장소에 목표 저장 설정  
       when(repository.saveGoalLocal(createdGoal))
-          .thenAnswer((_) async => null);
+          .thenAnswer((_) async {});
       
       // Act - 목표 생성 후 로컬에 저장
       final resultGoal = await repository.createGoalRemote(newGoal);
@@ -260,9 +259,9 @@ void main() {
       );
       
       when(repository.updateGoalRemote(updatedGoal))
-          .thenAnswer((_) async => null);
+          .thenAnswer((_) async {});
       when(repository.updateGoalLocal(updatedGoal))
-          .thenAnswer((_) async => null);
+          .thenAnswer((_) async {});
       
       // 원격 및 로컬에 업데이트
       await repository.updateGoalRemote(updatedGoal);

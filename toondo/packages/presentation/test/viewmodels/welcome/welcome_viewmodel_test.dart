@@ -7,7 +7,6 @@ import 'package:domain/usecases/auth/get_token.dart';
 import 'package:domain/usecases/auth/logout.dart';
 import 'package:presentation/viewmodels/welcome/welcome_viewmodel.dart';
 import 'package:presentation/navigation/route_paths.dart';
-import '../../helpers/test_data.dart';
 import 'welcome_viewmodel_test.mocks.dart';
 
 // generate mock classes with Mockito 5.0+
@@ -79,7 +78,7 @@ void main() {
         final String expiredToken = 'header.$encodedPayload.signature';
         
         when(mockGetTokenUseCase.call()).thenAnswer((_) async => expiredToken);
-        when(mockLogoutUseCase.call()).thenAnswer((_) async => null);
+        when(mockLogoutUseCase.call()).thenAnswer((_) async {});
 
         // When
         await viewModel.checkIfLoggedIn(mockContext);

@@ -3,7 +3,6 @@ import 'package:domain/entities/todo.dart';
 import 'package:domain/entities/todo_filter_option.dart';
 import 'package:domain/usecases/goal/get_goals_local.dart';
 import 'package:domain/usecases/todo/get_all_todos.dart';
-import 'package:domain/usecases/todo/fetch_todos.dart';
 import 'package:domain/usecases/todo/update_todo_dates.dart';
 import 'package:domain/usecases/todo/update_todo_status.dart';
 import 'package:domain/usecases/todo/delete_todo.dart';
@@ -13,7 +12,6 @@ import 'package:injectable/injectable.dart';
 
 @LazySingleton()
 class TodoManageViewModel extends ChangeNotifier {
-  final FetchTodosUseCase _fetchTodosUseCase;
   final DeleteTodoUseCase _deleteTodoUseCase;
   final GetAllTodosUseCase _getTodosUseCase;
   final UpdateTodoStatusUseCase _updateTodoStatusUseCase;
@@ -29,15 +27,13 @@ class TodoManageViewModel extends ChangeNotifier {
   List<Goal> goals = [];
 
   TodoManageViewModel({
-    required FetchTodosUseCase fetchTodosUseCase,
     required DeleteTodoUseCase deleteTodoUseCase,
     required GetAllTodosUseCase getTodosUseCase,
     required UpdateTodoStatusUseCase updateTodoStatusUseCase,
     required UpdateTodoDatesUseCase updateTodoDatesUseCase,
     required GetGoalsLocalUseCase getGoalsLocalUseCase,
     DateTime? initialDate,
-  }) : _fetchTodosUseCase = fetchTodosUseCase,
-       _deleteTodoUseCase = deleteTodoUseCase,
+  }) : _deleteTodoUseCase = deleteTodoUseCase,
        _getTodosUseCase = getTodosUseCase,
        _updateTodoStatusUseCase = updateTodoStatusUseCase,
        _updateTodoDatesUseCase = updateTodoDatesUseCase,
@@ -47,7 +43,7 @@ class TodoManageViewModel extends ChangeNotifier {
   Future<void> loadTodos() async {
     try {
       // 원격 서버에서 가져오는 대신 로컬 데이터베이스에서만 Todo 불러오기
-      allTodos = await _getTodosUseCase();
+      allTodos = _getTodosUseCase();
       goals = await _getGoalsLocalUseCase();
       _filterAndCategorizeTodos();
     } catch (e) {
@@ -56,7 +52,7 @@ class TodoManageViewModel extends ChangeNotifier {
   }
 
   Future<List<Todo>> getTodos() async {
-    return await _getTodosUseCase();
+    return _getTodosUseCase();
   }
 
   void updateSelectedDate(DateTime date) {

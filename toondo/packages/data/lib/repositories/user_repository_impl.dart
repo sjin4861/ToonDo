@@ -2,7 +2,6 @@ import 'package:domain/entities/user.dart';
 import 'package:domain/repositories/user_repository.dart';
 import 'package:data/datasources/remote/user_remote_datasource.dart';
 import 'package:data/datasources/local/user_local_datasource.dart';
-import 'package:domain/usecases/auth/get_token.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton(as: UserRepository)
@@ -42,11 +41,6 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<User> getUser() {
     final model = localDatasource.getUser();
-    if (model != null) {
-      return model;
-    } else {
-      // TODO 서버에서 유저 정보 가져오기 코드 추가해야함 (아래 코드는 삭제)
-      return model;
+    return model;
     }
-  }
 }

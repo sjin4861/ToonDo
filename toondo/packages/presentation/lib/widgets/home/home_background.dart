@@ -2,7 +2,7 @@ import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 
 class HomeBackground extends StatelessWidget {
-  const HomeBackground({Key? key}) : super(key: key);
+  const HomeBackground({super.key});
 
   @override
   Widget build(BuildContext context) {

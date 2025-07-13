@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
-import 'package:domain/entities/user.dart';
 import 'package:domain/usecases/auth/login.dart';
 import 'package:presentation/viewmodels/login/login_viewmodel.dart';
 import '../../helpers/test_data.dart';

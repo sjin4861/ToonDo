@@ -21,11 +21,6 @@ class ThemeModeOptionTile extends StatelessWidget {
     final backgroundColor =
         isLight ? const Color(0xFFFDFDFD) : const Color(0xFF444444);
 
-    final borderColor =
-        selected
-            ? const Color(0xFF78B545)
-            : (isLight ? const Color(0xFFD9D9D9) : Colors.transparent);
-
     final iconColor =
         isLight ? const Color(0x801C1D1B) : const Color(0xA6FFFFFF);
 

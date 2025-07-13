@@ -6,7 +6,7 @@ import 'package:presentation/widgets/text_fields/custom_auth_text_field.dart';
 import 'package:presentation/viewmodels/signup/signup_viewmodel.dart';
 
 class SmsVerificationScreen extends StatelessWidget {
-  const SmsVerificationScreen({Key? key}) : super(key: key);
+  const SmsVerificationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -14,9 +14,9 @@ class PasswordChangeScreen extends StatelessWidget {
     final confirmPasswordController = TextEditingController();
 
     // TODO: 뷰모델 연결 후 에러 메시지, 상태 처리 예정
-    final String? currentPasswordError = null;
-    final String? newPasswordError = '기존 비밀번호는 사용할 수 없습니다.';
-    final String? confirmPasswordError = '비밀번호가 일치하지 않습니다.';
+    // final String? currentPasswordError = null;
+    // final String newPasswordError = '기존 비밀번호는 사용할 수 없습니다.';
+    // final String confirmPasswordError = '비밀번호가 일치하지 않습니다.';
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,

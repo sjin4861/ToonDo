@@ -1,7 +1,6 @@
 import 'package:data/datasources/local/user_local_datasource.dart';
 import 'package:data/datasources/remote/user_remote_datasource.dart';
 import 'package:data/repositories/user_repository_impl.dart';
-import 'package:domain/entities/user.dart';
 import 'package:domain/repositories/user_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';

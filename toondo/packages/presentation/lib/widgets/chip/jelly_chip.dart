@@ -11,12 +11,12 @@ class JellyChip extends StatelessWidget {
   final String jellyIconPath; // 젤리 아이콘 경로 (assets/icons/img_jelly.svg)
 
   const JellyChip({
-    Key? key,
+    super.key,
     required this.jellyAmount,
     this.chipWidth = 51,
     this.chipHeight = 28,
     this.jellyIconPath = 'assets/icons/img_jelly.svg',
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

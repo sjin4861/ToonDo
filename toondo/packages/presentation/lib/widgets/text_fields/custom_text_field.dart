@@ -14,7 +14,7 @@ class CustomTextField extends StatelessWidget {
   final EdgeInsetsGeometry? contentPadding; // 패딩 설정 추가
 
   const CustomTextField({
-    Key? key,
+    super.key,
     required this.label,
     required this.hintText,
     this.obscureText = false,
@@ -26,7 +26,7 @@ class CustomTextField extends StatelessWidget {
     this.suffixIcon,
     this.borderColor,
     this.contentPadding,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

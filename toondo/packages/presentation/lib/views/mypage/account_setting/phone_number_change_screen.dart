@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:presentation/widgets/app_bar/custom_app_bar.dart';
 import 'package:presentation/widgets/my_page/account_setting/account_change_title.dart';
-import 'package:presentation/widgets/my_page/account_setting/phone_number_change/phone_number_change_button.dart';
 import 'package:presentation/widgets/my_page/account_setting/phone_number_change/phone_number_text_fields.dart';
 import 'package:presentation/widgets/my_page/account_setting/phone_number_change/phone_number_verify_button.dart';
 
@@ -34,9 +33,7 @@ class PhoneNumberChangeScreen extends StatelessWidget {
               codeController: codeController,
             ),
             const Spacer(),
-            isVerifiedStage?
-                PhoneNumberVerifyButton()
-                : PhoneNumberChangeButton(),
+            PhoneNumberVerifyButton(),
             const SizedBox(height: 24),
           ],
         ),

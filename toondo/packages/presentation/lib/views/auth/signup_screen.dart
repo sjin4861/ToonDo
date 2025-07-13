@@ -6,6 +6,8 @@ import 'package:presentation/views/auth/signup_step1.dart';
 import 'package:get_it/get_it.dart';
 
 class SignupScreen extends StatelessWidget {
+  const SignupScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<SignupViewModel>.value(
