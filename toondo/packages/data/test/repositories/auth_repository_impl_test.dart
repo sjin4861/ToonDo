@@ -1,9 +1,7 @@
 import 'package:data/datasources/local/auth_local_datasource.dart';
 import 'package:data/datasources/local/secure_local_datasource.dart';
 import 'package:data/datasources/remote/auth_remote_datasource.dart';
-import 'package:data/models/user_model.dart';
 import 'package:data/repositories/auth_repository_impl.dart';
-import 'package:domain/entities/user.dart';
 import 'package:domain/repositories/auth_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -41,7 +39,6 @@ void main() {
         const phoneNumber = '01012345678';
         const password = 'password123';
         final user = TestData.createTestUser(loginId: phoneNumber);
-        final userModel = UserModel(id: user.id, loginId: user.loginId, nickname: user.nickname, points: user.points);
         
         final responseData = {
           'userId': user.id, // id -> userId로 변경
