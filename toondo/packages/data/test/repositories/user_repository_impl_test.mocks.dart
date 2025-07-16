@@ -149,6 +149,17 @@ class MockUserLocalDatasource extends _i1.Mock
         returnValue: _i8.Future<void>.value(),
         returnValueForMissingStub: _i8.Future<void>.value(),
       ) as _i8.Future<void>);
+
+  @override
+  _i8.Future<void> setPhoneNumber(String? newPhoneNumber) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #setPhoneNumber,
+          [newPhoneNumber],
+        ),
+        returnValue: _i8.Future<void>.value(),
+        returnValueForMissingStub: _i8.Future<void>.value(),
+      ) as _i8.Future<void>);
 }
 
 /// A class which mocks [UserRemoteDatasource].
@@ -199,6 +210,22 @@ class MockUserRemoteDatasource extends _i1.Mock
           Invocation.method(
             #changeNickName,
             [newNickName],
+          ),
+        )),
+      ) as _i8.Future<_i3.User>);
+
+  @override
+  _i8.Future<_i3.User> changePhoneNumber(String? newPhoneNumber) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #changePhoneNumber,
+          [newPhoneNumber],
+        ),
+        returnValue: _i8.Future<_i3.User>.value(_FakeUser_1(
+          this,
+          Invocation.method(
+            #changePhoneNumber,
+            [newPhoneNumber],
           ),
         )),
       ) as _i8.Future<_i3.User>);
