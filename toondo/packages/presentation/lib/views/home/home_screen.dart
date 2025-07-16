@@ -5,14 +5,13 @@ import 'package:presentation/viewmodels/home/home_viewmodel.dart';
 import 'home_scaffold.dart';
 
 class HomeScreen extends StatelessWidget {
-  final bool isNewLogin;
-  const HomeScreen({super.key, this.isNewLogin = false});
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<HomeViewModel>.value(
       value: GetIt.instance<HomeViewModel>(),
-      child: HomeScaffold(isNewLogin: isNewLogin),
+      child: const HomeScaffold(),
     );
   }
 }
