@@ -48,7 +48,6 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> with Single
         final vm = context.read<SlimeCharacterViewModel>();
         if (vm.animationKey.value != 'id') {
           // 다른 애니메이션이 실행 중이면 깜빡임 건너뛰기
-          print('[SlimeCharacterWidget] 애니메이션 실행 중이므로 깜빡임 건너뛰기');
           _scheduleBlink();
           return;
         }
