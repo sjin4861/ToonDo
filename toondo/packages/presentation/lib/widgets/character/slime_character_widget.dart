@@ -31,6 +31,10 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> with Single
   bool _isBlinking = false;
   String? _localAnimKey;
   Offset? _dragStart;
+  
+  // 애니메이션 컨트롤러 캐싱
+  final Map<String, RiveAnimationController> _controllerCache = {};
+  String? _currentAnimationKey;
 
   @override
   void initState() {
@@ -44,6 +48,15 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> with Single
     final delay = Duration(seconds: 3 + Random().nextInt(4));
     _blinkTimer = Timer(delay, () async {
       if (!_isBlinking) {
+        // ViewModel에서 애니메이션이 실행 중인지 확인
+        final vm = context.read<SlimeCharacterViewModel>();
+        if (vm.animationKey.value != 'id') {
+          // 다른 애니메이션이 실행 중이면 깜빡임 건너뛰기
+          print('[SlimeCharacterWidget] 애니메이션 실행 중이므로 깜빡임 건너뛰기');
+          _scheduleBlink();
+          return;
+        }
+        
         _isBlinking = true;
         setState(() => _localAnimKey = 's');
         await Future.delayed(Duration(milliseconds: 300));
@@ -57,6 +70,11 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> with Single
   @override
   void dispose() {
     _blinkTimer?.cancel();
+    // 캐시된 컨트롤러들 정리
+    for (final controller in _controllerCache.values) {
+      controller.dispose();
+    }
+    _controllerCache.clear();
     super.dispose();
   }
   Future<void> _debugPrintAnimationNames() async {
@@ -72,38 +90,42 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> with Single
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<SlimeCharacterViewModel>();
-    return GestureDetector(
-      onTap: () => vm.onGesture(Gesture.tap),
-      onDoubleTap: () => vm.onGesture(Gesture.doubleTap),
-      onLongPress: () => vm.onGesture(Gesture.longPress),
-      // ───────── drag 인식 ─────────
-      onPanStart:  (details) {
-        _dragStart = details.localPosition;
-      },
-      onPanEnd:    (details) {
-      if (_dragStart == null) return;
-      final distance =
-      (details.velocity.pixelsPerSecond.dx).abs() +
-        (details.velocity.pixelsPerSecond.dy).abs();
-      // 속도·거리 둘 중 큰 쪽으로 간단 필터 (원하면 거리만 사용해도 OK)
-      const minVelocity = 500;      // px/sec 경험값
-      if (distance > minVelocity) {
-        debugPrint('[SlimeDebug] drag detected, velocity=$distance');
-        vm.onGesture(Gesture.drag);
-      }
-        _dragStart = null;
-      },
-      behavior: HitTestBehavior.translucent,
-      child: ValueListenableBuilder<String>(
-        valueListenable: vm.animationKey,
-        builder: (context, animKey, _) {
-          // ignore 'shine' animation, fallback to idle
-          final key = _localAnimKey ?? animKey;
-          print('[SlimeDebug] renderer effectiveKey=$key');
-          if (key == 'jump') {
-            debugPrint('[SlimeDebug] 🚀 JUMP animation triggered!');
+    final childWidget = ValueListenableBuilder<String>(
+      valueListenable: vm.animationKey,
+      builder: (context, animKey, _) {
+        // 애니메이션 우선순위: 제스처 애니메이션 > 깜빡임 애니메이션
+        String key;
+        if (animKey != 'id') {
+          // 제스처 애니메이션이 실행 중이면 우선
+          key = animKey;
+          // 제스처 애니메이션 중에는 깜빡임 중단 (setState 대신 직접 변수 수정)
+          if (_localAnimKey != null) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                setState(() {
+                  _localAnimKey = null;
+                  _isBlinking = false;
+                });
+              }
+            });
           }
-          // Build controller with fallback if animation not found
+        } else {
+          // idle 상태에서만 깜빡임 허용
+          key = _localAnimKey ?? animKey;
+        }
+        
+        // 애니메이션 키가 바뀌었거나 캐시에 없을 때만 새 컨트롤러 생성
+        if (_currentAnimationKey != key || !_controllerCache.containsKey(key)) {
+          _currentAnimationKey = key;
+          
+          // 기존 컨트롤러 정리 (현재 키 제외)
+          final controllersToRemove = _controllerCache.keys.where((k) => k != key).toList();
+          for (final keyToRemove in controllersToRemove) {
+            _controllerCache[keyToRemove]?.dispose();
+            _controllerCache.remove(keyToRemove);
+          }
+          
+          // 새 컨트롤러 생성
           late RiveAnimationController controller;
           try {
             if (key == 'id') {
@@ -113,35 +135,97 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> with Single
                 key,
                 autoplay: true,
                 onStop: () {
-                  print('[SlimeDebug] OneShot $key stopped, reverting to id');
-                  if (_localAnimKey == null) vm.animationKey.value = 'id';
+                  // ViewModel에 애니메이션 완료 알림
+                  final vm = context.read<SlimeCharacterViewModel>();
+                  vm.onAnimationCompleted(key);
+                  
+                  // 애니메이션이 끝나면 즉시 idle로 복귀
+                  if (_localAnimKey == null) {
+                    vm.animationKey.value = 'id';
+                  }
                 },
               );
             }
+            _controllerCache[key] = controller;
           } catch (e) {
-            print('[SlimeDebug] Animation "$key" not found: $e. Falling back to id.');
             controller = SimpleAnimation('id', autoplay: true);
+            _controllerCache[key] = controller;
           }
-          final controllers = [controller];
-          return Transform.scale(
-            scale: _scale,
-            child: Opacity(
-              opacity: 0.9,
-              child:
-                Assets.rives.gifYellowSlime.rive(
-                  fit: BoxFit.contain,
-                  controllers: controllers,
-                  alignment: Alignment.center,
-                  animations: [
-                    if (widget.showDebugInfo) 'debug',
-                    if (widget.initialAnimationName.isNotEmpty) widget.initialAnimationName,
-                    if (key != 'id') key,
-                  ]
-                ),
+        }
+        
+        final controller = _controllerCache[key]!;
+        final controllers = [controller];
+        return Transform.scale(
+          scale: _scale,
+          child: Opacity(
+            opacity: 0.9,
+            child: SizedBox(
+              width: 195, // 30% 증가 (150 → 195)
+              height: 195, // 30% 증가 (150 → 195)
+              child: Assets.rives.gifYellowSlime.rive(
+                fit: BoxFit.contain,
+                controllers: controllers,
+                alignment: Alignment.center,
+                animations: [
+                  if (widget.showDebugInfo) 'debug',
+                  if (widget.initialAnimationName.isNotEmpty) widget.initialAnimationName,
+                  if (key != 'id') key,
+                ]
+              ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
+
+    // enableGestures가 true일 때만 GestureDetector로 감싸기
+    if (widget.enableGestures) {
+      return GestureDetector(
+        onTap: () => vm.onGesture(Gesture.tap),
+        onDoubleTap: () => vm.onGesture(Gesture.doubleTap),
+        onLongPress: () => vm.onGesture(Gesture.longPress),
+        // ───────── drag 인식 ─────────
+        onPanStart:  (details) {
+          _dragStart = details.localPosition;
+          debugPrint('[SlimeDebug] onPanStart: ${details.localPosition}');
+        },
+        onPanUpdate: (details) {
+          debugPrint('[SlimeDebug] onPanUpdate: ${details.localPosition}, delta: ${details.delta}');
+        },
+        onPanEnd:    (details) {
+          debugPrint('[SlimeDebug] onPanEnd: velocity=${details.velocity.pixelsPerSecond}');
+          if (_dragStart == null) {
+            debugPrint('[SlimeDebug] _dragStart is null, returning');
+            return;
+          }
+          
+          // 속도 기반 감지
+          final velocityDistance = (details.velocity.pixelsPerSecond.dx).abs() + (details.velocity.pixelsPerSecond.dy).abs();
+          
+          // 거리 기반 감지 (현재 위치와 시작 위치의 차이)
+          final currentPosition = details.globalPosition;
+          final startPosition = _dragStart!;
+          final dragDistance = (currentPosition.dx - startPosition.dx).abs() + (currentPosition.dy - startPosition.dy).abs();
+          
+          debugPrint('[SlimeDebug] velocity distance: $velocityDistance, drag distance: $dragDistance');
+          
+          // 매우 낮은 기준으로 설정 (조금만 움직여도 감지)
+          const minVelocity = 50;      // 매우 낮은 기준 (기존 500 → 50)
+          const minDragDistance = 5;   // 5픽셀만 움직여도 드래그로 감지
+          
+          if (velocityDistance > minVelocity || dragDistance > minDragDistance) {
+            debugPrint('[SlimeDebug] drag detected! velocity=$velocityDistance, distance=$dragDistance');
+            vm.onGesture(Gesture.drag);
+          } else {
+            debugPrint('[SlimeDebug] drag too small, velocity=$velocityDistance (min: $minVelocity), distance=$dragDistance (min: $minDragDistance)');
+          }
+          _dragStart = null;
+        },
+        behavior: HitTestBehavior.translucent,
+        child: childWidget,
+      );
+    } else {
+      return childWidget;
+    }
   }
 }
