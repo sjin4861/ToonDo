@@ -89,23 +89,17 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> with Single
         if (animKey != 'id') {
           // 제스처 애니메이션이 실행 중이면 우선
           key = animKey;
-          // 제스처 애니메이션 중에는 깜빡임 중단 (다음 프레임에 처리)
+          // 제스처 애니메이션 중에는 깜빡임 중단
           if (_localAnimKey != null) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) {
-                setState(() {
-                  _localAnimKey = null;
-                  _isBlinking = false;
-                });
-              }
-            });
+            setState(() => _localAnimKey = null);
+            _isBlinking = false;
           }
         } else {
           // idle 상태에서만 깜빡임 허용
           key = _localAnimKey ?? animKey;
         }
         
-        // 새로운 컨트롤러를 매번 생성 (단순화)
+        // Build controller with fallback if animation not found
         late RiveAnimationController controller;
         try {
           if (key == 'id') {
@@ -116,17 +110,13 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> with Single
               autoplay: true,
               onStop: () {
                 // ViewModel에 애니메이션 완료 알림
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (mounted) {
-                    final vm = context.read<SlimeCharacterViewModel>();
-                    vm.onAnimationCompleted(key);
-                    
-                    // 애니메이션이 끝나면 즉시 idle로 복귀
-                    if (_localAnimKey == null) {
-                      vm.animationKey.value = 'id';
-                    }
-                  }
-                });
+                final vm = context.read<SlimeCharacterViewModel>();
+                vm.onAnimationCompleted(key);
+                
+                // 애니메이션이 끝나면 즉시 idle로 복귀
+                if (_localAnimKey == null) {
+                  vm.animationKey.value = 'id';
+                }
               },
             );
           }
