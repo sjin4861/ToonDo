@@ -57,7 +57,7 @@ class UserModel extends HiveObject {
       loginId: json['loginId'] as String,
       nickname: json['nickname'] as String?,
       points: json['points'] as int,
-   //   phoneNumber: json['phoneNumber'] as String?,
+      phoneNumber: json['phoneNumber'] as String?,
     );
   }
 
@@ -68,6 +68,7 @@ class UserModel extends HiveObject {
       'loginId': loginId,
       'nickname': nickname,
       'points': points,
+      'phoneNumber': phoneNumber,
     };
   }
 
