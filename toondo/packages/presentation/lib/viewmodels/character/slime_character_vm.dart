@@ -111,7 +111,7 @@ class SlimeCharacterViewModel extends ChangeNotifier {
             showRandomGreeting();
           }
         } else {
-          print('[SlimeCharacterViewModel] 애니메이션 실행 중이므로 자동 인사말 건너뛰기');
+          print('[SlimeCharacterViewModel] 자동 인사말 건너뛰기');
         }
       },
     );
@@ -130,7 +130,7 @@ class SlimeCharacterViewModel extends ChangeNotifier {
         if (!_showGreeting && !_isAnimationPlaying && !_isProcessingGesture) {
           showInteractionMessage();
         } else {
-          print('[SlimeCharacterViewModel] 인사말 표시 중이거나 애니메이션 실행 중이므로 상호작용 메시지 건너뛰기');
+          print('[SlimeCharacterViewModel] 상호작용 메시지 건너뛰기');
         }
       },
     );
@@ -144,8 +144,6 @@ class SlimeCharacterViewModel extends ChangeNotifier {
 
   /// 슬라임 터치 시 인사말 표시
   void onSlimeTapped() {
-    print('[SlimeCharacterViewModel] 슬라임이 클릭되었습니다!');
-    
     if (!_canPlayAnimation()) {
       return;
     }
@@ -159,19 +157,15 @@ class SlimeCharacterViewModel extends ChangeNotifier {
       return Future.delayed(const Duration(milliseconds: 200));
     }).then((_) {
       final clickMessage = SlimeGreetings.getClickReactionMessage();
-      print('[SlimeCharacterViewModel] 클릭 반응 메시지: $clickMessage');
       showCustomGreeting(clickMessage);
       _isProcessingGesture = false;
     }).catchError((error) {
-      print('[SlimeCharacterViewModel] 탭 처리 중 오류: $error');
       _isProcessingGesture = false;
     });
   }
 
   /// 슬라임 더블탭 시 점프 애니메이션과 인사말 표시
   void onSlimeDoubleTapped() {
-    print('[SlimeCharacterViewModel] 슬라임이 더블클릭되었습니다!');
-    
     if (!_canPlayAnimation()) {
       return;
     }
@@ -187,15 +181,12 @@ class SlimeCharacterViewModel extends ChangeNotifier {
       showTimeBasedGreeting();
       _isProcessingGesture = false;
     }).catchError((error) {
-      print('[SlimeCharacterViewModel] 더블탭 처리 중 오류: $error');
       _isProcessingGesture = false;
     });
   }
 
   /// 슬라임 롱프레스 시 애니메이션과 인사말 표시
   void onSlimeLongPressed() {
-    print('[SlimeCharacterViewModel] 슬라임이 롱프레스되었습니다!');
-    
     if (!_canPlayAnimation()) {
       return;
     }
@@ -211,15 +202,12 @@ class SlimeCharacterViewModel extends ChangeNotifier {
       showMotivation();
       _isProcessingGesture = false;
     }).catchError((error) {
-      print('[SlimeCharacterViewModel] 롱프레스 처리 중 오류: $error');
       _isProcessingGesture = false;
     });
   }
 
   /// 슬라임 드래그 시 화나는 애니메이션과 메시지 표시
   void onSlimeDragged() {
-    print('[SlimeCharacterViewModel] 슬라임이 드래그되었습니다!');
-    
     if (!_canPlayAnimation()) {
       return;
     }
@@ -238,7 +226,6 @@ class SlimeCharacterViewModel extends ChangeNotifier {
       showCustomGreeting(angryMessages.first);
       _isProcessingGesture = false;
     }).catchError((error) {
-      print('[SlimeCharacterViewModel] 드래그 처리 중 오류: $error');
       _isProcessingGesture = false;
     });
   }
@@ -324,14 +311,11 @@ class SlimeCharacterViewModel extends ChangeNotifier {
     _animationProtectionTimer?.cancel();
     _animationProtectionTimer = Timer(Duration(seconds: durationSeconds), () {
       _isAnimationPlaying = false;
-      print('[SlimeCharacterViewModel] 애니메이션 보호 해제');
     });
-    print('[SlimeCharacterViewModel] 애니메이션 보호 시작 (${durationSeconds}초)');
   }
 
   /// 애니메이션이 완료되었을 때 호출 (OneShotAnimation 콜백용)
   void onAnimationCompleted(String animationName) {
-    print('[SlimeCharacterViewModel] 애니메이션 완료: $animationName');
     // 애니메이션이 완료되면 즉시 보호 해제
     _isAnimationPlaying = false;
     _animationProtectionTimer?.cancel();
@@ -345,11 +329,9 @@ class SlimeCharacterViewModel extends ChangeNotifier {
   /// 애니메이션이 실행 가능한지 확인
   bool _canPlayAnimation() {
     if (_isAnimationPlaying) {
-      print('[SlimeCharacterViewModel] 애니메이션 실행 중이므로 새로운 애니메이션 차단');
       return false;
     }
     if (_isProcessingGesture) {
-      print('[SlimeCharacterViewModel] 제스처 처리 중이므로 새로운 애니메이션 차단');
       return false;
     }
     return true;
