@@ -251,9 +251,7 @@ class SlimeCharacterViewModel extends ChangeNotifier {
 
   /* 제스처 API – 위젯에서 호출 */
   Future<void> onGesture(Gesture g) async {
-    debugPrint('[SlimeDebug] VM ▶ onGesture: $g');   // ❶
     final resp = await _gestureUC(g);
-    debugPrint('[SlimeDebug] VM ◀ animationKey="${resp.animationKey}"'); // ❷
     animationKey.value = resp.animationKey;
   }
 
