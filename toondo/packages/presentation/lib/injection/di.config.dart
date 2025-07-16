@@ -51,6 +51,7 @@ import 'package:domain/usecases/todo/update_todo_status.dart' as _i183;
 import 'package:domain/usecases/user/get_user.dart' as _i991;
 import 'package:domain/usecases/user/get_user_nickname.dart' as _i849;
 import 'package:domain/usecases/user/update_nickname.dart' as _i910;
+import 'package:domain/usecases/user/update_phone_number.dart' as _i81;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:presentation/viewmodels/character/chat_viewmodel.dart' as _i178;
@@ -122,6 +123,16 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i764.LoginViewModel>(
       () => _i764.LoginViewModel(loginUseCase: gh<_i1068.LoginUseCase>()),
     );
+    gh.lazySingleton<_i506.TodoManageViewModel>(
+      () => _i506.TodoManageViewModel(
+        deleteTodoUseCase: gh<_i552.DeleteTodoUseCase>(),
+        getTodosUseCase: gh<_i362.GetAllTodosUseCase>(),
+        updateTodoStatusUseCase: gh<_i183.UpdateTodoStatusUseCase>(),
+        updateTodoDatesUseCase: gh<_i182.UpdateTodoDatesUseCase>(),
+        getGoalsLocalUseCase: gh<_i477.GetGoalsLocalUseCase>(),
+        initialDate: gh<DateTime>(),
+      ),
+    );
     gh.lazySingleton<_i72.TodoInputViewModel>(
       () => _i72.TodoInputViewModel(
         todo: gh<_i429.Todo>(),
@@ -133,16 +144,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i178.ChatViewModel>(
       () => _i178.ChatViewModel(gh<_i642.SlimeOnMessageUseCase>()),
-    );
-    gh.lazySingleton<_i506.TodoManageViewModel>(
-      () => _i506.TodoManageViewModel(
-        deleteTodoUseCase: gh<_i552.DeleteTodoUseCase>(),
-        getTodosUseCase: gh<_i362.GetAllTodosUseCase>(),
-        updateTodoStatusUseCase: gh<_i183.UpdateTodoStatusUseCase>(),
-        updateTodoDatesUseCase: gh<_i182.UpdateTodoDatesUseCase>(),
-        getGoalsLocalUseCase: gh<_i477.GetGoalsLocalUseCase>(),
-        initialDate: gh<DateTime>(),
-      ),
     );
     gh.lazySingleton<_i370.AppNotificationViewModel>(
       () => _i370.AppNotificationViewModel(
@@ -193,13 +194,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i849.GetUserNicknameUseCase>(),
       ),
     );
-    gh.factory<_i501.AccountSettingViewModel>(
-      () => _i501.AccountSettingViewModel(
-        getUserUseCase: gh<_i991.GetUserUseCase>(),
-        updateNickNameUseCase: gh<_i910.UpdateNickNameUseCase>(),
-        myPageViewModel: gh<_i272.MyPageViewModel>(),
-      ),
-    );
     gh.lazySingleton<_i1040.AppThemeViewModel>(
       () => _i1040.AppThemeViewModel(
         gh<_i129.GetThemeModeUseCase>(),
@@ -209,6 +203,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i657.OnboardingViewModel>(
       () => _i657.OnboardingViewModel(
         updateNickNameUseCase: gh<_i910.UpdateNickNameUseCase>(),
+      ),
+    );
+    gh.factory<_i501.AccountSettingViewModel>(
+      () => _i501.AccountSettingViewModel(
+        getUserUseCase: gh<_i991.GetUserUseCase>(),
+        updateNickNameUseCase: gh<_i910.UpdateNickNameUseCase>(),
+        updatePhoneNumberUseCase: gh<_i81.UpdatePhoneNumberUseCase>(),
+        myPageViewModel: gh<_i272.MyPageViewModel>(),
       ),
     );
     return this;
