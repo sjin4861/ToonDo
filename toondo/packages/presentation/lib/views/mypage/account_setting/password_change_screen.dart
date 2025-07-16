@@ -9,12 +9,10 @@ class PasswordChangeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentPasswordController = TextEditingController();
     final newPasswordController = TextEditingController();
     final confirmPasswordController = TextEditingController();
 
     // TODO: 뷰모델 연결 후 에러 메시지, 상태 처리 예정
-    // final String? currentPasswordError = null;
     // final String newPasswordError = '기존 비밀번호는 사용할 수 없습니다.';
     // final String confirmPasswordError = '비밀번호가 일치하지 않습니다.';
 
@@ -30,10 +28,8 @@ class PasswordChangeScreen extends StatelessWidget {
             const AccountChangeTitle(value: '비밀번호'),
             const SizedBox(height: 28),
             PasswordChangeTextFields(
-              currentController: currentPasswordController,
               newController: newPasswordController,
               confirmController: confirmPasswordController,
-              // currentPasswordError: currentPasswordError,
               // newPasswordError: newPasswordError,
               // confirmPasswordError: confirmPasswordError,
             ),
