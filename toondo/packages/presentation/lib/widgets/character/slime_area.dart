@@ -84,37 +84,30 @@ class _SlimeStack extends StatelessWidget {
             bottom: 30, // 원래 위치로 되돌림 (40에서 20으로)
             child: GestureDetector(
               onTap: () {
-                print('[SlimeArea] 슬라임 탭 이벤트 발생!');
                 // 탭할 때마다 클릭 반응 메시지
                 viewModel.onSlimeTapped();
               },
               onLongPress: () {
-                print('[SlimeArea] 슬라임 롱프레스 이벤트 발생!');
                 // 길게 누르면 동기부여 메시지와 애니메이션
                 viewModel.onSlimeLongPressed();
               },
               onDoubleTap: () {
-                print('[SlimeArea] 슬라임 더블탭 이벤트 발생!');
                 // 더블 탭하면 점프 애니메이션과 시간대별 인사말
                 viewModel.onSlimeDoubleTapped();
               },
               // 드래그 이벤트 추가
               onPanStart: (details) {
-                print('[SlimeArea] 드래그 시작: ${details.localPosition}');
+                // 드래그 시작
               },
               onPanUpdate: (details) {
-                print('[SlimeArea] 드래그 중: ${details.localPosition}, delta: ${details.delta}');
+                // 드래그 중
               },
               onPanEnd: (details) {
-                print('[SlimeArea] 드래그 종료: velocity=${details.velocity.pixelsPerSecond}');
                 final distance = (details.velocity.pixelsPerSecond.dx).abs() + (details.velocity.pixelsPerSecond.dy).abs();
                 const minVelocity = 100; // 매우 낮은 임계값으로 설정 (조금만 드래그해도 감지)
-                print('[SlimeArea] 드래그 속도: $distance (최소: $minVelocity)');
                 if (distance > minVelocity) {
-                  print('[SlimeArea] 드래그 감지됨! 화나는 애니메이션 실행');
                   viewModel.onSlimeDragged();
                 } else {
-                  print('[SlimeArea] 드래그 속도가 너무 느림 - 그래도 화나는 애니메이션 실행!');
                   // 속도가 느려도 드래그가 감지되면 화나는 애니메이션 실행
                   viewModel.onSlimeDragged();
                 }
