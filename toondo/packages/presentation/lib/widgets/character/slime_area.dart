@@ -117,7 +117,7 @@ class _SlimeStack extends StatelessWidget {
                 height: 260, // 크기는 유지 (280에서 260으로 조정)
                 child: const SlimeCharacterWidget(
                   enableGestures: false, // 제스처를 비활성화하여 SlimeArea에서만 처리
-                  showDebugInfo: true,
+                  showDebugInfo: false, // 디버그 정보 비활성화
                   initialAnimationName: 'id',
                 ),
               ),
