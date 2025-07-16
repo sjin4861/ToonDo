@@ -58,9 +58,10 @@ import 'package:domain/usecases/todo/update_todo.dart' as _i375;
 import 'package:domain/usecases/todo/update_todo_dates.dart' as _i182;
 import 'package:domain/usecases/todo/update_todo_status.dart' as _i183;
 import 'package:domain/usecases/user/get_user.dart' as _i991;
-import 'package:domain/usecases/user/get_user_nickname.dart';
-import 'package:domain/usecases/user/update_nickname.dart';
-import 'package:domain/usecases/user/update_points.dart';
+import 'package:domain/usecases/user/get_user_nickname.dart' as _i849;
+import 'package:domain/usecases/user/update_nickname.dart' as _i910;
+import 'package:domain/usecases/user/update_phone_number.dart' as _i81;
+import 'package:domain/usecases/user/update_points.dart' as _i1049;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -176,17 +177,20 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i461.SendSmsCode>(
       () => _i461.SendSmsCode(gh<_i366.SmsRepository>()),
     );
-    gh.factory<UpdateUserPointsUseCase>(
-      () => UpdateUserPointsUseCase(gh<_i988.UserRepository>()),
+    gh.factory<_i1049.UpdateUserPointsUseCase>(
+      () => _i1049.UpdateUserPointsUseCase(gh<_i988.UserRepository>()),
     );
-    gh.factory<UpdateNickNameUseCase>(
-      () => UpdateNickNameUseCase(gh<_i988.UserRepository>()),
+    gh.factory<_i910.UpdateNickNameUseCase>(
+      () => _i910.UpdateNickNameUseCase(gh<_i988.UserRepository>()),
     );
-    gh.factory<GetUserNicknameUseCase>(
-      () => GetUserNicknameUseCase(gh<_i988.UserRepository>()),
+    gh.factory<_i849.GetUserNicknameUseCase>(
+      () => _i849.GetUserNicknameUseCase(gh<_i988.UserRepository>()),
     );
     gh.factory<_i991.GetUserUseCase>(
       () => _i991.GetUserUseCase(gh<_i988.UserRepository>()),
+    );
+    gh.factory<_i81.UpdatePhoneNumberUseCase>(
+      () => _i81.UpdatePhoneNumberUseCase(gh<_i988.UserRepository>()),
     );
     gh.factory<_i642.SlimeOnMessageUseCase>(
       () => _i642.SlimeOnMessageUseCase(gh<_i657.SlimeRepository>()),
