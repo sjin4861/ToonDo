@@ -34,6 +34,26 @@ class UserRemoteDatasource {
     throw Exception('Failed to update nickname: ${response.body}');
   }
 
+  Future<User> changePhoneNumber(String newPhoneNumber) async {
+    final token = await authRepository.getToken();
+    if (token == null) throw Exception('JWT 토큰이 없습니다.');
+    final url = Uri.parse('${Constants.baseUrl}/users/save-phone');
+    final requestBody = {'phoneNumber': newPhoneNumber};
+    final response = await client.put(
+      url,
+      headers: {
+        'Authorization': token,
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(requestBody),
+    );
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return UserModel.fromJson(data).toEntity();
+    }
+    throw Exception('Failed to update phone number: ${response.body}');
+  }
+
   // Todo: 아직 벡엔드에서 구현 x
   Future<User> updateUserPoints(int delta) async {
     final token = await authRepository.getToken();
