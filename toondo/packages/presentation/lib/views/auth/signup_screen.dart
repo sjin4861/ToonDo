@@ -10,19 +10,26 @@ class SignupScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<SignupViewModel>.value(
-      value: GetIt.instance<SignupViewModel>(),
+    return ChangeNotifierProvider<SignupViewModel>(
+      create: (_) {
+        final viewModel = GetIt.instance<SignupViewModel>();
+        // 화면 진입 시마다 상태 초기화
+        viewModel.resetState();
+        return viewModel;
+      },
       child: Consumer<SignupViewModel>(
         builder: (context, viewModel, child) {
           if (viewModel.isSignupComplete) {
-            // Onboarding 페이지로 이동
+            // Onboarding 페이지로 이동 (한 번만 실행되도록)
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => OnboardingScreen(),
-                ),
-              );
+              if (Navigator.canPop(context)) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OnboardingScreen(),
+                  ),
+                );
+              }
             });
           }
           Widget currentStepWidget;
@@ -31,7 +38,7 @@ class SignupScreen extends StatelessWidget {
               currentStepWidget = SignupStep1();
               break;
             default:
-              currentStepWidget = Container();
+              currentStepWidget = SignupStep1(); // 기본값을 명확히 설정
           }
           return currentStepWidget;
         },
