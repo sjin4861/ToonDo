@@ -6,4 +6,5 @@ abstract class AuthRepository {
   Future<void> logout();
   Future<String?> getToken();
   Future<bool> checkLoginIdExists(String loginId);
+  Future<void> deleteAccount();
 }
