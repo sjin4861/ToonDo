@@ -1,9 +1,10 @@
 import 'package:domain/entities/user.dart';
 
 abstract class AuthRepository {
-  Future<User> registerUser(String phoneNumber, String password);
-  Future<User> login(String phoneNumber, String password);
+  Future<User> registerUser(String loginId, String password);
+  Future<User> login(String loginId, String password);
   Future<void> logout();
   Future<String?> getToken();
-  Future<bool> checkPhoneNumberExists(String phoneNumber);
+  Future<bool> checkLoginIdExists(String loginId);
+  Future<void> deleteAccount();
 }

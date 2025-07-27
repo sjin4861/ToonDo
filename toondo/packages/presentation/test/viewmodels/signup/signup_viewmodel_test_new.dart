@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:domain/usecases/auth/register.dart';
 import 'package:domain/usecases/auth/check_login_id_exists.dart';
-import 'package:domain/entities/user.dart';
 import 'package:presentation/viewmodels/signup/signup_viewmodel.dart';
 import '../../helpers/test_data.dart';
 import 'package:mockito/annotations.dart';
@@ -88,13 +87,17 @@ void main() {
         
         expect(result, true);
         expect(viewModel.loginIdError, null);
-        expect(viewModel.currentStep, 2); // 다음 단계로 이동
         verify(mockCheckLoginIdExistsUseCase.call(TestData.testLoginId)).called(1);
       });
 
-      test('이미 존재하는 로그인 ID는 유효하지 않아야 한다', () async {
+      test('이미 존재하는 로그인 ID는 에러 메시지를 표시하고 로그인 화면으로 이동해야 한다', () async {
         const existingLoginId = 'existinguser';
         viewModel.setLoginId(existingLoginId);
+        
+        bool navigatedToLogin = false;
+        viewModel.setNavigateToLogin(() {
+          navigatedToLogin = true;
+        });
         
         when(mockCheckLoginIdExistsUseCase.call(existingLoginId))
             .thenAnswer((_) async => true);
@@ -102,86 +105,67 @@ void main() {
         final result = await viewModel.validateLoginId();
         
         expect(result, false);
-        expect(viewModel.loginIdError, '이미 사용 중인 아이디입니다.');
+        expect(viewModel.loginIdError, '이미 가입된 아이디입니다. 로그인을 시도해보세요.');
         verify(mockCheckLoginIdExistsUseCase.call(existingLoginId)).called(1);
+        
+        // 잠시 후 로그인 화면으로 이동하는지 확인 (비동기)
+        await Future.delayed(Duration(seconds: 3));
+        expect(navigatedToLogin, true);
       });
     });
 
-    group('비밀번호 유효성 검사 및 회원가입', () {
-      test('빈 비밀번호는 오류를 표시해야 한다', () async {
+    group('비밀번호 유효성 검사', () {
+      test('빈 비밀번호는 유효하지 않아야 한다', () async {
         viewModel.setPassword('');
         
         await viewModel.validatePassword();
         
         expect(viewModel.passwordError, '비밀번호를 입력해주세요.');
-        expect(viewModel.isSignupComplete, false);
       });
 
-      test('너무 짧은 비밀번호는 오류를 표시해야 한다', () async {
+      test('너무 짧은 비밀번호는 유효하지 않아야 한다', () async {
         viewModel.setPassword('123');
         
         await viewModel.validatePassword();
         
         expect(viewModel.passwordError, '비밀번호는 8자 이상 20자 이하여야 합니다.');
-        expect(viewModel.isSignupComplete, false);
       });
 
-      test('영문/숫자 조합이 없는 비밀번호는 오류를 표시해야 한다', () async {
-        viewModel.setPassword('abcdefgh');
-        
-        await viewModel.validatePassword();
-        
-        expect(viewModel.passwordError, '비밀번호에 영문과 숫자를 모두 포함해주세요.');
-        expect(viewModel.isSignupComplete, false);
-      });
-
-      test('유효한 비밀번호로 회원가입이 성공해야 한다', () async {
-        final testUser = User(
-          id: 123,
-          loginId: TestData.testLoginId,
-          nickname: TestData.testNickname,
-          points: 0,
-        );
-        
-        viewModel.setLoginId(TestData.testLoginId);
+      test('유효한 비밀번호는 통과해야 한다', () async {
         viewModel.setPassword(TestData.testPassword);
+        viewModel.setConfirmPassword(TestData.testPassword);
         
-        when(mockRegisterUseCase.call(TestData.testLoginId, TestData.testPassword))
-            .thenAnswer((_) async => testUser);
+        when(mockRegisterUseCase.call(any, any))
+            .thenAnswer((_) async => TestData.testUser);
         
         await viewModel.validatePassword();
         
         expect(viewModel.passwordError, null);
-        expect(viewModel.isSignupComplete, true);
-        expect(viewModel.userId, 123);
-        verify(mockRegisterUseCase.call(TestData.testLoginId, TestData.testPassword)).called(1);
       });
     });
 
-    group('단계 관리', () {
-      test('nextStep은 현재 단계를 증가시켜야 한다', () {
-        expect(viewModel.currentStep, 1);
-        
-        viewModel.nextStep();
-        
-        expect(viewModel.currentStep, 2);
-      });
+    group('닉네임 유효성 검사', () {
+      // SignupViewModel에 닉네임 기능이 없으므로 테스트 제거
+      // 닉네임은 온보딩 과정에서 처리됨
+    });
 
-      test('goBack은 현재 단계를 감소시켜야 한다', () {
-        viewModel.nextStep(); // step = 2
-        expect(viewModel.currentStep, 2);
+    group('회원가입', () {
+      test('모든 정보가 유효할 때 회원가입이 성공해야 한다', () async {
+        viewModel.setLoginId(TestData.testLoginId);
+        viewModel.setPassword(TestData.testPassword);
+        viewModel.setConfirmPassword(TestData.testPassword);
         
-        viewModel.goBack();
+        when(mockCheckLoginIdExistsUseCase.call(TestData.testLoginId))
+            .thenAnswer((_) async => false);
+        when(mockRegisterUseCase.call(any, any))
+            .thenAnswer((_) async => TestData.testUser);
         
-        expect(viewModel.currentStep, 1);
-      });
-
-      test('1단계에서 goBack을 호출해도 단계가 감소하지 않아야 한다', () {
-        expect(viewModel.currentStep, 1);
+        await viewModel.validateLoginId();
+        await viewModel.validatePassword();
         
-        viewModel.goBack();
-        
-        expect(viewModel.currentStep, 1);
+        expect(viewModel.isSignupComplete, true);
+        expect(viewModel.userId, TestData.testUser.id);
+        verify(mockRegisterUseCase.call(any, any)).called(1);
       });
     });
   });

@@ -11,4 +11,8 @@ class AuthLocalDataSource {
   Future<void> cacheUser(UserModel user) async {
     await userBox.put('currentUser', user);
   }
+
+  Future<void> clearUser() async {
+    await userBox.delete('currentUser');
+  }
 }

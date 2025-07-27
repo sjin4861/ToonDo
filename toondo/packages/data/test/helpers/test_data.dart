@@ -4,6 +4,27 @@ import 'package:domain/entities/todo.dart';
 import 'package:domain/entities/user.dart';
 
 class TestData {
+  // 테스트용 상수
+  static const String testLoginId = 'testuser123';
+  static const String testPassword = 'TestPass123!';
+  static const String testNickname = '테스트유저';
+  static const String testEmail = 'test@example.com';
+
+  // 테스트용 사용자 생성
+  static User createTestUser({
+    int id = 1,
+    String? loginId,
+    String nickname = '테스트 사용자',
+    int points = 0,
+  }) {
+    return User(
+      id: id,
+      loginId: loginId ?? testLoginId,
+      nickname: nickname,
+      points: points,
+    );
+  }
+
   // 테스트용 목표 생성 (ID만 변경하여 여러 개의 목표 생성 가능)
   static Goal createTestGoal({
     required String id,
@@ -74,21 +95,6 @@ class TestData {
         urgency: (index % 2) + 1,
         importance: (index % 2) + 1,
       ),
-    );
-  }
-
-  // 테스트용 유저 생성
-  static User createTestUser({
-    int id = 1,
-    String loginId = '01012345678',
-    String? nickname,
-    int points = 100,
-  }) {
-    return User(
-      id: id,
-      loginId: loginId,
-      nickname: nickname ?? '테스트유저',
-      points: points,
     );
   }
 }

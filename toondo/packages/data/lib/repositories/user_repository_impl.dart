@@ -54,13 +54,15 @@ class UserRepositoryImpl implements UserRepository {
   Future<User> getUser() {
     final model = localDatasource.getUser();
     return model;
-    }
+  }
 
   @override
-  Future<User> updatePhoneNumber(String newPhoneNumber) async {
-    // Calls remote API
-    final updatedUser = await remoteDatasource.changePhoneNumber(newPhoneNumber);
-    await localDatasource.setPhoneNumber(newPhoneNumber);
-    return updatedUser;
+  Future<void> deleteAccount() async {
+    // TODO: 백엔드 API 호출로 계정 삭제
+    // await remoteDatasource.deleteAccount();
+    
+    // 로컬 데이터 삭제
+    await localDatasource.clearUser();
+    print('[UserRepository] 계정 삭제 완료');
   }
 }

@@ -9,13 +9,13 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String? passedPhoneNumber = ModalRoute.of(context)?.settings.arguments as String?;
+    final String? passedLoginId = ModalRoute.of(context)?.settings.arguments as String?;
     return ChangeNotifierProvider<LoginViewModel>.value(
       value: GetIt.instance<LoginViewModel>(),
       child: Consumer<LoginViewModel>(
         builder: (context, viewModel, child) {
-          if (passedPhoneNumber != null && viewModel.phoneNumberController.text.isEmpty) {
-            viewModel.phoneNumberController.text = passedPhoneNumber;
+          if (passedLoginId != null && viewModel.loginIdController.text.isEmpty) {
+            viewModel.loginIdController.text = passedLoginId;
           }
           return Scaffold(
             backgroundColor: Color(0xFFFCFCFC),
@@ -70,17 +70,17 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 32),
-                    // 휴대폰 번호 입력 필드 (기존에는 표시만 했었음)
+                    // 아이디 입력 필드
                     CustomAuthTextField(
-                      key: const Key('login_phoneNumberField'),
-                      label: '휴대폰 번호',
-                      controller: viewModel.phoneNumberController,
-                      readOnly: passedPhoneNumber != null,
-                      hintText: passedPhoneNumber != null ? null : '휴대폰 번호를 입력하세요',
+                      key: const Key('login_loginIdField'),
+                      label: '아이디',
+                      controller: viewModel.loginIdController,
+                      readOnly: passedLoginId != null,
+                      hintText: passedLoginId != null ? null : '아이디를 입력하세요',
                     ),
-                    // 휴대폰 번호 에러 메시지 (있을 경우)
+                    // 아이디 에러 메시지 (있을 경우)
                     if (viewModel.loginError != null &&
-                        viewModel.phoneNumberController.text.trim().isEmpty)
+                        viewModel.loginIdController.text.trim().isEmpty)
                       Padding(
                         padding: EdgeInsets.only(top: 4),
                         child: Text(
@@ -157,7 +157,6 @@ class LoginScreen extends StatelessWidget {
                     child: ElevatedButton(
                       key: const Key('login_nextButton'),
                       onPressed: () async {
-                        print('로그인 시도 전화번호: ${viewModel.phoneNumberController.text}');
                         bool success = await viewModel.login();
                         if (success) {
                           // 로그인 성공 시 홈 화면으로 이동

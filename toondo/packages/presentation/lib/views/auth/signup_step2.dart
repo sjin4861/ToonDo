@@ -8,9 +8,10 @@ import 'package:presentation/viewmodels/signup/signup_viewmodel.dart';
 import 'package:presentation/views/onboarding/onboarding_screen.dart';
 
 class SignupStep2 extends StatelessWidget {
-  final String phoneNumber; // 휴대폰 번호 의존성 추가
+  final String loginId; // 로그인 아이디 의존성 추가
   final ValueNotifier<bool> isPasswordVisible = ValueNotifier(false);
-  SignupStep2({super.key, required this.phoneNumber});
+  final ValueNotifier<bool> isConfirmPasswordVisible = ValueNotifier(false);
+  SignupStep2({super.key, required this.loginId});
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +19,9 @@ class SignupStep2 extends StatelessWidget {
       value: GetIt.instance<SignupViewModel>(),
       child: Consumer<SignupViewModel>(
         builder: (context, signupViewModel, child) {
-          if (signupViewModel.phoneNumber.isEmpty) {
+          if (signupViewModel.loginId.isEmpty) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              signupViewModel.setPhoneNumber(phoneNumber);
+              signupViewModel.setLoginId(loginId);
             });
           }
           return Scaffold(
@@ -56,11 +57,11 @@ class SignupStep2 extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 32),
-                  // 휴대폰 번호 입력란
+                  // 아이디 입력란
                   CustomAuthTextField(
-                    key: const Key('signupStep2_phoneNumberField'),
-                    label: '휴대폰 번호',
-                    controller: signupViewModel.phoneNumberController,
+                    key: const Key('signupStep2_loginIdField'),
+                    label: '아이디',
+                    controller: signupViewModel.loginIdController,
                     readOnly: true,
                   ),
                   SizedBox(height: 24),
@@ -89,13 +90,40 @@ class SignupStep2 extends StatelessWidget {
                       },
                     ),
                     controller: signupViewModel.passwordController,
-                    errorText: signupViewModel.passwordError,
+                    errorText: null, // 내장 에러 표시 제거
                     isValid: signupViewModel.passwordError == null,
                   ),
                   if (signupViewModel.passwordError != null) ...[
                     SizedBox(height: 4),
                     Text(
                       signupViewModel.passwordError!,
+                      style: TextStyle(
+                        color: Color(0xFFEE0F12),
+                        fontSize: 10,
+                        fontFamily: 'Pretendard Variable',
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: 0.15,
+                      ),
+                    ),
+                  ],
+                  SizedBox(height: 16),
+                  // 비밀번호 확인 필드
+                  CustomAuthTextField(
+                    key: const Key('signupStep2_confirmPasswordField'),
+                    label: '비밀번호 확인',
+                    hintText: '비밀번호를 다시 입력하세요',
+                    obscureTextNotifier: isConfirmPasswordVisible,
+                    onChanged: (value) {
+                      signupViewModel.confirmPassword = value;
+                    },
+                    controller: signupViewModel.confirmPasswordController,
+                    errorText: null, // 내장 에러 표시 제거
+                    isValid: signupViewModel.confirmPasswordError == null,
+                  ),
+                  if (signupViewModel.confirmPasswordError != null) ...[
+                    SizedBox(height: 4),
+                    Text(
+                      signupViewModel.confirmPasswordError!,
                       style: TextStyle(
                         color: Color(0xFFEE0F12),
                         fontSize: 10,

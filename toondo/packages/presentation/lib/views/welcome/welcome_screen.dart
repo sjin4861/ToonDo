@@ -158,7 +158,7 @@ class WelcomeScreen extends StatelessWidget {
                           _buildSocialButton(
                             key: const Key('continueWithPhoneNumberButton'),
                             context,
-                            label: '휴대폰 번호로 계속하기',
+                            label: '기존 회원으로 계속하기',
                             color: Color(0xFFC9E1B4),
                             textColor: Color(0xFF1C1D1B),
                             iconPath: Assets.images.imgPhone.path,
