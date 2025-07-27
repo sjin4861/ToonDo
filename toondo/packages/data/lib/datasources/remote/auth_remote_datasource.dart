@@ -15,7 +15,7 @@ class AuthRemoteDataSource{
   /// 서버의 `/users/signup` 엔드포인트에 `POST` 요청을 보내어
   /// 새로운 사용자를 등록하고, 성공하면 `UserModel`을 반환합니다.
   ///
-  /// [phoneNumber] 사용자의 전화번호 (- 제외)
+  /// [loginId] 사용자의 로그인 아이디
   /// [password] 사용자의 비밀번호
   ///
   /// 성공 시:
@@ -30,17 +30,17 @@ class AuthRemoteDataSource{
   /// 예제:
   /// ```dart
   /// try {
-  ///   final user = await registerUser('01012345678', 'password123');
+  ///   final user = await registerUser('user123', 'password123');
   ///   print('회원가입 성공: ${user.token}');
   /// } catch (e) {
   ///   print('회원가입 실패: $e');
   /// }
   /// ```
   Future<Map<String, dynamic>> registerUser(
-    String phoneNumber,
+    String loginId,
     String password,
   ) async {
-    if (phoneNumber == Constants.testPhoneNumber){
+    if (loginId == Constants.testLoginId){
       // id: json['userId'] as int,
       // loginId: json['loginId'] as String,
       // nickname: json['nickname'] as String?,
@@ -48,7 +48,7 @@ class AuthRemoteDataSource{
       return {
         'token': 'test_token',
         'userId': -1,
-        'loginId': phoneNumber,
+        'loginId': loginId,
         'nickname': '',
         'points': 0,
       };
@@ -58,7 +58,7 @@ class AuthRemoteDataSource{
     final response = await httpClient.post(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'loginId': phoneNumber, 'password': password}),
+      body: jsonEncode({'loginId': loginId, 'password': password}),
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
@@ -70,14 +70,14 @@ class AuthRemoteDataSource{
   }
 
   Future<Map<String, dynamic>> login(
-    String phoneNumber,
+    String loginId,
     String password,
   ) async {
     final url = Uri.parse('$baseUrl/users/login');
     final response = await httpClient.post(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'loginId': phoneNumber, 'password': password}),
+      body: jsonEncode({'loginId': loginId, 'password': password}),
     );
 
     if (response.statusCode == 200) {
@@ -88,19 +88,19 @@ class AuthRemoteDataSource{
     }
   }
 
-  Future<bool> isPhoneNumberRegistered(String phoneNumber) async {
-    final url = Uri.parse('$baseUrl/users/check-phone-number');
+  Future<bool> isLoginIdRegistered(String loginId) async {
+    final url = Uri.parse('$baseUrl/users/check-login-id');
     final response = await httpClient.post(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'loginId': phoneNumber}),
+      body: jsonEncode({'loginId': loginId}),
     );
 
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
       return responseData['exists'];
     } else {
-      throw Exception('휴대폰 번호 확인 실패');
+      throw Exception('아이디 확인 실패');
     }
   }
 }
