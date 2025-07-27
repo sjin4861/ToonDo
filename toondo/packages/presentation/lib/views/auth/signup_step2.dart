@@ -90,7 +90,7 @@ class SignupStep2 extends StatelessWidget {
                       },
                     ),
                     controller: signupViewModel.passwordController,
-                    errorText: signupViewModel.passwordError,
+                    errorText: null, // 내장 에러 표시 제거
                     isValid: signupViewModel.passwordError == null,
                   ),
                   if (signupViewModel.passwordError != null) ...[
@@ -117,7 +117,7 @@ class SignupStep2 extends StatelessWidget {
                       signupViewModel.confirmPassword = value;
                     },
                     controller: signupViewModel.confirmPasswordController,
-                    errorText: signupViewModel.confirmPasswordError,
+                    errorText: null, // 내장 에러 표시 제거
                     isValid: signupViewModel.confirmPasswordError == null,
                   ),
                   if (signupViewModel.confirmPasswordError != null) ...[
