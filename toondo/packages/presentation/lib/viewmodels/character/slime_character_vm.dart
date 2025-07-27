@@ -78,7 +78,6 @@ class SlimeCharacterViewModel extends ChangeNotifier {
 
   /// 특정 메시지 표시
   void showCustomGreeting(String message) {
-    print('[SlimeCharacterViewModel] 커스텀 메시지 표시: $message');
     _currentGreeting = message;
     _showGreeting = true;
     notifyListeners();
@@ -149,12 +148,12 @@ class SlimeCharacterViewModel extends ChangeNotifier {
     }
     
     _isProcessingGesture = true;
-    _startAnimationProtection(durationSeconds: 1); // 1.5초로 단축 (탭은 짧은 애니메이션)
+    _startAnimationProtection(durationSeconds: 1); // 더 짧은 보호 시간
     
     // 기존 제스처 처리
     onGesture(Gesture.tap).then((_) {
       // 애니메이션이 시작된 후 약간의 지연을 두고 클릭 반응 메시지 표시
-      return Future.delayed(const Duration(milliseconds: 200));
+      return Future.delayed(const Duration(milliseconds: 150));
     }).then((_) {
       final clickMessage = SlimeGreetings.getClickReactionMessage();
       showCustomGreeting(clickMessage);
@@ -171,12 +170,12 @@ class SlimeCharacterViewModel extends ChangeNotifier {
     }
     
     _isProcessingGesture = true;
-    _startAnimationProtection(durationSeconds: 2); // 2초로 단축 (점프 애니메이션도 비교적 짧음)
+    _startAnimationProtection(durationSeconds: 1); // 더 짧은 보호 시간
     
     // 점프 애니메이션 실행
     onGesture(Gesture.doubleTap).then((_) {
       // 애니메이션이 시작된 후 약간의 지연을 두고 인사말 표시
-      return Future.delayed(const Duration(milliseconds: 300));
+      return Future.delayed(const Duration(milliseconds: 200));
     }).then((_) {
       showTimeBasedGreeting();
       _isProcessingGesture = false;
@@ -192,12 +191,12 @@ class SlimeCharacterViewModel extends ChangeNotifier {
     }
     
     _isProcessingGesture = true;
-    _startAnimationProtection(durationSeconds: 1); // 1.5초로 단축
+    _startAnimationProtection(durationSeconds: 1); // 더 짧은 보호 시간
     
     // 롱프레스 애니메이션 실행
     onGesture(Gesture.longPress).then((_) {
       // 애니메이션이 시작된 후 약간의 지연을 두고 동기부여 메시지 표시
-      return Future.delayed(const Duration(milliseconds: 200));
+      return Future.delayed(const Duration(milliseconds: 150));
     }).then((_) {
       showMotivation();
       _isProcessingGesture = false;
@@ -213,12 +212,12 @@ class SlimeCharacterViewModel extends ChangeNotifier {
     }
     
     _isProcessingGesture = true;
-    _startAnimationProtection(durationSeconds: 2); // 2초로 단축 (화나는 애니메이션)
+    _startAnimationProtection(durationSeconds: 1); // 더 짧은 보호 시간
     
     // 드래그 애니메이션 실행 (화나는 애니메이션)
     onGesture(Gesture.drag).then((_) {
       // 애니메이션이 시작된 후 약간의 지연을 두고 메시지 표시
-      return Future.delayed(const Duration(milliseconds: 300));
+      return Future.delayed(const Duration(milliseconds: 200));
     }).then((_) {
       // 화나는 메시지 표시
       final angryMessages = ['아야! 그만 건드려! 😠', '간지러워! 멈춰! 😤', '으악! 왜 자꾸 만져! 😡', '아프다고! 그만해! 💢'];
@@ -309,14 +308,22 @@ class SlimeCharacterViewModel extends ChangeNotifier {
   void _startAnimationProtection({int durationSeconds = 2}) {
     _isAnimationPlaying = true;
     _animationProtectionTimer?.cancel();
-    _animationProtectionTimer = Timer(Duration(seconds: durationSeconds), () {
-      _isAnimationPlaying = false;
+    
+    // 애니메이션 실행 시간에 따른 적응형 보호 시간
+    int protectionMs = durationSeconds * 1000; // 기본은 그대로 유지
+    
+    _animationProtectionTimer = Timer(Duration(milliseconds: protectionMs), () {
+      if (_isAnimationPlaying) {
+        _isAnimationPlaying = false;
+        // 타이머로 인한 보호 해제 시에는 즉시 idle로 복귀하지 않음
+        // (OneShotAnimation의 onStop에서 처리하도록 함)
+      }
     });
   }
 
-  /// 애니메이션이 완료되었을 때 호출 (OneShotAnimation 콜백용)
-  void onAnimationCompleted(String animationName) {
-    // 애니메이션이 완료되면 즉시 보호 해제
+  /// 애니메이션이 중지되었을 때 호출 (OneShotAnimation 콜백용)
+  void onAnimationStopped(String animationName) {
+    // 애니메이션이 중지되면 보호 해제만 수행
     _isAnimationPlaying = false;
     _animationProtectionTimer?.cancel();
     
@@ -324,6 +331,27 @@ class SlimeCharacterViewModel extends ChangeNotifier {
     if (_isProcessingGesture) {
       _isProcessingGesture = false;
     }
+    
+    // idle로의 복귀는 별도의 타이머로 처리 (자연스러운 전환)
+    _scheduleIdleReturn();
+  }
+
+  /// idle 애니메이션으로의 복귀를 스케줄링
+  void _scheduleIdleReturn() {
+    // 현재 애니메이션이 idle이 아닌 경우에만 복귀
+    if (animationKey.value != 'id') {
+      // 약간의 지연을 둠 (애니메이션이 자연스럽게 종료될 시간 확보)
+      Timer(const Duration(milliseconds: 500), () {
+        if (animationKey.value != 'id') {
+          animationKey.value = 'id';
+        }
+      });
+    }
+  }
+
+  /// 애니메이션이 완료되었을 때 호출 (레거시, 호환성을 위해 유지)
+  void onAnimationCompleted(String animationName) {
+    onAnimationStopped(animationName);
   }
 
   /// 애니메이션이 실행 가능한지 확인
