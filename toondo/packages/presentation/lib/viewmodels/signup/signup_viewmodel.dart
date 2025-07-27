@@ -5,7 +5,7 @@ import 'package:domain/usecases/auth/check_login_id_exists.dart';
 import 'package:injectable/injectable.dart';
 import 'package:common/constants/auth_constraints.dart';
 
-@LazySingleton()
+@injectable
 class SignupViewModel extends ChangeNotifier {
   String loginId = '';
   String? loginIdError;
@@ -29,6 +29,28 @@ class SignupViewModel extends ChangeNotifier {
     required this.registerUserUseCase,
     required this.checkLoginIdExistsUseCase,
   });
+
+  /// 뷰모델 상태를 초기화 (화면 재진입 시 사용)
+  void resetState() {
+    loginId = '';
+    loginIdError = null;
+    password = '';
+    passwordError = null;
+    confirmPassword = '';
+    confirmPasswordError = null;
+    isSignupComplete = false;
+    userId = null;
+    currentStep = 1;
+    isLoading = false;
+    
+    loginIdController.clear();
+    passwordController.clear();
+    confirmPasswordController.clear();
+    
+    navigateToLogin = null;
+    
+    notifyListeners();
+  }
 
   VoidCallback? navigateToLogin;
   void setNavigateToLogin(VoidCallback callback) {
@@ -164,6 +186,7 @@ class SignupViewModel extends ChangeNotifier {
   void dispose() {
     loginIdController.dispose();
     passwordController.dispose();
+    confirmPasswordController.dispose();
     super.dispose();
   }
 }
