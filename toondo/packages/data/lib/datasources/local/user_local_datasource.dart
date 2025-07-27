@@ -66,23 +66,9 @@ class UserLocalDatasource {
     }
   }
 
-  Future<void> setPhoneNumber(String newPhoneNumber) async {
-    print('[UserLocalDatasource] 휴대전화 번호 설정 시작: $newPhoneNumber');
-    final model = userBox.get('currentUser');
-    if (model != null) {
-      model.phoneNumber = newPhoneNumber;
-      await userBox.put('currentUser', model);
-      print('[UserLocalDatasource] 휴대전화 번호 설정 완료: ${model.phoneNumber}');
-    } else {
-      print('[UserLocalDatasource] 사용자 모델이 null입니다. 새로 생성합니다.');
-      final newUser = User(
-        id: 1,
-        nickname: '사용자',
-        loginId: 'default_user',
-        points: 0,
-        phoneNumber: newPhoneNumber,
-      );
-      await saveUser(newUser);
-    }
+  Future<void> clearUser() async {
+    print('[UserLocalDatasource] 사용자 데이터 삭제 시작');
+    await userBox.delete('currentUser');
+    print('[UserLocalDatasource] 사용자 데이터 삭제 완료');
   }
 }
