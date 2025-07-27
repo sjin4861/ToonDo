@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:get_it/get_it.dart';
 import 'package:presentation/views/auth/signup_step2.dart';
 import 'package:presentation/viewmodels/signup/signup_viewmodel.dart';
 import 'package:presentation/views/auth/login_screen.dart';
@@ -11,43 +10,41 @@ class SignupStep1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<SignupViewModel>.value(
-      value: GetIt.instance<SignupViewModel>(),
-      child: Consumer<SignupViewModel>(
-        builder: (context, viewModel, child) {
-          // 로그인 화면으로 이동하는 콜백 설정
-          viewModel.setNavigateToLogin(() {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => LoginScreen(),
-              ),
-            );
-          });
-          
-          return Scaffold(
-            backgroundColor: Color(0xFFFCFCFC),
-            appBar: AppBar(
-              backgroundColor: Color(0xFFFCFCFC),
-              elevation: 0.5,
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back, color: Color(0xFF1C1D1B)),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-              title: Text(
-                '회원정보 확인',
-                style: TextStyle(
-                  color: Color(0xFF1C1D1B),
-                  fontSize: 16,
-                  fontFamily: 'Pretendard Variable',
-                  fontWeight: FontWeight.w400,
-                  letterSpacing: 0.24,
-                ),
-              ),
-              centerTitle: false,
+    return Consumer<SignupViewModel>(
+      builder: (context, viewModel, child) {
+        // 로그인 화면으로 이동하는 콜백 설정
+        viewModel.setNavigateToLogin(() {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LoginScreen(),
             ),
+          );
+        });
+        
+        return Scaffold(
+          backgroundColor: Color(0xFFFCFCFC),
+          appBar: AppBar(
+            backgroundColor: Color(0xFFFCFCFC),
+            elevation: 0.5,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Color(0xFF1C1D1B)),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            title: Text(
+              '회원정보 확인',
+              style: TextStyle(
+                color: Color(0xFF1C1D1B),
+                fontSize: 16,
+                fontFamily: 'Pretendard Variable',
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0.24,
+              ),
+            ),
+            centerTitle: false,
+          ),
             body: Padding(
               padding: EdgeInsets.fromLTRB(24, 64, 24, 0),
               child: Column(
@@ -172,7 +169,6 @@ class SignupStep1 extends StatelessWidget {
             ),
           );
         },
-      ),
-    );
+      );
   }
 }
