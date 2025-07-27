@@ -14,8 +14,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 class GoalOptionsBottomSheet extends StatelessWidget {
   final Goal goal;
 
-  const GoalOptionsBottomSheet({Key? key, required this.goal})
-    : super(key: key);
+  const GoalOptionsBottomSheet({super.key, required this.goal});
 
   void _editGoal(BuildContext context) {
     Navigator.pop(context); // 바텀 시트 닫기
@@ -80,7 +79,7 @@ class GoalOptionsBottomSheet extends StatelessWidget {
                   TextButton(
                     onPressed: () {
                       goalManagementVM.updateGoalProgress(
-                        goal.id!,
+                        goal.id,
                         newProgress,
                       );
                       Navigator.pop(dialogContext);
@@ -117,7 +116,7 @@ class GoalOptionsBottomSheet extends StatelessWidget {
               ),
               TextButton(
                 onPressed: () {
-                  goalManagementVM.giveUpGoal(goal.id!);
+                  goalManagementVM.giveUpGoal(goal.id);
                   Navigator.pop(dialogContext);
                 },
                 child: const Text('포기하기'),

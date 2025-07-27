@@ -8,7 +8,7 @@ class LoginUseCase {
 
   LoginUseCase(this.repository);
 
-  Future<User> call(String phoneNumber, String password) {
-    return repository.login(phoneNumber, password);
+  Future<User> call(String loginId, String password) {
+    return repository.login(loginId, password);
   }
 }

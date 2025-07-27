@@ -12,8 +12,6 @@ class DdayDailyChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const borderColor = Color(0xFF78B545);
-
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -62,7 +60,7 @@ class DdayDailyChip extends StatelessWidget {
             style: TextStyle(
               color: selected
                   ? Colors.white
-                  : Theme.of(context).colorScheme.onBackground,
+                  : Theme.of(context).colorScheme.onSurface,
               fontSize: 10,
               fontWeight: selected ? FontWeight.w900 : FontWeight.w400,
               fontFamily: 'Pretendard Variable',

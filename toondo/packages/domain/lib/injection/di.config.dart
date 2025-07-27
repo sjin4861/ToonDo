@@ -13,15 +13,15 @@ import 'package:domain/repositories/auth_repository.dart' as _i427;
 import 'package:domain/repositories/goal_repository.dart' as _i559;
 import 'package:domain/repositories/notification_repository.dart' as _i267;
 import 'package:domain/repositories/slime_repository.dart' as _i657;
-import 'package:domain/repositories/sms_repository.dart' as _i366;
 import 'package:domain/repositories/theme_repository.dart' as _i578;
 import 'package:domain/repositories/todo_repository.dart' as _i158;
 import 'package:domain/repositories/user_repository.dart' as _i988;
-import 'package:domain/usecases/auth/check_phone_number_exists.dart' as _i426;
-import 'package:domain/usecases/auth/get_token.dart';
-import 'package:domain/usecases/auth/login.dart';
-import 'package:domain/usecases/auth/logout.dart';
-import 'package:domain/usecases/auth/register.dart';
+import 'package:domain/usecases/auth/check_login_id_exists.dart' as _i138;
+import 'package:domain/usecases/auth/delete_account.dart' as _i728;
+import 'package:domain/usecases/auth/get_token.dart' as _i415;
+import 'package:domain/usecases/auth/login.dart' as _i1068;
+import 'package:domain/usecases/auth/logout.dart' as _i969;
+import 'package:domain/usecases/auth/register.dart' as _i899;
 import 'package:domain/usecases/character/slime_on_gesture.dart' as _i610;
 import 'package:domain/usecases/character/slime_on_massage.dart' as _i642;
 import 'package:domain/usecases/character/toggle_chat_mode.dart' as _i657;
@@ -44,8 +44,6 @@ import 'package:domain/usecases/notification/get_notification_settings.dart'
 import 'package:domain/usecases/notification/set_notification_settings.dart'
     as _i930;
 import 'package:domain/usecases/notification/set_reminder_time.dart' as _i236;
-import 'package:domain/usecases/sms/send_sms_code.dart' as _i461;
-import 'package:domain/usecases/sms/verify_sms_code.dart' as _i73;
 import 'package:domain/usecases/theme/get_theme_mode.dart' as _i129;
 import 'package:domain/usecases/theme/set_theme_mode.dart' as _i366;
 import 'package:domain/usecases/todo/add_todo.dart' as _i133;
@@ -58,9 +56,9 @@ import 'package:domain/usecases/todo/update_todo.dart' as _i375;
 import 'package:domain/usecases/todo/update_todo_dates.dart' as _i182;
 import 'package:domain/usecases/todo/update_todo_status.dart' as _i183;
 import 'package:domain/usecases/user/get_user.dart' as _i991;
-import 'package:domain/usecases/user/get_user_nickname.dart';
-import 'package:domain/usecases/user/update_nickname.dart';
-import 'package:domain/usecases/user/update_points.dart';
+import 'package:domain/usecases/user/get_user_nickname.dart' as _i849;
+import 'package:domain/usecases/user/update_nickname.dart' as _i910;
+import 'package:domain/usecases/user/update_points.dart' as _i1049;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -71,17 +69,24 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
-    gh.lazySingleton<_i426.CheckPhoneNumberExistsUseCase>(
-      () => _i426.CheckPhoneNumberExistsUseCase(gh<_i427.AuthRepository>()),
+    gh.lazySingleton<_i138.CheckLoginIdExistsUseCase>(
+      () => _i138.CheckLoginIdExistsUseCase(gh<_i427.AuthRepository>()),
     );
-    gh.factory<LoginUseCase>(() => LoginUseCase(gh<_i427.AuthRepository>()));
-    gh.factory<GetTokenUseCase>(
-      () => GetTokenUseCase(gh<_i427.AuthRepository>()),
+    gh.lazySingleton<_i728.DeleteAccountUseCase>(
+      () => _i728.DeleteAccountUseCase(gh<_i427.AuthRepository>()),
     );
-    gh.factory<RegisterUseCase>(
-      () => RegisterUseCase(gh<_i427.AuthRepository>()),
+    gh.factory<_i1068.LoginUseCase>(
+      () => _i1068.LoginUseCase(gh<_i427.AuthRepository>()),
     );
-    gh.factory<LogoutUseCase>(() => LogoutUseCase(gh<_i427.AuthRepository>()));
+    gh.factory<_i415.GetTokenUseCase>(
+      () => _i415.GetTokenUseCase(gh<_i427.AuthRepository>()),
+    );
+    gh.factory<_i899.RegisterUseCase>(
+      () => _i899.RegisterUseCase(gh<_i427.AuthRepository>()),
+    );
+    gh.factory<_i969.LogoutUseCase>(
+      () => _i969.LogoutUseCase(gh<_i427.AuthRepository>()),
+    );
     gh.factory<_i236.SetReminderTime>(
       () => _i236.SetReminderTime(gh<_i267.NotificationSettingRepository>()),
     );
@@ -170,23 +175,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i739.UpdateGoalProgressUseCase>(
       () => _i739.UpdateGoalProgressUseCase(gh<_i559.GoalRepository>()),
     );
-    gh.factory<_i73.VerifySmsCode>(
-      () => _i73.VerifySmsCode(gh<_i366.SmsRepository>()),
+    gh.factory<_i1049.UpdateUserPointsUseCase>(
+      () => _i1049.UpdateUserPointsUseCase(gh<_i988.UserRepository>()),
     );
-    gh.factory<_i461.SendSmsCode>(
-      () => _i461.SendSmsCode(gh<_i366.SmsRepository>()),
-    );
-    gh.factory<UpdateUserPointsUseCase>(
-      () => UpdateUserPointsUseCase(gh<_i988.UserRepository>()),
-    );
-    gh.factory<UpdateNickNameUseCase>(
-      () => UpdateNickNameUseCase(gh<_i988.UserRepository>()),
-    );
-    gh.factory<GetUserNicknameUseCase>(
-      () => GetUserNicknameUseCase(gh<_i988.UserRepository>()),
+    gh.factory<_i910.UpdateNickNameUseCase>(
+      () => _i910.UpdateNickNameUseCase(gh<_i988.UserRepository>()),
     );
     gh.factory<_i991.GetUserUseCase>(
       () => _i991.GetUserUseCase(gh<_i988.UserRepository>()),
+    );
+    gh.factory<_i849.GetUserNicknameUseCase>(
+      () => _i849.GetUserNicknameUseCase(gh<_i988.UserRepository>()),
     );
     gh.factory<_i642.SlimeOnMessageUseCase>(
       () => _i642.SlimeOnMessageUseCase(gh<_i657.SlimeRepository>()),

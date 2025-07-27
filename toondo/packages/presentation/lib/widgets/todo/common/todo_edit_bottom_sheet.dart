@@ -14,24 +14,17 @@ class ToDoEditBottomSheet extends StatelessWidget {
   final Function(double) onStatusUpdate; // onStatusUpdate 속성 추가
 
   const ToDoEditBottomSheet({
-    Key? key,
+    super.key,
     required this.todo,
     required this.goals,
     required this.onUpdate,
     required this.onDelete,
     required this.onPostpone,
     required this.onStatusUpdate, // 생성자에 goals 추가
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    // 중요도와 긴급도 추출
-    int importance = todo.importance;
-    int urgency = todo.urgency;
-
-    // 중요도와 긴급도에 따른 색상 설정
-    Color importanceColor = _getBorderColor(importance, urgency);
-
     bool isDDay = todo.isDDayTodo();
 
     // 목표 아이콘 표시를 위한 matchingGoal 추출
@@ -83,9 +76,9 @@ class ToDoEditBottomSheet extends StatelessWidget {
                     shape: BoxShape.circle,
                     border: Border.all(color: const Color(0xFF78B545), width: 1),
                   ),
-                  child: matchingGoal?.icon != null
+                  child: matchingGoal.icon != null
                       ? SvgPicture.asset(
-                          matchingGoal!.icon!,
+                          matchingGoal.icon!,
                           fit: BoxFit.contain,
                         )
                       : const Icon(
@@ -323,19 +316,6 @@ class ToDoEditBottomSheet extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('진행률 업데이트에 실패했습니다.')),
       );
-    }
-  }
-
-  // 테두리 색상 반환 메서드
-  Color _getBorderColor(int importance, int urgency) {
-    if (importance == 1 && urgency == 1) {
-      return Colors.red; // 중요도 1, 긴급도 1
-    } else if (importance == 1 && urgency == 0) {
-      return Colors.blue; // 중요도 1, 긴급도 0
-    } else if (importance == 0 && urgency == 1) {
-      return Colors.yellow; // 중요도 0, 긴급도 1
-    } else {
-      return Colors.black; // 중요도 0, 긴급도 0
     }
   }
 }

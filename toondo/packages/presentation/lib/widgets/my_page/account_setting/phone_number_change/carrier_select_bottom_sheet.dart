@@ -1,4 +1,3 @@
-import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:presentation/widgets/bottom_sheet/custom_bottom_sheet.dart';
 

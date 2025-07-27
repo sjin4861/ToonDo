@@ -10,11 +10,11 @@ class EisenhowerButton extends StatelessWidget {
   final VoidCallback onTap;
 
   const EisenhowerButton({
-    Key? key,
+    super.key,
     required this.index,
     required this.isSelected,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

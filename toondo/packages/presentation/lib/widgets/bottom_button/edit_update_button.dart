@@ -6,10 +6,9 @@ import 'custom_button.dart';
 class EditUpdateButton extends StatelessWidget {
   final TodoInputViewModel viewModel;
   final Todo? todo;
-  final Key key;
   final VoidCallback? onPressed;
 
-  EditUpdateButton({required this.viewModel, this.todo, required this.key, this.onPressed});
+  const EditUpdateButton({super.key, required this.viewModel, this.todo, this.onPressed});
 
   @override
   Widget build(BuildContext context) {

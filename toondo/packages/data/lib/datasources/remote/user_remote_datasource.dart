@@ -34,6 +34,22 @@ class UserRemoteDatasource {
     throw Exception('Failed to update nickname: ${response.body}');
   }
 
+  Future<void> deleteAccount() async {
+    final token = await authRepository.getToken();
+    if (token == null) throw Exception('JWT 토큰이 없습니다.');
+    final url = Uri.parse('${Constants.baseUrl}/users/delete');
+    final response = await client.delete(
+      url,
+      headers: {
+        'Authorization': token,
+        'Content-Type': 'application/json',
+      },
+    );
+    if (response.statusCode != 200) {
+      throw Exception('Failed to delete account: ${response.body}');
+    }
+  }
+
   // Todo: 아직 벡엔드에서 구현 x
   Future<User> updateUserPoints(int delta) async {
     final token = await authRepository.getToken();

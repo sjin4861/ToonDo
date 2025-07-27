@@ -9,12 +9,12 @@ class GoalEditBottomSheet extends StatelessWidget {
   final VoidCallback onDelete;
 
   const GoalEditBottomSheet({
-    Key? key,
+    super.key,
     required this.iconPath,
     required this.title,
     required this.onRetry,
     required this.onDelete,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

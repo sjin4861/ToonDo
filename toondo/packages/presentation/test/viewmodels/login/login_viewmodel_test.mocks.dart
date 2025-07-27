@@ -55,14 +55,11 @@ class MockLoginUseCase extends _i1.Mock implements _i4.LoginUseCase {
           as _i2.AuthRepository);
 
   @override
-  _i5.Future<_i3.User> call(String? phoneNumber, String? password) =>
+  _i5.Future<_i3.User> call(String? loginId, String? password) =>
       (super.noSuchMethod(
-            Invocation.method(#call, [phoneNumber, password]),
+            Invocation.method(#call, [loginId, password]),
             returnValue: _i5.Future<_i3.User>.value(
-              _FakeUser_1(
-                this,
-                Invocation.method(#call, [phoneNumber, password]),
-              ),
+              _FakeUser_1(this, Invocation.method(#call, [loginId, password])),
             ),
           )
           as _i5.Future<_i3.User>);

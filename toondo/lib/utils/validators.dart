@@ -1,10 +1,17 @@
+import '../constants/auth_constraints.dart';
+
 class Validators {
-  static String? validatePhoneNumber(String value) {
+  // 로그인 아이디 검증
+  static String? validateLoginId(String value) {
     if (value.isEmpty) {
-      return '휴대폰 번호를 입력해주세요.';
+      return AuthConstraints.loginIdEmptyError;
     }
-    if (!RegExp(r'^01[0-9]{8,9}$').hasMatch(value)) {
-      return '유효한 휴대폰 번호를 입력해주세요.';
+    if (value.length < AuthConstraints.loginIdMinLength || 
+        value.length > AuthConstraints.loginIdMaxLength) {
+      return AuthConstraints.loginIdLengthError;
+    }
+    if (!RegExp(AuthConstraints.loginIdPattern).hasMatch(value)) {
+      return AuthConstraints.loginIdFormatError;
     }
     return null;
   }
@@ -12,32 +19,36 @@ class Validators {
   // 비밀번호 검증 (로그인용)
   static String? validateLoginPassword(String value) {
     if (value.isEmpty) {
-      return '비밀번호를 입력해주세요.';
+      return AuthConstraints.passwordEmptyError;
     }
     return null;
   }
 
   // 비밀번호 검증 (회원가입용)
   static String? validatePassword(String value) {
-    if (value.length < 8 || value.length > 20) {
-      return '비밀번호는 8자 이상 20자 이하여야 합니다.';
+    if (value.isEmpty) {
+      return AuthConstraints.passwordEmptyError;
     }
-    if (!RegExp(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@#$%^&+=!]*$').hasMatch(value)) {
-      return '비밀번호에 영문과 숫자를 모두 포함해주세요.';
+    if (value.length < AuthConstraints.passwordMinLength || 
+        value.length > AuthConstraints.passwordMaxLength) {
+      return AuthConstraints.passwordLengthError;
+    }
+    if (!RegExp(AuthConstraints.passwordPattern).hasMatch(value)) {
+      return AuthConstraints.passwordFormatError;
     }
     return null;
   }
 
   // 닉네임 검증
-  static String? validateUsername(String value) {
+  static String? validateNickname(String value) {
     if (value.isEmpty) {
-      return '닉네임을 입력해주세요.';
+      return AuthConstraints.nicknameEmptyError;
     }
-    if (value.length > 6) {
-      return '닉네임은 6자 이내여야 합니다.';
+    if (value.length > AuthConstraints.nicknameMaxLength) {
+      return AuthConstraints.nicknameLengthError;
     }
-    if (!RegExp(r'^[가-힣a-zA-Z0-9 ]+$').hasMatch(value)) {
-      return '닉네임은 영문, 숫자, 한글만 가능합니다.';
+    if (!RegExp(AuthConstraints.nicknamePattern).hasMatch(value)) {
+      return AuthConstraints.nicknameFormatError;
     }
     return null;
   }

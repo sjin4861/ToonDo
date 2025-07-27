@@ -8,8 +8,7 @@ class GoalNameInputField extends StatefulWidget {
   final TextEditingController controller;
   final String? errorText;
 
-  const GoalNameInputField({Key? key, required this.controller, this.errorText})
-    : super(key: key);
+  const GoalNameInputField({super.key, required this.controller, this.errorText});
 
   @override
   State<GoalNameInputField> createState() => _GoalNameInputFieldState();

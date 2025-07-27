@@ -30,6 +30,8 @@ class GoalIconBottomSheet extends StatelessWidget {
     ],
   };
 
+  GoalIconBottomSheet({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(

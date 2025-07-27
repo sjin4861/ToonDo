@@ -1,10 +1,8 @@
 import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
-import 'package:presentation/widgets/home/chat_toggle_button.dart';
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final bool chatEnabled;
-  const HomeAppBar({super.key, required this.chatEnabled});
+  const HomeAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +21,11 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       leadingWidth: 56,
-      leading: Padding(
-        padding: const EdgeInsets.only(left: 8.0),
-        child: ChatToggleButton(enabled: chatEnabled),
-      ),
+      // GPT 대화 기능은 추후 개발 예정으로 비활성화
+      // leading: Padding(
+      //   padding: const EdgeInsets.only(left: 8.0),
+      //   child: ChatToggleButton(enabled: chatEnabled),
+      // ),
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 16.0),

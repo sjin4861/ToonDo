@@ -14,3 +14,4 @@ dependencies:
   rive: ^0.13.20
   get_it: ^8.0.3
   injectable: ^2.5.0
+  vector_graphics: any

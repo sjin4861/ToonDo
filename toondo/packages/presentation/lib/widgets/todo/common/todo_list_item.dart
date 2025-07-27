@@ -4,7 +4,6 @@ import 'package:domain/entities/todo.dart';
 import 'package:domain/entities/goal.dart';
 import 'package:intl/intl.dart';
 import 'package:presentation/utils/get_todo_border_color.dart';
-import 'package:presentation/widgets/todo/common/todo_edit_bottom_sheet.dart';
 
 class TodoListItem extends StatelessWidget {
   final Todo todo;
@@ -17,7 +16,7 @@ class TodoListItem extends StatelessWidget {
   final DateTime selectedDate;
 
   const TodoListItem({
-    Key? key,
+    super.key,
     required this.todo,
     required this.goals,
     required this.selectedDate,
@@ -26,7 +25,7 @@ class TodoListItem extends StatelessWidget {
     required this.onDelete,
     required this.onPostpone,
     this.hideCompletionStatus = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -203,39 +202,6 @@ class TodoListItem extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  void _showTodoOptionsDialog(BuildContext context, Todo todo) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
-        ),
-      ),
-      builder: (context) {
-        return ToDoEditBottomSheet(
-          todo: todo,
-          goals: goals,
-          onUpdate: () {
-            Navigator.pop(context);
-            onUpdate();
-          },
-          onDelete: () {
-            Navigator.pop(context);
-            onDelete();
-          },
-          onPostpone: () {
-            Navigator.pop(context);
-            onPostpone();
-          },
-          onStatusUpdate: (double newStatus) {
-            onStatusUpdate(todo, newStatus);
-          },
-        );
-      },
     );
   }
 

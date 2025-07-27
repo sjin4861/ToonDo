@@ -137,9 +137,6 @@ class GoalRemoteDataSource {
   }
 
   Future<void> updateGoal(Goal goal) async {
-    if (goal.id == null) {
-      throw Exception('Goal ID가 없습니다.');
-    }
     final token = await authRepository.getToken();
     if (token == null) {
       throw Exception('JWT 토큰이 없습니다.');

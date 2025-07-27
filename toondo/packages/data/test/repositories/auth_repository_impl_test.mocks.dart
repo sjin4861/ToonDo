@@ -79,14 +79,14 @@ class MockAuthRemoteDataSource extends _i1.Mock
 
   @override
   _i6.Future<Map<String, dynamic>> registerUser(
-    String? phoneNumber,
+    String? loginId,
     String? password,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
           #registerUser,
           [
-            phoneNumber,
+            loginId,
             password,
           ],
         ),
@@ -96,14 +96,14 @@ class MockAuthRemoteDataSource extends _i1.Mock
 
   @override
   _i6.Future<Map<String, dynamic>> login(
-    String? phoneNumber,
+    String? loginId,
     String? password,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
           #login,
           [
-            phoneNumber,
+            loginId,
             password,
           ],
         ),
@@ -112,14 +112,23 @@ class MockAuthRemoteDataSource extends _i1.Mock
       ) as _i6.Future<Map<String, dynamic>>);
 
   @override
-  _i6.Future<bool> isPhoneNumberRegistered(String? phoneNumber) =>
-      (super.noSuchMethod(
+  _i6.Future<bool> isLoginIdRegistered(String? loginId) => (super.noSuchMethod(
         Invocation.method(
-          #isPhoneNumberRegistered,
-          [phoneNumber],
+          #isLoginIdRegistered,
+          [loginId],
         ),
         returnValue: _i6.Future<bool>.value(false),
       ) as _i6.Future<bool>);
+
+  @override
+  _i6.Future<void> deleteAccount() => (super.noSuchMethod(
+        Invocation.method(
+          #deleteAccount,
+          [],
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
 }
 
 /// A class which mocks [AuthLocalDataSource].
@@ -145,6 +154,16 @@ class MockAuthLocalDataSource extends _i1.Mock
         Invocation.method(
           #cacheUser,
           [user],
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> clearUser() => (super.noSuchMethod(
+        Invocation.method(
+          #clearUser,
+          [],
         ),
         returnValue: _i6.Future<void>.value(),
         returnValueForMissingStub: _i6.Future<void>.value(),

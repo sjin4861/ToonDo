@@ -19,9 +19,9 @@ class AuthRepositoryImpl implements AuthRepository {
   );
 
   @override
-  Future<User> registerUser(String phoneNumber, String password) async {
+  Future<User> registerUser(String loginId, String password) async {
     final responseData = await remoteDataSource.registerUser(
-      phoneNumber,
+      loginId,
       password,
     );
     final token = responseData['token'] as String;
@@ -32,8 +32,8 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<User> login(String phoneNumber, String password) async {
-    final responseData = await remoteDataSource.login(phoneNumber, password);
+  Future<User> login(String loginId, String password) async {
+    final responseData = await remoteDataSource.login(loginId, password);
     final token = responseData['token'] as String;
     await secureLocalDataSource.saveToken(token);
     final userModel = UserModel.fromJson(responseData);
@@ -52,7 +52,17 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<bool> checkPhoneNumberExists(String phoneNumber) {
-    return remoteDataSource.isPhoneNumberRegistered(phoneNumber);
+  Future<bool> checkLoginIdExists(String loginId) {
+    return remoteDataSource.isLoginIdRegistered(loginId);
+  }
+
+  @override
+  Future<void> deleteAccount() async {
+    // TODO: 백엔드 API 호출 (현재는 구현되지 않음)
+    // await remoteDataSource.deleteAccount();
+    
+    // 로컬 데이터 삭제
+    await secureLocalDataSource.deleteToken();
+    await localDataSource.clearUser();
   }
 }

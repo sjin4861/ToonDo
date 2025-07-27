@@ -1,4 +1,3 @@
-import 'package:domain/entities/gesture.dart';
 import 'package:domain/entities/slime_response.dart';
 import 'package:domain/entities/goal.dart';
 import 'package:domain/entities/todo.dart';

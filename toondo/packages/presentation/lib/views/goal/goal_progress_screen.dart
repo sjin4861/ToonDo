@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 
 class GoalProgressScreen extends StatelessWidget {
+  const GoalProgressScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     // viewmodel 없이 임시 상태

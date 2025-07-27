@@ -4,23 +4,32 @@ import 'package:presentation/viewmodels/signup/signup_viewmodel.dart';
 import 'package:presentation/views/onboarding/onboarding_screen.dart';
 import 'package:presentation/views/auth/signup_step1.dart';
 import 'package:get_it/get_it.dart';
+import 'package:domain/usecases/auth/register.dart';
+import 'package:domain/usecases/auth/check_login_id_exists.dart';
 
 class SignupScreen extends StatelessWidget {
+  const SignupScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<SignupViewModel>.value(
-      value: GetIt.instance<SignupViewModel>(),
+    return ChangeNotifierProvider<SignupViewModel>(
+      create: (_) => SignupViewModel(
+        registerUserUseCase: GetIt.instance<RegisterUseCase>(),
+        checkLoginIdExistsUseCase: GetIt.instance<CheckLoginIdExistsUseCase>(),
+      ),
       child: Consumer<SignupViewModel>(
         builder: (context, viewModel, child) {
           if (viewModel.isSignupComplete) {
-            // Onboarding 페이지로 이동
+            // Onboarding 페이지로 이동 (한 번만 실행되도록)
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => OnboardingScreen(),
-                ),
-              );
+              if (Navigator.canPop(context)) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OnboardingScreen(),
+                  ),
+                );
+              }
             });
           }
           Widget currentStepWidget;
@@ -29,7 +38,7 @@ class SignupScreen extends StatelessWidget {
               currentStepWidget = SignupStep1();
               break;
             default:
-              currentStepWidget = Container();
+              currentStepWidget = SignupStep1(); // 기본값을 명확히 설정
           }
           return currentStepWidget;
         },

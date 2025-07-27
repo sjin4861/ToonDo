@@ -11,13 +11,13 @@ class GoalListDropdown extends StatelessWidget {
   final Function() toggleDropdown;
 
   const GoalListDropdown({
-    Key? key,
+    super.key,
     required this.selectedGoalId,
     required this.goals,
     required this.isDropdownOpen,
     required this.onGoalSelected,
     required this.toggleDropdown,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class GoalListDropdown extends StatelessWidget {
     final List<Goal> effectiveGoals =
         goals.isEmpty ? [defaultGoal] : [...goals, defaultGoal];
 
-    final Goal? selectedGoal = goals.firstWhere(
+    final Goal selectedGoal = goals.firstWhere(
       (goal) => goal.id == selectedGoalId,
       orElse: () => defaultGoal,
     );
@@ -54,7 +54,7 @@ class GoalListDropdown extends StatelessWidget {
             child: Row(
               children: [
                 _buildIcon(
-                  isUnselected ? null : selectedGoal?.icon,
+                  isUnselected ? null : selectedGoal.icon,
                   isSelected: true,
                   fallbackIcon: Icons.help_outline,
                 ),
@@ -63,7 +63,7 @@ class GoalListDropdown extends StatelessWidget {
                   child: Text(
                     isUnselected
                         ? '목표를 선택하세요.'
-                        : selectedGoal?.name ?? '목표 미설정',
+                        : selectedGoal.name,
                     style: const TextStyle(
                       color: Color(0xFF1C1D1B),
                       fontSize: 12,

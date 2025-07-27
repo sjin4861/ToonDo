@@ -7,7 +7,7 @@ import 'package:domain/entities/goal.dart';
 class GoalSettingBottomSheet extends StatelessWidget {
   final Goal goal;
 
-  GoalSettingBottomSheet({required this.goal, Key? key}) : super(key: key);
+  const GoalSettingBottomSheet({required this.goal, super.key});
 
   @override
   Widget build(BuildContext context) {

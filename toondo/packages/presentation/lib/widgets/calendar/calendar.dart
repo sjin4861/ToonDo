@@ -6,10 +6,10 @@ class Calendar extends StatefulWidget {
   final Function(DateTime) onDateSelected;
 
   const Calendar({
-    Key? key,
+    super.key,
     required this.selectedDate,
     required this.onDateSelected,
-  }) : super(key: key);
+  });
 
   @override
   _CalendarState createState() => _CalendarState();

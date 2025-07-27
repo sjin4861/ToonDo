@@ -7,10 +7,10 @@ class HomeGoalListItem extends StatelessWidget {
   final VoidCallback? onTap;
 
   const HomeGoalListItem({
-    Key? key,
+    super.key,
     required this.goal,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

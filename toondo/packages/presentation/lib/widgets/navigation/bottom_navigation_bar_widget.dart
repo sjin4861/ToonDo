@@ -7,7 +7,7 @@ import 'package:presentation/views/mypage/my_page_screen.dart';
 import 'package:presentation/views/todo/manage/todo_manage_screen.dart';
 
 class BottomNavigationBarWidget extends StatelessWidget {
-  const BottomNavigationBarWidget({Key? key}) : super(key: key);
+  const BottomNavigationBarWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

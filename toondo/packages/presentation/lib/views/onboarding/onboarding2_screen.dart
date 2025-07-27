@@ -7,7 +7,7 @@ import 'package:presentation/viewmodels/onboarding/onboarding_viewmodel.dart';
 import 'package:presentation/widgets/text_fields/custom_auth_text_field.dart';
 
 class Onboarding2Page extends StatelessWidget {
-  const Onboarding2Page({Key? key}) : super(key: key);
+  const Onboarding2Page({super.key});
 
   @override
   Widget build(BuildContext context) {

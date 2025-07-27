@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:presentation/viewmodels/welcome/welcome_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +8,8 @@ import 'package:common/gen/assets.gen.dart';
 final getIt = GetIt.instance;
 
 class WelcomeScreen extends StatelessWidget {
+  const WelcomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     // Provide WelcomeViewModel using getIt
@@ -157,7 +158,7 @@ class WelcomeScreen extends StatelessWidget {
                           _buildSocialButton(
                             key: const Key('continueWithPhoneNumberButton'),
                             context,
-                            label: '휴대폰 번호로 계속하기',
+                            label: '기존 회원으로 계속하기',
                             color: Color(0xFFC9E1B4),
                             textColor: Color(0xFF1C1D1B),
                             iconPath: Assets.images.imgPhone.path,

@@ -4,6 +4,7 @@
 ### Flutter ###
 # Flutter/Dart/Pub related
 **/doc/api/
+.vscode
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
@@ -75,3 +76,4 @@ lib/generated_plugin_registrant.dart
 # End of https://www.toptal.com/developers/gitignore/api/flutter
 
 
+\n# VS Code settings\n../.vscode/

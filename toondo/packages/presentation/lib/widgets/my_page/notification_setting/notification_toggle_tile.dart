@@ -23,7 +23,7 @@ class NotificationToggleTile extends StatelessWidget {
                 (states) => const Color(0xFFFDFDFD),
           ),
           trackColor: WidgetStateProperty.resolveWith<Color>(
-                (states) => states.contains(MaterialState.selected)
+                (states) => states.contains(WidgetState.selected)
                 ? const Color(0xFF78B545)
                 : const Color(0xFFD9D9D9),
           ),

@@ -11,7 +11,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:domain/entities/goal.dart' as _i876;
 import 'package:domain/entities/todo.dart' as _i429;
-import 'package:domain/usecases/auth/check_phone_number_exists.dart' as _i426;
+import 'package:domain/usecases/auth/check_login_id_exists.dart' as _i138;
+import 'package:domain/usecases/auth/delete_account.dart' as _i728;
 import 'package:domain/usecases/auth/get_token.dart' as _i415;
 import 'package:domain/usecases/auth/login.dart' as _i1068;
 import 'package:domain/usecases/auth/logout.dart' as _i969;
@@ -36,8 +37,6 @@ import 'package:domain/usecases/notification/get_notification_settings.dart'
 import 'package:domain/usecases/notification/set_notification_settings.dart'
     as _i930;
 import 'package:domain/usecases/notification/set_reminder_time.dart' as _i236;
-import 'package:domain/usecases/sms/send_sms_code.dart' as _i461;
-import 'package:domain/usecases/sms/verify_sms_code.dart' as _i73;
 import 'package:domain/usecases/theme/get_theme_mode.dart' as _i129;
 import 'package:domain/usecases/theme/set_theme_mode.dart' as _i366;
 import 'package:domain/usecases/todo/commit_todos.dart' as _i412;
@@ -80,6 +79,8 @@ import 'package:presentation/viewmodels/my_page/notification_setting/time_picker
     as _i393;
 import 'package:presentation/viewmodels/onboarding/onboarding_viewmodel.dart'
     as _i657;
+import 'package:presentation/viewmodels/settings/delete_account_viewmodel.dart'
+    as _i968;
 import 'package:presentation/viewmodels/signup/signup_viewmodel.dart' as _i705;
 import 'package:presentation/viewmodels/todo/todo_input_viewmodel.dart' as _i72;
 import 'package:presentation/viewmodels/todo/todo_manage_viewmodel.dart'
@@ -97,6 +98,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i941.HelpGuideViewModel>(() => _i941.HelpGuideViewModel());
     gh.factory<_i81.DisplaySettingViewModel>(
       () => _i81.DisplaySettingViewModel(),
+    );
+    gh.lazySingleton<_i968.DeleteAccountViewModel>(
+      () => _i968.DeleteAccountViewModel(
+        deleteAccountUseCase: gh<_i728.DeleteAccountUseCase>(),
+      ),
     );
     gh.lazySingleton<_i197.WelcomeViewModel>(
       () => _i197.WelcomeViewModel(
@@ -122,6 +128,16 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i764.LoginViewModel>(
       () => _i764.LoginViewModel(loginUseCase: gh<_i1068.LoginUseCase>()),
     );
+    gh.lazySingleton<_i506.TodoManageViewModel>(
+      () => _i506.TodoManageViewModel(
+        deleteTodoUseCase: gh<_i552.DeleteTodoUseCase>(),
+        getTodosUseCase: gh<_i362.GetAllTodosUseCase>(),
+        updateTodoStatusUseCase: gh<_i183.UpdateTodoStatusUseCase>(),
+        updateTodoDatesUseCase: gh<_i182.UpdateTodoDatesUseCase>(),
+        getGoalsLocalUseCase: gh<_i477.GetGoalsLocalUseCase>(),
+        initialDate: gh<DateTime>(),
+      ),
+    );
     gh.lazySingleton<_i72.TodoInputViewModel>(
       () => _i72.TodoInputViewModel(
         todo: gh<_i429.Todo>(),
@@ -134,21 +150,16 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i178.ChatViewModel>(
       () => _i178.ChatViewModel(gh<_i642.SlimeOnMessageUseCase>()),
     );
-    gh.lazySingleton<_i506.TodoManageViewModel>(
-      () => _i506.TodoManageViewModel(
-        fetchTodosUseCase: gh<_i314.FetchTodosUseCase>(),
-        deleteTodoUseCase: gh<_i552.DeleteTodoUseCase>(),
-        getTodosUseCase: gh<_i362.GetAllTodosUseCase>(),
-        updateTodoStatusUseCase: gh<_i183.UpdateTodoStatusUseCase>(),
-        updateTodoDatesUseCase: gh<_i182.UpdateTodoDatesUseCase>(),
-        getGoalsLocalUseCase: gh<_i477.GetGoalsLocalUseCase>(),
-        initialDate: gh<DateTime>(),
-      ),
-    );
     gh.lazySingleton<_i370.AppNotificationViewModel>(
       () => _i370.AppNotificationViewModel(
         gh<_i22.GetNotificationSettingsUseCase>(),
         gh<_i930.SetNotificationSettingsUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i705.SignupViewModel>(
+      () => _i705.SignupViewModel(
+        registerUserUseCase: gh<_i899.RegisterUseCase>(),
+        checkLoginIdExistsUseCase: gh<_i138.CheckLoginIdExistsUseCase>(),
       ),
     );
     gh.factory<_i393.TimePickerViewModel>(
@@ -174,15 +185,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i942.NotificationSettingViewModel>(
       () => _i942.NotificationSettingViewModel(
         gh<_i370.AppNotificationViewModel>(),
-      ),
-    );
-    gh.lazySingleton<_i705.SignupViewModel>(
-      () => _i705.SignupViewModel(
-        registerUserUseCase: gh<_i899.RegisterUseCase>(),
-        sendSmsCodeUseCase: gh<_i461.SendSmsCode>(),
-        verifySmsCodeUseCase: gh<_i73.VerifySmsCode>(),
-        checkPhoneNumberExistsUseCase:
-            gh<_i426.CheckPhoneNumberExistsUseCase>(),
       ),
     );
     gh.factory<_i88.SlimeCharacterViewModel>(

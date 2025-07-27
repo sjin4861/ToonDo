@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CustomAuthTextField extends StatelessWidget {
+  @override
   final Key? key;
   final String label;
   final String? hintText;

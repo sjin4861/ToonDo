@@ -1,7 +1,4 @@
-import 'package:data/datasources/local/goal_local_datasource.dart';
-import 'package:data/datasources/remote/goal_remote_datasource.dart';
 import 'package:data/repositories/goal_repository_impl.dart';
-import 'package:domain/entities/goal.dart';
 import 'package:domain/entities/status.dart';
 import 'package:domain/repositories/goal_repository.dart';
 import 'package:flutter_test/flutter_test.dart';

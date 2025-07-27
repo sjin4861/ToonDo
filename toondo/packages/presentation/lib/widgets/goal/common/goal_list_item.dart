@@ -14,16 +14,16 @@ class GoalListItem extends StatelessWidget {
   final bool enableSwipeToDelete;
 
   const GoalListItem({
-    Key? key,
+    super.key,
     required this.goal,
     this.onTap,
     this.enableSwipeToDelete = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: goal.id != null ? Key(goal.id!) : UniqueKey(),
+      key: Key(goal.id),
       direction:
           enableSwipeToDelete
               ? DismissDirection.endToStart
@@ -143,7 +143,7 @@ class GoalListItem extends StatelessWidget {
       context,
       listen: false,
     );
-    goalViewModel.deleteGoal(goal.id!);
+    goalViewModel.deleteGoal(goal.id);
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(const SnackBar(content: Text('목표가 삭제되었습니다.')));

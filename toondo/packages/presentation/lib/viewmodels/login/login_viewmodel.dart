@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:domain/entities/user.dart';
 import 'package:domain/usecases/auth/login.dart'; // new import
 import 'package:injectable/injectable.dart';
 
 @LazySingleton()
 class LoginViewModel extends ChangeNotifier {
-  final TextEditingController phoneNumberController;
+  final TextEditingController loginIdController;
   final TextEditingController passwordController;
 
   final LoginUseCase loginUseCase; // New dependency
@@ -16,16 +15,16 @@ class LoginViewModel extends ChangeNotifier {
 
   LoginViewModel({
     required this.loginUseCase, // Injected via DI
-  }) : phoneNumberController = TextEditingController(),
+  }) : loginIdController = TextEditingController(),
        passwordController = TextEditingController();
 
-  String get phoneNumber => phoneNumberController.text;
+  String get loginId => loginIdController.text;
 
   Future<bool> login() async {
     bool isValid = validateInput();
     if (!isValid) return false;
     try {
-      User user = await loginUseCase.call(phoneNumber, passwordController.text);
+      await loginUseCase.call(loginId, passwordController.text);
       // Optionally store user info if needed.
       return true;
     } catch (e) {
@@ -37,8 +36,8 @@ class LoginViewModel extends ChangeNotifier {
 
   bool validateInput() {
     bool isValid = true;
-    if (phoneNumber.trim().isEmpty) {
-      loginError = '휴대폰 번호를 입력해주세요.';
+    if (loginId.trim().isEmpty) {
+      loginError = '아이디를 입력해주세요.';
       isValid = false;
     }
     if (passwordController.text.isEmpty) {
@@ -63,7 +62,7 @@ class LoginViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
-    phoneNumberController.dispose();
+    loginIdController.dispose();
     passwordController.dispose();
     super.dispose();
   }

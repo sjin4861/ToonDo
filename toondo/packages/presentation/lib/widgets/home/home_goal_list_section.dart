@@ -6,9 +6,9 @@ class HomeGoalListSection extends StatelessWidget {
   final List<Goal> goals;
 
   const HomeGoalListSection({
-    Key? key,
+    super.key,
     required this.goals,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

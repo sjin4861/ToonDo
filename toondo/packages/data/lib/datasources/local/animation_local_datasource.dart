@@ -18,12 +18,11 @@ class AnimationLocalDataSource {
     Gesture.tap:       ['happy', 'shine'],
     Gesture.doubleTap: ['jump'],
     Gesture.longPress: ['s'],
-    Gesture.drag:      ['angry', 'happy'],
+    Gesture.drag:      ['angry'],  // 드래그는 화나는 애니메이션만
     Gesture.pinch:     ['melt', 'angry'],
   };
 
   static const _idle  = 'id';
-  static const _blink = 's';
 
   /* ─── Rive 로드 ─── */
   Future<void> load(File riveAsset) async {
@@ -62,7 +61,7 @@ class AnimationLocalDataSource {
       _artboard!.removeController(c);
     }
 
-    final ctrl = _controllers[key] ??= SimpleAnimation(key, autoplay: true, mix: 0.2);
+    final ctrl = _controllers[key] ??= SimpleAnimation(key, autoplay: true, mix: 0.5);
     ctrl.instance?.animation.loop = oneShot ? Loop.oneShot : Loop.loop;
 
     _artboard!.addController(ctrl);

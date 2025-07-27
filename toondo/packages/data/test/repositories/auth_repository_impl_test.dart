@@ -1,9 +1,7 @@
 import 'package:data/datasources/local/auth_local_datasource.dart';
 import 'package:data/datasources/local/secure_local_datasource.dart';
 import 'package:data/datasources/remote/auth_remote_datasource.dart';
-import 'package:data/models/user_model.dart';
 import 'package:data/repositories/auth_repository_impl.dart';
-import 'package:domain/entities/user.dart';
 import 'package:domain/repositories/auth_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -38,10 +36,9 @@ void main() {
     group('회원가입 테스트', () {
       test('registerUser는 원격 API를 호출하고, 토큰을 저장하고, 로컬에 사용자를 캐시해야 한다', () async {
         // Arrange
-        const phoneNumber = '01012345678';
-        const password = 'password123';
-        final user = TestData.createTestUser(loginId: phoneNumber);
-        final userModel = UserModel(id: user.id, loginId: user.loginId, nickname: user.nickname, points: user.points);
+        const loginId = 'testuser123';
+        const password = 'TestPass123!';
+        final user = TestData.createTestUser(loginId: loginId);
         
         final responseData = {
           'userId': user.id, // id -> userId로 변경
@@ -51,7 +48,7 @@ void main() {
           'token': 'test_token'
         };
         
-        when(mockRemote.registerUser(phoneNumber, password))
+        when(mockRemote.registerUser(loginId, password))
             .thenAnswer((_) async => responseData);
         when(mockSecureLocal.saveToken('test_token'))
             .thenAnswer((_) async {});
@@ -59,12 +56,12 @@ void main() {
             .thenAnswer((_) async {});
         
         // Act
-        final result = await repository.registerUser(phoneNumber, password);
+        final result = await repository.registerUser(loginId, password);
         
         // Assert
-        expect(result.loginId, equals(phoneNumber));
+        expect(result.loginId, equals(loginId));
         expect(result.nickname, equals(user.nickname));
-        verify(mockRemote.registerUser(phoneNumber, password));
+        verify(mockRemote.registerUser(loginId, password));
         verify(mockSecureLocal.saveToken('test_token'));
         verify(mockLocal.cacheUser(any));
       });
@@ -73,9 +70,9 @@ void main() {
     group('로그인 테스트', () {
       test('login은 원격 API를 호출하고, 토큰을 저장하고, 로컬에 사용자를 캐시해야 한다', () async {
         // Arrange
-        const phoneNumber = '01012345678';
-        const password = 'password123';
-        final user = TestData.createTestUser(loginId: phoneNumber);
+        const loginId = 'testuser123';
+        const password = 'TestPass123!';
+        final user = TestData.createTestUser(loginId: loginId);
         
         final responseData = {
           'userId': user.id, // id -> userId로 변경
@@ -85,7 +82,7 @@ void main() {
           'token': 'test_token'
         };
         
-        when(mockRemote.login(phoneNumber, password))
+        when(mockRemote.login(loginId, password))
             .thenAnswer((_) async => responseData);
         when(mockSecureLocal.saveToken('test_token'))
             .thenAnswer((_) async {});
@@ -93,11 +90,11 @@ void main() {
             .thenAnswer((_) async {});
         
         // Act
-        final result = await repository.login(phoneNumber, password);
+        final result = await repository.login(loginId, password);
         
         // Assert
-        expect(result.loginId, equals(phoneNumber));
-        verify(mockRemote.login(phoneNumber, password));
+        expect(result.loginId, equals(loginId));
+        verify(mockRemote.login(loginId, password));
         verify(mockSecureLocal.saveToken('test_token'));
         verify(mockLocal.cacheUser(any));
       });
@@ -133,33 +130,33 @@ void main() {
       });
     });
 
-    group('전화번호 확인 테스트', () {
-      test('checkPhoneNumberExists는 원격 API를 호출하여 전화번호 존재 여부를 확인해야 한다', () async {
+    group('로그인 ID 확인 테스트', () {
+      test('checkLoginIdExists는 원격 API를 호출하여 로그인 ID 존재 여부를 확인해야 한다', () async {
         // Arrange
-        const phoneNumber = '01012345678';
-        when(mockRemote.isPhoneNumberRegistered(phoneNumber))
+        const loginId = 'testuser123';
+        when(mockRemote.isLoginIdRegistered(loginId))
             .thenAnswer((_) async => true);
         
         // Act
-        final result = await repository.checkPhoneNumberExists(phoneNumber);
+        final result = await repository.checkLoginIdExists(loginId);
         
         // Assert
         expect(result, isTrue);
-        verify(mockRemote.isPhoneNumberRegistered(phoneNumber));
+        verify(mockRemote.isLoginIdRegistered(loginId));
       });
     });
 
     group('예외 처리 테스트', () {
       test('원격 API에서 예외 발생 시 그대로 전파되어야 한다', () async {
         // Arrange
-        const phoneNumber = '01012345678';
-        const password = 'password123';
-        when(mockRemote.login(phoneNumber, password))
+        const loginId = 'testuser123';
+        const password = 'TestPass123!';
+        when(mockRemote.login(loginId, password))
             .thenThrow(Exception('로그인 실패'));
         
         // Act & Assert
-        expect(() => repository.login(phoneNumber, password), throwsException);
-        verify(mockRemote.login(phoneNumber, password));
+        expect(() => repository.login(loginId, password), throwsException);
+        verify(mockRemote.login(loginId, password));
         verifyNever(mockSecureLocal.saveToken(any));
         verifyNever(mockLocal.cacheUser(any));
       });

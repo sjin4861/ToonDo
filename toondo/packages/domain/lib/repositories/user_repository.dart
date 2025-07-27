@@ -5,4 +5,5 @@ abstract class UserRepository {
   Future<User> updateUserPoints(int delta);
   Future<String?> getUserNickname();
   Future<User> getUser();
+  Future<void> deleteAccount();
 }

@@ -1,7 +1,5 @@
 // lib/viewmodels/home/home_viewmodel.dart
-import 'dart:async';
 
-import 'package:domain/repositories/slime_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:domain/entities/goal.dart';
 import 'package:domain/usecases/goal/get_inprogress_goals.dart';
@@ -44,26 +42,17 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ─── Chat 모드 상태 ────────────────────────
-  bool _chatEnabled = false;
-  bool get chatEnabled => _chatEnabled;
-  late final StreamSubscription _chatSub;
-  void _listenChatToggle() {
-    _chatSub = GetIt.I<SlimeRepository>().chatEnabled$.listen((v) {
-      _chatEnabled = v;
-      notifyListeners();
-    });
-  }
-
   // ─── 초기화 / 정리 ─────────────────────────
   Future<void> _init() async {
     await Future.wait([loadGoals(), _loadNickname()]);
-    _listenChatToggle();
+    // GPT 대화 기능은 추후 개발 예정으로 비활성화
+    // _listenChatToggle();
   }
 
   @override
   void dispose() {
-    _chatSub.cancel();
+    // GPT 대화 기능은 추후 개발 예정으로 비활성화
+    // _chatSub.cancel();
     super.dispose();
   }
 

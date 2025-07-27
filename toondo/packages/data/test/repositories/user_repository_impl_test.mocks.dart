@@ -149,6 +149,16 @@ class MockUserLocalDatasource extends _i1.Mock
         returnValue: _i8.Future<void>.value(),
         returnValueForMissingStub: _i8.Future<void>.value(),
       ) as _i8.Future<void>);
+
+  @override
+  _i8.Future<void> clearUser() => (super.noSuchMethod(
+        Invocation.method(
+          #clearUser,
+          [],
+        ),
+        returnValue: _i8.Future<void>.value(),
+        returnValueForMissingStub: _i8.Future<void>.value(),
+      ) as _i8.Future<void>);
 }
 
 /// A class which mocks [UserRemoteDatasource].
@@ -202,6 +212,16 @@ class MockUserRemoteDatasource extends _i1.Mock
           ),
         )),
       ) as _i8.Future<_i3.User>);
+
+  @override
+  _i8.Future<void> deleteAccount() => (super.noSuchMethod(
+        Invocation.method(
+          #deleteAccount,
+          [],
+        ),
+        returnValue: _i8.Future<void>.value(),
+        returnValueForMissingStub: _i8.Future<void>.value(),
+      ) as _i8.Future<void>);
 
   @override
   _i8.Future<_i3.User> updateUserPoints(int? delta) => (super.noSuchMethod(

@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:domain/entities/todo.dart';
 import 'package:mockito/mockito.dart';
 
 import '../helpers/test_data.dart';
@@ -46,7 +45,7 @@ void main() {
         title: '업데이트된 할일',
         status: 50.0,
       );
-      when(repository.updateTodo(todo)).thenAnswer((_) async => null);
+      when(repository.updateTodo(todo)).thenAnswer((_) async {});
       
       // Act
       await repository.updateTodo(todo);
@@ -58,7 +57,7 @@ void main() {
     test('deleteTodo 메서드는 할일을 삭제해야 한다', () async {
       // Arrange
       final todo = TestData.createTestTodo(id: 'test_todo_delete');
-      when(repository.deleteTodo(todo)).thenAnswer((_) async => null);
+      when(repository.deleteTodo(todo)).thenAnswer((_) async {});
       
       // Act
       await repository.deleteTodo(todo);
@@ -101,7 +100,7 @@ void main() {
       final todo = TestData.createTestTodo(id: 'status_todo');
       const newStatus = 75.0;
       when(repository.updateTodoStatus(todo, newStatus))
-          .thenAnswer((_) async => null);
+          .thenAnswer((_) async {});
       
       // Act
       await repository.updateTodoStatus(todo, newStatus);
@@ -117,7 +116,7 @@ void main() {
       final newEndDate = DateTime.now().add(const Duration(days: 3));
       
       when(repository.updateTodoDates(todo, newStartDate, newEndDate))
-          .thenAnswer((_) async => null);
+          .thenAnswer((_) async {});
       
       // Act
       await repository.updateTodoDates(todo, newStartDate, newEndDate);
