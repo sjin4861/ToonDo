@@ -4,6 +4,8 @@ import 'package:presentation/viewmodels/signup/signup_viewmodel.dart';
 import 'package:presentation/views/onboarding/onboarding_screen.dart';
 import 'package:presentation/views/auth/signup_step1.dart';
 import 'package:get_it/get_it.dart';
+import 'package:domain/usecases/auth/register.dart';
+import 'package:domain/usecases/auth/check_login_id_exists.dart';
 
 class SignupScreen extends StatelessWidget {
   const SignupScreen({super.key});
@@ -11,12 +13,10 @@ class SignupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<SignupViewModel>(
-      create: (_) {
-        final viewModel = GetIt.instance<SignupViewModel>();
-        // 화면 진입 시마다 상태 초기화
-        viewModel.resetState();
-        return viewModel;
-      },
+      create: (_) => SignupViewModel(
+        registerUserUseCase: GetIt.instance<RegisterUseCase>(),
+        checkLoginIdExistsUseCase: GetIt.instance<CheckLoginIdExistsUseCase>(),
+      ),
       child: Consumer<SignupViewModel>(
         builder: (context, viewModel, child) {
           if (viewModel.isSignupComplete) {
