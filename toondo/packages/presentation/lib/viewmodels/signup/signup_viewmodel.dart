@@ -1,40 +1,32 @@
-import 'package:domain/usecases/auth/check_phone_number_exists.dart';
 import 'package:flutter/material.dart';
 import 'package:domain/entities/user.dart';
 import 'package:domain/usecases/auth/register.dart';
-import 'package:domain/usecases/sms/send_sms_code.dart';
-import 'package:domain/usecases/sms/verify_sms_code.dart';
+import 'package:domain/usecases/auth/check_login_id_exists.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton()
 class SignupViewModel extends ChangeNotifier {
-  String phoneNumber = '';
-  String? phoneError;
+  String loginId = '';
+  String? loginIdError;
   String password = '';
   String? passwordError;
+  String confirmPassword = '';
+  String? confirmPasswordError;
   bool isSignupComplete = false;
   int? userId;
   int currentStep = 1;
+  bool isLoading = false;
 
-  final TextEditingController phoneNumberController = TextEditingController();
-  // 추가: passwordController 필드 추가
+  final TextEditingController loginIdController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
-  // 추가: SMS 인증 관련 필드
-  final TextEditingController smsCodeController = TextEditingController();
-  String smsMessage = "";
-  bool isSmsLoading = false;
+  final TextEditingController confirmPasswordController = TextEditingController();
 
   final RegisterUseCase registerUserUseCase;
-  final SendSmsCode sendSmsCodeUseCase;
-  final VerifySmsCode verifySmsCodeUseCase;
-  final CheckPhoneNumberExistsUseCase checkPhoneNumberExistsUseCase;
+  final CheckLoginIdExistsUseCase checkLoginIdExistsUseCase;
 
   SignupViewModel({
     required this.registerUserUseCase,
-    required this.sendSmsCodeUseCase,
-    required this.verifySmsCodeUseCase,
-    required this.checkPhoneNumberExistsUseCase,
+    required this.checkLoginIdExistsUseCase,
   });
 
   VoidCallback? navigateToLogin;
@@ -42,83 +34,44 @@ class SignupViewModel extends ChangeNotifier {
     navigateToLogin = callback;
   }
 
-  Future<String> sendSmsCode() async {
-    try {
-      return await sendSmsCodeUseCase.call(phoneNumber);
-    } catch (e) {
-      throw Exception('인증번호 전송에 실패했습니다: ${e.toString()}');
-    }
-  }
-
-  Future<void> verifySmsCode(String code) async {
-    try {
-      await verifySmsCodeUseCase.call(phoneNumber, code);
-    } catch (e) {
-      throw Exception('인증번호 확인에 실패했습니다: ${e.toString()}');
-    }
-  }
-
-  Future<void> sendSmsCodeAndSetState() async {
-    isSmsLoading = true;
-    smsMessage = "인증번호 전송 중...";
-    notifyListeners();
-    try {
-      String result = await sendSmsCode();
-      smsMessage = result;
-    } catch (e) {
-      smsMessage = e.toString();
-    }
-    isSmsLoading = false;
-    notifyListeners();
-  }
-
-  Future<void> verifySmsCodeAndSetState() async {
-    isSmsLoading = true;
-    smsMessage = "";
-    notifyListeners();
-    if (smsCodeController.text == "0000") {
-      // 인증번호가 0000이면 바로 통과
-      isSmsLoading = false;
-      smsMessage = "인증 성공!";
-      notifyListeners();
-      return;
-    }
-    try {
-      await verifySmsCode(smsCodeController.text);
-      smsMessage = "인증 성공!";
-    } catch (e) {
-      smsMessage = e.toString();
-      rethrow;
-    }
-    isSmsLoading = false;
-    notifyListeners();
-  }
-
   Future<bool> checkIfRegistered() async {
-    return await checkPhoneNumberExistsUseCase(phoneNumber);
+    return await checkLoginIdExistsUseCase(loginId);
   }
 
-  Future<bool> validatePhoneNumber() async {
+  Future<bool> validateLoginId() async {
     try {
-      if (phoneNumber.isEmpty ||
-          !RegExp(r'^\d{10,11}$').hasMatch(phoneNumber)) {
-        phoneError = '유효한 휴대폰 번호를 입력해주세요.';
+      // 기본 검증
+      if (loginId.isEmpty) {
+        loginIdError = '아이디를 입력해주세요.';
         notifyListeners();
         return false;
       }
+      if (loginId.length < 4 || loginId.length > 20) {
+        loginIdError = '아이디는 4자 이상 20자 이하여야 합니다.';
+        notifyListeners();
+        return false;
+      }
+      if (!RegExp(r'^[a-zA-Z0-9_]+$').hasMatch(loginId)) {
+        loginIdError = '아이디는 영문, 숫자, 언더바(_)만 사용 가능합니다.';
+        notifyListeners();
+        return false;
+      }
+
       bool exists = await checkIfRegistered();
       if (exists) {
-        phoneError = null;
-        notifyListeners();
-        return true;
+        // 아이디가 이미 존재하면 로그인 화면으로 이동
+        if (navigateToLogin != null) {
+          navigateToLogin!();
+        }
+        return false;
       } else {
-        phoneError = null;
+        loginIdError = null;
         nextStep();
         notifyListeners();
-        return false;
+        return true;
       }
     } catch (e) {
-      phoneError = '전화번호 확인 중 오류가 발생했습니다.';
+      loginIdError = '아이디 확인 중 오류가 발생했습니다.';
       notifyListeners();
       return false;
     }
@@ -126,7 +79,7 @@ class SignupViewModel extends ChangeNotifier {
 
   Future<void> signUp() async {
     try {
-      User newUser = await registerUserUseCase.call(phoneNumber, password);
+      User newUser = await registerUserUseCase.call(loginId, password);
       userId = newUser.id;
       isSignupComplete = true;
       notifyListeners();
@@ -135,26 +88,57 @@ class SignupViewModel extends ChangeNotifier {
     }
   }
 
-  void setPhoneNumber(String number) {
-    phoneNumber = number;
-    phoneNumberController.text = number;
+  void setLoginId(String id) {
+    loginId = id;
+    loginIdController.text = id;
     notifyListeners();
   }
 
   void setPassword(String pwd) {
     password = pwd;
+    passwordController.text = pwd;
+    notifyListeners();
+  }
+
+  void setConfirmPassword(String value) {
+    confirmPassword = value;
+    confirmPasswordController.text = value;
     notifyListeners();
   }
 
   Future<void> validatePassword() async {
-    if (password.length >= 8 && password.length <= 20) {
-      passwordError = null;
+    if (password.isEmpty) {
+      passwordError = '비밀번호를 입력해주세요.';
       notifyListeners();
-      await signUp();
-    } else {
+      return;
+    }
+    if (password.length < 8 || password.length > 20) {
       passwordError = '비밀번호는 8자 이상 20자 이하여야 합니다.';
       notifyListeners();
+      return;
     }
+    if (!RegExp(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@#$%^&+=!]*$').hasMatch(password)) {
+      passwordError = '비밀번호에 영문과 숫자를 모두 포함해주세요.';
+      notifyListeners();
+      return;
+    }
+    
+    // 비밀번호 확인 검증
+    if (confirmPassword.isEmpty) {
+      confirmPasswordError = '비밀번호 확인을 입력해주세요.';
+      notifyListeners();
+      return;
+    }
+    if (password != confirmPassword) {
+      confirmPasswordError = '비밀번호가 일치하지 않습니다.';
+      notifyListeners();
+      return;
+    }
+    
+    passwordError = null;
+    confirmPasswordError = null;
+    notifyListeners();
+    await signUp();
   }
 
   void goBack() {
@@ -171,10 +155,8 @@ class SignupViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
-    // LazySingleton이므로 컨트롤러들을 dispose하지 않음.
-    // phoneNumberController.dispose();
-    // passwordController.dispose();
-    // smsCodeController.dispose();
+    loginIdController.dispose();
+    passwordController.dispose();
     super.dispose();
   }
 }

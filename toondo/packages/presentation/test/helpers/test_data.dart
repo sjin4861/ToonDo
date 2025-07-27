@@ -5,6 +5,12 @@ import 'package:domain/entities/status.dart'; // 추가: Goal status 사용
 
 /// 테스트에 사용될 샘플 데이터를 제공하는 클래스
 class TestData {
+  // 테스트용 상수
+  static const String testLoginId = 'testuser123';
+  static const String testPassword = 'TestPass123!';
+  static const String testNickname = '테스트유저';
+  static const String testEmail = 'test@example.com';
+
   /// 테스트용 사용자 생성
   static User createTestUser({
     int id = 1,

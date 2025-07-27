@@ -11,7 +11,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:domain/entities/goal.dart' as _i876;
 import 'package:domain/entities/todo.dart' as _i429;
-import 'package:domain/usecases/auth/check_phone_number_exists.dart' as _i426;
+import 'package:domain/usecases/auth/check_login_id_exists.dart' as _i426;
 import 'package:domain/usecases/auth/get_token.dart' as _i415;
 import 'package:domain/usecases/auth/login.dart' as _i1068;
 import 'package:domain/usecases/auth/logout.dart' as _i969;
@@ -36,8 +36,6 @@ import 'package:domain/usecases/notification/get_notification_settings.dart'
 import 'package:domain/usecases/notification/set_notification_settings.dart'
     as _i930;
 import 'package:domain/usecases/notification/set_reminder_time.dart' as _i236;
-import 'package:domain/usecases/sms/send_sms_code.dart' as _i461;
-import 'package:domain/usecases/sms/verify_sms_code.dart' as _i73;
 import 'package:domain/usecases/theme/get_theme_mode.dart' as _i129;
 import 'package:domain/usecases/theme/set_theme_mode.dart' as _i366;
 import 'package:domain/usecases/todo/commit_todos.dart' as _i412;
@@ -179,10 +177,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i705.SignupViewModel>(
       () => _i705.SignupViewModel(
         registerUserUseCase: gh<_i899.RegisterUseCase>(),
-        sendSmsCodeUseCase: gh<_i461.SendSmsCode>(),
-        verifySmsCodeUseCase: gh<_i73.VerifySmsCode>(),
-        checkPhoneNumberExistsUseCase:
-            gh<_i426.CheckPhoneNumberExistsUseCase>(),
+        checkLoginIdExistsUseCase:
+            gh<_i426.CheckLoginIdExistsUseCase>(),
       ),
     );
     gh.factory<_i88.SlimeCharacterViewModel>(

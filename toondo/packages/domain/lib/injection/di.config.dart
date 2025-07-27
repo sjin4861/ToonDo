@@ -13,11 +13,10 @@ import 'package:domain/repositories/auth_repository.dart' as _i427;
 import 'package:domain/repositories/goal_repository.dart' as _i559;
 import 'package:domain/repositories/notification_repository.dart' as _i267;
 import 'package:domain/repositories/slime_repository.dart' as _i657;
-import 'package:domain/repositories/sms_repository.dart' as _i366;
 import 'package:domain/repositories/theme_repository.dart' as _i578;
 import 'package:domain/repositories/todo_repository.dart' as _i158;
 import 'package:domain/repositories/user_repository.dart' as _i988;
-import 'package:domain/usecases/auth/check_phone_number_exists.dart' as _i426;
+import 'package:domain/usecases/auth/check_login_id_exists.dart' as _i426;
 import 'package:domain/usecases/auth/get_token.dart';
 import 'package:domain/usecases/auth/login.dart';
 import 'package:domain/usecases/auth/logout.dart';
@@ -44,8 +43,6 @@ import 'package:domain/usecases/notification/get_notification_settings.dart'
 import 'package:domain/usecases/notification/set_notification_settings.dart'
     as _i930;
 import 'package:domain/usecases/notification/set_reminder_time.dart' as _i236;
-import 'package:domain/usecases/sms/send_sms_code.dart' as _i461;
-import 'package:domain/usecases/sms/verify_sms_code.dart' as _i73;
 import 'package:domain/usecases/theme/get_theme_mode.dart' as _i129;
 import 'package:domain/usecases/theme/set_theme_mode.dart' as _i366;
 import 'package:domain/usecases/todo/add_todo.dart' as _i133;
@@ -72,8 +69,8 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
-    gh.lazySingleton<_i426.CheckPhoneNumberExistsUseCase>(
-      () => _i426.CheckPhoneNumberExistsUseCase(gh<_i427.AuthRepository>()),
+    gh.lazySingleton<_i426.CheckLoginIdExistsUseCase>(
+      () => _i426.CheckLoginIdExistsUseCase(gh<_i427.AuthRepository>()),
     );
     gh.factory<LoginUseCase>(() => LoginUseCase(gh<_i427.AuthRepository>()));
     gh.factory<GetTokenUseCase>(
@@ -170,12 +167,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i739.UpdateGoalProgressUseCase>(
       () => _i739.UpdateGoalProgressUseCase(gh<_i559.GoalRepository>()),
-    );
-    gh.factory<_i73.VerifySmsCode>(
-      () => _i73.VerifySmsCode(gh<_i366.SmsRepository>()),
-    );
-    gh.factory<_i461.SendSmsCode>(
-      () => _i461.SendSmsCode(gh<_i366.SmsRepository>()),
     );
     gh.factory<_i1049.UpdateUserPointsUseCase>(
       () => _i1049.UpdateUserPointsUseCase(gh<_i988.UserRepository>()),

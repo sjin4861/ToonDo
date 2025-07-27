@@ -7,12 +7,9 @@ import 'dart:async' as _i6;
 
 import 'package:domain/entities/user.dart' as _i3;
 import 'package:domain/repositories/auth_repository.dart' as _i2;
-import 'package:domain/repositories/sms_repository.dart' as _i4;
 import 'package:domain/usecases/auth/check_phone_number_exists.dart' as _i10;
 import 'package:domain/usecases/auth/register.dart' as _i5;
-import 'package:domain/usecases/sms/send_sms_code.dart' as _i7;
-import 'package:domain/usecases/sms/verify_sms_code.dart' as _i9;
-import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/mockito.dart' as _i1;t
 import 'package:mockito/src/dummies.dart' as _i8;
 
 // ignore_for_file: type=lint

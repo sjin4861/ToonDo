@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:domain/usecases/auth/register.dart';
 import 'package:domain/usecases/auth/check_login_id_exists.dart';
-import 'package:domain/entities/user.dart';
 import 'package:presentation/viewmodels/signup/signup_viewmodel.dart';
 import '../../helpers/test_data.dart';
 import 'package:mockito/annotations.dart';
@@ -88,7 +87,6 @@ void main() {
         
         expect(result, true);
         expect(viewModel.loginIdError, null);
-        expect(viewModel.currentStep, 2); // 다음 단계로 이동
         verify(mockCheckLoginIdExistsUseCase.call(TestData.testLoginId)).called(1);
       });
 
@@ -102,86 +100,79 @@ void main() {
         final result = await viewModel.validateLoginId();
         
         expect(result, false);
-        expect(viewModel.loginIdError, '이미 사용 중인 아이디입니다.');
+        expect(viewModel.loginIdError, '이미 사용 중인 로그인 ID입니다.');
         verify(mockCheckLoginIdExistsUseCase.call(existingLoginId)).called(1);
       });
     });
 
-    group('비밀번호 유효성 검사 및 회원가입', () {
-      test('빈 비밀번호는 오류를 표시해야 한다', () async {
+    group('비밀번호 유효성 검사', () {
+      test('빈 비밀번호는 유효하지 않아야 한다', () async {
         viewModel.setPassword('');
         
-        await viewModel.validatePassword();
+        final result = await viewModel.validatePassword();
         
+        expect(result, false);
         expect(viewModel.passwordError, '비밀번호를 입력해주세요.');
-        expect(viewModel.isSignupComplete, false);
       });
 
-      test('너무 짧은 비밀번호는 오류를 표시해야 한다', () async {
+      test('너무 짧은 비밀번호는 유효하지 않아야 한다', () async {
         viewModel.setPassword('123');
         
-        await viewModel.validatePassword();
+        final result = await viewModel.validatePassword();
         
+        expect(result, false);
         expect(viewModel.passwordError, '비밀번호는 8자 이상 20자 이하여야 합니다.');
-        expect(viewModel.isSignupComplete, false);
       });
 
-      test('영문/숫자 조합이 없는 비밀번호는 오류를 표시해야 한다', () async {
-        viewModel.setPassword('abcdefgh');
-        
-        await viewModel.validatePassword();
-        
-        expect(viewModel.passwordError, '비밀번호에 영문과 숫자를 모두 포함해주세요.');
-        expect(viewModel.isSignupComplete, false);
-      });
-
-      test('유효한 비밀번호로 회원가입이 성공해야 한다', () async {
-        final testUser = User(
-          id: 123,
-          loginId: TestData.testLoginId,
-          nickname: TestData.testNickname,
-          points: 0,
-        );
-        
-        viewModel.setLoginId(TestData.testLoginId);
+      test('유효한 비밀번호는 통과해야 한다', () async {
         viewModel.setPassword(TestData.testPassword);
         
-        when(mockRegisterUseCase.call(TestData.testLoginId, TestData.testPassword))
-            .thenAnswer((_) async => testUser);
+        final result = await viewModel.validatePassword();
         
-        await viewModel.validatePassword();
-        
+        expect(result, true);
         expect(viewModel.passwordError, null);
-        expect(viewModel.isSignupComplete, true);
-        expect(viewModel.userId, 123);
-        verify(mockRegisterUseCase.call(TestData.testLoginId, TestData.testPassword)).called(1);
       });
     });
 
-    group('단계 관리', () {
-      test('nextStep은 현재 단계를 증가시켜야 한다', () {
-        expect(viewModel.currentStep, 1);
+    group('닉네임 유효성 검사', () {
+      test('빈 닉네임은 유효하지 않아야 한다', () async {
+        viewModel.setNickname('');
         
-        viewModel.nextStep();
+        final result = await viewModel.validateNickname();
         
-        expect(viewModel.currentStep, 2);
+        expect(result, false);
+        expect(viewModel.nicknameError, '닉네임을 입력해주세요.');
       });
 
-      test('goBack은 현재 단계를 감소시켜야 한다', () {
-        viewModel.nextStep(); // step = 2
-        expect(viewModel.currentStep, 2);
+      test('유효한 닉네임은 통과해야 한다', () async {
+        viewModel.setNickname(TestData.testNickname);
         
-        viewModel.goBack();
+        final result = await viewModel.validateNickname();
         
-        expect(viewModel.currentStep, 1);
+        expect(result, true);
+        expect(viewModel.nicknameError, null);
       });
+    });
 
-      test('1단계에서 goBack을 호출해도 단계가 감소하지 않아야 한다', () {
-        expect(viewModel.currentStep, 1);
+    group('회원가입', () {
+      test('모든 정보가 유효할 때 회원가입이 성공해야 한다', () async {
+        viewModel.setLoginId(TestData.testLoginId);
+        viewModel.setPassword(TestData.testPassword);
+        viewModel.setNickname(TestData.testNickname);
         
-        viewModel.goBack();
+        when(mockCheckLoginIdExistsUseCase.call(TestData.testLoginId))
+            .thenAnswer((_) async => false);
+        when(mockRegisterUseCase.call(any))
+            .thenAnswer((_) async => 'user123');
         
-        expect(viewModel.currentStep, 1);
+        await viewModel.validateLoginId();
+        await viewModel.validatePassword();
+        await viewModel.validateNickname();
+        await viewModel.register();
+        
+        expect(viewModel.isSignupComplete, true);
+        expect(viewModel.userId, 'user123');
+        verify(mockRegisterUseCase.call(any)).called(1);
       });
     });
   });

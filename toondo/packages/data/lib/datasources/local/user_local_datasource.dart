@@ -34,7 +34,7 @@ class UserLocalDatasource {
       await saveUser(defaultUser);
       return defaultUser;
     }
-    print('[UserLocalDatasource] 현재 사용자 정보: ${model.nickname}, 휴대전화: ${model.phoneNumber}');
+    print('[UserLocalDatasource] 현재 사용자 정보: ${model.nickname}');
     return model.toEntity();
   }
 

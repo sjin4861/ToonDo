@@ -18,7 +18,6 @@ import 'package:data/datasources/local/user_local_datasource.dart' as _i1024;
 import 'package:data/datasources/remote/auth_remote_datasource.dart' as _i954;
 import 'package:data/datasources/remote/goal_remote_datasource.dart' as _i417;
 import 'package:data/datasources/remote/gpt_remote_datasource.dart' as _i883;
-import 'package:data/datasources/remote/sms_remote_datasource.dart' as _i268;
 import 'package:data/datasources/remote/todo_remote_datasource.dart' as _i627;
 import 'package:data/datasources/remote/user_remote_datasource.dart' as _i813;
 import 'package:data/injection/di_module.dart' as _i1048;
@@ -32,7 +31,6 @@ import 'package:data/repositories/goal_repository_impl.dart' as _i527;
 import 'package:data/repositories/notification_repository_impl.dart' as _i15;
 import 'package:data/repositories/slime_character_repository_impl.dart'
     as _i409;
-import 'package:data/repositories/sms_repository_impl.dart' as _i235;
 import 'package:data/repositories/theme_repository_impl.dart' as _i525;
 import 'package:data/repositories/todo_repository_impl.dart' as _i366;
 import 'package:data/repositories/user_repository_impl.dart' as _i537;
@@ -41,7 +39,6 @@ import 'package:domain/repositories/auth_repository.dart' as _i427;
 import 'package:domain/repositories/goal_repository.dart' as _i559;
 import 'package:domain/repositories/notification_repository.dart' as _i267;
 import 'package:domain/repositories/slime_repository.dart' as _i657;
-import 'package:domain/repositories/sms_repository.dart' as _i366;
 import 'package:domain/repositories/theme_repository.dart' as _i578;
 import 'package:domain/repositories/todo_repository.dart' as _i158;
 import 'package:domain/repositories/user_repository.dart' as _i988;
@@ -116,8 +113,6 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i979.Box<_i923.TodoModel>>(instanceName: 'todoBox'),
           gh<_i979.Box<_i923.TodoModel>>(instanceName: 'deletedTodoBox'),
         ));
-    gh.lazySingleton<_i268.SmsRemoteDataSource>(
-        () => _i268.SmsRemoteDataSource(client: gh<_i519.Client>()));
     gh.lazySingleton<_i34.GoalLocalDatasource>(() => _i34.GoalLocalDatasource(
           gh<_i979.Box<_i798.GoalModel>>(),
           gh<_i979.Box<_i934.GoalStatusEnum>>(),
@@ -127,8 +122,6 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i116.AuthLocalDataSource>(),
           gh<_i361.SecureLocalDataSource>(),
         ));
-    gh.lazySingleton<_i366.SmsRepository>(
-        () => _i235.SmsRepositoryImpl(gh<_i268.SmsRemoteDataSource>()));
     gh.lazySingleton<_i627.TodoRemoteDataSource>(
         () => _i627.TodoRemoteDataSource(
               gh<_i519.Client>(),

@@ -79,14 +79,14 @@ class MockAuthRemoteDataSource extends _i1.Mock
 
   @override
   _i6.Future<Map<String, dynamic>> registerUser(
-    String? phoneNumber,
+    String? loginId,
     String? password,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
           #registerUser,
           [
-            phoneNumber,
+            loginId,
             password,
           ],
         ),
@@ -96,14 +96,14 @@ class MockAuthRemoteDataSource extends _i1.Mock
 
   @override
   _i6.Future<Map<String, dynamic>> login(
-    String? phoneNumber,
+    String? loginId,
     String? password,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
           #login,
           [
-            phoneNumber,
+            loginId,
             password,
           ],
         ),
@@ -112,11 +112,10 @@ class MockAuthRemoteDataSource extends _i1.Mock
       ) as _i6.Future<Map<String, dynamic>>);
 
   @override
-  _i6.Future<bool> isPhoneNumberRegistered(String? phoneNumber) =>
-      (super.noSuchMethod(
+  _i6.Future<bool> isLoginIdRegistered(String? loginId) => (super.noSuchMethod(
         Invocation.method(
-          #isPhoneNumberRegistered,
-          [phoneNumber],
+          #isLoginIdRegistered,
+          [loginId],
         ),
         returnValue: _i6.Future<bool>.value(false),
       ) as _i6.Future<bool>);

@@ -4,6 +4,7 @@
 ### Flutter ###
 # Flutter/Dart/Pub related
 **/doc/api/
+.vscode
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
