@@ -12,6 +12,15 @@ extension ThemeModeTypeX on ThemeModeType {
     }
   }
 
+  String get label {
+    switch (this) {
+      case ThemeModeType.light:
+        return '라이트';
+      case ThemeModeType.dark:
+        return '다크';
+    }
+  }
+
   static ThemeModeType fromFlutterMode(ThemeMode mode) {
     return switch (mode) {
       ThemeMode.light => ThemeModeType.light,

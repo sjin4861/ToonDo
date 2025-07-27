@@ -8,8 +8,10 @@ class Todo {
   final String comment;
   final DateTime startDate;
   final DateTime endDate;
-  final int urgency;
-  final int importance;
+  final int eisenhower;
+  // NOTE: 없애야하는데 에러 수정을 위해 임시로 놔둠
+  final int urgency; // 긴급도
+  final int importance; // 중요도
 
   Todo({
     required this.id,
@@ -19,6 +21,7 @@ class Todo {
     this.goalId,
     this.status = 0.0,
     this.comment = '',
+    this.eisenhower = 0,
     this.urgency = 0,
     this.importance = 0,
   });
