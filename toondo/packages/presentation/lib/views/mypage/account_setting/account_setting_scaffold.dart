@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:presentation/viewmodels/my_page/account_setting/account_setting_viewmodel.dart';
 import 'package:presentation/views/mypage/account_setting/nickname_change_screen.dart';
 import 'package:presentation/views/mypage/account_setting/password_change_screen.dart';
-import 'package:presentation/views/mypage/account_setting/phone_number_change_screen.dart';
+import 'package:presentation/views/settings/delete_account_screen.dart';
 import 'package:presentation/widgets/app_bar/custom_app_bar.dart';
 import 'package:presentation/widgets/my_page/account_setting/account_setting_profile_section.dart';
 import 'package:presentation/widgets/my_page/account_setting/account_setting_tile.dart';
@@ -62,21 +62,16 @@ class AccountSettingScaffold extends StatelessWidget {
                       },
                     ),
                     AccountSettingTile(
-                      label: '전화번호',
-                      value: user?.phoneNumber ?? '',
+                      label: '계정탈퇴',
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => ChangeNotifierProvider.value(
-                              value: viewModel, // 기존 ViewModel 그대로 전달
-                              child: PhoneNumberChangeScreen(),
-                            ),
+                            builder: (_) => const DeleteAccountScreen(),
                           ),
                         );
                       },
                     ),
-                    const AccountSettingTile(label: '계정탈퇴'),
                   ],
                 ),
       ),

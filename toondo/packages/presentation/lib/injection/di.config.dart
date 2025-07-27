@@ -11,7 +11,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:domain/entities/goal.dart' as _i876;
 import 'package:domain/entities/todo.dart' as _i429;
-import 'package:domain/usecases/auth/check_login_id_exists.dart' as _i426;
+import 'package:domain/usecases/auth/check_login_id_exists.dart' as _i138;
+import 'package:domain/usecases/auth/delete_account.dart' as _i728;
 import 'package:domain/usecases/auth/get_token.dart' as _i415;
 import 'package:domain/usecases/auth/login.dart' as _i1068;
 import 'package:domain/usecases/auth/logout.dart' as _i969;
@@ -49,7 +50,6 @@ import 'package:domain/usecases/todo/update_todo_status.dart' as _i183;
 import 'package:domain/usecases/user/get_user.dart' as _i991;
 import 'package:domain/usecases/user/get_user_nickname.dart' as _i849;
 import 'package:domain/usecases/user/update_nickname.dart' as _i910;
-import 'package:domain/usecases/user/update_phone_number.dart' as _i81;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:presentation/viewmodels/character/chat_viewmodel.dart' as _i178;
@@ -79,6 +79,8 @@ import 'package:presentation/viewmodels/my_page/notification_setting/time_picker
     as _i393;
 import 'package:presentation/viewmodels/onboarding/onboarding_viewmodel.dart'
     as _i657;
+import 'package:presentation/viewmodels/settings/delete_account_viewmodel.dart'
+    as _i968;
 import 'package:presentation/viewmodels/signup/signup_viewmodel.dart' as _i705;
 import 'package:presentation/viewmodels/todo/todo_input_viewmodel.dart' as _i72;
 import 'package:presentation/viewmodels/todo/todo_manage_viewmodel.dart'
@@ -96,6 +98,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i941.HelpGuideViewModel>(() => _i941.HelpGuideViewModel());
     gh.factory<_i81.DisplaySettingViewModel>(
       () => _i81.DisplaySettingViewModel(),
+    );
+    gh.lazySingleton<_i968.DeleteAccountViewModel>(
+      () => _i968.DeleteAccountViewModel(
+        deleteAccountUseCase: gh<_i728.DeleteAccountUseCase>(),
+      ),
     );
     gh.lazySingleton<_i197.WelcomeViewModel>(
       () => _i197.WelcomeViewModel(
@@ -149,6 +156,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i930.SetNotificationSettingsUseCase>(),
       ),
     );
+    gh.lazySingleton<_i705.SignupViewModel>(
+      () => _i705.SignupViewModel(
+        registerUserUseCase: gh<_i899.RegisterUseCase>(),
+        checkLoginIdExistsUseCase: gh<_i138.CheckLoginIdExistsUseCase>(),
+      ),
+    );
     gh.factory<_i393.TimePickerViewModel>(
       () => _i393.TimePickerViewModel(gh<_i236.SetReminderTime>()),
     );
@@ -174,13 +187,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i370.AppNotificationViewModel>(),
       ),
     );
-    gh.lazySingleton<_i705.SignupViewModel>(
-      () => _i705.SignupViewModel(
-        registerUserUseCase: gh<_i899.RegisterUseCase>(),
-        checkLoginIdExistsUseCase:
-            gh<_i426.CheckLoginIdExistsUseCase>(),
-      ),
-    );
     gh.factory<_i88.SlimeCharacterViewModel>(
       () => _i88.SlimeCharacterViewModel(gh<_i610.SlimeOnGestureUseCase>()),
     );
@@ -188,6 +194,13 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i370.HomeViewModel(
         gh<_i243.GetInProgressGoalsUseCase>(),
         gh<_i849.GetUserNicknameUseCase>(),
+      ),
+    );
+    gh.factory<_i501.AccountSettingViewModel>(
+      () => _i501.AccountSettingViewModel(
+        getUserUseCase: gh<_i991.GetUserUseCase>(),
+        updateNickNameUseCase: gh<_i910.UpdateNickNameUseCase>(),
+        myPageViewModel: gh<_i272.MyPageViewModel>(),
       ),
     );
     gh.lazySingleton<_i1040.AppThemeViewModel>(
@@ -199,14 +212,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i657.OnboardingViewModel>(
       () => _i657.OnboardingViewModel(
         updateNickNameUseCase: gh<_i910.UpdateNickNameUseCase>(),
-      ),
-    );
-    gh.factory<_i501.AccountSettingViewModel>(
-      () => _i501.AccountSettingViewModel(
-        getUserUseCase: gh<_i991.GetUserUseCase>(),
-        updateNickNameUseCase: gh<_i910.UpdateNickNameUseCase>(),
-        updatePhoneNumberUseCase: gh<_i81.UpdatePhoneNumberUseCase>(),
-        myPageViewModel: gh<_i272.MyPageViewModel>(),
       ),
     );
     return this;

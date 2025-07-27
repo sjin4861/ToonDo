@@ -151,11 +151,10 @@ class MockUserLocalDatasource extends _i1.Mock
       ) as _i8.Future<void>);
 
   @override
-  _i8.Future<void> setPhoneNumber(String? newPhoneNumber) =>
-      (super.noSuchMethod(
+  _i8.Future<void> clearUser() => (super.noSuchMethod(
         Invocation.method(
-          #setPhoneNumber,
-          [newPhoneNumber],
+          #clearUser,
+          [],
         ),
         returnValue: _i8.Future<void>.value(),
         returnValueForMissingStub: _i8.Future<void>.value(),
@@ -215,20 +214,14 @@ class MockUserRemoteDatasource extends _i1.Mock
       ) as _i8.Future<_i3.User>);
 
   @override
-  _i8.Future<_i3.User> changePhoneNumber(String? newPhoneNumber) =>
-      (super.noSuchMethod(
+  _i8.Future<void> deleteAccount() => (super.noSuchMethod(
         Invocation.method(
-          #changePhoneNumber,
-          [newPhoneNumber],
+          #deleteAccount,
+          [],
         ),
-        returnValue: _i8.Future<_i3.User>.value(_FakeUser_1(
-          this,
-          Invocation.method(
-            #changePhoneNumber,
-            [newPhoneNumber],
-          ),
-        )),
-      ) as _i8.Future<_i3.User>);
+        returnValue: _i8.Future<void>.value(),
+        returnValueForMissingStub: _i8.Future<void>.value(),
+      ) as _i8.Future<void>);
 
   @override
   _i8.Future<_i3.User> updateUserPoints(int? delta) => (super.noSuchMethod(

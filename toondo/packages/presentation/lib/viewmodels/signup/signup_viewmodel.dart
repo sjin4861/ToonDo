@@ -60,10 +60,16 @@ class SignupViewModel extends ChangeNotifier {
 
       bool exists = await checkIfRegistered();
       if (exists) {
-        // 아이디가 이미 존재하면 로그인 화면으로 이동
-        if (navigateToLogin != null) {
-          navigateToLogin!();
-        }
+        // 아이디가 이미 존재함을 사용자에게 명확히 알림
+        loginIdError = '이미 가입된 아이디입니다. 로그인을 시도해보세요.';
+        notifyListeners();
+        
+        // 잠시 후 로그인 화면으로 이동
+        Future.delayed(Duration(seconds: 2), () {
+          if (navigateToLogin != null) {
+            navigateToLogin!();
+          }
+        });
         return false;
       } else {
         loginIdError = null;

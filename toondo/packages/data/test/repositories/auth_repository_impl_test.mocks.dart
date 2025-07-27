@@ -119,6 +119,16 @@ class MockAuthRemoteDataSource extends _i1.Mock
         ),
         returnValue: _i6.Future<bool>.value(false),
       ) as _i6.Future<bool>);
+
+  @override
+  _i6.Future<void> deleteAccount() => (super.noSuchMethod(
+        Invocation.method(
+          #deleteAccount,
+          [],
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
 }
 
 /// A class which mocks [AuthLocalDataSource].
@@ -144,6 +154,16 @@ class MockAuthLocalDataSource extends _i1.Mock
         Invocation.method(
           #cacheUser,
           [user],
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> clearUser() => (super.noSuchMethod(
+        Invocation.method(
+          #clearUser,
+          [],
         ),
         returnValue: _i6.Future<void>.value(),
         returnValueForMissingStub: _i6.Future<void>.value(),

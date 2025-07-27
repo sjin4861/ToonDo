@@ -98,40 +98,38 @@ void main() {
     });
 
     group('입력 값 변경', () {
-      test('로그인 ID 변경 시 오류가 초기화되어야 한다', () {
-        viewModel.setLoginError('기존 오류');
-        expect(viewModel.loginError, '기존 오류');
+      test('로그인 ID 변경 시 LoginViewModel이 작동해야 한다', () {
+        viewModel.loginIdController.text = 'newuser';
         
-        viewModel.onLoginIdChanged('newuser');
-        
-        expect(viewModel.loginError, null);
+        expect(viewModel.loginId, 'newuser');
       });
 
-      test('비밀번호 변경 시 오류가 초기화되어야 한다', () {
-        viewModel.setPasswordError('기존 비밀번호 오류');
-        expect(viewModel.passwordError, '기존 비밀번호 오류');
+      test('비밀번호 변경 시 LoginViewModel이 작동해야 한다', () {
+        viewModel.setPassword('newpassword');
         
-        viewModel.onPasswordChanged('newpassword');
-        
-        expect(viewModel.passwordError, null);
+        expect(viewModel.passwordController.text, 'newpassword');
       });
     });
 
     group('오류 처리', () {
-      test('로그인 오류 설정이 작동해야 한다', () {
-        const errorMessage = '로그인에 실패했습니다.';
+      test('유효성 검사가 작동해야 한다', () {
+        viewModel.loginIdController.text = '';
+        viewModel.passwordController.text = '';
         
-        viewModel.setLoginError(errorMessage);
+        final result = viewModel.validateInput();
         
-        expect(viewModel.loginError, errorMessage);
+        expect(result, false);
+        expect(viewModel.loginError, '아이디를 입력해주세요.');
       });
 
-      test('비밀번호 오류 설정이 작동해야 한다', () {
-        const errorMessage = '비밀번호가 올바르지 않습니다.';
+      test('비밀번호 유효성 검사가 작동해야 한다', () {
+        viewModel.loginIdController.text = 'validuser';
+        viewModel.passwordController.text = '';
         
-        viewModel.setPasswordError(errorMessage);
+        final result = viewModel.validateInput();
         
-        expect(viewModel.passwordError, errorMessage);
+        expect(result, false);
+        expect(viewModel.passwordError, '비밀번호를 입력해주세요.');
       });
     });
   });

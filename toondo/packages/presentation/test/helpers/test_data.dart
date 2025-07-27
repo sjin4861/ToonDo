@@ -11,6 +11,14 @@ class TestData {
   static const String testNickname = '테스트유저';
   static const String testEmail = 'test@example.com';
 
+  // 테스트용 사용자 객체
+  static final User testUser = User(
+    id: 1,
+    loginId: testLoginId,
+    nickname: testNickname,
+    points: 0,
+  );
+
   /// 테스트용 사용자 생성
   static User createTestUser({
     int id = 1,

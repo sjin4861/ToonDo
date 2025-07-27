@@ -1,6 +1,5 @@
 import 'package:domain/usecases/user/get_user.dart';
 import 'package:domain/usecases/user/update_nickname.dart';
-import 'package:domain/usecases/user/update_phone_number.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:presentation/models/account_setting_user_ui_model.dart';
@@ -10,13 +9,11 @@ import 'package:presentation/viewmodels/my_page/my_page_viewmodel.dart';
 class AccountSettingViewModel extends ChangeNotifier {
   final GetUserUseCase getUserUseCase;
   final UpdateNickNameUseCase updateNickNameUseCase;
-  final UpdatePhoneNumberUseCase updatePhoneNumberUseCase;
   final MyPageViewModel myPageViewModel;
 
   AccountSettingViewModel({
     required this.getUserUseCase,
     required this.updateNickNameUseCase,
-    required this.updatePhoneNumberUseCase,
     required this.myPageViewModel,
   });
 
@@ -120,53 +117,6 @@ class AccountSettingViewModel extends ChangeNotifier {
     } catch (e) {
       print('[AccountSettingViewModel] 닉네임 변경 실패: $e');
       _nicknameErrorMessage = '닉네임 변경에 실패했습니다: ${e.toString()}';
-      return false;
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-  }
-
-  String? _phoneNumberErrorMessage;
-  String? get phoneNumberErrorMessage => _phoneNumberErrorMessage;
-
-  Future<bool> updatePhoneNumber(String newPhoneNumber) async {
-    print('[AccountSettingViewModel] 휴대전화 번호 변경 요청: $newPhoneNumber');
-    
-    if (newPhoneNumber.trim().isEmpty) {
-      _phoneNumberErrorMessage = '새 휴대전화 번호를 입력해주세요';
-      notifyListeners();
-      return false;
-    }
-
-    // 휴대전화 번호 형식 검증 (간단한 검증)
-    final phoneRegex = RegExp(r'^010-\d{4}-\d{4}$');
-    if (!phoneRegex.hasMatch(newPhoneNumber)) {
-      _phoneNumberErrorMessage = '올바른 휴대전화 번호 형식이 아닙니다 (예: 010-1234-5678)';
-      notifyListeners();
-      return false;
-    }
-
-    _isLoading = true;
-    _phoneNumberErrorMessage = null;
-    notifyListeners();
-
-    try {
-      print('[AccountSettingViewModel] UseCase 호출 시작...');
-      final updatedUser = await updatePhoneNumberUseCase(newPhoneNumber);
-      print('[AccountSettingViewModel] UseCase 호출 성공: ${updatedUser.phoneNumber}');
-      
-      _userUiModel = AccountSettingUserUiModel.fromDomain(updatedUser);
-      print('[AccountSettingViewModel] UI 모델 업데이트 완료');
-      
-      // MyPageViewModel도 새로고침
-      print('[AccountSettingViewModel] MyPageViewModel 새로고침...');
-      myPageViewModel.loadUser();
-      
-      return true;
-    } catch (e) {
-      print('[AccountSettingViewModel] 휴대전화 번호 변경 실패: $e');
-      _phoneNumberErrorMessage = '휴대전화 번호 변경에 실패했습니다: ${e.toString()}';
       return false;
     } finally {
       _isLoading = false;

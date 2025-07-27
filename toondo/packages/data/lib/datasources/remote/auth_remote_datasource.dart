@@ -114,9 +114,20 @@ class AuthRemoteDataSource{
 
   Future<bool> isLoginIdRegistered(String loginId) async {
     // TODO: 개발 중에는 목 응답 사용, 실제 서버 연결 시 아래 주석 해제
-    // 임시로 항상 false 반환 (아이디 사용 가능)
     await Future.delayed(Duration(milliseconds: 500)); // 네트워크 지연 시뮬레이션
-    return false;
+    
+    // 개발용 목 데이터: 일부 아이디는 이미 존재하는 것으로 처리
+    const existingLoginIds = [
+      'testuser',
+      'admin',
+      'user123',
+      'demo',
+      'sample',
+      'test123',
+      'example',
+    ];
+    
+    return existingLoginIds.contains(loginId.toLowerCase());
     
     /* 실제 서버 연결 코드
     final url = Uri.parse('$baseUrl/users/check-login-id');

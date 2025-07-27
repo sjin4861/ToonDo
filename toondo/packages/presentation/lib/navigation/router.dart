@@ -4,7 +4,6 @@ import 'package:presentation/views/goal/input/goal_input_screen.dart';
 import 'package:presentation/views/mypage/account_setting/account_setting_screen.dart';
 import 'package:presentation/views/mypage/account_setting/nickname_change_screen.dart';
 import 'package:presentation/views/mypage/account_setting/password_change_screen.dart';
-import 'package:presentation/views/mypage/account_setting/phone_number_change_screen.dart';
 import 'package:presentation/views/mypage/display_setting/display_setting_screen.dart';
 import 'package:presentation/views/mypage/help_guide/help_guide_screen.dart';
 import 'package:presentation/views/mypage/notification_setting/notification_setting_screen.dart';
@@ -54,8 +53,6 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => HelpGuideScreen());
       case RoutePaths.accountSettingNicknameChange:
         return MaterialPageRoute(builder: (_) => NicknameChangeScreen());
-      case RoutePaths.accountSettingPhoneChange:
-        return MaterialPageRoute(builder: (_) => PhoneNumberChangeScreen());
       case RoutePaths.accountSettingPasswordChange:
         return MaterialPageRoute(builder: (_) => PasswordChangeScreen());
       // GPT 대화 기능은 추후 개발 예정으로 비활성화
