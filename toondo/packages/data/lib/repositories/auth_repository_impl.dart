@@ -55,4 +55,14 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<bool> checkLoginIdExists(String loginId) {
     return remoteDataSource.isLoginIdRegistered(loginId);
   }
+
+  @override
+  Future<void> deleteAccount() async {
+    // TODO: 백엔드 API 호출 (현재는 구현되지 않음)
+    // await remoteDataSource.deleteAccount();
+    
+    // 로컬 데이터 삭제
+    await secureLocalDataSource.deleteToken();
+    await localDataSource.clearUser();
+  }
 }
