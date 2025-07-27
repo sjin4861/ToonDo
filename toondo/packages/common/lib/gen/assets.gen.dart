@@ -190,6 +190,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_goal.svg
   SvgGenImage get icGoal => const SvgGenImage('assets/icons/ic_goal.svg');
 
+  /// File path: assets/icons/ic_google.svg
+  SvgGenImage get icGoogle => const SvgGenImage('assets/icons/ic_google.svg');
+
   /// File path: assets/icons/ic_headphones.svg
   SvgGenImage get icHeadphones =>
       const SvgGenImage('assets/icons/ic_headphones.svg');
@@ -429,6 +432,7 @@ class $AssetsIconsGen {
         icGithub,
         icGitlab,
         icGoal,
+        icGoogle,
         icHeadphones,
         icHeart,
         icHeartWithArrow,

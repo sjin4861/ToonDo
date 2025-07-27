@@ -5,6 +5,36 @@ class AppColors {
   static const Color status100 = Color(0xFF1C1D1B);
   static const Color status0 = Color(0xFFFFFFFF);
 
+  // Border
+  static const Color borderLight = Color(0x331C1D1B);
+  static const Color borderDisabled = Color(0x7FDDDDDD);
+  static const Color dividerLight = Color(0x3F1C1D1B);
+  static const Color borderUnselected = Color(0xFFDDDDDD);
+
+  // AppButton 관련
+  static const Color buttonDisabledBackground = Color(0xFFEEEEEE);
+  static const Color buttonDisabledText = Color(0x801C1D1B);
+  static const Color buttonDisabledBorder = Color(0x1AC8C8C8);
+
+  // Eisenhower (Priority UI)
+  static const Color eisenhowerSelectedBorder1 = brown100;
+  static const Color eisenhowerSelectedBorder2 = blue100;
+  static const Color eisenhowerSelectedBorder3 = yellow100;
+  static const Color eisenhowerSelectedBorder4 = red100;
+  static const Color eisenhowerSelectedBg1 = Color(0x80F5E2D8);
+  static const Color eisenhowerSelectedBg2 = Color(0x80D5EBFA);
+  static const Color eisenhowerSelectedBg3 = Color(0x80FFF3B8);
+  static const Color eisenhowerSelectedBg4 = Color(0x80FFD2D2);
+  static const Color eisenhowerActiveContent1 = brown700;
+  static const Color eisenhowerActiveContent2 = blue700;
+  static const Color eisenhowerActiveContent3 = yellow800;
+  static const Color eisenhowerActiveContent4 = red700;
+  static const Color eisenhowerUnselectedContent = Color(0x801C1D1B);
+
+  // Todo/Goal Item
+  static const Color itemCompletedBackground = Color(0xFFF5F5F5);
+  static const Color itemCompletedBorder = Color(0x80DDDDDD);
+
   // Yellow
   static const Color yellow100 = Color(0xFFFDF6CE);
   static const Color yellow200 = Color(0xFFFDF0A0);

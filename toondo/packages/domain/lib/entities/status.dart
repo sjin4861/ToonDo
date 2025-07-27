@@ -3,5 +3,5 @@ enum Status {
   paused, // 목표가 일시 정지됨 (보류 상태)
   completed, // 목표를 완료함
   givenUp, // 목표를 포기함
-  restarted, // 목표를 다시 시작함 (포기했다가 재개한 경우)
+  restarted, inProgress, // 목표를 다시 시작함 (포기했다가 재개한 경우)
 }

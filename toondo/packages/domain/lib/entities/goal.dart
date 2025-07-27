@@ -19,6 +19,14 @@ class Goal {
     this.status = Status.active,
   });
 
+  static Goal get unselected => Goal(
+    id: '',
+    name: '목표 미설정',
+    icon: 'assets/icons/ic_monster.svg',
+    startDate: DateTime.now(),
+    endDate: DateTime.now(),
+  );
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
