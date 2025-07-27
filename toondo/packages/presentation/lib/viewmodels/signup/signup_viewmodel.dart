@@ -3,6 +3,7 @@ import 'package:domain/entities/user.dart';
 import 'package:domain/usecases/auth/register.dart';
 import 'package:domain/usecases/auth/check_login_id_exists.dart';
 import 'package:injectable/injectable.dart';
+import 'package:common/constants/auth_constraints.dart';
 
 @LazySingleton()
 class SignupViewModel extends ChangeNotifier {
@@ -42,17 +43,17 @@ class SignupViewModel extends ChangeNotifier {
     try {
       // 기본 검증
       if (loginId.isEmpty) {
-        loginIdError = '아이디를 입력해주세요.';
+        loginIdError = AuthConstraints.loginIdEmptyError;
         notifyListeners();
         return false;
       }
-      if (loginId.length < 4 || loginId.length > 20) {
-        loginIdError = '아이디는 4자 이상 20자 이하여야 합니다.';
+      if (loginId.length < AuthConstraints.loginIdMinLength || loginId.length > AuthConstraints.loginIdMaxLength) {
+        loginIdError = AuthConstraints.loginIdLengthError;
         notifyListeners();
         return false;
       }
-      if (!RegExp(r'^[a-zA-Z0-9_]+$').hasMatch(loginId)) {
-        loginIdError = '아이디는 영문, 숫자, 언더바(_)만 사용 가능합니다.';
+      if (!RegExp(AuthConstraints.loginIdPattern).hasMatch(loginId)) {
+        loginIdError = AuthConstraints.loginIdFormatError;
         notifyListeners();
         return false;
       }
@@ -108,29 +109,29 @@ class SignupViewModel extends ChangeNotifier {
 
   Future<void> validatePassword() async {
     if (password.isEmpty) {
-      passwordError = '비밀번호를 입력해주세요.';
+      passwordError = AuthConstraints.passwordEmptyError;
       notifyListeners();
       return;
     }
-    if (password.length < 8 || password.length > 20) {
-      passwordError = '비밀번호는 8자 이상 20자 이하여야 합니다.';
+    if (password.length < AuthConstraints.passwordMinLength || password.length > AuthConstraints.passwordMaxLength) {
+      passwordError = AuthConstraints.passwordLengthError;
       notifyListeners();
       return;
     }
-    if (!RegExp(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@#$%^&+=!]*$').hasMatch(password)) {
-      passwordError = '비밀번호에 영문과 숫자를 모두 포함해주세요.';
+    if (!RegExp(AuthConstraints.passwordPattern).hasMatch(password)) {
+      passwordError = AuthConstraints.passwordFormatError;
       notifyListeners();
       return;
     }
     
     // 비밀번호 확인 검증
     if (confirmPassword.isEmpty) {
-      confirmPasswordError = '비밀번호 확인을 입력해주세요.';
+      confirmPasswordError = AuthConstraints.confirmPasswordEmptyError;
       notifyListeners();
       return;
     }
     if (password != confirmPassword) {
-      confirmPasswordError = '비밀번호가 일치하지 않습니다.';
+      confirmPasswordError = AuthConstraints.confirmPasswordMismatchError;
       notifyListeners();
       return;
     }
