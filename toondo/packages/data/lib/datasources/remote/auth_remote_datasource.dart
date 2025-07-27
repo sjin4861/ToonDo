@@ -134,4 +134,22 @@ class AuthRemoteDataSource{
     }
     */
   }
+
+  Future<void> deleteAccount() async {
+    // TODO: 개발 중에는 목 응답 사용, 실제 서버 연결 시 아래 주석 해제
+    // 임시로 성공 응답 시뮬레이션
+    await Future.delayed(Duration(milliseconds: 1000)); // 네트워크 지연 시뮬레이션
+    
+    /* 실제 서버 연결 코드
+    final url = Uri.parse('$baseUrl/users/delete-account');
+    final response = await httpClient.delete(
+      url,
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('계정 탈퇴 실패: ${response.body}');
+    }
+    */
+  }
 }
