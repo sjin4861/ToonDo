@@ -563,6 +563,10 @@ class $AssetsImagesGen {
   SvgGenImage get imgSpeechBubble =>
       const SvgGenImage('assets/images/img_speech_bubble.svg');
 
+  /// File path: assets/images/img_welcome_character.png
+  AssetGenImage get imgWelcomeCharacter =>
+      const AssetGenImage('assets/images/img_welcome_character.png');
+
   /// List of all assets
   List<dynamic> get values => [
         imgBackgroundFlowers,
@@ -581,7 +585,8 @@ class $AssetsImagesGen {
         imgPhone,
         imgProfileDefault,
         imgShadow,
-        imgSpeechBubble
+        imgSpeechBubble,
+        imgWelcomeCharacter
       ];
 }
 

@@ -15,12 +15,24 @@ class WelcomeViewModel extends ChangeNotifier {
 
   WelcomeViewModel({required this.getTokenUseCase, required this.logoutUseCase});
 
-  void continueWithGoogle() {
-    // Google login logic implementation.
+  Future<void> init(BuildContext context) async {
+    await _checkIfLoggedIn(context);
   }
 
-  void continueWithKakao() {
-    // Kakao login logic implementation.
+  void continueWithGoogle(BuildContext context) {
+    // Todo: 구글 로그인 구현
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomeScreen()),
+    );
+  }
+
+  void continueWithKakao(BuildContext context) {
+    // Todo: 카카오 로그인 구현. 임시로 홈 화면으로 이동
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomeScreen()),
+    );
   }
 
   void continueWithPhoneNumber(BuildContext context) {
@@ -44,7 +56,7 @@ class WelcomeViewModel extends ChangeNotifier {
     );
   }
 
-  Future<void> checkIfLoggedIn(BuildContext context) async {
+  Future<void> _checkIfLoggedIn(BuildContext context) async {
     final token = await getTokenUseCase();
     if (token == null || token.isEmpty) return;
     if (_isTokenExpired(token)) {

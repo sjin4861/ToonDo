@@ -16,7 +16,7 @@ class AppSpacing {
   static const double spacing40 = 40.0;
   static const double spacing44 = 44.0;
   static const double spacing48 = 48.0;
-  static const double spacing51 = 51.0;
+  static const double spacing52 = 52.0;
   static const double spacing56 = 56.0;
   static const double spacing64 = 64.0;
   static const double spacing72 = 72.0;
@@ -24,7 +24,8 @@ class AppSpacing {
   static const double spacing82 = 82.0;
   static const double spacing96 = 96.0;
   static const double spacing112 = 112.0;
-  static const double spacing113 = 113.0;
+  static const double spacing120 = 120.0;
+  static const double spacing184 = 184.0;
 
   // Semantic spacing (optional)
   static const double screenHorizontalPadding = spacing24;
