@@ -13,6 +13,7 @@ class GoalStatusMapper {
       case Status.paused:
       case Status.restarted:
       case Status.active:
+      case Status.inProgress:
         return GoalStatusEnum.active;
     }
   }
