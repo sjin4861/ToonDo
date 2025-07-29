@@ -5,6 +5,7 @@ class AppColors {
   static const Color status100 = Color(0xFF1C1D1B);
   static const Color status0 = Color(0xFFFFFFFF);
   static const Color status100_75 = Color(0xBF1C1D1B); // 75%
+  static const Color status100_50 = Color(0x801C1D1B); // 50%
 
   // Border
   static const Color borderLight = Color(0x331C1D1B);

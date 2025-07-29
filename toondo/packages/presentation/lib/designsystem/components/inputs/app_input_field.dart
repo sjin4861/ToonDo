@@ -12,6 +12,7 @@ class AppInputField extends StatefulWidget {
   final bool obscureText;
   final bool showToggleVisibility;
   final VoidCallback? onToggleVisibility;
+  final ValueChanged<String>? onChanged;
   final bool isEnabled;
 
   const AppInputField({
@@ -24,6 +25,7 @@ class AppInputField extends StatefulWidget {
     this.showToggleVisibility = false,
     this.onToggleVisibility,
     this.isEnabled = true,
+    this.onChanged,
   });
 
   @override
@@ -80,6 +82,7 @@ class _AppInputFieldState extends State<AppInputField> {
             controller: widget.controller,
             enabled: widget.isEnabled,
             obscureText: _obscure,
+            onChanged: widget.onChanged,
             style: AppTypography.body2Regular.copyWith(color: _textColor()),
             decoration: InputDecoration(
               hintText: widget.hintText,
@@ -89,7 +92,7 @@ class _AppInputFieldState extends State<AppInputField> {
               filled: true,
               fillColor: AppColors.status0,
               contentPadding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.spacing16
+                horizontal: AppSpacing.spacing16,
               ),
               enabledBorder: _getBorder(borderColor),
               focusedBorder: _getBorder(borderColor),
@@ -108,7 +111,7 @@ class _AppInputFieldState extends State<AppInputField> {
                         icon: Icon(
                           _obscure ? Icons.visibility_off : Icons.visibility,
                           color: AppColors.status100.withOpacity(0.4),
-                          size: AppDimensions.iconSize16
+                          size: AppDimensions.iconSize16,
                         ),
                       )
                       : null,

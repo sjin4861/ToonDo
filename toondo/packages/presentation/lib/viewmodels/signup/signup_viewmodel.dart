@@ -1,9 +1,12 @@
+import 'package:domain/usecases/auth/login.dart';
 import 'package:flutter/material.dart';
 import 'package:domain/entities/user.dart';
 import 'package:domain/usecases/auth/register.dart';
 import 'package:domain/usecases/auth/check_login_id_exists.dart';
 import 'package:injectable/injectable.dart';
 import 'package:common/constants/auth_constraints.dart';
+
+enum SignupStep { loginId, password, done }
 
 @injectable
 class SignupViewModel extends ChangeNotifier {
@@ -15,19 +18,23 @@ class SignupViewModel extends ChangeNotifier {
   String? confirmPasswordError;
   bool isSignupComplete = false;
   int? userId;
-  int currentStep = 1;
+  SignupStep currentStep = SignupStep.loginId;
   bool isLoading = false;
+  bool isPasswordObscured = true;
+  bool isConfirmPasswordObscured = true;
 
-  final TextEditingController loginIdController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController loginIdTextController = TextEditingController();
+  final TextEditingController passwordTextController = TextEditingController();
+  final TextEditingController confirmPasswordTextController = TextEditingController();
 
   final RegisterUseCase registerUserUseCase;
   final CheckLoginIdExistsUseCase checkLoginIdExistsUseCase;
+  final LoginUseCase loginUseCase;
 
   SignupViewModel({
     required this.registerUserUseCase,
     required this.checkLoginIdExistsUseCase,
+    required this.loginUseCase,
   });
 
   /// 뷰모델 상태를 초기화 (화면 재진입 시 사용)
@@ -40,24 +47,39 @@ class SignupViewModel extends ChangeNotifier {
     confirmPasswordError = null;
     isSignupComplete = false;
     userId = null;
-    currentStep = 1;
+    currentStep = SignupStep.loginId;
     isLoading = false;
-    
-    loginIdController.clear();
-    passwordController.clear();
-    confirmPasswordController.clear();
-    
-    navigateToLogin = null;
+
+    loginIdTextController.clear();
+    passwordTextController.clear();
+    confirmPasswordTextController.clear();
+
+    onNavigateToLogin = null;
     
     notifyListeners();
   }
 
-  VoidCallback? navigateToLogin;
-  void setNavigateToLogin(VoidCallback callback) {
-    navigateToLogin = callback;
+  void togglePasswordVisibility() {
+    isPasswordObscured = !isPasswordObscured;
+    notifyListeners();
   }
 
-  Future<bool> checkIfRegistered() async {
+  void toggleConfirmPasswordVisibility() {
+    isConfirmPasswordObscured = !isConfirmPasswordObscured;
+    notifyListeners();
+  }
+
+  VoidCallback? onNavigateToLogin;
+  void setNavigateToLogin(VoidCallback callback) {
+    onNavigateToLogin = callback;
+  }
+
+  VoidCallback? onNavigateToOnboarding;
+  void setNavigateToOnboarding(VoidCallback callback) {
+    onNavigateToOnboarding = callback;
+  }
+
+  Future<bool> checkLoginIdExists() async {
     return await checkLoginIdExistsUseCase(loginId);
   }
 
@@ -80,22 +102,17 @@ class SignupViewModel extends ChangeNotifier {
         return false;
       }
 
-      bool exists = await checkIfRegistered();
+      bool exists = await checkLoginIdExists();
       if (exists) {
-        // 아이디가 이미 존재함을 사용자에게 명확히 알림
         loginIdError = '이미 가입된 아이디입니다. 로그인을 시도해보세요.';
         notifyListeners();
-        
-        // 잠시 후 로그인 화면으로 이동
-        Future.delayed(Duration(seconds: 2), () {
-          if (navigateToLogin != null) {
-            navigateToLogin!();
-          }
+        Future.delayed(const Duration(seconds: 2), () {
+          onNavigateToLogin?.call();
         });
         return false;
       } else {
         loginIdError = null;
-        nextStep();
+        goToNextStep();
         notifyListeners();
         return true;
       }
@@ -110,28 +127,32 @@ class SignupViewModel extends ChangeNotifier {
     try {
       User newUser = await registerUserUseCase.call(loginId, password);
       userId = newUser.id;
+      await loginUseCase.call(loginId, password);
       isSignupComplete = true;
+      currentStep = SignupStep.done;
       notifyListeners();
+      onNavigateToOnboarding?.call();
     } catch (e) {
+      print("회원가입 오류: $e");
       throw Exception('회원가입에 실패했습니다: ${e.toString()}');
     }
   }
 
   void setLoginId(String id) {
     loginId = id;
-    loginIdController.text = id;
+    loginIdTextController.text = id;
     notifyListeners();
   }
 
   void setPassword(String pwd) {
     password = pwd;
-    passwordController.text = pwd;
+    passwordTextController.text = pwd;
     notifyListeners();
   }
 
   void setConfirmPassword(String value) {
     confirmPassword = value;
-    confirmPasswordController.text = value;
+    confirmPasswordTextController.text = value;
     notifyListeners();
   }
 
@@ -151,8 +172,6 @@ class SignupViewModel extends ChangeNotifier {
       notifyListeners();
       return;
     }
-    
-    // 비밀번호 확인 검증
     if (confirmPassword.isEmpty) {
       confirmPasswordError = AuthConstraints.confirmPasswordEmptyError;
       notifyListeners();
@@ -170,23 +189,25 @@ class SignupViewModel extends ChangeNotifier {
     await signUp();
   }
 
-  void goBack() {
-    if (currentStep > 1) {
-      currentStep--;
+  void goToPreviousStep() {
+    if (currentStep == SignupStep.password) {
+      currentStep = SignupStep.loginId;
       notifyListeners();
     }
   }
 
-  void nextStep() {
-    currentStep++;
-    notifyListeners();
+  void goToNextStep() {
+    if (currentStep == SignupStep.loginId) {
+      currentStep = SignupStep.password;
+      notifyListeners();
+    }
   }
 
   @override
   void dispose() {
-    loginIdController.dispose();
-    passwordController.dispose();
-    confirmPasswordController.dispose();
+    loginIdTextController.dispose();
+    passwordTextController.dispose();
+    confirmPasswordTextController.dispose();
     super.dispose();
   }
 }

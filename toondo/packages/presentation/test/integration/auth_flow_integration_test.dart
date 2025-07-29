@@ -33,6 +33,7 @@ void main() {
       final signupViewModel = SignupViewModel(
         registerUserUseCase: mockRegisterUseCase,
         checkLoginIdExistsUseCase: mockCheckLoginIdExistsUseCase,
+        loginUseCase: mockLoginUseCase,
       );
 
       final testUser = User(
@@ -106,6 +107,7 @@ void main() {
       final signupViewModel = SignupViewModel(
         registerUserUseCase: mockRegisterUseCase,
         checkLoginIdExistsUseCase: mockCheckLoginIdExistsUseCase,
+        loginUseCase: mockLoginUseCase,
       );
 
       // Mock 설정: 이미 존재하는 로그인 ID
@@ -158,6 +160,7 @@ void main() {
       final signupViewModel = SignupViewModel(
         registerUserUseCase: mockRegisterUseCase,
         checkLoginIdExistsUseCase: mockCheckLoginIdExistsUseCase,
+        loginUseCase: mockLoginUseCase,
       );
 
       // When & Then: 빈 로그인 ID 검증

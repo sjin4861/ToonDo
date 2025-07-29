@@ -150,16 +150,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i178.ChatViewModel>(
       () => _i178.ChatViewModel(gh<_i642.SlimeOnMessageUseCase>()),
     );
+    gh.factory<_i705.SignupViewModel>(
+      () => _i705.SignupViewModel(
+        registerUserUseCase: gh<_i899.RegisterUseCase>(),
+        checkLoginIdExistsUseCase: gh<_i138.CheckLoginIdExistsUseCase>(),
+        loginUseCase: gh<_i1068.LoginUseCase>(),
+      ),
+    );
     gh.lazySingleton<_i370.AppNotificationViewModel>(
       () => _i370.AppNotificationViewModel(
         gh<_i22.GetNotificationSettingsUseCase>(),
         gh<_i930.SetNotificationSettingsUseCase>(),
-      ),
-    );
-    gh.lazySingleton<_i705.SignupViewModel>(
-      () => _i705.SignupViewModel(
-        registerUserUseCase: gh<_i899.RegisterUseCase>(),
-        checkLoginIdExistsUseCase: gh<_i138.CheckLoginIdExistsUseCase>(),
       ),
     );
     gh.factory<_i393.TimePickerViewModel>(

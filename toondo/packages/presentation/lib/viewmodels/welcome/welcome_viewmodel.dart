@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:domain/usecases/auth/get_token.dart';
 import 'package:injectable/injectable.dart';
-import 'package:presentation/views/auth/signup_screen.dart';
+import 'package:presentation/views/auth/signup/signup_screen.dart';
 import 'package:presentation/views/home/home_screen.dart';
 import 'package:presentation/views/onboarding/onboarding_screen.dart';
 import 'dart:convert';
