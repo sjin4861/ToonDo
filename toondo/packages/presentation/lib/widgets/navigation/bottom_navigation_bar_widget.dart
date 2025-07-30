@@ -1,9 +1,9 @@
 import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:presentation/designsystem/components/inputs/input_test_screen.dart';
 import 'package:presentation/views/goal/manage/goal_manage_screen.dart';
 import 'package:presentation/views/mypage/my_page_screen.dart';
+import 'package:presentation/views/onboarding/step1_2/onboarding_step1_2_screen.dart';
 import 'package:presentation/views/todo/manage/todo_manage_screen.dart';
 
 class BottomNavigationBarWidget extends StatelessWidget {
@@ -28,7 +28,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
                 print('AI 분석 버튼 클릭');
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => InputTestScreen()),
+                  MaterialPageRoute(builder: (_) => OnboardingStep1To2Screen()),
                 );
               },
             ),

@@ -508,6 +508,10 @@ class $AssetsImagesGen {
   SvgGenImage get imgCharacter =>
       const SvgGenImage('assets/images/img_character.svg');
 
+  /// File path: assets/images/img_character_happy.png
+  AssetGenImage get imgCharacterHappy =>
+      const AssetGenImage('assets/images/img_character_happy.png');
+
   /// File path: assets/images/img_cup_of_coffee.svg
   SvgGenImage get imgCupOfCoffee =>
       const SvgGenImage('assets/images/img_cup_of_coffee.svg');
@@ -572,6 +576,7 @@ class $AssetsImagesGen {
         imgBackgroundFlowers,
         imgBackgroundGrass,
         imgCharacter,
+        imgCharacterHappy,
         imgCupOfCoffee,
         imgEllipse,
         imgGoogle,

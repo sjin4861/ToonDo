@@ -11,8 +11,9 @@ import 'goal_input_scaffold.dart';
 
 class GoalInputScreen extends StatelessWidget {
   final Goal? goal;
+  final bool isFromOnboarding;
 
-  const GoalInputScreen({super.key, this.goal});
+  const GoalInputScreen({super.key, this.goal, this.isFromOnboarding = false});
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +24,7 @@ class GoalInputScreen extends StatelessWidget {
         updateGoalRemoteUseCase: GetIt.instance<UpdateGoalRemoteUseCase>(),
         updateGoalLocalUseCase: GetIt.instance<UpdateGoalLocalUseCase>(),
         targetGoal: goal,
+        isFromOnboarding: isFromOnboarding,
       ),
       child: const GoalInputScaffold(),
     );

@@ -104,7 +104,7 @@ extension GetItInjectableX on _i174.GetIt {
         deleteAccountUseCase: gh<_i728.DeleteAccountUseCase>(),
       ),
     );
-    gh.lazySingleton<_i197.WelcomeViewModel>(
+    gh.factory<_i197.WelcomeViewModel>(
       () => _i197.WelcomeViewModel(
         getTokenUseCase: gh<_i415.GetTokenUseCase>(),
         logoutUseCase: gh<_i969.LogoutUseCase>(),
@@ -210,7 +210,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i366.SetThemeModeUseCase>(),
       ),
     );
-    gh.lazySingleton<_i657.OnboardingViewModel>(
+    gh.factory<_i657.OnboardingViewModel>(
       () => _i657.OnboardingViewModel(
         updateNickNameUseCase: gh<_i910.UpdateNickNameUseCase>(),
       ),

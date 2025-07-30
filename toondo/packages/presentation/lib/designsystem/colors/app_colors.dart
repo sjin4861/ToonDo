@@ -7,6 +7,8 @@ class AppColors {
   static const Color status100_75 = Color(0xBF1C1D1B); // 75%
   static const Color status100_50 = Color(0x801C1D1B); // 50%
 
+  static const Color backgroundNormal = Color(0xFFFDFDFD);
+
   // Border
   static const Color borderLight = Color(0x331C1D1B);
   static const Color borderDisabled = Color(0x7FDDDDDD);

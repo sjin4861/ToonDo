@@ -2,7 +2,7 @@ import 'package:domain/usecases/auth/login.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:presentation/viewmodels/signup/signup_viewmodel.dart';
-import 'package:presentation/views/onboarding/onboarding_screen.dart';
+import 'package:presentation/views/onboarding/step1_2/onboarding_step1_2_screen.dart';
 import 'package:presentation/views/auth/signup/steps/signup_step1.dart';
 import 'package:get_it/get_it.dart';
 import 'package:domain/usecases/auth/register.dart';
@@ -27,7 +27,7 @@ class SignupScreen extends StatelessWidget {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (_) => const OnboardingScreen()),
+                MaterialPageRoute(builder: (_) => OnboardingStep1To2Screen()),
               );
             });
           }

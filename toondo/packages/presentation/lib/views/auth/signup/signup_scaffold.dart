@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:presentation/viewmodels/signup/signup_viewmodel.dart';
 import 'package:presentation/views/auth/signup/steps/signup_step1.dart';
-import 'package:presentation/views/onboarding/onboarding_screen.dart';
+import 'package:presentation/views/onboarding/step1_2/onboarding_step1_2_screen.dart';
 import 'package:provider/provider.dart';
 
 class SignupScaffold extends StatelessWidget {
@@ -15,7 +15,7 @@ class SignupScaffold extends StatelessWidget {
           if (viewModel.isSignupComplete && Navigator.canPop(context)) {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (_) => const OnboardingScreen()),
+              MaterialPageRoute(builder: (_) => OnboardingStep1To2Screen()),
             );
           }
         });

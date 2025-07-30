@@ -18,7 +18,9 @@ class GoalInputScaffold extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFFCFCFC),
       appBar: CustomAppBar(
-        title: viewModel.targetGoal != null ? '목표 수정하기' : '목표 설정하기',
+        title: viewModel.isFromOnboarding
+            ? '시작하기'
+            : (viewModel.targetGoal != null ? '목표 수정하기' : '목표 설정하기'),
       ),
       body: const GoalInputBody(),
       bottomNavigationBar: Padding(
@@ -27,6 +29,7 @@ class GoalInputScaffold extends StatelessWidget {
           text: '작성하기',
           onPressed: () async {
             final newGoal = await viewModel.saveGoal(context);
+            // // 만약 온보딩이면 바로 todo input 화면으로 이동 (온보딩 필드 전달해야함)
             if (newGoal != null) {
               Navigator.pop(context, newGoal);
               GetIt.instance<HomeViewModel>().loadGoals();

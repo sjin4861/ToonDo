@@ -3,12 +3,12 @@ import 'package:domain/usecases/auth/get_token.dart';
 import 'package:injectable/injectable.dart';
 import 'package:presentation/views/auth/signup/signup_screen.dart';
 import 'package:presentation/views/home/home_screen.dart';
-import 'package:presentation/views/onboarding/onboarding_screen.dart';
+import 'package:presentation/views/onboarding/step1_2/onboarding_step1_2_screen.dart';
 import 'dart:convert';
 import 'package:domain/usecases/auth/logout.dart';
 import 'package:presentation/navigation/route_paths.dart';
 
-@LazySingleton()
+@injectable
 class WelcomeViewModel extends ChangeNotifier {
   final GetTokenUseCase getTokenUseCase;
   final LogoutUseCase logoutUseCase;
@@ -52,7 +52,7 @@ class WelcomeViewModel extends ChangeNotifier {
   void navigateToOnboarding(BuildContext context) {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => OnboardingScreen()),
+      MaterialPageRoute(builder: (context) => OnboardingStep1To2Screen()),
     );
   }
 
