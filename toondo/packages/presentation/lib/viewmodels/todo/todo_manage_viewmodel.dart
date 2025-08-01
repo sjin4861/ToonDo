@@ -1,3 +1,4 @@
+import 'package:common/gen/assets.gen.dart';
 import 'package:domain/entities/goal.dart';
 import 'package:domain/entities/todo.dart';
 import 'package:domain/entities/todo_filter_option.dart';
@@ -50,6 +51,7 @@ class TodoManageViewModel extends ChangeNotifier {
       print('Error loading todos from local storage: $e');
     }
   }
+
   // Future<void> loadTodos() async {
   //   try {
   //     // ✅ 더미 투두 목록
@@ -82,7 +84,7 @@ class TodoManageViewModel extends ChangeNotifier {
   //       Goal(
   //         id: 'goal1',
   //         name: '업무',
-  //         icon: null,
+  //         icon: Assets.icons.icGitlab.path,
   //         startDate: selectedDate,
   //         endDate: selectedDate.add(const Duration(days: 10)),
   //       ),
