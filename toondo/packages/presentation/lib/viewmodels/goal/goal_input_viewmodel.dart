@@ -1,5 +1,3 @@
-// lib/viewmodels/goal/goal_input_viewmodel.dart
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:domain/entities/goal.dart';

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:presentation/designsystem/colors/app_colors.dart';
+import 'package:presentation/designsystem/spacing/app_spacing.dart';
+import 'package:presentation/designsystem/typography/app_typography.dart';
 import 'package:presentation/viewmodels/goal/goal_input_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -24,26 +27,16 @@ class GoalInputHeaderSection extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(
-            color: Color(0xFF78B545),
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 0.15,
-            height: 1.5,
-            fontFamily: 'Pretendard Variable',
-          ),
+          style: AppTypography.h2Bold.copyWith(
+            color: AppColors.green500
+          )
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.spacing8),
         Text(
           subtitle,
-          style: const TextStyle(
-            color: Color(0xFF1C1D1B),
-            fontSize: 10,
-            fontWeight: FontWeight.w400,
-            letterSpacing: 0.15,
-            height: 1.5,
-            fontFamily: 'Pretendard Variable',
-          ),
+          style: AppTypography.caption1Regular.copyWith(
+            color: AppColors.status100_75
+          )
         ),
       ],
     );

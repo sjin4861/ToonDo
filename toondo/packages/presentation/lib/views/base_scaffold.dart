@@ -21,14 +21,14 @@ class BaseScaffold extends StatelessWidget {
     return Scaffold(
       appBar:
           customAppBar ??
-          AppNavBar(
-            title: title!,
-            onBack: () {
-              if (Navigator.canPop(context)) {
-                Navigator.pop(context);
-              }
-            },
-          ),
+          (title != null
+              ? AppNavBar(
+                title: title!,
+                onBack: () {
+                  Navigator.pop(context);
+                },
+              )
+              : null),
       body: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.screenHorizontalPadding,

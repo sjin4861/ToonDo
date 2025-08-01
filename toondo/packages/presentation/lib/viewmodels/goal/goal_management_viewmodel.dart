@@ -18,6 +18,7 @@ import 'package:injectable/injectable.dart';
 import 'package:presentation/viewmodels/home/home_viewmodel.dart';
 
 enum GoalFilterType { inProgress, completed }
+
 enum GoalCompletionFilter { all, succeeded, failed, givenUp }
 
 @injectable
@@ -52,40 +53,20 @@ class GoalManagementViewModel extends ChangeNotifier {
 
   List<Goal> _allGoals = [];
   List<Goal> _filteredGoals = [];
+
   List<Goal> get filteredGoals => _filteredGoals;
 
   GoalFilterType _filterType = GoalFilterType.inProgress;
+
   GoalFilterType get filterType => _filterType;
 
   GoalCompletionFilter _completionFilter = GoalCompletionFilter.all;
+
   GoalCompletionFilter get completionFilter => _completionFilter;
 
   Future<void> loadGoals() async {
     try {
-      // todo 아래 코드 주석 해제
-      // _allGoals = await getGoalsLocalUseCase() ?? [];
-
-      // 테스트를 위한 더미 코드
-      _allGoals = [
-        Goal(
-          id: '1',
-          name: '테스트 목표 1',
-          icon: Assets.icons.icGitlab.path,
-          status: Status.active,
-          progress: 0.5,
-          startDate: DateTime.now().subtract(Duration(days: 10)),
-          endDate: DateTime.now().add(Duration(days: 20)),
-        ),
-        Goal(
-          id: '2',
-          name: '테스트 목표 2',
-          icon: Assets.icons.icMapPin.path,
-          status: Status.completed,
-          progress: 1.0,
-          startDate: DateTime.now().subtract(Duration(days: 5)),
-          endDate: DateTime.now().subtract(Duration(days: 1)),
-        ),
-      ];
+      _allGoals = await getGoalsLocalUseCase() ?? [];
     } catch (_) {
       _allGoals = [];
     }
@@ -124,29 +105,7 @@ class GoalManagementViewModel extends ChangeNotifier {
 
   Future<void> _loadInProgressGoals() async {
     try {
-      // todo 아래 코드 주석 해제
-      //_filteredGoals = await getInProgressGoalsUseCase();
-
-      _filteredGoals = [
-        Goal(
-          id: '1',
-          name: '테스트 목표 1',
-          icon: Assets.icons.icGitlab.path,
-          status: Status.active,
-          progress: 0.5,
-          startDate: DateTime.now().subtract(Duration(days: 10)),
-          endDate: DateTime.now().add(Duration(days: 20)),
-        ),
-        Goal(
-          id: '2',
-          name: '테스트 목표 2',
-          icon: Assets.icons.icMapPin.path,
-          status: Status.active,
-          progress: 99.0,
-          startDate: DateTime.now().subtract(Duration(days: 5)),
-          endDate: DateTime.now().subtract(Duration(days: 1)),
-        ),
-      ];
+      _filteredGoals = await getInProgressGoalsUseCase();
     } catch (_) {
       _filteredGoals = [];
     }
@@ -155,14 +114,15 @@ class GoalManagementViewModel extends ChangeNotifier {
   Future<void> _loadCompletedGoalsWithFilter() async {
     try {
       final completed = await getCompletedGoalsUseCase();
+
       _filteredGoals = switch (_completionFilter) {
         GoalCompletionFilter.all => completed,
         GoalCompletionFilter.succeeded =>
-            completed.where((g) => g.status == Status.completed).toList(),
+          completed.where((g) => g.status == Status.completed).toList(),
         GoalCompletionFilter.failed =>
-            completed.where((g) => g.status == Status.failed).toList(),
+          completed.where((g) => g.status == Status.failed).toList(),
         GoalCompletionFilter.givenUp =>
-            completed.where((g) => g.status == Status.givenUp).toList(),
+          completed.where((g) => g.status == Status.givenUp).toList(),
       };
     } catch (_) {
       _filteredGoals = [];
@@ -207,6 +167,7 @@ class GoalManagementViewModel extends ChangeNotifier {
     final goal = _getGoalById(goalId);
     await updateGoalStatusUseCase(goal, Status.completed);
     await loadGoals();
+    await applyFilter();
     _updateHomeView();
   }
 
@@ -217,8 +178,10 @@ class GoalManagementViewModel extends ChangeNotifier {
     _updateHomeView();
   }
 
-  Goal _getGoalById(String id) =>
-      _allGoals.firstWhere((g) => g.id == id, orElse: () => throw Exception("Goal not found"));
+  Goal _getGoalById(String id) => _allGoals.firstWhere(
+    (g) => g.id == id,
+    orElse: () => throw Exception("Goal not found"),
+  );
 
   void _updateHomeView() {
     try {
