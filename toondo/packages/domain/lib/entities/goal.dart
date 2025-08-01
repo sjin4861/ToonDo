@@ -19,6 +19,26 @@ class Goal {
     this.status = Status.active,
   });
 
+  Goal copyWith({
+    String? id,
+    String? name,
+    String? icon,
+    double? progress,
+    DateTime? startDate,
+    DateTime? endDate,
+    Status? status,
+  }) {
+    return Goal(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      icon: icon ?? this.icon,
+      progress: progress ?? this.progress,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      status: status ?? this.status,
+    );
+  }
+
   static Goal get unselected => Goal(
     id: '',
     name: '목표 미설정',

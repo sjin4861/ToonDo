@@ -34,7 +34,6 @@ class AppGoalCategoryToggle extends StatelessWidget {
                 duration: const Duration(milliseconds: 200),
                 height: AppDimensions.goalCategoryToggleHeight,
                 width: AppDimensions.goalCategoryToggleWidth,
-                // ← 고정 너비
                 decoration: BoxDecoration(
                   color: isSelected ? AppColors.green100 : Colors.transparent,
                   borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
