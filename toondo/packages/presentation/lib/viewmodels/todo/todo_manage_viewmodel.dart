@@ -167,4 +167,9 @@ class TodoManageViewModel extends ChangeNotifier {
       print('Error updating todo dates: $e');
     }
   }
+
+  int get selectedGoalIndex {
+    if (selectedGoalId == null) return 0;
+    return goals.indexWhere((g) => g.id == selectedGoalId);
+  }
 }

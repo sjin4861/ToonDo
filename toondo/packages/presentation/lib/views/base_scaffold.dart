@@ -7,6 +7,7 @@ class BaseScaffold extends StatelessWidget {
   final String? title;
   final Widget body;
   final Widget? bottomWidget;
+  final bool extendBody;
 
   const BaseScaffold({
     super.key,
@@ -14,6 +15,7 @@ class BaseScaffold extends StatelessWidget {
     this.title,
     required this.body,
     this.bottomWidget,
+    this.extendBody = false,
   });
 
   @override
@@ -29,12 +31,15 @@ class BaseScaffold extends StatelessWidget {
                 },
               )
               : null),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.screenHorizontalPadding,
-        ),
-        child: body,
-      ),
+      body:
+          extendBody
+              ? body
+              : Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.screenHorizontalPadding,
+                ),
+                child: body,
+              ),
       bottomNavigationBar: bottomWidget,
     );
   }
