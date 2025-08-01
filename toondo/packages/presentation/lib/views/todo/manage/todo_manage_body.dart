@@ -107,7 +107,7 @@ class TodoManageBody extends StatelessWidget {
               viewModel: viewModel,
               isDDay: true,
             ),
-            const SizedBox(height: AppSpacing.spacing12),
+            const SizedBox(height: AppSpacing.spacing28),
             TodoListSection(
               title: '데일리 투두',
               todos: viewModel.dailyTodos,

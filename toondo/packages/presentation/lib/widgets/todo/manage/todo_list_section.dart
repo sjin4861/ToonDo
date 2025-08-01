@@ -1,8 +1,12 @@
+import 'package:common/gen/assets.gen.dart';
+import 'package:domain/entities/goal.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:presentation/designsystem/components/items/app_todo_item.dart';
 import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
+import 'package:presentation/utils/get_todo_border_color.dart';
 import 'package:presentation/viewmodels/todo/todo_manage_viewmodel.dart';
 import 'package:presentation/views/todo/input/todo_input_screen.dart';
-import 'package:presentation/widgets/todo/common/todo_list_item.dart';
 
 class TodoListSection extends StatelessWidget {
   final String title;
@@ -79,46 +83,51 @@ class TodoListSection extends StatelessWidget {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: todos.length,
-                  itemBuilder: (context, index) {
-                    final todo = todos[index];
-                    return TodoListItem(
-                      todo: todo,
-                      goals: viewModel.goals,
-                      selectedDate: DateTime(
-                        viewModel.selectedDate.year,
-                        viewModel.selectedDate.month,
-                        viewModel.selectedDate.day,
+              itemBuilder: (context, index) {
+                final todo = todos[index];
+
+                final Goal? matchedGoal = viewModel.goals.firstWhere(
+                      (g) => g.id == todo.goalId,
+                  orElse: () => Goal.empty(),
+                );
+
+                final isCompleted = todo.status >= 100;
+                final iconPath = matchedGoal!.icon;
+                final levelColor = getBorderColor(todo);
+
+                String? subtitle;
+                if (isDDay) {
+                  final dDay = todo.endDate.difference(viewModel.selectedDate).inDays;
+                  final dDayStr = dDay > 0 ? 'D-$dDay' : (dDay == 0 ? 'D-Day' : 'D+${-dDay}');
+                  subtitle =
+                  '${DateFormat('yy.MM.dd').format(todo.startDate)} ~ ${DateFormat('yy.MM.dd').format(todo.endDate)} $dDayStr';
+                } else if (todo.goalId != null) {
+                  subtitle = null;
+                }
+
+                return AppTodoItem(
+                  dismissKey: Key(todo.id.toString()),
+                  title: todo.title,
+                  iconPath: iconPath,
+                  subTitle: subtitle,
+                  isChecked: isCompleted,
+                  levelColor: levelColor,
+                  onTap: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => TodoInputScreen(todo: todo, isDDayTodo: isDDay),
                       ),
-                      onUpdate: () async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (_) => TodoInputScreen(
-                                  todo: todo,
-                                  isDDayTodo: isDDay,
-                                ),
-                          ),
-                        );
-                        viewModel.loadTodos();
-                      },
-                      onStatusUpdate:
-                          (updated, newStatus) =>
-                              viewModel.updateTodoStatus(updated, newStatus),
-                      onDelete: () => viewModel.deleteTodoById(todo.id),
-                      onPostpone: () {
-                        final newStart = todo.startDate.add(
-                          const Duration(days: 1),
-                        );
-                        final newEnd = todo.endDate.add(
-                          const Duration(days: 1),
-                        );
-                        viewModel.updateTodoDates(todo, newStart, newEnd);
-                      },
-                      hideCompletionStatus: isDDay,
                     );
+                    viewModel.loadTodos();
                   },
-                )
+                  onCheckedChanged: (value) {
+                    viewModel.updateTodoStatus(todo, value ? 100 : 0);
+                  },
+                  onSwipeLeft: () => viewModel.deleteTodoById(todo.id),
+                );
+              },
+            )
                 : const Center(
                   child: Text(
                     '투두가 없습니다.',
