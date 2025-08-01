@@ -103,7 +103,7 @@ class AppDimensions {
 
   // Navigation Bar
   static const double navBarIconPadding = paddingNavBarIcon;
-  static const double bottomNavBarHeight = 112.0;
+  static const double bottomNavBarHeight = 64.0;
   static const double topBarHeight = 56.0;
 
   // Segmented Control

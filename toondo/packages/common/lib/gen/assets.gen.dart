@@ -69,6 +69,22 @@ class $AssetsIconsGen {
   SvgGenImage get icBookmark =>
       const SvgGenImage('assets/icons/ic_bookmark.svg');
 
+  /// File path: assets/icons/ic_bottom_add.svg
+  SvgGenImage get icBottomAdd =>
+      const SvgGenImage('assets/icons/ic_bottom_add.svg');
+
+  /// File path: assets/icons/ic_bottom_goal.svg
+  SvgGenImage get icBottomGoal =>
+      const SvgGenImage('assets/icons/ic_bottom_goal.svg');
+
+  /// File path: assets/icons/ic_bottom_todo.svg
+  SvgGenImage get icBottomTodo =>
+      const SvgGenImage('assets/icons/ic_bottom_todo.svg');
+
+  /// File path: assets/icons/ic_bottom_user.svg
+  SvgGenImage get icBottomUser =>
+      const SvgGenImage('assets/icons/ic_bottom_user.svg');
+
   /// File path: assets/icons/ic_calendar.svg
   SvgGenImage get icCalendar =>
       const SvgGenImage('assets/icons/ic_calendar.svg');
@@ -396,6 +412,10 @@ class $AssetsIconsGen {
         icBookOpen,
         icBook,
         icBookmark,
+        icBottomAdd,
+        icBottomGoal,
+        icBottomTodo,
+        icBottomUser,
         icCalendar,
         icCamera,
         icCheckCircle,
