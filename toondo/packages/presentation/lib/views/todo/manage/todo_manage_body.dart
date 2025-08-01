@@ -19,18 +19,20 @@ class TodoManageBody extends StatelessWidget {
 
     return Align(
       alignment: Alignment.topCenter,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildHeader(viewModel),
-          const SizedBox(height: AppSpacing.spacing32),
-          ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: AppDimensions.todoMaxContentWidth,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _buildHeader(viewModel),
+            const SizedBox(height: AppSpacing.spacing32),
+            ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: AppDimensions.todoMaxContentWidth,
+              ),
+              child: _buildContent(viewModel),
             ),
-            child: _buildContent(viewModel),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
