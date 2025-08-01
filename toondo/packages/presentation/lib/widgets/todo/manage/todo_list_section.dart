@@ -27,7 +27,9 @@ class TodoListSection extends StatelessWidget {
     return Align(
       alignment: Alignment.center,
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: AppDimensions.todoMaxContentWidth),
+        constraints: const BoxConstraints(
+          maxWidth: AppDimensions.todoMaxContentWidth,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -83,51 +85,61 @@ class TodoListSection extends StatelessWidget {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: todos.length,
-              itemBuilder: (context, index) {
-                final todo = todos[index];
+                  itemBuilder: (context, index) {
+                    final todo = todos[index];
 
-                final Goal? matchedGoal = viewModel.goals.firstWhere(
+                    final Goal? matchedGoal = viewModel.goals.firstWhere(
                       (g) => g.id == todo.goalId,
-                  orElse: () => Goal.empty(),
-                );
-
-                final isCompleted = todo.status >= 100;
-                final iconPath = matchedGoal!.icon;
-                final levelColor = getBorderColor(todo);
-
-                String? subtitle;
-                if (isDDay) {
-                  final dDay = todo.endDate.difference(viewModel.selectedDate).inDays;
-                  final dDayStr = dDay > 0 ? 'D-$dDay' : (dDay == 0 ? 'D-Day' : 'D+${-dDay}');
-                  subtitle =
-                  '${DateFormat('yy.MM.dd').format(todo.startDate)} ~ ${DateFormat('yy.MM.dd').format(todo.endDate)} $dDayStr';
-                } else if (todo.goalId != null) {
-                  subtitle = null;
-                }
-
-                return AppTodoItem(
-                  dismissKey: Key(todo.id.toString()),
-                  title: todo.title,
-                  iconPath: iconPath,
-                  subTitle: subtitle,
-                  isChecked: isCompleted,
-                  levelColor: levelColor,
-                  onTap: () async {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => TodoInputScreen(todo: todo, isDDayTodo: isDDay),
-                      ),
+                      orElse: () => Goal.empty(),
                     );
-                    viewModel.loadTodos();
+
+                    final isCompleted = todo.status >= 100;
+                    final iconPath = matchedGoal!.icon;
+                    final levelColor = getBorderColor(todo);
+
+                    String? subtitle;
+                    if (isDDay) {
+                      final dDay =
+                          todo.endDate
+                              .difference(viewModel.selectedDate)
+                              .inDays;
+                      final dDayStr =
+                          dDay > 0
+                              ? 'D-$dDay'
+                              : (dDay == 0 ? 'D-Day' : 'D+${-dDay}');
+                      subtitle =
+                          '${DateFormat('yy.MM.dd').format(todo.startDate)} ~ ${DateFormat('yy.MM.dd').format(todo.endDate)} $dDayStr';
+                    } else if (todo.goalId != null) {
+                      subtitle = null;
+                    }
+
+                    return AppTodoItem(
+                      dismissKey: Key(todo.id.toString()),
+                      title: todo.title,
+                      iconPath: iconPath,
+                      subTitle: subtitle,
+                      isChecked: isCompleted,
+                      levelColor: levelColor,
+                      onTap: () async {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (_) => TodoInputScreen(
+                                  todo: todo,
+                                  isDDayTodo: isDDay,
+                                ),
+                          ),
+                        );
+                        viewModel.loadTodos();
+                      },
+                      onCheckedChanged: (value) {
+                        viewModel.updateTodoStatus(todo, value ? 100 : 0);
+                      },
+                      onSwipeLeft: () => viewModel.deleteTodoById(todo.id),
+                    );
                   },
-                  onCheckedChanged: (value) {
-                    viewModel.updateTodoStatus(todo, value ? 100 : 0);
-                  },
-                  onSwipeLeft: () => viewModel.deleteTodoById(todo.id),
-                );
-              },
-            )
+                )
                 : const Center(
                   child: Text(
                     '투두가 없습니다.',

@@ -97,7 +97,7 @@ class AppTodoItem extends StatelessWidget {
           height: AppDimensions.goalIconSize,
           colorFilter: ColorFilter.mode(
             isChecked
-                ? AppColors.status100.withOpacity(0.5)
+                ? AppColors.status100_50
                 : AppColors.status100,
             BlendMode.srcIn,
           ),
