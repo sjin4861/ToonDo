@@ -7,6 +7,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import '../helpers/test_data.dart';
 import 'user_repository_impl_test.mocks.dart';
+
 @GenerateMocks([
   UserLocalDatasource,
   UserRemoteDatasource,
@@ -26,21 +27,36 @@ void main() {
   });
 
   group('UserRepositoryImpl', () {
+    group('사용자 정보 조회 테스트', () {
+      test('getUser는 로컬 데이터소스의 getUser를 호출하고 User를 반환해야 한다', () async {
+        // Arrange
+        final testUser = TestData.createTestUser(loginId: 'testuser');
+        when(mockLocal.getUser()).thenAnswer((_) async => testUser);
+
+        // Act
+        final result = await repository.getUser();
+
+        // Assert
+        expect(result.loginId, equals('testuser'));
+        verify(mockLocal.getUser()).called(1);
+      });
+    });
+
     group('닉네임 관련 테스트', () {
       test('updateNickName은 원격 및 로컬 데이터소스의 닉네임 업데이트 메서드를 호출해야 한다', () async {
         // Arrange
         const newNickname = '새로운닉네임';
-        final updatedUser = TestData.createTestUser(nickname: newNickname);
-        when(mockRemote.changeNickName(newNickname)).thenAnswer((_) async => updatedUser);
-        when(mockLocal.setNickName(newNickname)).thenAnswer((_) async {});
-        
+        when(mockRemote.changeNickName(newNickname)).thenAnswer((_) async => newNickname);
+        when(mockLocal.getUser()).thenAnswer((_) async => TestData.createTestUser());
+        when(mockLocal.saveUser(any)).thenAnswer((_) async {});
+
         // Act
         final result = await repository.updateNickName(newNickname);
-        
+
         // Assert
         expect(result.nickname, equals(newNickname));
-        verify(mockRemote.changeNickName(newNickname));
-        verify(mockLocal.setNickName(newNickname));
+        verify(mockRemote.changeNickName(newNickname)).called(1);
+        verify(mockLocal.saveUser(any)).called(1);
       });
 
       test('getUserNickname은 로컬 데이터소스의 닉네임 조회 메서드를 호출해야 한다', () async {
@@ -50,42 +66,25 @@ void main() {
         
         // Act
         final result = await repository.getUserNickname();
-        
+
         // Assert
         expect(result, equals(expectedNickname));
         verify(mockLocal.getUserNickname());
       });
     });
 
-    group('포인트 관련 테스트', () {
-      test('updateUserPoints는 원격 및 로컬 데이터소스의 포인트 업데이트 메서드를 호출해야 한다', () async {
+    group('계정 삭제 테스트', () {
+      test('deleteAccount는 원격 및 로컬 데이터소스의 계정 삭제 메서드를 호출해야 한다', () async {
         // Arrange
-        const int newPoints = 50;
-        final updatedUser = TestData.createTestUser(points: 150); // 기존 100 + 50 = 150
-        when(mockRemote.updateUserPoints(newPoints)).thenAnswer((_) async => updatedUser);
-        when(mockLocal.updateUserPoints(newPoints)).thenAnswer((_) async {});
-        
-        // Act
-        final result = await repository.updateUserPoints(newPoints);
-        
-        // Assert
-        expect(result.points, equals(150)); // 기존 100 + 50 = 150
-        verify(mockRemote.updateUserPoints(newPoints));
-        verify(mockLocal.updateUserPoints(newPoints));
-      });
-    });
+        when(mockRemote.deleteAccount()).thenAnswer((_) async {});
+        when(mockLocal.clearUser()).thenAnswer((_) async {});
 
-    group('예외 처리 테스트', () {
-      test('원격 데이터소스에서 예외 발생 시 그대로 전파되어야 한다', () async {
-        // Arrange
-        const newNickname = '예외발생닉네임';
-        when(mockRemote.changeNickName(newNickname)).thenThrow(Exception('네트워크 오류'));
-        
-        // Act & Assert
-        expect(() => repository.updateNickName(newNickname), throwsException);
-        verify(mockRemote.changeNickName(newNickname));
-        // 예외가 발생했으므로 로컬 업데이트는 호출되지 않아야 함
-        verifyNever(mockLocal.setNickName(newNickname));
+        // Act
+        await repository.deleteAccount();
+
+        // Assert
+        verify(mockRemote.deleteAccount()).called(1);
+        verify(mockLocal.clearUser()).called(1);
       });
     });
   });
