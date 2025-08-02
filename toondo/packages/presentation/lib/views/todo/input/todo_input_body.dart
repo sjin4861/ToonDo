@@ -28,8 +28,6 @@ class TodoInputBody extends StatelessWidget {
               child: AppDailyChip(
                 isLeftSelected: !viewModel.isDailyTodo,
                 onSelectedChanged: (isLeftSelected) {
-                  // true: D-Day 선택 → isDailyTodo = false
-                  // false: Daily 선택 → isDailyTodo = true
                   viewModel.setDailyTodoStatus(!isLeftSelected);
                 },
               ),

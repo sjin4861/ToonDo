@@ -1,4 +1,9 @@
+import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
+import 'package:presentation/designsystem/colors/app_colors.dart';
+import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
+import 'package:presentation/designsystem/spacing/app_spacing.dart';
+import 'package:presentation/designsystem/typography/app_typography.dart';
 import 'package:presentation/navigation/route_paths.dart';
 import 'package:presentation/viewmodels/my_page/my_page_viewmodel.dart';
 import 'package:presentation/widgets/my_page/sync_bottom_sheet.dart';
@@ -16,13 +21,15 @@ class MyPageSettingSection extends StatelessWidget {
       children: [
         Text(
           '설정',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+          style: AppTypography.h2SemiBold.copyWith(color: AppColors.status100),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.spacing16),
         MyPageSettingTile(
           title: '동기화',
+          leadingIcon: Assets.icons.icSync.svg(
+            width: AppDimensions.iconSize16,
+            height: AppDimensions.iconSize16,
+          ),
           onTap: () {
             showModalBottomSheet(
               context: context,
@@ -34,9 +41,13 @@ class MyPageSettingSection extends StatelessWidget {
         ),
         MyPageSettingTile(
           title: '화면',
+          leadingIcon: Assets.icons.icDisplay.svg(
+            width: AppDimensions.iconSize16,
+            height: AppDimensions.iconSize16,
+          ),
           trailing: const Icon(
             Icons.arrow_forward_ios,
-            size: 16,
+            size: AppDimensions.iconSize16,
             color: Color(0xFFD9D9D9),
           ),
           onTap: () {
@@ -45,9 +56,13 @@ class MyPageSettingSection extends StatelessWidget {
         ),
         MyPageSettingTile(
           title: '소리/알림',
+          leadingIcon: Assets.icons.icNotification.svg(
+            width: AppDimensions.iconSize16,
+            height: AppDimensions.iconSize16,
+          ),
           trailing: Icon(
             Icons.arrow_forward_ios,
-            size: 16,
+            size: AppDimensions.iconSize16,
             color: Color(0xFFD9D9D9),
           ),
           onTap: () {
@@ -56,9 +71,13 @@ class MyPageSettingSection extends StatelessWidget {
         ),
         MyPageSettingTile(
           title: '계정관리',
+          leadingIcon: Assets.icons.icAccount.svg(
+            width: AppDimensions.iconSize16,
+            height: AppDimensions.iconSize16,
+          ),
           trailing: const Icon(
             Icons.arrow_forward_ios,
-            size: 16,
+            size: AppDimensions.iconSize16,
             color: Color(0xFFD9D9D9),
           ),
           onTap: () {
@@ -69,22 +88,15 @@ class MyPageSettingSection extends StatelessWidget {
           title: '이용안내',
           trailing: Icon(
             Icons.arrow_forward_ios,
-            size: 16,
+            size: AppDimensions.iconSize16,
             color: Color(0xFFD9D9D9),
+          ),
+          leadingIcon: Assets.icons.icNotificationCircle.svg(
+            width: AppDimensions.iconSize16,
+            height: AppDimensions.iconSize16,
           ),
           onTap: () {
             Navigator.pushNamed(context, RoutePaths.helpGuide);
-          },
-        ),
-        MyPageSettingTile(
-          title: '로그아웃',
-          onTap: () async {
-            await vm.logout();
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              RoutePaths.root,
-                  (route) => false,
-            );
           },
         ),
       ],

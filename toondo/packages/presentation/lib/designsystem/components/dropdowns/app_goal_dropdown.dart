@@ -1,3 +1,4 @@
+import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
@@ -37,12 +38,10 @@ class AppGoalDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     final selectedItem = items.firstWhere(
           (item) => item.id.toString() == selectedId,
-      orElse:
-          () =>
-      const GoalDropdownItem(
-        id: 0,
+      orElse: () => GoalDropdownItem(
+        id: -1,
         title: '목표를 선택하세요.',
-        iconPath: null,
+        iconPath: Assets.icons.icHelpCircle.path,
       ),
     );
 
@@ -91,7 +90,7 @@ class AppGoalDropdown extends StatelessWidget {
         // ▼ Dropdown
         if (isExpanded)
           Container(
-            margin: const EdgeInsets.only(top: 8),
+            margin: const EdgeInsets.only(top: AppSpacing.spacing8),
             decoration: BoxDecoration(
               border: Border.all(color: const Color(0xFFDDDDDD)),
               borderRadius: BorderRadius.circular(10),

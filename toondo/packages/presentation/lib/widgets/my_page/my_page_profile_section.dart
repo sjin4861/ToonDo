@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:presentation/designsystem/colors/app_colors.dart';
+import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
+import 'package:presentation/designsystem/spacing/app_spacing.dart';
+import 'package:presentation/designsystem/typography/app_typography.dart';
+import 'package:presentation/models/my_page_user_ui_model.dart';
+import 'package:presentation/utils/profile_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:presentation/viewmodels/my_page/my_page_viewmodel.dart';
 import 'package:common/gen/assets.gen.dart';
@@ -11,76 +17,77 @@ class MyPageProfileSection extends StatelessWidget {
     final userUiModel = context.watch<MyPageViewModel>().userUiModel;
 
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            const SizedBox(
-              width: 85,
-              height: 85,
-              child: DecoratedBox(
-                decoration: ShapeDecoration(
-                  color: Color(0xFFE5E1F5),
-                  shape: OvalBorder(),
-                ),
-              ),
-            ),
-            const SizedBox(
-              width: 59,
-              height: 59,
-              child: DecoratedBox(
-                decoration: ShapeDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Color(0xFFC0AEFF), Color(0xFFAB94FD)],
-                  ),
-                  shape: OvalBorder(),
-                ),
-              ),
-            ),
-            Center(
-              child: Assets.images.imgProfileDefault.svg(
-                width: 86,
-                height: 86,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ],
+        // 프로필 이미지 렌더링
+        _buildProfileImage(userUiModel),
+        const SizedBox(width: AppSpacing.spacing24),
+        // 사용자 이름 및 사용 일 수 정보
+        _buildProfileInfo(userUiModel),
+      ],
+    );
+  }
+
+  /// 사용자 가입 일 수에 따라 다른 프로필 이미지를 표시하는 위젯
+  Widget _buildProfileImage(MyPageUserUiModel? userUiModel) {
+    final joinedDays = int.tryParse(userUiModel?.joinedDaysText ?? '0') ?? 0;
+    final imageAsset = getProfileImageAssetByJoinedDays(joinedDays);
+
+    return SizedBox(
+      width: AppDimensions.profileImageSize,
+      height: AppDimensions.profileImageSize,
+      child: ClipOval(child: Image.asset(imageAsset, fit: BoxFit.cover)),
+    );
+  }
+
+  /// 사용자 이름과 ToonDo 사용일 정보를 표시하는 텍스트 정보 위젯
+  Widget _buildProfileInfo(MyPageUserUiModel? userUiModel) {
+    final joinedDaysText = userUiModel?.joinedDaysText ?? '0';
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        const SizedBox(height: AppSpacing.spacing16),
+        Text(
+          userUiModel?.displayName ?? '이름 없음',
+          style: AppTypography.h2SemiBold.copyWith(color: Colors.black, height: 1.0),
         ),
-        const SizedBox(width: 24),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              userUiModel?.displayName ?? '',
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                fontFamily: 'Pretendard Variable',
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text.rich(
+        const SizedBox(height: AppSpacing.spacing12),
+        Text.rich(
+          TextSpan(
+            children: [
               TextSpan(
-                children: [
-                  const TextSpan(
-                    text: 'ToonDo',
-                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
-                  ),
-                  const TextSpan(text: '와 함께한 지 '),
-                  TextSpan(
-                    text: userUiModel?.joinedDaysText ?? '0',
-                    style: const TextStyle(color: Color(0xFF78B545)),
-                  ),
-                  const TextSpan(text: '일째'),
-                ],
+                text: 'ToonDo',
+                style: AppTypography.caption1SemiBold.copyWith(
+                  color: Colors.black,
+                  height: 1.0,
+                ),
               ),
-              style: const TextStyle(fontSize: 10),
-            ),
-          ],
+              TextSpan(
+                text: '와 함께한 지 ',
+                style: AppTypography.caption1Regular.copyWith(
+                  color: Colors.black,
+                  height: 1.0,
+                ),
+              ),
+              TextSpan(
+                text: '$joinedDaysText',
+                style: AppTypography.caption1Regular.copyWith(
+                  color: AppColors.green500,
+                  height: 1.0,
+                ),
+              ),
+              TextSpan(
+                text: '일째',
+                style: AppTypography.caption1Regular.copyWith(
+                  color: Colors.black,
+                  height: 1.0,
+                ),
+              ),
+            ],
+          ),
         ),
+        const SizedBox(width: AppSpacing.spacing38),
       ],
     );
   }

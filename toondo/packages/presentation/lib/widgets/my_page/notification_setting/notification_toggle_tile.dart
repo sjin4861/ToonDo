@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:presentation/designsystem/colors/app_colors.dart';
+import 'package:presentation/designsystem/components/toggles/app_toggle_switch.dart';
+import 'package:presentation/designsystem/spacing/app_spacing.dart';
+import 'package:presentation/designsystem/typography/app_typography.dart';
 
 class NotificationToggleTile extends StatelessWidget {
   final String title;
@@ -14,35 +18,16 @@ class NotificationToggleTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textColor = Theme.of(context).textTheme.bodyMedium?.color;
-
-    return Theme(
-      data: Theme.of(context).copyWith(
-        switchTheme: SwitchThemeData(
-          thumbColor: WidgetStateProperty.resolveWith<Color>(
-                (states) => const Color(0xFFFDFDFD),
-          ),
-          trackColor: WidgetStateProperty.resolveWith<Color>(
-                (states) => states.contains(WidgetState.selected)
-                ? const Color(0xFF78B545)
-                : const Color(0xFFD9D9D9),
-          ),
-          overlayColor: WidgetStateProperty.all(Colors.transparent),
-          trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
-        ),
-      ),
-      child: SwitchListTile(
-        contentPadding: EdgeInsets.zero,
-        title: Text(
-          title,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            fontWeight: FontWeight.w400,
-            fontSize: 14,
-            color: textColor,
-          ),
-        ),
-        value: value,
-        onChanged: onChanged,
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, AppSpacing.spacing14, 0, AppSpacing.spacing14 + AppSpacing.spacing8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(title, style: AppTypography.body1Regular.copyWith(
+            color: AppColors.status100
+          )),
+          AppToggleSwitch(value: value, onChanged: onChanged ?? (_) {}),
+        ],
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 import 'package:presentation/widgets/bottom_sheet/bottom_sheet_drag_indicator.dart';
 
 class CustomBottomSheet extends StatelessWidget {
@@ -133,7 +134,7 @@ class _CommonBottomSheetButton extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: backgroundColor,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(1000),
+              borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
               side: filled ? BorderSide.none : border,
             ),
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -151,7 +152,7 @@ class _CommonBottomSheetButton extends StatelessWidget {
                 label,
                 style: TextStyle(
                   color: textColor,
-                  fontSize: 14,
+                  fontSize: 16,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 0.21,
                   fontFamily: 'Pretendard Variable',

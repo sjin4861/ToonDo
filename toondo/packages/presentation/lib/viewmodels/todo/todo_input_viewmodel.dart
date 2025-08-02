@@ -68,7 +68,12 @@ class TodoInputViewModel extends ChangeNotifier {
 
   get goalNameError => null;
 
-  Future<List<Goal>> fetchGoals() async => _getGoalsLocalUseCase();
+  Future<List<Goal>> fetchGoals() async {
+    final result = await _getGoalsLocalUseCase();
+    final goalsWithEmpty = [...result, Goal.empty()];
+    return goalsWithEmpty;
+  }
+
 
   void _onTitleChanged() {
     isTitleNotEmpty = titleController.text.isNotEmpty;

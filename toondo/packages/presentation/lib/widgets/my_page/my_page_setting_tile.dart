@@ -1,39 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:presentation/designsystem/colors/app_colors.dart';
+import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
+import 'package:presentation/designsystem/spacing/app_spacing.dart';
+import 'package:presentation/designsystem/typography/app_typography.dart';
 
 class MyPageSettingTile extends StatelessWidget {
   final String title;
   final Widget? trailing;
+  final Widget? leadingIcon;
   final VoidCallback? onTap;
 
-  const MyPageSettingTile({super.key, required this.title, this.trailing, this.onTap});
+  const MyPageSettingTile({
+    super.key,
+    required this.title,
+    this.trailing,
+    this.leadingIcon,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final textColor = Theme.of(context).textTheme.bodyMedium?.color;
-
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        height: 52,
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        color: Colors.transparent,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              title,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w400,
-                fontSize: 14,
-                color: textColor,
-                letterSpacing: 0.21,
-                fontFamily: 'Pretendard Variable',
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.spacing8),
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          height: AppDimensions.tileHeight,
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(
+            vertical: AppSpacing.spacing14,
+          ),
+          color: Colors.transparent,
+          child: Row(
+            children: [
+              if (leadingIcon != null) ...[
+                leadingIcon!,
+                const SizedBox(width: AppSpacing.spacing8),
+              ],
+              Text(
+                title,
+                style: AppTypography.h3Regular.copyWith(
+                  color: AppColors.status100,
+                ),
               ),
-            ),
-            if (trailing != null) trailing!,
-          ],
+              const Spacer(),
+              if (trailing != null) trailing!,
+            ],
+          ),
         ),
       ),
     );
   }
 }
+

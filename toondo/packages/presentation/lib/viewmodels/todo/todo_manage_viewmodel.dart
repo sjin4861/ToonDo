@@ -41,68 +41,70 @@ class TodoManageViewModel extends ChangeNotifier {
         _getGoalsLocalUseCase = getGoalsLocalUseCase,
         selectedDate = initialDate ?? DateTime.now();
 
-  // Future<void> loadTodos() async {
-  //   try {
-  //     // NOTE 원격 서버에서 가져오는 대신 로컬 데이터베이스에서만 Todo 불러오기 (수정필)
-  //     allTodos = _getTodosUseCase();
-  //     goals = await _getGoalsLocalUseCase();
-  //     _filterAndCategorizeTodos();
-  //   } catch (e) {
-  //     print('Error loading todos from local storage: $e');
-  //   }
-  // }
-
   Future<void> loadTodos() async {
     try {
-      // ✅ 더미 투두 목록
-      allTodos = [
-        Todo(
-          id: '1',
-          title: '회의 준비하기',
-          startDate: selectedDate.subtract(const Duration(days: 1)),
-          endDate: selectedDate.add(const Duration(days: 2)),
-          goalId: 'goal1',
-          status: 0,
-          importance: 1,
-          urgency: 1,
-          comment: '',
-        ),
-        Todo(
-          id: '2',
-          title: '운동하기',
-          startDate: selectedDate,
-          endDate: selectedDate,
-          goalId: 'goal2',
-          status: 50,
-          importance: 0,
-          urgency: 0,
-          comment: '',
-        ),
-      ];
-
-      goals = [
-        Goal(
-          id: 'goal1',
-          name: '업무',
-          icon: Assets.icons.icGitlab.path,
-          startDate: selectedDate,
-          endDate: selectedDate.add(const Duration(days: 10)),
-        ),
-        Goal(
-          id: 'goal2',
-          name: '건강',
-          icon: null,
-          startDate: selectedDate,
-          endDate: selectedDate.add(const Duration(days: 5)),
-        ),
-      ];
-
+      // NOTE 원격 서버에서 가져오는 대신 로컬 데이터베이스에서만 Todo 불러오기 (수정필)
+      allTodos = _getTodosUseCase();
+      goals = await _getGoalsLocalUseCase();
       _filterAndCategorizeTodos();
       notifyListeners();
     } catch (e) {
-      print('Error loading dummy todos: $e');
+      print('Error loading todos from local storage: $e');
     }
   }
+
+  // // 더미 투두 목록을 사용하고 싶다면 아래 주석을 해제하세요.
+  // Future<void> loadTodos() async {
+  //   try {
+  //     // ✅ 더미 투두 목록
+  //     allTodos = [
+  //       Todo(
+  //         id: '1',
+  //         title: '회의 준비하기',
+  //         startDate: selectedDate.subtract(const Duration(days: 1)),
+  //         endDate: selectedDate.add(const Duration(days: 2)),
+  //         goalId: 'goal1',
+  //         status: 0,
+  //         importance: 1,
+  //         urgency: 1,
+  //         comment: '',
+  //       ),
+  //       Todo(
+  //         id: '2',
+  //         title: '운동하기',
+  //         startDate: selectedDate,
+  //         endDate: selectedDate,
+  //         goalId: 'goal2',
+  //         status: 50,
+  //         importance: 0,
+  //         urgency: 0,
+  //         comment: '',
+  //       ),
+  //     ];
+  //
+  //     goals = [
+  //       Goal(
+  //         id: 'goal1',
+  //         name: '업무',
+  //         icon: Assets.icons.icGitlab.path,
+  //         startDate: selectedDate,
+  //         endDate: selectedDate.add(const Duration(days: 10)),
+  //       ),
+  //       Goal(
+  //         id: 'goal2',
+  //         name: '건강',
+  //         icon: null,
+  //         startDate: selectedDate,
+  //         endDate: selectedDate.add(const Duration(days: 5)),
+  //       ),
+  //     ];
+  //
+  //     _filterAndCategorizeTodos();
+  //     notifyListeners();
+  //   } catch (e) {
+  //     print('Error loading dummy todos: $e');
+  //   }
+  // }
 
 
   Future<List<Todo>> getTodos() async {
