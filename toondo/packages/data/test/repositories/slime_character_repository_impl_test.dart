@@ -42,6 +42,18 @@ void main() {
         // Arrange
         const input    = '안녕!';
         const gptReply = '반가워~ 😊';
+        
+        // Box mock 설정
+        final mockCharacter = SlimeCharacterModel(
+          conversationHistory: [],
+          name: '슬라임',
+          props: const <String>[],
+          rolePrompt: '당신은 친절한 슬라임입니다.',
+          animationState: 'idle',
+        );
+        when(mockBox.get('main', defaultValue: anyNamed('defaultValue')))
+            .thenReturn(mockCharacter);
+        when(mockBox.put('main', any)).thenAnswer((_) async {});
 
         when(mockGpt.chat(any)).thenAnswer((_) async => gptReply);
 
@@ -70,6 +82,7 @@ void main() {
           mockAnim.playBySentiment(gptReply, fromUser: false),
         ]);
 
+        verify(mockBox.put('main', any)).called(1);
         verifyNoMoreInteractions(mockAnim);
       });
     });
