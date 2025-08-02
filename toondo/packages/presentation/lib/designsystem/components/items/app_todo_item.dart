@@ -39,7 +39,7 @@ class AppTodoItem extends StatelessWidget {
       background: Container(
         height: AppDimensions.todoItemHeight,
         alignment: Alignment.centerRight,
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing12),
+        padding: EdgeInsets.fromLTRB(AppSpacing.spacing12, AppSpacing.spacing12, AppSpacing.spacing16, AppSpacing.spacing12),
         color: AppColors.red600,
         child: const Icon(
           Icons.delete,
@@ -97,7 +97,7 @@ class AppTodoItem extends StatelessWidget {
           height: AppDimensions.goalIconSize,
           colorFilter: ColorFilter.mode(
             isChecked
-                ? AppColors.status100.withOpacity(0.5)
+                ? AppColors.status100_50
                 : AppColors.status100,
             BlendMode.srcIn,
           ),

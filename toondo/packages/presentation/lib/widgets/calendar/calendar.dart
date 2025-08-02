@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:presentation/designsystem/spacing/app_spacing.dart';
 
 class Calendar extends StatefulWidget {
   final DateTime selectedDate;
@@ -77,7 +78,7 @@ class _CalendarState extends State<Calendar> {
                   icon: Icon(Icons.chevron_right, color: Color(0xFF1C1D1B)),
                   onPressed: _goToNextPeriod,
                 ),
-                SizedBox(width: 8),
+                SizedBox(width: 4),
                 GestureDetector(
                   onTap: _toggleCalendarView,
                   child: Container(
@@ -104,6 +105,7 @@ class _CalendarState extends State<Calendar> {
             ),
           ],
         ),
+        const SizedBox(height: AppSpacing.spacing16),
         isWeeklyView ? _buildWeeklyCalendar() : _buildMonthlyCalendar(),
       ],
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 
 class BottomSpacer extends StatelessWidget {
   const BottomSpacer({super.key});
@@ -6,7 +7,7 @@ class BottomSpacer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 64,
+      height: AppDimensions.bottomNavBarHeight,
       decoration: const BoxDecoration(
         color: Color(0xFFFCFCFC),
         border: Border(

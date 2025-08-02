@@ -1,5 +1,3 @@
-// lib/viewmodels/goal/goal_input_viewmodel.dart
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:domain/entities/goal.dart';
@@ -29,6 +27,7 @@ class GoalInputViewModel extends ChangeNotifier {
   final SaveGoalLocalUseCase saveGoalLocalUseCase;
   final UpdateGoalRemoteUseCase updateGoalRemoteUseCase;
   final UpdateGoalLocalUseCase updateGoalLocalUseCase;
+  final bool isFromOnboarding;
 
   GoalInputViewModel({
     required this.createGoalRemoteUseCase,
@@ -36,6 +35,7 @@ class GoalInputViewModel extends ChangeNotifier {
     required this.updateGoalRemoteUseCase,
     required this.updateGoalLocalUseCase,
     this.targetGoal,
+    this.isFromOnboarding = false,
   }) {
     if (targetGoal != null) {
       goalNameController.text = targetGoal!.name;

@@ -34,7 +34,7 @@ class AppGoalIconBottomSheet extends StatelessWidget {
             width: AppDimensions.bottomSheetHandleWidth,
             height: AppDimensions.bottomSheetHandleHeight,
             decoration: BoxDecoration(
-              color: Color(0xFFDDDDDD),
+              color: AppColors.borderUnselected,
               borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
             ),
           ),

@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:presentation/designsystem/colors/app_colors.dart';
+import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
+import 'package:presentation/designsystem/spacing/app_spacing.dart';
+import 'package:presentation/designsystem/typography/app_typography.dart';
 import 'package:provider/provider.dart';
 import 'package:presentation/viewmodels/goal/goal_input_viewmodel.dart';
 import 'package:presentation/widgets/goal/input/goal_icon_bottom_sheet.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // SVG 사용을 위해 추가
+import 'package:flutter_svg/flutter_svg.dart';
 
 class GoalNameInputField extends StatefulWidget {
   final TextEditingController controller;
   final String? errorText;
 
-  const GoalNameInputField({super.key, required this.controller, this.errorText});
+  const GoalNameInputField({
+    super.key,
+    required this.controller,
+    this.errorText,
+  });
 
   @override
   State<GoalNameInputField> createState() => _GoalNameInputFieldState();
@@ -17,15 +25,16 @@ class GoalNameInputField extends StatefulWidget {
 class _GoalNameInputFieldState extends State<GoalNameInputField> {
   @override
   Widget build(BuildContext context) {
-    // Consumer로 감싸서 전체 위젯이 아닌 필요한 부분만 리빌드되도록 함
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           '목표 이름',
-          style: _textStyle(Color(0xFF1C1D1B), 10, FontWeight.w400),
+          style: AppTypography.caption1Regular.copyWith(
+            color: AppColors.status100,
+          ),
         ),
-        SizedBox(height: 8),
+        SizedBox(height: AppSpacing.spacing8),
         Row(
           children: [
             // 아이콘 선택 버튼
@@ -52,63 +61,72 @@ class _GoalNameInputFieldState extends State<GoalNameInputField> {
                         border: Border.all(
                           color:
                               viewModel.selectedIcon != null
-                                  ? const Color(0xFF78B545)
-                                  : const Color(0xFFDDDDDD),
+                                  ? AppColors.green500
+                                  : AppColors.borderUnselected,
                           width: 1,
                         ),
-                        // 회색 배경에서 흰색 배경으로 변경
                         color: Colors.white,
                       ),
                       child:
                           viewModel.selectedIcon != null
-                              ? ClipOval(
+                              ? Padding(
+                                padding: const EdgeInsets.all(8.0),
                                 child: SvgPicture.asset(
                                   viewModel.selectedIcon!,
-                                  fit: BoxFit.cover,
-                                  width: 40,
-                                  height: 40,
+                                  width: AppDimensions.iconSize24,
+                                  height: AppDimensions.iconSize24,
+                                  fit: BoxFit.contain,
                                 ),
                               )
                               : const Icon(
                                 Icons.add,
-                                color: Color(0xFF78B545), // 초록색 계열로 아이콘 색상 변경
-                                size: 22,
+                                color: AppColors.green500,
+                                size: AppDimensions.iconSize16,
                               ),
                     ),
                   ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.spacing8),
             Expanded(
-              child: TextFormField(
-                controller: widget.controller,
-                cursorColor: Color(0xFF78B545),
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                  fontFamily: 'Pretendard Variable',
-                ),
-                // onChanged를 사용하지 않음으로써 매 입력마다 notifyListeners가 호출되지 않도록 함
-                decoration: InputDecoration(
-                  hintText: '목표 이름을 입력해주세요.',
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(1000),
-                    borderSide: BorderSide(
-                      width: 1.0,
-                      color:
-                          widget.controller.text.isNotEmpty
-                              ? Color(0xFF78B545)
-                              : Color(0xFFDDDDDD),
-                    ),
+              child: SizedBox(
+                height: AppDimensions.inputFieldHeight,
+                child: TextFormField(
+                  controller: widget.controller,
+                  cursorColor: AppColors.green500,
+                  style: AppTypography.body2Regular.copyWith(
+                    color: AppColors.status100,
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(1000),
-                    borderSide: BorderSide(
-                      color:
-                          widget.controller.text.isNotEmpty
-                              ? Color(0xFF78B545)
-                              : Color(0xFFDDDDDD),
-                      width: 1.0,
+                  decoration: InputDecoration(
+                    hintText: '목표 이름을 입력해주세요.',
+                    hintStyle: AppTypography.body2Regular.copyWith(
+                      color: AppColors.status100_25,
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: AppSpacing.spacing16,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(
+                        AppDimensions.radiusPill,
+                      ),
+                      borderSide: BorderSide(
+                        width: 1.0,
+                        color:
+                            widget.controller.text.isNotEmpty
+                                ? AppColors.green500
+                                : AppColors.borderUnselected,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(
+                        AppDimensions.radiusPill,
+                      ),
+                      borderSide: BorderSide(
+                        color:
+                            widget.controller.text.isNotEmpty
+                                ? AppColors.green500
+                                : AppColors.borderUnselected,
+                        width: 1.0,
+                      ),
                     ),
                   ),
                 ),
@@ -117,23 +135,15 @@ class _GoalNameInputFieldState extends State<GoalNameInputField> {
           ],
         ),
         if (widget.errorText != null) ...[
-          SizedBox(height: 4),
+          SizedBox(height: AppSpacing.spacing4),
           Text(
             widget.errorText!,
-            style: _textStyle(Color(0xFFEE0F12), 10, FontWeight.w400),
+            style: AppTypography.caption1Regular.copyWith(
+              color: AppColors.red500,
+            ),
           ),
         ],
       ],
-    );
-  }
-
-  TextStyle _textStyle(Color color, double fontSize, FontWeight fontWeight) {
-    return TextStyle(
-      color: color,
-      fontSize: fontSize,
-      fontFamily: 'Pretendard Variable',
-      fontWeight: fontWeight,
-      letterSpacing: 0.15,
     );
   }
 }

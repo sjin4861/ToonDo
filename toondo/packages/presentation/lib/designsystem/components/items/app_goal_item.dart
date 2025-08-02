@@ -7,7 +7,7 @@ import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/designsystem/typography/app_typography.dart';
 
 class AppGoalItem extends StatelessWidget {
-  final Key? dismissKey;
+  final Key dismissKey;
   final String title;
   final String? iconPath;
   final String? subTitle;
@@ -19,7 +19,7 @@ class AppGoalItem extends StatelessWidget {
 
   const AppGoalItem({
     super.key,
-    this.dismissKey,
+    required this.dismissKey,
     required this.title,
     this.iconPath,
     this.subTitle,
@@ -104,7 +104,7 @@ class AppGoalItem extends StatelessWidget {
         height: AppDimensions.goalIconSize,
         colorFilter: ColorFilter.mode(
           isChecked
-              ? AppColors.status100.withOpacity(0.5)
+              ? AppColors.status100_50
               : AppColors.status100,
           BlendMode.srcIn,
         ),

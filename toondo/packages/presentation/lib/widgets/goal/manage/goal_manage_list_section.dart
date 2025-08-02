@@ -1,88 +1,91 @@
 import 'package:flutter/material.dart';
 import 'package:domain/entities/goal.dart';
+import 'package:presentation/designsystem/components/items/app_goal_item.dart';
+import 'package:presentation/designsystem/spacing/app_spacing.dart';
+import 'package:presentation/utils/goal_utils.dart';
 import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart';
 import 'package:presentation/views/goal/input/goal_input_screen.dart';
-import 'package:presentation/widgets/goal/common/goal_list_item.dart';
 
 class GoalManageListSection extends StatelessWidget {
   final GoalManagementViewModel viewModel;
 
-  const GoalManageListSection({
-    super.key,
-    required this.viewModel,
-  });
+  const GoalManageListSection({super.key, required this.viewModel});
 
   @override
   Widget build(BuildContext context) {
-    if (viewModel.filterOption == GoalManagementFilterOption.completed) {
-      final completedGoals = viewModel.getCompletedGoals();
-      final givenUpGoals = viewModel.getGivenUpGoals();
+    final type = viewModel.filterType;
+    final filter = viewModel.completionFilter;
 
+    if (type == GoalFilterType.inProgress) {
+      return _GoalCategory(goals: viewModel.filteredGoals, viewModel: viewModel);
+    }
+
+    if (type == GoalFilterType.completed && filter == GoalCompletionFilter.all) {
+      final grouped = groupGoalsByCompletion(viewModel.filteredGoals);
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (completedGoals.isNotEmpty)
-            _GoalCategoryList(title: '성공', goals: completedGoals),
-          if (givenUpGoals.isNotEmpty)
-            _GoalCategoryList(title: '포기', goals: givenUpGoals),
-        ],
+        children: grouped.entries
+            .where((entry) => entry.value.isNotEmpty)
+            .map((entry) => _GoalCategory(goals: entry.value, viewModel: viewModel))
+            .toList(),
       );
-    } else {
-      return _GoalCategoryList(title: null, goals: viewModel.filteredGoals);
     }
+
+    // 나머지 필터 (성공, 실패, 포기)
+    return _GoalCategory(
+      goals: viewModel.filteredGoals,
+      viewModel: viewModel,
+    );
   }
 }
 
-class _GoalCategoryList extends StatelessWidget {
-  final String? title;
+class _GoalCategory extends StatelessWidget {
   final List<Goal> goals;
+  final GoalManagementViewModel viewModel;
 
-  const _GoalCategoryList({
-    this.title,
-    required this.goals,
-  });
+  const _GoalCategory({required this.goals, required this.viewModel});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (title != null) ...[
-          Text(
-            title!,
-            style: const TextStyle(
-              color: Color(0xFF1C1D1B),
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.16,
-            ),
-          ),
-          const SizedBox(height: 8),
-        ],
-        ListView.builder(
+        ListView.separated(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: goals.length,
+          separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.spacing12),
           itemBuilder: (context, index) {
             final goal = goals[index];
             return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-              child: GoalListItem(
-                goal: goal,
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                      builder: (_) => GoalInputScreen(goal: goal),
-                  ),
-                  );
-                }
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing8),
+              child: AppGoalItem(
+                dismissKey: ValueKey(goal.id),
+                onTap: () => _navigateToEdit(context, goal),
+                title: goal.name,
+                iconPath: goal.icon,
+                subTitle: buildGoalSubtitle(goal.startDate, goal.endDate),
+                isChecked: isGoalChecked(goal.status),
+                onCheckedChanged: (value) {
+                  if (value) {
+                    viewModel.completeGoal(goal.id);
+                  } else {
+                    viewModel.giveUpGoal(goal.id);
+                  }
+                },
               ),
             );
           },
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.spacing16),
       ],
+    );
+  }
+
+  void _navigateToEdit(BuildContext context, Goal goal) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => GoalInputScreen(goal: goal)),
     );
   }
 }

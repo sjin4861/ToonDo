@@ -88,6 +88,7 @@ class AppDimensions {
   static const double todoItemBorderWidth = 1.5;
   static const double checkboxBorderWidth = 1.5;
   static const double checkboxSize = 20.0;
+  static const double todoMaxContentWidth = 320.0;
 
   // Goal Item
   static const double goalItemHeight = 60.0;
@@ -102,14 +103,14 @@ class AppDimensions {
 
   // Navigation Bar
   static const double navBarIconPadding = paddingNavBarIcon;
-  static const double bottomNavBarHeight = 112.0;
+  static const double bottomNavBarHeight = 64.0;
   static const double topBarHeight = 56.0;
 
   // Segmented Control
   static const double segmentedControlRadius = borderRadius16;
 
   // Menu Bar
-  static const double menuBarHeight = 45.0;
+  static const double menuBarHeight = 44.0;
   static const double menuBarWidth = 320.0;
 
   // Eisenhower

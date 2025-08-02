@@ -34,7 +34,7 @@ class AppKakaoLoginButton extends StatelessWidget {
           ),
           const SizedBox(width: AppSpacing.spacing12),
           Text(
-            '카카오 가입하기',
+            '카카오 계속하기',
             textAlign: TextAlign.center,
             style: AppTypography.h3Bold.copyWith(color: AppColors.status100),
           ),

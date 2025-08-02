@@ -1,5 +1,10 @@
 import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
+import 'package:presentation/designsystem/colors/app_colors.dart';
+import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
+import 'package:presentation/designsystem/spacing/app_spacing.dart';
+import 'package:presentation/designsystem/typography/app_typography.dart';
+
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   const HomeAppBar({super.key});
@@ -10,25 +15,16 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       elevation: 0,
       centerTitle: true,
-      title: const Text(
+      automaticallyImplyLeading: false,
+      title: Text(
         'ToonDo',
-        style: TextStyle(
-          color: Color(0xff1C1D1B),
-          fontWeight: FontWeight.w600,
-          fontFamily: 'Pretendard Variable',
-          letterSpacing: 1.2,
-          fontSize: 14,
+        style: AppTypography.h3SemiBold.copyWith(
+          color: AppColors.status100,
         ),
       ),
-      leadingWidth: 56,
-      // GPT 대화 기능은 추후 개발 예정으로 비활성화
-      // leading: Padding(
-      //   padding: const EdgeInsets.only(left: 8.0),
-      //   child: ChatToggleButton(enabled: chatEnabled),
-      // ),
       actions: [
         Padding(
-          padding: const EdgeInsets.only(right: 16.0),
+          padding: const EdgeInsets.only(right: AppSpacing.spacing16),
           child: IconButton(
             onPressed: () {
               // TODO 추후 상점 화면 이동
@@ -37,7 +33,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
               //   MaterialPageRoute(builder: (_) => ()),
               // );
             },
-            icon: Assets.icons.icStore.svg(width: 40, height: 40),
+            icon: Assets.icons.icStore.svg(width: AppDimensions.iconCircleSize, height: AppDimensions.iconCircleSize),
           ),
         ),
       ],

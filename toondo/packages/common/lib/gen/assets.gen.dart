@@ -69,6 +69,22 @@ class $AssetsIconsGen {
   SvgGenImage get icBookmark =>
       const SvgGenImage('assets/icons/ic_bookmark.svg');
 
+  /// File path: assets/icons/ic_bottom_add.svg
+  SvgGenImage get icBottomAdd =>
+      const SvgGenImage('assets/icons/ic_bottom_add.svg');
+
+  /// File path: assets/icons/ic_bottom_goal.svg
+  SvgGenImage get icBottomGoal =>
+      const SvgGenImage('assets/icons/ic_bottom_goal.svg');
+
+  /// File path: assets/icons/ic_bottom_todo.svg
+  SvgGenImage get icBottomTodo =>
+      const SvgGenImage('assets/icons/ic_bottom_todo.svg');
+
+  /// File path: assets/icons/ic_bottom_user.svg
+  SvgGenImage get icBottomUser =>
+      const SvgGenImage('assets/icons/ic_bottom_user.svg');
+
   /// File path: assets/icons/ic_calendar.svg
   SvgGenImage get icCalendar =>
       const SvgGenImage('assets/icons/ic_calendar.svg');
@@ -396,6 +412,10 @@ class $AssetsIconsGen {
         icBookOpen,
         icBook,
         icBookmark,
+        icBottomAdd,
+        icBottomGoal,
+        icBottomTodo,
+        icBottomUser,
         icCalendar,
         icCamera,
         icCheckCircle,
@@ -508,6 +528,10 @@ class $AssetsImagesGen {
   SvgGenImage get imgCharacter =>
       const SvgGenImage('assets/images/img_character.svg');
 
+  /// File path: assets/images/img_character_happy.png
+  AssetGenImage get imgCharacterHappy =>
+      const AssetGenImage('assets/images/img_character_happy.png');
+
   /// File path: assets/images/img_cup_of_coffee.svg
   SvgGenImage get imgCupOfCoffee =>
       const SvgGenImage('assets/images/img_cup_of_coffee.svg');
@@ -563,11 +587,16 @@ class $AssetsImagesGen {
   SvgGenImage get imgSpeechBubble =>
       const SvgGenImage('assets/images/img_speech_bubble.svg');
 
+  /// File path: assets/images/img_welcome_character.png
+  AssetGenImage get imgWelcomeCharacter =>
+      const AssetGenImage('assets/images/img_welcome_character.png');
+
   /// List of all assets
   List<dynamic> get values => [
         imgBackgroundFlowers,
         imgBackgroundGrass,
         imgCharacter,
+        imgCharacterHappy,
         imgCupOfCoffee,
         imgEllipse,
         imgGoogle,
@@ -581,7 +610,8 @@ class $AssetsImagesGen {
         imgPhone,
         imgProfileDefault,
         imgShadow,
-        imgSpeechBubble
+        imgSpeechBubble,
+        imgWelcomeCharacter
       ];
 }
 

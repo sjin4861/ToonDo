@@ -19,10 +19,30 @@ class Goal {
     this.status = Status.active,
   });
 
-  static Goal get unselected => Goal(
-    id: '',
-    name: '목표 미설정',
-    icon: 'assets/icons/ic_monster.svg',
+  Goal copyWith({
+    String? id,
+    String? name,
+    String? icon,
+    double? progress,
+    DateTime? startDate,
+    DateTime? endDate,
+    Status? status,
+  }) {
+    return Goal(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      icon: icon ?? this.icon,
+      progress: progress ?? this.progress,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      status: status ?? this.status,
+    );
+  }
+
+  factory Goal.empty() => Goal(
+    id: '-1',
+    name: '',
+    icon: 'assets/icons/ic_help_circle.svg',
     startDate: DateTime.now(),
     endDate: DateTime.now(),
   );

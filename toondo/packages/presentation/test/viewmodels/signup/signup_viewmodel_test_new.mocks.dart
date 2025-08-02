@@ -8,6 +8,7 @@ import 'dart:async' as _i5;
 import 'package:domain/entities/user.dart' as _i3;
 import 'package:domain/repositories/auth_repository.dart' as _i2;
 import 'package:domain/usecases/auth/check_login_id_exists.dart' as _i6;
+import 'package:domain/usecases/auth/login.dart' as _i7;
 import 'package:domain/usecases/auth/register.dart' as _i4;
 import 'package:mockito/mockito.dart' as _i1;
 
@@ -93,4 +94,34 @@ class MockCheckLoginIdExistsUseCase extends _i1.Mock
             returnValue: _i5.Future<bool>.value(false),
           )
           as _i5.Future<bool>);
+}
+
+/// A class which mocks [LoginUseCase].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockLoginUseCase extends _i1.Mock implements _i7.LoginUseCase {
+  MockLoginUseCase() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i2.AuthRepository get repository =>
+      (super.noSuchMethod(
+            Invocation.getter(#repository),
+            returnValue: _FakeAuthRepository_0(
+              this,
+              Invocation.getter(#repository),
+            ),
+          )
+          as _i2.AuthRepository);
+
+  @override
+  _i5.Future<_i3.User> call(String? loginId, String? password) =>
+      (super.noSuchMethod(
+            Invocation.method(#call, [loginId, password]),
+            returnValue: _i5.Future<_i3.User>.value(
+              _FakeUser_1(this, Invocation.method(#call, [loginId, password])),
+            ),
+          )
+          as _i5.Future<_i3.User>);
 }

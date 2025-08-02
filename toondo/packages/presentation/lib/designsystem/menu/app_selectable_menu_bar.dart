@@ -13,7 +13,7 @@ class AppSelectableMenuBar extends StatelessWidget {
     required this.labels,
     required this.selectedIndex,
     required this.onChanged,
-  }) : assert(labels.length >= 2 && labels.length <= 3, '2~3개의 항목만 지원합니다.');
+  });
 
   @override
   Widget build(BuildContext context) {
