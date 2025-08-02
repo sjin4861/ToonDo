@@ -14,14 +14,12 @@ class TestData {
   static User createTestUser({
     int id = 1,
     String? loginId,
-    String nickname = '테스트 사용자',
-    int points = 0,
+    String? nickname = '테스트 사용자',
   }) {
     return User(
       id: id,
       loginId: loginId ?? testLoginId,
       nickname: nickname,
-      points: points,
     );
   }
 
