@@ -14,18 +14,10 @@ class UserModel extends HiveObject {
   @HiveField(2)
   String? nickname;
 
-  @HiveField(3)
-  int points;
-
-  @HiveField(4)
-  String? phoneNumber;
-
   UserModel({
     required this.id,
     required this.loginId,
     this.nickname,
-    required this.points,
-    this.phoneNumber,
   });
 
   // Convert model to domain entity
@@ -34,8 +26,6 @@ class UserModel extends HiveObject {
       id: id,
       loginId: loginId,
       nickname: nickname,
-      points: points,
-      phoneNumber: phoneNumber,
     );
   }
 
@@ -45,8 +35,6 @@ class UserModel extends HiveObject {
       id: user.id,
       loginId: user.loginId,
       nickname: user.nickname,
-      points: user.points,
-      phoneNumber: user.phoneNumber,
     );
   }
 
@@ -56,8 +44,6 @@ class UserModel extends HiveObject {
       id: json['userId'] as int,
       loginId: json['loginId'] as String,
       nickname: json['nickname'] as String?,
-      points: json['points'] as int,
-      phoneNumber: json['phoneNumber'] as String?,
     );
   }
 
@@ -67,8 +53,6 @@ class UserModel extends HiveObject {
       'userId': id,
       'loginId': loginId,
       'nickname': nickname,
-      'points': points,
-      'phoneNumber': phoneNumber,
     };
   }
 
@@ -79,9 +63,5 @@ class UserModel extends HiveObject {
 
   void setNickname(String newNickName) {
     nickname = newNickName;
-  }
-
-  void setPoints(int newPoint) {
-    points += newPoint;
   }
 }
