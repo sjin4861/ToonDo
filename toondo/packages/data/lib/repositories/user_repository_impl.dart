@@ -17,32 +17,25 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<User> updateNickName(String newNickName) async {
     print('[UserRepository] 닉네임 변경 시작: $newNickName');
-    
     try {
-      // 임시 테스트를 위해 로컬에서만 업데이트하는 방식으로 변경
-      print('[UserRepository] 로컬 데이터소스에서 닉네임 업데이트 중...');
-      await localDatasource.setNickName(newNickName);
-      
-      // 현재 사용자 정보를 가져와서 업데이트된 정보 반환
-      final updatedUser = await localDatasource.getUser();
-      print('[UserRepository] 닉네임 변경 성공: ${updatedUser.nickname}');
-      
-      // 나중에 서버 연동이 필요할 때 주석 해제
-      // final updatedUser = await remoteDatasource.changeNickName(newNickName);
-      // await localDatasource.setNickName(newNickName);
-      
+      // 실제 서버에 닉네임 변경 요청
+      final updatedNickname = await remoteDatasource.changeNickName(newNickName);
+      // 현재 사용자 정보 가져오기
+      final currentUser = await localDatasource.getUser();
+      // 업데이트된 사용자 정보 생성
+      final updatedUser = User(
+        id: currentUser.id,
+        nickname: updatedNickname,
+        loginId: currentUser.loginId
+      );
+      // 로컬에도 변경된 정보 저장
+      await localDatasource.saveUser(updatedUser);
+      print('[UserRepository] 닉네임 변경 성공: $updatedNickname');
       return updatedUser;
     } catch (e) {
       print('[UserRepository] 닉네임 변경 실패: $e');
       rethrow;
     }
-  }
-
-  @override
-  Future<User> updateUserPoints(int newPoint) async {
-    final updatedUser = await remoteDatasource.updateUserPoints(newPoint);
-    await localDatasource.updateUserPoints(newPoint);
-    return updatedUser;
   }
 
   @override
@@ -58,8 +51,8 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<void> deleteAccount() async {
-    // TODO: 백엔드 API 호출로 계정 삭제
-    // await remoteDatasource.deleteAccount();
+    // 서버에서 계정 삭제
+    await remoteDatasource.deleteAccount();
     
     // 로컬 데이터 삭제
     await localDatasource.clearUser();
