@@ -48,7 +48,8 @@ class TodoInputBody extends StatelessWidget {
             const SizedBox(height: AppSpacing.spacing24),
             GoalSelectionSection(viewModel: viewModel),
             const SizedBox(height: AppSpacing.spacing24),
-            _buildDateSection(viewModel, context),
+            if (!viewModel.isDailyTodo)
+              _buildDateSection(viewModel, context),
             const SizedBox(height: AppSpacing.spacing24),
             Text(
               '아이젠하워',

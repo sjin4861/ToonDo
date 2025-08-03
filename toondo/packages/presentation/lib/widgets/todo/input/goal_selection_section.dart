@@ -16,7 +16,7 @@ class GoalSelectionSection extends StatelessWidget {
     final activeGoals = viewModel.goals
         .where((g) => g.status == Status.active)
         .toList();
-
+    
     final dropdownItems = activeGoals.map(
           (g) => GoalDropdownItem(
         id: int.tryParse(g.id) ?? 0,
