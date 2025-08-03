@@ -193,12 +193,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i88.SlimeCharacterViewModel>(
       () => _i88.SlimeCharacterViewModel(gh<_i610.SlimeOnGestureUseCase>()),
     );
-    gh.lazySingleton<_i370.HomeViewModel>(
-      () => _i370.HomeViewModel(
-        gh<_i243.GetInProgressGoalsUseCase>(),
-        gh<_i849.GetUserNicknameUseCase>(),
-      ),
-    );
     gh.factory<_i501.AccountSettingViewModel>(
       () => _i501.AccountSettingViewModel(
         getUserUseCase: gh<_i991.GetUserUseCase>(),
@@ -210,6 +204,13 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i1040.AppThemeViewModel(
         gh<_i129.GetThemeModeUseCase>(),
         gh<_i366.SetThemeModeUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i370.HomeViewModel>(
+      () => _i370.HomeViewModel(
+        gh<_i243.GetInProgressGoalsUseCase>(),
+        gh<_i849.GetUserNicknameUseCase>(),
+        gh<_i362.GetAllTodosUseCase>(),
       ),
     );
     gh.factory<_i657.OnboardingViewModel>(

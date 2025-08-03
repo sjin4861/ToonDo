@@ -30,7 +30,7 @@ class AppNavBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: false,
       titleSpacing: 0,
       title: Padding(
-        padding: const EdgeInsets.only(top: 4),
+        padding: const EdgeInsets.only(top: AppSpacing.spacing4),
         child: Text(
           title,
           style: AppTypography.h2Regular.copyWith(

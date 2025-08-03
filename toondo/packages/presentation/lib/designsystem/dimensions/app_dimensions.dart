@@ -84,6 +84,9 @@ class AppDimensions {
   static const double dialogCornerRadius = 16.0;
   static const double dialogPadding = AppSpacing.spacing24;
 
+  // Home Item
+  static const double homeItemHeight = 60.0;
+
   // Todo Item
   static const double paddingTodoItem = 12.0;
   static const double marginBottomTodoItem = 12.0;
