@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:presentation/designsystem/components/buttons/app_button.dart';
+import 'package:presentation/designsystem/components/buttons/double_action_buttons.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/views/base_scaffold.dart';
 import 'package:presentation/views/goal/input/goal_input_body.dart';
+import 'package:presentation/views/todo/input/todo_input_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:domain/entities/goal.dart';
 import 'package:domain/usecases/goal/create_goal_remote.dart';
@@ -24,17 +26,18 @@ class GoalInputScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String title =
-    isFromOnboarding ? '시작하기' : (goal != null ? '목표 수정하기' : '목표 설정하기');
+        isFromOnboarding ? '시작하기' : (goal != null ? '목표 수정하기' : '목표 설정하기');
 
     return ChangeNotifierProvider<GoalInputViewModel>(
-      create: (_) => GoalInputViewModel(
-        createGoalRemoteUseCase: GetIt.instance<CreateGoalRemoteUseCase>(),
-        saveGoalLocalUseCase: GetIt.instance<SaveGoalLocalUseCase>(),
-        updateGoalRemoteUseCase: GetIt.instance<UpdateGoalRemoteUseCase>(),
-        updateGoalLocalUseCase: GetIt.instance<UpdateGoalLocalUseCase>(),
-        targetGoal: goal,
-        isFromOnboarding: isFromOnboarding,
-      ),
+      create:
+          (_) => GoalInputViewModel(
+            createGoalRemoteUseCase: GetIt.instance<CreateGoalRemoteUseCase>(),
+            saveGoalLocalUseCase: GetIt.instance<SaveGoalLocalUseCase>(),
+            updateGoalRemoteUseCase: GetIt.instance<UpdateGoalRemoteUseCase>(),
+            updateGoalLocalUseCase: GetIt.instance<UpdateGoalLocalUseCase>(),
+            targetGoal: goal,
+            isFromOnboarding: isFromOnboarding,
+          ),
       child: Builder(
         builder: (context) {
           final viewModel = context.read<GoalInputViewModel>();
@@ -44,24 +47,58 @@ class GoalInputScreen extends StatelessWidget {
             body: const GoalInputBody(),
             bottomWidget: SafeArea(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing24, vertical: AppSpacing.spacing8),
-                child: AppButton(
-                  label: '작성하기',
-                  onPressed: () async {
-                    final newGoal = await viewModel.saveGoal(context);
-                    if (newGoal != null) {
-                      Navigator.pop(context, newGoal);
-                      GetIt.instance<HomeViewModel>().loadGoals();
-                      GetIt.instance<GoalManagementViewModel>().loadGoals();
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        useRootNavigator: true,
-                        builder: (_) => GoalSettingBottomSheet(goal: newGoal),
-                      );
-                    }
-                  },
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.spacing24,
+                  vertical: AppSpacing.spacing8,
                 ),
+                child:
+                    isFromOnboarding
+                        ? DoubleActionButtons(
+                          backText: '뒤로',
+                          nextText: '다음으로',
+                          onBack: () => Navigator.pop(context),
+                          onNext: () async {
+                            final newGoal = await viewModel.saveGoal(context);
+                            if (newGoal != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (_) => TodoInputScreen(
+                                        isDDayTodo: true,
+                                        isOnboarding: true,
+                                      ),
+                                ),
+                              );
+
+                              // 이후 상태 동기화
+                              GetIt.instance<HomeViewModel>().loadGoals();
+                              GetIt.instance<GoalManagementViewModel>()
+                                  .loadGoals();
+                            }
+                          },
+                        )
+                        : AppButton(
+                          label: '작성하기',
+                          onPressed: () async {
+                            final newGoal = await viewModel.saveGoal(context);
+                            if (newGoal != null) {
+                              Navigator.pop(context, newGoal);
+                              GetIt.instance<HomeViewModel>().loadGoals();
+                              GetIt.instance<GoalManagementViewModel>()
+                                  .loadGoals();
+
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                useRootNavigator: true,
+                                builder:
+                                    (_) =>
+                                        GoalSettingBottomSheet(goal: newGoal),
+                              );
+                            }
+                          },
+                        ),
               ),
             ),
           );
