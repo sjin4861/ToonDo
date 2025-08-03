@@ -14,8 +14,9 @@ import 'package:presentation/viewmodels/todo/todo_input_viewmodel.dart';
 class TodoInputScreen extends StatelessWidget {
   final bool isDDayTodo;
   final Todo? todo;
+  final bool isOnboarding;
 
-  const TodoInputScreen({super.key, this.isDDayTodo = true, this.todo});
+  const TodoInputScreen({super.key, this.isDDayTodo = true, this.todo, this.isOnboarding = false});
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +25,16 @@ class TodoInputScreen extends StatelessWidget {
           (_) => TodoInputViewModel(
             todo: todo,
             isDDayTodo: isDDayTodo,
+            isOnboarding: isOnboarding,
             createTodoUseCase: GetIt.instance<CreateTodoUseCase>(),
             updateTodoUseCase: GetIt.instance<UpdateTodoUseCase>(),
             getGoalsLocalUseCase: GetIt.instance<GetGoalsLocalUseCase>(),
           ),
       child: BaseScaffold(
         body: TodoInputBody(),
-        title: todo != null ? '투두 수정' : '투두 작성',
+        title: isOnboarding
+            ? '시작하기'
+            : (todo != null ? '투두 수정' : '투두 작성'),
         bottomWidget: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(

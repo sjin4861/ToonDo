@@ -5,7 +5,7 @@ import 'package:domain/usecases/goal/create_goal_remote.dart';
 import 'package:domain/usecases/goal/save_goal_local.dart';
 import 'package:domain/usecases/goal/update_goal_remote.dart';
 import 'package:domain/usecases/goal/update_goal_local.dart';
-import 'package:presentation/widgets/calendar/calendar_bottom_sheet.dart';
+import 'package:presentation/designsystem/components/calendars/calendar_bottom_sheet.dart';
 import 'package:uuid/uuid.dart';
 import 'package:injectable/injectable.dart';
 

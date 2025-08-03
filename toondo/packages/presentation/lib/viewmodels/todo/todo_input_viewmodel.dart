@@ -4,9 +4,10 @@ import 'package:intl/intl.dart';
 import 'package:domain/entities/todo.dart';
 import 'package:domain/usecases/todo/create_todo.dart';
 import 'package:domain/usecases/todo/update_todo.dart';
-import 'package:presentation/widgets/calendar/calendar_bottom_sheet.dart';
+import 'package:presentation/designsystem/components/calendars/calendar_bottom_sheet.dart';
 import 'package:injectable/injectable.dart';
 import 'package:domain/usecases/goal/get_goals_local.dart';
+import 'package:presentation/models/eisenhower_model.dart'; // 여기 EisenhowerType enum이 정의됨
 
 @LazySingleton()
 class TodoInputViewModel extends ChangeNotifier {
@@ -19,14 +20,19 @@ class TodoInputViewModel extends ChangeNotifier {
   DateTime? startDate;
   DateTime? endDate;
   bool isDailyTodo = false;
-  int importance = 0;
-  int urgency = 0;
   bool isTitleNotEmpty = false;
   bool showGoalDropdown = false;
-  int selectedEisenhowerIndex = -1;
   String? titleError;
   String? _startDateError;
   String? _endDateError;
+  List<Goal> goals = [];
+
+  EisenhowerType _selectedEisenhowerType = EisenhowerType.notImportantNotUrgent;
+  EisenhowerType get selectedEisenhowerType => _selectedEisenhowerType;
+
+  int importance = 0;
+  int urgency = 0;
+  bool isOnboarding;
 
   String? get startDateError => _startDateError;
   String? get endDateError => _endDateError;
@@ -40,12 +46,13 @@ class TodoInputViewModel extends ChangeNotifier {
   TodoInputViewModel({
     this.todo,
     required this.isDDayTodo,
+    required this.isOnboarding,
     required CreateTodoUseCase createTodoUseCase,
     required UpdateTodoUseCase updateTodoUseCase,
     required GetGoalsLocalUseCase getGoalsLocalUseCase,
-  }) : _createTodoUseCase = createTodoUseCase,
-       _updateTodoUseCase = updateTodoUseCase,
-       _getGoalsLocalUseCase = getGoalsLocalUseCase {
+  })  : _createTodoUseCase = createTodoUseCase,
+        _updateTodoUseCase = updateTodoUseCase,
+        _getGoalsLocalUseCase = getGoalsLocalUseCase {
     if (todo != null) {
       titleController.text = todo!.title;
       isTitleNotEmpty = titleController.text.isNotEmpty;
@@ -54,6 +61,7 @@ class TodoInputViewModel extends ChangeNotifier {
       endDate = todo!.endDate;
       importance = todo!.importance.toInt();
       urgency = todo!.urgency.toInt();
+      _selectedEisenhowerType = _mapToEisenhowerType(importance, urgency);
       isDailyTodo = todo!.startDate == todo!.endDate;
     } else {
       isDailyTodo = !isDDayTodo;
@@ -64,11 +72,54 @@ class TodoInputViewModel extends ChangeNotifier {
     }
 
     titleController.addListener(_onTitleChanged);
+    _initGoals();
+  }
+
+  Future<void> _initGoals() async {
+    final result = await _getGoalsLocalUseCase();
+    goals = [...result, Goal.empty()];
+    notifyListeners();
+  }
+
+  EisenhowerType _mapToEisenhowerType(int importance, int urgency) {
+    if (importance == 1 && urgency == 1) return EisenhowerType.importantAndUrgent;
+    if (importance == 1 && urgency == 0) return EisenhowerType.importantNotUrgent;
+    if (importance == 0 && urgency == 1) return EisenhowerType.urgentNotImportant;
+    return EisenhowerType.notImportantNotUrgent;
+  }
+
+  void setEisenhowerType(EisenhowerType type) {
+    _selectedEisenhowerType = type;
+
+    switch (type) {
+      case EisenhowerType.notImportantNotUrgent:
+        importance = 0;
+        urgency = 0;
+        break;
+      case EisenhowerType.importantNotUrgent:
+        importance = 1;
+        urgency = 0;
+        break;
+      case EisenhowerType.urgentNotImportant:
+        importance = 0;
+        urgency = 1;
+        break;
+      case EisenhowerType.importantAndUrgent:
+        importance = 1;
+        urgency = 1;
+        break;
+    }
+
+    notifyListeners();
   }
 
   get goalNameError => null;
 
-  Future<List<Goal>> fetchGoals() async => _getGoalsLocalUseCase();
+  Future<List<Goal>> fetchGoals() async {
+    final result = await _getGoalsLocalUseCase();
+    final goalsWithEmpty = [...result, Goal.empty()];
+    return goalsWithEmpty;
+  }
 
   void _onTitleChanged() {
     isTitleNotEmpty = titleController.text.isNotEmpty;
@@ -84,18 +135,8 @@ class TodoInputViewModel extends ChangeNotifier {
       endDate = null;
     } else {
       startDate = DateTime.now();
-      endDate = DateTime.now().add(Duration(days: 1));
+      endDate = DateTime.now().add(const Duration(days: 1));
     }
-    notifyListeners();
-  }
-
-  void setImportance(int value) {
-    importance = value;
-    notifyListeners();
-  }
-
-  void setUrgency(int value) {
-    urgency = value;
     notifyListeners();
   }
 
@@ -110,37 +151,10 @@ class TodoInputViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setEisenhower(int index) {
-    selectedEisenhowerIndex = index;
-    switch (index) {
-      case 0:
-        importance = 0;
-        urgency = 0;
-        break;
-      case 1:
-        importance = 1;
-        urgency = 0;
-        break;
-      case 2:
-        importance = 0;
-        urgency = 1;
-        break;
-      case 3:
-        importance = 1;
-        urgency = 1;
-        break;
-      default:
-        importance = 0;
-        urgency = 0;
-        break;
-    }
-    notifyListeners();
-  }
-
   Future<void> selectDate(
-    BuildContext context, {
-    required bool isStartDate,
-  }) async {
+      BuildContext context, {
+        required bool isStartDate,
+      }) async {
     DateTime initialDate = DateTime.now();
     if (isStartDate && startDate != null) {
       initialDate = startDate!;

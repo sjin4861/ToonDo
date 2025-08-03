@@ -138,15 +138,6 @@ extension GetItInjectableX on _i174.GetIt {
         initialDate: gh<DateTime>(),
       ),
     );
-    gh.lazySingleton<_i72.TodoInputViewModel>(
-      () => _i72.TodoInputViewModel(
-        todo: gh<_i429.Todo>(),
-        isDDayTodo: gh<bool>(),
-        createTodoUseCase: gh<_i834.CreateTodoUseCase>(),
-        updateTodoUseCase: gh<_i375.UpdateTodoUseCase>(),
-        getGoalsLocalUseCase: gh<_i477.GetGoalsLocalUseCase>(),
-      ),
-    );
     gh.factory<_i178.ChatViewModel>(
       () => _i178.ChatViewModel(gh<_i642.SlimeOnMessageUseCase>()),
     );
@@ -166,6 +157,16 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i393.TimePickerViewModel>(
       () => _i393.TimePickerViewModel(gh<_i236.SetReminderTime>()),
     );
+    gh.lazySingleton<_i742.GoalInputViewModel>(
+      () => _i742.GoalInputViewModel(
+        createGoalRemoteUseCase: gh<_i343.CreateGoalRemoteUseCase>(),
+        saveGoalLocalUseCase: gh<_i881.SaveGoalLocalUseCase>(),
+        updateGoalRemoteUseCase: gh<_i200.UpdateGoalRemoteUseCase>(),
+        updateGoalLocalUseCase: gh<_i1031.UpdateGoalLocalUseCase>(),
+        targetGoal: gh<_i876.Goal>(),
+        isFromOnboarding: gh<bool>(),
+      ),
+    );
     gh.factory<_i272.MyPageViewModel>(
       () => _i272.MyPageViewModel(
         getUserUseCase: gh<_i991.GetUserUseCase>(),
@@ -174,13 +175,14 @@ extension GetItInjectableX on _i174.GetIt {
         logoutUseCase: gh<_i969.LogoutUseCase>(),
       ),
     );
-    gh.lazySingleton<_i742.GoalInputViewModel>(
-      () => _i742.GoalInputViewModel(
-        createGoalRemoteUseCase: gh<_i343.CreateGoalRemoteUseCase>(),
-        saveGoalLocalUseCase: gh<_i881.SaveGoalLocalUseCase>(),
-        updateGoalRemoteUseCase: gh<_i200.UpdateGoalRemoteUseCase>(),
-        updateGoalLocalUseCase: gh<_i1031.UpdateGoalLocalUseCase>(),
-        targetGoal: gh<_i876.Goal>(),
+    gh.lazySingleton<_i72.TodoInputViewModel>(
+      () => _i72.TodoInputViewModel(
+        todo: gh<_i429.Todo>(),
+        isDDayTodo: gh<bool>(),
+        isOnboarding: gh<bool>(),
+        createTodoUseCase: gh<_i834.CreateTodoUseCase>(),
+        updateTodoUseCase: gh<_i375.UpdateTodoUseCase>(),
+        getGoalsLocalUseCase: gh<_i477.GetGoalsLocalUseCase>(),
       ),
     );
     gh.factory<_i942.NotificationSettingViewModel>(

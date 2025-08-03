@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:presentation/designsystem/colors/app_colors.dart';
 import 'package:presentation/designsystem/components/chips/app_daily_chip.dart';
 import 'package:presentation/designsystem/components/inputs/app_date_field.dart';
 import 'package:presentation/designsystem/components/inputs/app_input_field.dart';
+import 'package:presentation/designsystem/components/select_priority/app_eiwenhower_selector.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
+import 'package:presentation/designsystem/typography/app_typography.dart';
 import 'package:presentation/viewmodels/todo/todo_input_viewmodel.dart';
-import 'package:presentation/widgets/text_fields/tip.dart';
-import 'package:presentation/widgets/todo/input/eisenhower_selector_section.dart';
+import 'package:presentation/designsystem/components/inputs/app_tip_text.dart';
 import 'package:presentation/widgets/todo/input/goal_selection_section.dart';
 import 'package:provider/provider.dart';
 
@@ -23,13 +25,14 @@ class TodoInputBody extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: AppSpacing.spacing32),
+            if (viewModel.isOnboarding)
+              _buildOnboardingHeader(),
+
             Align(
               alignment: Alignment.centerRight,
               child: AppDailyChip(
                 isLeftSelected: !viewModel.isDailyTodo,
                 onSelectedChanged: (isLeftSelected) {
-                  // true: D-Day 선택 → isDailyTodo = false
-                  // false: Daily 선택 → isDailyTodo = true
                   viewModel.setDailyTodoStatus(!isLeftSelected);
                 },
               ),
@@ -45,16 +48,26 @@ class TodoInputBody extends StatelessWidget {
             const SizedBox(height: AppSpacing.spacing24),
             GoalSelectionSection(viewModel: viewModel),
             const SizedBox(height: AppSpacing.spacing24),
-            _buildDateSection(viewModel, context),
+            if (!viewModel.isDailyTodo)
+              _buildDateSection(viewModel, context),
             const SizedBox(height: AppSpacing.spacing24),
-            EisenhowerSelectorSection(viewModel: viewModel),
-            const SizedBox(height: AppSpacing.spacing24),
-            const TipWidget(
-              title: 'TIP',
-              description:
-                  '아이젠하워는 긴급도와 중요도에 따라 할 일을 정리하는 방법이에요.\n'
-                  '앞으로 투두가 아이젠하워에 따라 가장 중요한 일부터 알려줄게요!',
+            Text(
+              '아이젠하워',
+              style: AppTypography.caption1Regular.copyWith(
+                color: AppColors.status100,
+              ),
             ),
+            const SizedBox(height: AppSpacing.spacing8),
+            AppEisenhowerSelector(
+              selectedType: viewModel.selectedEisenhowerType,
+              onChanged: viewModel.setEisenhowerType,
+            ),
+            const SizedBox(height: AppSpacing.spacing24),
+            if (viewModel.isOnboarding)
+              const AppTipText(
+                title: 'TIP',
+                description: '아이젠하워는 긴급도과 중요도에 따라 할 일을 정리하는 방법이에요.\n앞으로 툰두가 아이젠하워에 따라 가장 중요한 일부터 알려줄게요!',
+              ),
           ],
         ),
       ),
@@ -63,7 +76,7 @@ class TodoInputBody extends StatelessWidget {
 
   Widget _buildDateSection(TodoInputViewModel viewModel, BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppDateField(
@@ -72,13 +85,31 @@ class TodoInputBody extends StatelessWidget {
           showError: viewModel.startDateError != null,
           onTap: () => viewModel.selectDate(context, isStartDate: true),
         ),
-        const SizedBox(width: AppSpacing.spacing16),
+        const SizedBox(width: AppSpacing.spacing18),
         AppDateField(
           label: '마감일',
           date: viewModel.endDate,
           showError: viewModel.endDateError != null,
           onTap: () => viewModel.selectDate(context, isStartDate: false),
         ),
+      ],
+    );
+  }
+
+  Widget _buildOnboardingHeader() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '목표의 투두를 만들어 볼까요?',
+          style: AppTypography.h2Bold.copyWith(color: AppColors.green500),
+        ),
+        const SizedBox(height: AppSpacing.spacing8),
+        Text(
+          '지금 바로 투두(To-Do)를 만들면 나의 목표를 현실로 만들 수 있어요!',
+          style: AppTypography.caption1Regular.copyWith(color: AppColors.status100_75),
+        ),
+        const SizedBox(height: AppSpacing.spacing40),
       ],
     );
   }

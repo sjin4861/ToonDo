@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:presentation/designsystem/colors/app_colors.dart';
+import 'package:presentation/designsystem/components/dropdowns/app_goal_dropdown.dart';
+import 'package:presentation/designsystem/spacing/app_spacing.dart';
+import 'package:presentation/designsystem/typography/app_typography.dart';
 import 'package:presentation/viewmodels/todo/todo_input_viewmodel.dart';
-import 'package:presentation/widgets/goal/common/goal_list_dropdown.dart';
 import 'package:domain/entities/status.dart';
 
 class GoalSelectionSection extends StatelessWidget {
@@ -10,41 +13,36 @@ class GoalSelectionSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: viewModel.fetchGoals(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
-        }
-        if (snapshot.hasError) {
-          return const Text('Error loading goals');
-        }
-        final goals = (snapshot.data ?? []).where((g) => g.status == Status.active).toList();
+    final activeGoals = viewModel.goals
+        .where((g) => g.status == Status.active)
+        .toList();
+    
+    final dropdownItems = activeGoals.map(
+          (g) => GoalDropdownItem(
+        id: int.tryParse(g.id) ?? 0,
+        title: g.name,
+        iconPath: g.icon,
+      ),
+    ).toList();
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '목표',
-              style: TextStyle(
-                color: Color(0xFF1C1D1B),
-                fontSize: 10,
-                fontWeight: FontWeight.w400,
-                letterSpacing: 0.15,
-                fontFamily: 'Pretendard Variable',
-              ),
-            ),
-            const SizedBox(height: 8),
-            GoalListDropdown(
-              selectedGoalId: viewModel.selectedGoalId,
-              goals: goals,
-              isDropdownOpen: viewModel.showGoalDropdown,
-              onGoalSelected: viewModel.selectGoal,
-              toggleDropdown: viewModel.toggleGoalDropdown,
-            ),
-          ],
-        );
-      },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '목표',
+          style: AppTypography.caption1Regular.copyWith(
+            color: AppColors.status100,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.spacing8),
+        AppGoalDropdown(
+          items: dropdownItems,
+          selectedId: viewModel.selectedGoalId,
+          isExpanded: viewModel.showGoalDropdown,
+          onToggle: viewModel.toggleGoalDropdown,
+          onItemSelected: (id) => viewModel.selectGoal(id.toString()),
+        ),
+      ],
     );
   }
 }

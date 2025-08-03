@@ -13,6 +13,9 @@ class AppDimensions {
   // Input Field
   static const double inputFieldHeight = 40.0;
 
+  // List Tile
+  static const double tileHeight = 52.0;
+
   // Date Field
   static const double dateFieldHeight = 32.0;
   static const double dateFieldWidth = 156.0;
@@ -20,10 +23,14 @@ class AppDimensions {
   static const double widthDateFieldText = 108.0;
 
   // Icon Size
+  static const double iconSize12 = 12.0;
   static const double iconSize16 = 16.0;
   static const double iconSize20 = 20.0;
   static const double iconSize24 = 24.0;
   static const double iconSize32 = 32.0;
+
+  // Profile Image
+  static const double profileImageSize = 84.0;
 
   // Radius
   static const double borderRadius8 = 8.0;

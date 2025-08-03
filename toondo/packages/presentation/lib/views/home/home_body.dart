@@ -1,9 +1,9 @@
 import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:presentation/viewmodels/home/home_viewmodel.dart';
+import 'package:presentation/views/home/widget/home_goal_list_section.dart';
 import 'package:presentation/widgets/character/slime_area.dart';
-import 'package:presentation/widgets/home/home_background.dart';
-import 'package:presentation/widgets/home/home_goal_list_section.dart';
+import 'package:presentation/views/home/widget/home_background.dart';
 import 'package:provider/provider.dart';
 import 'package:domain/entities/status.dart';
 

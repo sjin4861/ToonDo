@@ -87,9 +87,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i969.LogoutUseCase>(
       () => _i969.LogoutUseCase(gh<_i427.AuthRepository>()),
     );
-    gh.factory<_i236.SetReminderTime>(
-      () => _i236.SetReminderTime(gh<_i267.NotificationSettingRepository>()),
-    );
     gh.factory<_i22.GetNotificationSettingsUseCase>(
       () => _i22.GetNotificationSettingsUseCase(
         gh<_i267.NotificationSettingRepository>(),
@@ -99,6 +96,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i930.SetNotificationSettingsUseCase(
         gh<_i267.NotificationSettingRepository>(),
       ),
+    );
+    gh.factory<_i236.SetReminderTime>(
+      () => _i236.SetReminderTime(gh<_i267.NotificationSettingRepository>()),
     );
     gh.factory<_i129.GetThemeModeUseCase>(
       () => _i129.GetThemeModeUseCase(gh<_i578.ThemeRepository>()),

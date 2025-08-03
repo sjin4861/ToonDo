@@ -30,6 +30,9 @@ class $AssetsIconsGen {
   SvgGenImage get ic100point =>
       const SvgGenImage('assets/icons/ic_100point.svg');
 
+  /// File path: assets/icons/ic_account.svg
+  SvgGenImage get icAccount => const SvgGenImage('assets/icons/ic_account.svg');
+
   /// File path: assets/icons/ic_activity.svg
   SvgGenImage get icActivity =>
       const SvgGenImage('assets/icons/ic_activity.svg');
@@ -137,6 +140,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_database.svg
   SvgGenImage get icDatabase =>
       const SvgGenImage('assets/icons/ic_database.svg');
+
+  /// File path: assets/icons/ic_display.svg
+  SvgGenImage get icDisplay => const SvgGenImage('assets/icons/ic_display.svg');
 
   /// File path: assets/icons/ic_download-cloud.svg
   SvgGenImage get icDownloadCloud =>
@@ -271,6 +277,14 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_mypage.svg
   SvgGenImage get icMypage => const SvgGenImage('assets/icons/ic_mypage.svg');
 
+  /// File path: assets/icons/ic_notification.svg
+  SvgGenImage get icNotification =>
+      const SvgGenImage('assets/icons/ic_notification.svg');
+
+  /// File path: assets/icons/ic_notification_circle.svg
+  SvgGenImage get icNotificationCircle =>
+      const SvgGenImage('assets/icons/ic_notification_circle.svg');
+
   /// File path: assets/icons/ic_pen-tool.svg
   SvgGenImage get icPenTool =>
       const SvgGenImage('assets/icons/ic_pen-tool.svg');
@@ -331,6 +345,9 @@ class $AssetsIconsGen {
 
   /// File path: assets/icons/ic_store.svg
   SvgGenImage get icStore => const SvgGenImage('assets/icons/ic_store.svg');
+
+  /// File path: assets/icons/ic_sync.svg
+  SvgGenImage get icSync => const SvgGenImage('assets/icons/ic_sync.svg');
 
   /// File path: assets/icons/ic_table.svg
   SvgGenImage get icTable => const SvgGenImage('assets/icons/ic_table.svg');
@@ -401,6 +418,7 @@ class $AssetsIconsGen {
   /// List of all assets
   List<SvgGenImage> get values => [
         ic100point,
+        icAccount,
         icActivity,
         icAiAnalysis,
         icAirplay,
@@ -431,6 +449,7 @@ class $AssetsIconsGen {
         icCompass,
         icCpu,
         icDatabase,
+        icDisplay,
         icDownloadCloud,
         icDownload,
         icEdit2,
@@ -472,6 +491,8 @@ class $AssetsIconsGen {
         icMonster,
         icMoon,
         icMypage,
+        icNotification,
+        icNotificationCircle,
         icPenTool,
         icPhoneCall,
         icPieChart,
@@ -490,6 +511,7 @@ class $AssetsIconsGen {
         icStar,
         icStats,
         icStore,
+        icSync,
         icTable,
         icTag,
         icTarget,
@@ -575,6 +597,18 @@ class $AssetsImagesGen {
   AssetGenImage get imgPhone =>
       const AssetGenImage('assets/images/img_phone.png');
 
+  /// File path: assets/images/img_profile_1.png
+  AssetGenImage get imgProfile1 =>
+      const AssetGenImage('assets/images/img_profile_1.png');
+
+  /// File path: assets/images/img_profile_2.png
+  AssetGenImage get imgProfile2 =>
+      const AssetGenImage('assets/images/img_profile_2.png');
+
+  /// File path: assets/images/img_profile_3.png
+  AssetGenImage get imgProfile3 =>
+      const AssetGenImage('assets/images/img_profile_3.png');
+
   /// File path: assets/images/img_profile_default.svg
   SvgGenImage get imgProfileDefault =>
       const SvgGenImage('assets/images/img_profile_default.svg');
@@ -608,6 +642,9 @@ class $AssetsImagesGen {
         imgKakao,
         imgMainCharacter,
         imgPhone,
+        imgProfile1,
+        imgProfile2,
+        imgProfile3,
         imgProfileDefault,
         imgShadow,
         imgSpeechBubble,

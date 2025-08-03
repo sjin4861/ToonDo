@@ -4,7 +4,7 @@ import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 import 'package:presentation/designsystem/menu/app_selectable_menu_bar.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/utils/todo_utils.dart';
-import 'package:presentation/widgets/calendar/calendar.dart';
+import 'package:presentation/designsystem/components/calendars/app_calendar.dart';
 import 'package:presentation/widgets/todo/manage/todo_list_section.dart';
 import 'package:presentation/viewmodels/todo/todo_manage_viewmodel.dart';
 import 'package:provider/provider.dart';

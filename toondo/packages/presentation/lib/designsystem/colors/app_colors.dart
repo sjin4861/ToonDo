@@ -16,6 +16,7 @@ class AppColors {
   static const Color borderDisabled = Color(0x7FDDDDDD);
   static const Color dividerLight = Color(0x3F1C1D1B);
   static const Color borderUnselected = Color(0xFFDDDDDD);
+  static const Color myPageBorder = Color(0xFFE4F0DA);
 
   // AppButton 관련
   static const Color buttonDisabledBackground = Color(0xFFEEEEEE);

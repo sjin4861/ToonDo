@@ -41,8 +41,8 @@ class Goal {
 
   factory Goal.empty() => Goal(
     id: '-1',
-    name: '',
-    icon: 'assets/icons/ic_help_circle.svg',
+    name: '목표 미설정',
+    icon: 'assets/icons/ic_help-circle.svg',
     startDate: DateTime.now(),
     endDate: DateTime.now(),
   );

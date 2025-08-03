@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:presentation/designsystem/components/inputs/app_date_field.dart';
+import 'package:presentation/designsystem/components/inputs/app_tip_text.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/viewmodels/goal/goal_input_viewmodel.dart';
 import 'package:presentation/widgets/goal/input/goal_input_header_section.dart';
 import 'package:presentation/widgets/text_fields/goal_name_input_field.dart';
-import 'package:presentation/widgets/text_fields/tip.dart';
 import 'package:provider/provider.dart';
 
 class GoalInputBody extends StatelessWidget {
@@ -38,7 +38,7 @@ class GoalInputBody extends StatelessWidget {
   }
 
   Widget _buildTipSection() {
-    return TipWidget(
+    return AppTipText(
       title: 'TIP',
       description: '결과를 측정할 수 있고 달성이 가능한 목표를 세워보세요!',
     );

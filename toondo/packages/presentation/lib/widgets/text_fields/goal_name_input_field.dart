@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
+import 'package:presentation/designsystem/components/bottom_sheets/app_goal_icon_bottom_sheet.dart';
+import 'package:presentation/designsystem/components/bottom_sheets/app_goal_icon_categories.dart';
 import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/designsystem/typography/app_typography.dart';
@@ -46,7 +48,12 @@ class _GoalNameInputFieldState extends State<GoalNameInputField> {
                       String? selectedIcon = await showModalBottomSheet<String>(
                         context: context,
                         isScrollControlled: true,
-                        builder: (context) => GoalIconBottomSheet(),
+                          builder: (context) => AppGoalIconBottomSheet(
+                            iconCategories: goalIconCategories,
+                            onIconSelected: (selectedIcon) {
+                              Navigator.pop(context, selectedIcon);
+                            },
+                          ),
                       );
 
                       if (selectedIcon != null) {
