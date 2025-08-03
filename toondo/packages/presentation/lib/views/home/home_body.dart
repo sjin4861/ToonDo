@@ -45,15 +45,9 @@ class HomeBody extends StatelessWidget {
         Align(
           alignment: Alignment.bottomCenter,
           child: FractionalTranslation(
-            translation: const Offset(0, -0.18),
+            translation: const Offset(0, -0.22),
             child: const SlimeArea(),
           ),
-        ),
-
-        Positioned(
-          bottom: 120,
-          left: 10,
-          child: Assets.images.imgBackgroundFlowers.svg(),
         ),
       ],
     );

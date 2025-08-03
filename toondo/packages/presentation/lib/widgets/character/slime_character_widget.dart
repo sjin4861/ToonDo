@@ -24,7 +24,7 @@ class SlimeCharacterWidget extends StatefulWidget {
 }
 
 class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> {
-  final double _scale = 1.6;
+  final double _scale = 1.8;
   Offset? _dragStart;
   RiveAnimationController? _currentController;
   String _currentAnimationKey = 'id';

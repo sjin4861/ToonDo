@@ -13,7 +13,7 @@ class HomeGoalListSection extends StatelessWidget {
   Widget build(BuildContext context) {
     if (goals.isEmpty) {
       return Padding(
-        padding: const EdgeInsets.only(top: AppSpacing.spacing40),
+        padding: const EdgeInsets.only(top: AppSpacing.spacing32),
         child: Align(
           alignment: Alignment.topCenter,
           child: Text(

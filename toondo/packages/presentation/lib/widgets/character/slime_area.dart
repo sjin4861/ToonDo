@@ -61,7 +61,7 @@ class _SlimeStack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const w = 300.0, shadowDx = -10.0, shadowDy = 24.0, shadowScale = 0.96;
+    const w = 300.0, shadowDx = -10.0, shadowDy = 32.0, shadowScale = 0.94;
     final viewModel = context.watch<SlimeCharacterViewModel>();
 
     return SizedBox(
@@ -75,7 +75,7 @@ class _SlimeStack extends StatelessWidget {
             offset: const Offset(shadowDx, shadowDy),
             child: Transform.scale(
               scale: shadowScale,
-              child: Assets.images.imgHomeShadowPng.image(width: w - 120),
+              child: Assets.images.imgHomeShadowPng.image(width: w - 122),
             ),
           ),
           

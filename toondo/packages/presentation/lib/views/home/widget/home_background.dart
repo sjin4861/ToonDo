@@ -13,15 +13,18 @@ class HomeBackground extends StatelessWidget {
             child: Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [Color(0xFFFDF8EB), Color(0xFFE2F1F6)],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0xFFCCEDF4),
+                    Color(0xFFFFFEF0),
+                  ],
                 ),
               ),
             ),
           ),
           Positioned(
-            bottom: 46,
+            bottom: 20,
             left: 0,
             right: 0,
             child: Assets.images.imgBackgroundGrass.svg(
