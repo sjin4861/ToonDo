@@ -23,6 +23,7 @@ class AppDimensions {
   static const double widthDateFieldText = 108.0;
 
   // Icon Size
+  static const double iconSize12 = 12.0;
   static const double iconSize16 = 16.0;
   static const double iconSize20 = 20.0;
   static const double iconSize24 = 24.0;

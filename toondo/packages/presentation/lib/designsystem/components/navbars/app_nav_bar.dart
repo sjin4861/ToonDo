@@ -29,10 +29,14 @@ class AppNavBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       centerTitle: false,
       titleSpacing: 0,
-      title: Text(
-        title,
-        style: AppTypography.h2Regular.copyWith(
-          color: AppColors.status100,
+      title: Padding(
+        padding: const EdgeInsets.only(top: 4),
+        child: Text(
+          title,
+          style: AppTypography.h2Regular.copyWith(
+            color: AppColors.status100,
+            height: 1.0,
+          ),
         ),
       ),
       bottom: const PreferredSize(

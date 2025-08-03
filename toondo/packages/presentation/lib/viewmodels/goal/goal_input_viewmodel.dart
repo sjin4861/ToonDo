@@ -71,6 +71,7 @@ class GoalInputViewModel extends ChangeNotifier {
 
     try {
       if (targetGoal == null) {
+        await saveGoalLocalUseCase(newGoal);
         final created = await createGoalRemoteUseCase(newGoal);
         await saveGoalLocalUseCase(created);
         try {

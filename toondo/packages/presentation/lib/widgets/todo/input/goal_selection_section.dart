@@ -13,43 +13,36 @@ class GoalSelectionSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: viewModel.fetchGoals(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
-        }
-        if (snapshot.hasError) {
-          return const Text('목표를 가져오고 있습니다.');
-        }
-        final goals = (snapshot.data ?? []).where((g) => g.status == Status.active).toList();
+    final activeGoals = viewModel.goals
+        .where((g) => g.status == Status.active)
+        .toList();
 
-        final dropdownItems = goals.map((g) => GoalDropdownItem(
-          id: int.tryParse(g.id) ?? 0,
-          title: g.name,
-          iconPath: g.icon,
-        )).toList();
+    final dropdownItems = activeGoals.map(
+          (g) => GoalDropdownItem(
+        id: int.tryParse(g.id) ?? 0,
+        title: g.name,
+        iconPath: g.icon,
+      ),
+    ).toList();
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '목표',
-              style: AppTypography.caption1Regular.copyWith(
-                color: AppColors.status100,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.spacing8),
-            AppGoalDropdown(
-              items: dropdownItems,
-              selectedId: viewModel.selectedGoalId,
-              isExpanded: viewModel.showGoalDropdown,
-              onToggle: viewModel.toggleGoalDropdown,
-              onItemSelected: (id) => viewModel.selectGoal(id.toString()),
-            ),
-          ],
-        );
-      },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '목표',
+          style: AppTypography.caption1Regular.copyWith(
+            color: AppColors.status100,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.spacing8),
+        AppGoalDropdown(
+          items: dropdownItems,
+          selectedId: viewModel.selectedGoalId,
+          isExpanded: viewModel.showGoalDropdown,
+          onToggle: viewModel.toggleGoalDropdown,
+          onItemSelected: (id) => viewModel.selectGoal(id.toString()),
+        ),
+      ],
     );
   }
 }

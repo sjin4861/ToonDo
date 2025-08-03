@@ -25,6 +25,7 @@ class TodoInputViewModel extends ChangeNotifier {
   String? titleError;
   String? _startDateError;
   String? _endDateError;
+  List<Goal> goals = [];
 
   EisenhowerType _selectedEisenhowerType = EisenhowerType.notImportantNotUrgent;
   EisenhowerType get selectedEisenhowerType => _selectedEisenhowerType;
@@ -71,6 +72,13 @@ class TodoInputViewModel extends ChangeNotifier {
     }
 
     titleController.addListener(_onTitleChanged);
+    _initGoals();
+  }
+
+  Future<void> _initGoals() async {
+    final result = await _getGoalsLocalUseCase();
+    goals = [...result, Goal.empty()];
+    notifyListeners();
   }
 
   EisenhowerType _mapToEisenhowerType(int importance, int urgency) {
