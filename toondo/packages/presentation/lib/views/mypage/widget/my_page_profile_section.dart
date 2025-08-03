@@ -7,7 +7,6 @@ import 'package:presentation/models/my_page_user_ui_model.dart';
 import 'package:presentation/utils/profile_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:presentation/viewmodels/my_page/my_page_viewmodel.dart';
-import 'package:common/gen/assets.gen.dart';
 
 class MyPageProfileSection extends StatelessWidget {
   const MyPageProfileSection({super.key});

@@ -5,7 +5,6 @@ import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/designsystem/typography/app_typography.dart';
 
-
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   const HomeAppBar({super.key});
 

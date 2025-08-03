@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/designsystem/typography/app_typography.dart';
-import 'package:presentation/widgets/my_page/display_setting/theme_mode_option_group.dart';
+import 'package:presentation/views/mypage/widget/display_setting/theme_mode_option_group.dart';
 
 class DisplaySettingBody extends StatelessWidget {
   const DisplaySettingBody({super.key});

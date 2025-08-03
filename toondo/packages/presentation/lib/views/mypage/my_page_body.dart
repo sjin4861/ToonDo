@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
-import 'package:presentation/widgets/my_page/my_page_profile_section.dart';
-import 'package:presentation/widgets/my_page/my_page_setting_section.dart';
+import 'package:presentation/views/mypage/widget/my_page_profile_section.dart';
+import 'package:presentation/views/mypage/widget/my_page_setting_section.dart';
 
 class MyPageBody extends StatelessWidget {
   const MyPageBody({super.key});

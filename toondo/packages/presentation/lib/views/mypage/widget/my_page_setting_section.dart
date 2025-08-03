@@ -6,7 +6,7 @@ import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/designsystem/typography/app_typography.dart';
 import 'package:presentation/navigation/route_paths.dart';
 import 'package:presentation/viewmodels/my_page/my_page_viewmodel.dart';
-import 'package:presentation/widgets/my_page/sync_bottom_sheet.dart';
+import 'package:presentation/views/mypage/widget/sync_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'my_page_setting_tile.dart';
 

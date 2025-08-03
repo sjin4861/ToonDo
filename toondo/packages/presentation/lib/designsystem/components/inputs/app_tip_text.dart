@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class TipWidget extends StatelessWidget {
+class AppTipText extends StatelessWidget {
   final String title;
   final String description;
 
-  const TipWidget({
+  const AppTipText({
     super.key,
     required this.title,
     required this.description,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:domain/entities/goal.dart';
-import 'package:presentation/widgets/home/home_goal_list_item.dart';
+import 'package:presentation/views/home/widget/home_goal_list_item.dart';
 
 class HomeGoalListSection extends StatelessWidget {
   final List<Goal> goals;

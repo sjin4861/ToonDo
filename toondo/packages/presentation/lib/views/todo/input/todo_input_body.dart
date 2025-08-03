@@ -4,7 +4,7 @@ import 'package:presentation/designsystem/components/inputs/app_date_field.dart'
 import 'package:presentation/designsystem/components/inputs/app_input_field.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/viewmodels/todo/todo_input_viewmodel.dart';
-import 'package:presentation/widgets/text_fields/tip.dart';
+import 'package:presentation/designsystem/components/inputs/app_tip_text.dart';
 import 'package:presentation/widgets/todo/input/eisenhower_selector_section.dart';
 import 'package:presentation/widgets/todo/input/goal_selection_section.dart';
 import 'package:provider/provider.dart';
@@ -47,7 +47,7 @@ class TodoInputBody extends StatelessWidget {
             const SizedBox(height: AppSpacing.spacing24),
             EisenhowerSelectorSection(viewModel: viewModel),
             const SizedBox(height: AppSpacing.spacing24),
-            const TipWidget(
+            const AppTipText(
               title: 'TIP',
               description:
                   '아이젠하워는 긴급도와 중요도에 따라 할 일을 정리하는 방법이에요.\n'

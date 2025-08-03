@@ -6,7 +6,6 @@ import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/views/goal/manage/goal_manage_screen.dart';
 import 'package:presentation/views/mypage/my_page_screen.dart';
-import 'package:presentation/views/onboarding/step1_2/onboarding_step1_2_screen.dart';
 import 'package:presentation/views/todo/input/todo_input_screen.dart';
 import 'package:presentation/views/todo/manage/todo_manage_screen.dart';
 

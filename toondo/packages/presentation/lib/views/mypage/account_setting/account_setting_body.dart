@@ -7,7 +7,7 @@ import 'package:presentation/viewmodels/my_page/account_setting/account_setting_
 import 'package:presentation/views/mypage/account_setting/nickname_change_screen.dart';
 import 'package:presentation/views/mypage/account_setting/password_change_screen.dart';
 import 'package:presentation/views/mypage/account_setting/delete_account_screen.dart';
-import 'package:presentation/widgets/my_page/account_setting/account_setting_tile.dart';
+import 'package:presentation/views/mypage/widget/account_setting/account_setting_tile.dart';
 import 'package:provider/provider.dart';
 
 class AccountSettingBody extends StatelessWidget {

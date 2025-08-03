@@ -5,7 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:presentation/viewmodels/character/chat_viewmodel.dart';
 import 'package:presentation/widgets/character/slime_area.dart';
 import 'package:presentation/widgets/character/chat_input_bar.dart'; // 아래 3‑항 참조
-import 'package:presentation/widgets/home/home_background.dart';
+import 'package:presentation/views/home/widget/home_background.dart';
 
 class SlimeChatPage extends StatelessWidget {
   const SlimeChatPage({super.key});

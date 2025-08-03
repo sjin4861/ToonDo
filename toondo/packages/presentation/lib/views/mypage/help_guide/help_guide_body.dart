@@ -4,7 +4,7 @@ import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/designsystem/typography/app_typography.dart';
 import 'package:presentation/viewmodels/my_page/help_guide/help_guide_viewmodel.dart';
-import 'package:presentation/widgets/my_page/my_page_setting_tile.dart';
+import 'package:presentation/views/mypage/widget/my_page_setting_tile.dart';
 import 'package:provider/provider.dart';
 
 class HelpGuideBody extends StatelessWidget {
