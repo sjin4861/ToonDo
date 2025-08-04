@@ -26,12 +26,9 @@ class TodoModel extends HiveObject {
   DateTime endDate;
 
   @HiveField(7)
-  int urgency;
+  int eisenhower; // TODO: 0,1,2,3 인지 1,2,3,4 인지 서버 API 스펙 확인 필요
 
   @HiveField(8)
-  int importance;
-
-  @HiveField(9)
   bool isSynced; // 로컬 데이터 동기화 여부
 
   TodoModel({
@@ -42,8 +39,7 @@ class TodoModel extends HiveObject {
     this.goalId,
     this.status = 0.0,
     this.comment = '',
-    this.urgency = 0,
-    this.importance = 0,
+    this.eisenhower = 0,
     this.isSynced = false,
   });
 
@@ -64,8 +60,7 @@ class TodoModel extends HiveObject {
       comment: entity.comment,
       startDate: entity.startDate,
       endDate: entity.endDate,
-      urgency: entity.urgency,
-      importance: entity.importance,
+      eisenhower: entity.eisenhower,
       isSynced: false,
     );
   }
@@ -80,8 +75,7 @@ class TodoModel extends HiveObject {
       comment: comment,
       startDate: startDate,
       endDate: endDate,
-      urgency: urgency,
-      importance: importance,
+      eisenhower: eisenhower,
     );
   }
 
@@ -95,8 +89,7 @@ class TodoModel extends HiveObject {
       'comment': comment,
       'startDate': startDate.toIso8601String(),
       'endDate': endDate.toIso8601String(),
-      'urgency': urgency,
-      'importance': importance,
+      'eisenhower': eisenhower,
     };
   }
 
@@ -109,8 +102,7 @@ class TodoModel extends HiveObject {
       comment: json['comment'],
       startDate: DateTime.parse(json['startDate']),
       endDate: DateTime.parse(json['endDate']),
-      urgency: (json['urgency'] as num).toInt(),
-      importance: (json['importance'] as num).toInt(),
+      eisenhower: (json['eisenhower'] as num).toInt(),
       isSynced: true,
     );
   }
