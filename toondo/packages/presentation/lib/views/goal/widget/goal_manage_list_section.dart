@@ -8,8 +8,6 @@ import 'package:presentation/utils/goal_utils.dart';
 import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart';
 import 'package:presentation/views/goal/input/goal_input_screen.dart';
 
-import '../../../designsystem/components/bottom_sheets/goal_complete_bottom_sheet.dart';
-
 
 class GoalManageListSection extends StatelessWidget {
   final GoalManagementViewModel viewModel;
