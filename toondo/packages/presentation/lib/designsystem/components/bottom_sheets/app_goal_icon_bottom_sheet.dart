@@ -18,7 +18,7 @@ class AppGoalIconBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: AppDimensions.bottomSheetHeight,
+      height: AppDimensions.goalIconBottomSheetHeight,
       width: double.infinity,
       decoration: BoxDecoration(
         color: AppColors.status0,

@@ -2,6 +2,7 @@ import 'package:domain/entities/goal.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
+import 'package:presentation/designsystem/components/bottom_sheets/todo_edit_bottom_sheet.dart';
 import 'package:presentation/designsystem/components/items/app_todo_item.dart';
 import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
@@ -47,10 +48,15 @@ class TodoListSection extends StatelessWidget {
                 viewModel.loadTodos();
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing8, vertical: AppSpacing.spacing6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.spacing8,
+                  vertical: AppSpacing.spacing6,
+                ),
                 decoration: ShapeDecoration(
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
+                    borderRadius: BorderRadius.circular(
+                      AppDimensions.radiusPill,
+                    ),
                     side: const BorderSide(
                       width: 0.5,
                       color: AppColors.status100_25,
@@ -63,7 +69,7 @@ class TodoListSection extends StatelessWidget {
                     Text(
                       title,
                       style: AppTypography.body3SemiBold.copyWith(
-                        color: AppColors.status100
+                        color: AppColors.status100,
                       ),
                     ),
                     const SizedBox(width: AppSpacing.spacing4),
@@ -110,29 +116,57 @@ class TodoListSection extends StatelessWidget {
                     }
 
                     return AppTodoItem(
-                      dismissKey: Key(todo.id.toString()),
                       title: todo.title,
                       iconPath: iconPath,
                       subTitle: subtitle,
                       isChecked: isCompleted,
                       levelColor: levelColor,
+                      onDelete: () {
+                        viewModel.deleteTodoById(todo.id);
+                      },
                       onTap: () async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (_) => TodoInputScreen(
-                                  todo: todo,
-                                  isDDayTodo: isDDay,
-                                ),
-                          ),
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder:
+                              (context) => TodoEditBottomSheet(
+                                title: todo.title,
+                                iconPath: matchedGoal.icon!,
+                                iconBgColor: getBorderColor(todo),
+                                isDaily: !isDDay,
+                                onEdit: () async {
+                                  Navigator.pop(context); // 먼저 바텀시트 닫기
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (_) => TodoInputScreen(
+                                            todo: todo,
+                                            isDDayTodo: isDDay,
+                                          ),
+                                    ),
+                                  );
+                                  viewModel.loadTodos();
+                                },
+                                onDelete: () {
+                                  viewModel.deleteTodoById(todo.id);
+                                  Navigator.pop(context); // 바텀시트 닫기
+                                },
+                                onDelay:
+                                    isDDay
+                                        ? null
+                                        : () {
+                                          viewModel.delayTodoToTomorrow(todo);
+                                          Navigator.pop(context);
+                                        },
+                              ),
                         );
-                        viewModel.loadTodos();
                       },
                       onCheckedChanged: (value) {
                         viewModel.updateTodoStatus(todo, value ? 100 : 0);
                       },
-                      onSwipeLeft: () => viewModel.deleteTodoById(todo.id),
+                      //onSwipeLeft: () => viewModel.deleteTodoById(todo.id),
                     );
                   },
                   separatorBuilder:

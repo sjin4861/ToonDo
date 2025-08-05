@@ -1,9 +1,9 @@
 import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:presentation/designsystem/components/character/slime_character_widget.dart';
+import 'package:presentation/designsystem/components/character/speech_bubble.dart';
 import 'package:presentation/viewmodels/character/slime_character_vm.dart';
-import 'package:presentation/widgets/character/slime_character_widget.dart';
-import 'package:presentation/widgets/character/speech_bubble.dart';
 import 'package:provider/provider.dart';
 
 class SlimeArea extends StatelessWidget {

@@ -1,10 +1,15 @@
+import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:domain/entities/goal.dart';
+import 'package:presentation/designsystem/components/bottom_sheets/goal_edit_bottom_sheet.dart';
 import 'package:presentation/designsystem/components/items/app_goal_item.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/utils/goal_utils.dart';
 import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart';
 import 'package:presentation/views/goal/input/goal_input_screen.dart';
+
+import '../../../designsystem/components/bottom_sheets/goal_complete_bottom_sheet.dart';
+
 
 class GoalManageListSection extends StatelessWidget {
   final GoalManagementViewModel viewModel;
@@ -61,7 +66,26 @@ class _GoalCategory extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing8),
               child: AppGoalItem(
                 dismissKey: ValueKey(goal.id),
-                onTap: () => _navigateToEdit(context, goal),
+                onDelete: () { viewModel.deleteGoal(goal.id); },
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (_) => GoalEditBottomSheet(
+                      title: goal.name,
+                      iconPath: goal.icon ?? Assets.icons.icGoal.path,
+                      onEdit: () {
+                        Navigator.pop(context);
+                        _navigateToEdit(context, goal);
+                      },
+                      onDelete: () {
+                        Navigator.pop(context);
+                        viewModel.deleteGoal(goal.id);
+                      },
+                    ),
+                  );
+                },
                 title: goal.name,
                 iconPath: goal.icon,
                 subTitle: buildGoalSubtitle(goal.startDate, goal.endDate),

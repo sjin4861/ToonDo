@@ -1,7 +1,11 @@
 import 'package:common/gen/assets.gen.dart';
 import 'package:domain/entities/goal.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:domain/entities/status.dart';
+import 'package:presentation/designsystem/colors/app_colors.dart';
+import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 
 /// 날짜를 문자열로 반환
 String buildGoalSubtitle(DateTime startDate, DateTime endDate) {
@@ -53,3 +57,81 @@ Map<String, List<Goal>> groupGoalsByCompletion(List<Goal> goals) {
     '포기': givenUp,
   };
 }
+
+/// GOAL에서 사용하는 아이콘 스타일
+Widget buildGoalIconWithCircle(
+    dynamic icon, {
+      double size = AppDimensions.goalIconSize,
+      double borderWidth = AppDimensions.goalItemBorderWidth,
+      double innerPadding = AppDimensions.goalIconInnerPadding,
+      Color borderColor = AppColors.green500,
+      bool isChecked = false,
+    }) {
+  return Container(
+    width: size,
+    height: size,
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      color: Colors.transparent,
+      border: Border.all(
+        color: borderColor,
+        width: borderWidth,
+      ),
+    ),
+    padding: EdgeInsets.all(innerPadding),
+    child: _buildGoalIcon(
+      icon,
+      size: size - 2 * innerPadding,
+    ),
+  );
+}
+
+/// TODO에서 사용하는 아이콘 스타일
+Widget buildTodoIconWithCircle(
+    dynamic icon, {
+      required Color backgroundColor,
+      double size = AppDimensions.goalIconSize,
+      double borderWidth = AppDimensions.goalItemBorderWidth,
+      double innerPadding = AppDimensions.goalIconInnerPadding,
+    }) {
+  return Container(
+    width: size,
+    height: size,
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      color: backgroundColor,
+      border: Border.all(
+        color: backgroundColor, // or Colors.transparent
+        width: borderWidth,
+      ),
+    ),
+    padding: EdgeInsets.all(innerPadding),
+    child: _buildGoalIcon(
+      icon,
+      size: size - 2 * innerPadding,
+    ),
+  );
+}
+
+
+/// 실제 아이콘을 반환하는 내부 함수
+Widget _buildGoalIcon(
+    dynamic icon, {
+      required double size,
+      BoxFit fit = BoxFit.contain,
+    }) {
+  if (icon is SvgGenImage) {
+    return icon.svg(width: size, height: size, fit: fit);
+  }
+  if (icon is AssetGenImage) {
+    return icon.image(width: size, height: size, fit: fit);
+  }
+  if (icon is String && icon.endsWith('.svg')) {
+    return SvgPicture.asset(icon, width: size, height: size, fit: fit);
+  }
+  if (icon is String) {
+    return Image.asset(icon, width: size, height: size, fit: fit);
+  }
+  return Icon(Icons.help_outline_rounded, size: size);
+}
+

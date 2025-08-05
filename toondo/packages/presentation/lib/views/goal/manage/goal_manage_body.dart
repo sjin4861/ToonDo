@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
+import 'package:presentation/designsystem/components/menu/app_selectable_menu_bar.dart';
 import 'package:presentation/designsystem/components/toggles/app_goal_category_toggle.dart';
-import 'package:presentation/designsystem/menu/app_selectable_menu_bar.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/designsystem/typography/app_typography.dart';
 import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart';
-import 'package:presentation/widgets/goal/manage/goal_manage_list_section.dart';
+import 'package:presentation/views/goal/widget/goal_manage_list_section.dart';
 import 'package:provider/provider.dart';
 
 class GoalManageBody extends StatelessWidget {

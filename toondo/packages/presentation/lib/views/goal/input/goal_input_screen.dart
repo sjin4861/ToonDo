@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:presentation/designsystem/components/bottom_sheets/goal_complete_bottom_sheet.dart';
 import 'package:presentation/designsystem/components/buttons/app_button.dart';
 import 'package:presentation/designsystem/components/buttons/double_action_buttons.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
@@ -13,9 +14,8 @@ import 'package:domain/usecases/goal/save_goal_local.dart';
 import 'package:domain/usecases/goal/update_goal_remote.dart';
 import 'package:domain/usecases/goal/update_goal_local.dart';
 import 'package:presentation/viewmodels/goal/goal_input_viewmodel.dart';
-import 'package:presentation/viewmodels/home/home_viewmodel.dart'; // 이게 필요하다면 import
-import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart'; // 이것도 필요
-import 'package:presentation/widgets/goal/input/goal_setting_bottom_sheet.dart'; // 추가로 이 위젯도 필요
+import 'package:presentation/viewmodels/home/home_viewmodel.dart';
+import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart';
 
 class GoalInputScreen extends StatelessWidget {
   final Goal? goal;
@@ -92,9 +92,16 @@ class GoalInputScreen extends StatelessWidget {
                                 context: context,
                                 isScrollControlled: true,
                                 useRootNavigator: true,
-                                builder:
-                                    (_) =>
-                                        GoalSettingBottomSheet(goal: newGoal),
+                                backgroundColor: Colors.transparent,
+                                builder: (_) => GoalCompleteBottomSheet(
+                                  goalTitle: newGoal.name,
+                                  iconPath: newGoal.icon!,
+                                  startDate: newGoal.startDate,
+                                  endDate: newGoal.endDate,
+                                  onConfirm: () {
+                                    Navigator.pop(context);
+                                  }
+                                ),
                               );
                             }
                           },

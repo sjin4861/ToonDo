@@ -30,14 +30,20 @@ class MyPageSettingSection extends StatelessWidget {
             width: AppDimensions.iconSize16,
             height: AppDimensions.iconSize16,
           ),
-          onTap: () {
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              backgroundColor: Colors.transparent,
-              builder: (context) => const SyncBottomSheet(),
-            );
-          },
+            onTap: () {
+              final viewModel = context.read<MyPageViewModel>();
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (_) {
+                  return ChangeNotifierProvider.value(
+                    value: viewModel,
+                    child: const SyncBottomSheet(),
+                  );
+                },
+              );
+            }
         ),
         MyPageSettingTile(
           title: '화면',

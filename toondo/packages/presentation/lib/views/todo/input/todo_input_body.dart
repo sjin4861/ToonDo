@@ -8,7 +8,7 @@ import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/designsystem/typography/app_typography.dart';
 import 'package:presentation/viewmodels/todo/todo_input_viewmodel.dart';
 import 'package:presentation/designsystem/components/inputs/app_tip_text.dart';
-import 'package:presentation/widgets/todo/input/goal_selection_section.dart';
+import 'package:presentation/views/todo/widget/goal_selection_section.dart';
 import 'package:provider/provider.dart';
 
 class TodoInputBody extends StatelessWidget {

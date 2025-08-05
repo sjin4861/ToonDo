@@ -1,11 +1,10 @@
-import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
-import 'package:presentation/designsystem/menu/app_selectable_menu_bar.dart';
+import 'package:presentation/designsystem/components/character/slime_area.dart';
+import 'package:presentation/designsystem/components/menu/app_selectable_menu_bar.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/viewmodels/home/home_viewmodel.dart';
 import 'package:presentation/views/home/widget/home_goal_list_section.dart';
 import 'package:presentation/views/home/widget/home_todo_list_section.dart';
-import 'package:presentation/widgets/character/slime_area.dart';
 import 'package:presentation/views/home/widget/home_background.dart';
 import 'package:provider/provider.dart';
 

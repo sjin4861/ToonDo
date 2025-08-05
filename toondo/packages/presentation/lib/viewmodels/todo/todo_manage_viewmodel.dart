@@ -156,6 +156,17 @@ class TodoManageViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> delayTodoToTomorrow(Todo todo) async {
+    try {
+      final newStartDate = todo.startDate.add(const Duration(days: 1));
+      final newEndDate = todo.endDate.add(const Duration(days: 1));
+      await updateTodoDates(todo, newStartDate, newEndDate);
+    } catch (e) {
+      print('Error delaying todo: $e');
+    }
+  }
+
+
   Future<void> updateTodoDates(
       Todo todo,
       DateTime newStartDate,

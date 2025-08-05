@@ -3,8 +3,8 @@ import 'package:presentation/designsystem/components/inputs/app_date_field.dart'
 import 'package:presentation/designsystem/components/inputs/app_tip_text.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/viewmodels/goal/goal_input_viewmodel.dart';
-import 'package:presentation/widgets/goal/input/goal_input_header_section.dart';
-import 'package:presentation/widgets/text_fields/goal_name_input_field.dart';
+import 'package:presentation/views/goal/widget/goal_input_header_section.dart';
+import 'package:presentation/views/goal/widget/goal_name_input_field.dart';
 import 'package:provider/provider.dart';
 
 class GoalInputBody extends StatelessWidget {

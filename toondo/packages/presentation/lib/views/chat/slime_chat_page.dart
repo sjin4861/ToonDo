@@ -1,10 +1,10 @@
 import 'package:domain/usecases/character/toggle_chat_mode.dart';
 import 'package:flutter/material.dart';
+import 'package:presentation/designsystem/components/character/chat_input_bar.dart';
+import 'package:presentation/designsystem/components/character/slime_area.dart';
 import 'package:provider/provider.dart';
 import 'package:get_it/get_it.dart';
 import 'package:presentation/viewmodels/character/chat_viewmodel.dart';
-import 'package:presentation/widgets/character/slime_area.dart';
-import 'package:presentation/widgets/character/chat_input_bar.dart'; // 아래 3‑항 참조
 import 'package:presentation/views/home/widget/home_background.dart';
 
 class SlimeChatPage extends StatelessWidget {
