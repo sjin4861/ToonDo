@@ -35,7 +35,7 @@ class TestData {
       ),
     );
   }
-  
+
   // 테스트용 할일 생성
   static Todo createTestTodo({
     required String id,
@@ -45,8 +45,7 @@ class TestData {
     String comment = '',
     DateTime? startDate,
     DateTime? endDate,
-    int urgency = 1,
-    int importance = 1,
+    int eisenhower = 0, // 0: 중요하지않고 급하지않음, 1: 급함, 2: 중요함, 3: 중요하고 급함
   }) {
     return Todo(
       id: id,
@@ -56,11 +55,10 @@ class TestData {
       comment: comment,
       startDate: startDate ?? DateTime.now(),
       endDate: endDate ?? DateTime.now().add(const Duration(days: 1)),
-      urgency: urgency,
-      importance: importance,
+      eisenhower: eisenhower,
     );
   }
-  
+
   // 테스트용 할일 목록 생성
   static List<Todo> createTestTodos({int count = 3, String? goalId}) {
     return List.generate(
@@ -69,9 +67,8 @@ class TestData {
         id: 'todo_$index',
         title: '테스트 할일 $index',
         goalId: goalId,
-        status: index * 25.0,
-        urgency: (index % 2) + 1,
-        importance: (index % 2) + 1,
+        status: index == 0 ? 0.0 : 1.0, // 첫 번째는 진행중, 나머지는 완료
+        eisenhower: index % 4, // 0~3 사이의 아이젠하워 값
       ),
     );
   }
