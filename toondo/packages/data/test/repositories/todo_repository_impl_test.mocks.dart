@@ -3,16 +3,17 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i7;
+import 'dart:async' as _i8;
 
-import 'package:data/datasources/local/todo_local_datasource.dart' as _i5;
+import 'package:data/datasources/local/todo_local_datasource.dart' as _i6;
 import 'package:data/datasources/remote/todo_remote_datasource.dart' as _i9;
-import 'package:data/models/todo_model.dart' as _i6;
-import 'package:domain/entities/todo.dart' as _i8;
+import 'package:data/models/todo_model.dart' as _i7;
+import 'package:domain/entities/todo.dart' as _i5;
 import 'package:domain/repositories/auth_repository.dart' as _i4;
 import 'package:hive/hive.dart' as _i2;
 import 'package:http/http.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i10;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -59,26 +60,36 @@ class _FakeAuthRepository_2 extends _i1.SmartFake
         );
 }
 
+class _FakeTodo_3 extends _i1.SmartFake implements _i5.Todo {
+  _FakeTodo_3(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
 /// A class which mocks [TodoLocalDatasource].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockTodoLocalDatasource extends _i1.Mock
-    implements _i5.TodoLocalDatasource {
+    implements _i6.TodoLocalDatasource {
   MockTodoLocalDatasource() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i2.Box<_i6.TodoModel> get todoBox => (super.noSuchMethod(
+  _i2.Box<_i7.TodoModel> get todoBox => (super.noSuchMethod(
         Invocation.getter(#todoBox),
-        returnValue: _FakeBox_0<_i6.TodoModel>(
+        returnValue: _FakeBox_0<_i7.TodoModel>(
           this,
           Invocation.getter(#todoBox),
         ),
-      ) as _i2.Box<_i6.TodoModel>);
+      ) as _i2.Box<_i7.TodoModel>);
 
   @override
-  set todoBox(_i2.Box<_i6.TodoModel>? _todoBox) => super.noSuchMethod(
+  set todoBox(_i2.Box<_i7.TodoModel>? _todoBox) => super.noSuchMethod(
         Invocation.setter(
           #todoBox,
           _todoBox,
@@ -87,16 +98,16 @@ class MockTodoLocalDatasource extends _i1.Mock
       );
 
   @override
-  _i2.Box<_i6.TodoModel> get deletedTodoBox => (super.noSuchMethod(
+  _i2.Box<_i7.TodoModel> get deletedTodoBox => (super.noSuchMethod(
         Invocation.getter(#deletedTodoBox),
-        returnValue: _FakeBox_0<_i6.TodoModel>(
+        returnValue: _FakeBox_0<_i7.TodoModel>(
           this,
           Invocation.getter(#deletedTodoBox),
         ),
-      ) as _i2.Box<_i6.TodoModel>);
+      ) as _i2.Box<_i7.TodoModel>);
 
   @override
-  set deletedTodoBox(_i2.Box<_i6.TodoModel>? _deletedTodoBox) =>
+  set deletedTodoBox(_i2.Box<_i7.TodoModel>? _deletedTodoBox) =>
       super.noSuchMethod(
         Invocation.setter(
           #deletedTodoBox,
@@ -106,91 +117,91 @@ class MockTodoLocalDatasource extends _i1.Mock
       );
 
   @override
-  _i7.Future<void> clearTodos() => (super.noSuchMethod(
+  _i8.Future<void> clearTodos() => (super.noSuchMethod(
         Invocation.method(
           #clearTodos,
           [],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i8.Future<void>.value(),
+        returnValueForMissingStub: _i8.Future<void>.value(),
+      ) as _i8.Future<void>);
 
   @override
-  _i7.Future<bool> saveTodo(_i8.Todo? todo) => (super.noSuchMethod(
+  _i8.Future<bool> saveTodo(_i5.Todo? todo) => (super.noSuchMethod(
         Invocation.method(
           #saveTodo,
           [todo],
         ),
-        returnValue: _i7.Future<bool>.value(false),
-      ) as _i7.Future<bool>);
+        returnValue: _i8.Future<bool>.value(false),
+      ) as _i8.Future<bool>);
 
   @override
-  List<_i8.Todo> getAllTodos() => (super.noSuchMethod(
+  List<_i5.Todo> getAllTodos() => (super.noSuchMethod(
         Invocation.method(
           #getAllTodos,
           [],
         ),
-        returnValue: <_i8.Todo>[],
-      ) as List<_i8.Todo>);
+        returnValue: <_i5.Todo>[],
+      ) as List<_i5.Todo>);
 
   @override
-  List<_i8.Todo> getUnsyncedTodos() => (super.noSuchMethod(
+  List<_i5.Todo> getUnsyncedTodos() => (super.noSuchMethod(
         Invocation.method(
           #getUnsyncedTodos,
           [],
         ),
-        returnValue: <_i8.Todo>[],
-      ) as List<_i8.Todo>);
+        returnValue: <_i5.Todo>[],
+      ) as List<_i5.Todo>);
 
   @override
-  _i7.Future<void> updateTodo(_i8.Todo? todo) => (super.noSuchMethod(
+  _i8.Future<void> updateTodo(_i5.Todo? todo) => (super.noSuchMethod(
         Invocation.method(
           #updateTodo,
           [todo],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i8.Future<void>.value(),
+        returnValueForMissingStub: _i8.Future<void>.value(),
+      ) as _i8.Future<void>);
 
   @override
-  _i7.Future<void> deleteTodo(_i8.Todo? todo) => (super.noSuchMethod(
+  _i8.Future<void> deleteTodo(_i5.Todo? todo) => (super.noSuchMethod(
         Invocation.method(
           #deleteTodo,
           [todo],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i8.Future<void>.value(),
+        returnValueForMissingStub: _i8.Future<void>.value(),
+      ) as _i8.Future<void>);
 
   @override
-  List<_i8.Todo> getDeletedTodos() => (super.noSuchMethod(
+  List<_i5.Todo> getDeletedTodos() => (super.noSuchMethod(
         Invocation.method(
           #getDeletedTodos,
           [],
         ),
-        returnValue: <_i8.Todo>[],
-      ) as List<_i8.Todo>);
+        returnValue: <_i5.Todo>[],
+      ) as List<_i5.Todo>);
 
   @override
-  _i7.Future<void> clearDeletedTodos() => (super.noSuchMethod(
+  _i8.Future<void> clearDeletedTodos() => (super.noSuchMethod(
         Invocation.method(
           #clearDeletedTodos,
           [],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i8.Future<void>.value(),
+        returnValueForMissingStub: _i8.Future<void>.value(),
+      ) as _i8.Future<void>);
 
   @override
-  _i7.Future<void> syncTodos(List<_i8.Todo>? committedTodos) =>
+  _i8.Future<void> syncTodos(List<_i5.Todo>? committedTodos) =>
       (super.noSuchMethod(
         Invocation.method(
           #syncTodos,
           [committedTodos],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i8.Future<void>.value(),
+        returnValueForMissingStub: _i8.Future<void>.value(),
+      ) as _i8.Future<void>);
 }
 
 /// A class which mocks [TodoRemoteDataSource].
@@ -230,9 +241,149 @@ class MockTodoRemoteDataSource extends _i1.Mock
       ) as _i4.AuthRepository);
 
   @override
-  _i7.Future<bool> commitTodos(
-    List<_i8.Todo>? unsyncedTodos,
-    List<_i8.Todo>? deletedTodos,
+  _i8.Future<String> createTodo({
+    required String? title,
+    required DateTime? startDate,
+    required DateTime? endDate,
+    int? goalId,
+    required String? eisenhower,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #createTodo,
+          [],
+          {
+            #title: title,
+            #startDate: startDate,
+            #endDate: endDate,
+            #goalId: goalId,
+            #eisenhower: eisenhower,
+          },
+        ),
+        returnValue: _i8.Future<String>.value(_i10.dummyValue<String>(
+          this,
+          Invocation.method(
+            #createTodo,
+            [],
+            {
+              #title: title,
+              #startDate: startDate,
+              #endDate: endDate,
+              #goalId: goalId,
+              #eisenhower: eisenhower,
+            },
+          ),
+        )),
+      ) as _i8.Future<String>);
+
+  @override
+  _i8.Future<Map<String, List<_i5.Todo>>> fetchTodosByDate(DateTime? date) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #fetchTodosByDate,
+          [date],
+        ),
+        returnValue: _i8.Future<Map<String, List<_i5.Todo>>>.value(
+            <String, List<_i5.Todo>>{}),
+      ) as _i8.Future<Map<String, List<_i5.Todo>>>);
+
+  @override
+  _i8.Future<List<_i5.Todo>> fetchTodosByGoal(int? goalId) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #fetchTodosByGoal,
+          [goalId],
+        ),
+        returnValue: _i8.Future<List<_i5.Todo>>.value(<_i5.Todo>[]),
+      ) as _i8.Future<List<_i5.Todo>>);
+
+  @override
+  _i8.Future<_i5.Todo> fetchTodoById(int? todoId) => (super.noSuchMethod(
+        Invocation.method(
+          #fetchTodoById,
+          [todoId],
+        ),
+        returnValue: _i8.Future<_i5.Todo>.value(_FakeTodo_3(
+          this,
+          Invocation.method(
+            #fetchTodoById,
+            [todoId],
+          ),
+        )),
+      ) as _i8.Future<_i5.Todo>);
+
+  @override
+  _i8.Future<String> updateTodo({
+    required int? todoId,
+    required String? title,
+    required DateTime? startDate,
+    required DateTime? endDate,
+    int? goalId,
+    required String? eisenhower,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #updateTodo,
+          [],
+          {
+            #todoId: todoId,
+            #title: title,
+            #startDate: startDate,
+            #endDate: endDate,
+            #goalId: goalId,
+            #eisenhower: eisenhower,
+          },
+        ),
+        returnValue: _i8.Future<String>.value(_i10.dummyValue<String>(
+          this,
+          Invocation.method(
+            #updateTodo,
+            [],
+            {
+              #todoId: todoId,
+              #title: title,
+              #startDate: startDate,
+              #endDate: endDate,
+              #goalId: goalId,
+              #eisenhower: eisenhower,
+            },
+          ),
+        )),
+      ) as _i8.Future<String>);
+
+  @override
+  _i8.Future<Map<String, dynamic>> toggleTodoStatus(int? todoId) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #toggleTodoStatus,
+          [todoId],
+        ),
+        returnValue:
+            _i8.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+      ) as _i8.Future<Map<String, dynamic>>);
+
+  @override
+  _i8.Future<bool> deleteTodo(int? todoId) => (super.noSuchMethod(
+        Invocation.method(
+          #deleteTodo,
+          [todoId],
+        ),
+        returnValue: _i8.Future<bool>.value(false),
+      ) as _i8.Future<bool>);
+
+  @override
+  _i8.Future<List<_i5.Todo>> fetchTodos() => (super.noSuchMethod(
+        Invocation.method(
+          #fetchTodos,
+          [],
+        ),
+        returnValue: _i8.Future<List<_i5.Todo>>.value(<_i5.Todo>[]),
+      ) as _i8.Future<List<_i5.Todo>>);
+
+  @override
+  _i8.Future<bool> commitTodos(
+    List<_i5.Todo>? unsyncedTodos,
+    List<_i5.Todo>? deletedTodos,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -242,15 +393,6 @@ class MockTodoRemoteDataSource extends _i1.Mock
             deletedTodos,
           ],
         ),
-        returnValue: _i7.Future<bool>.value(false),
-      ) as _i7.Future<bool>);
-
-  @override
-  _i7.Future<List<_i8.Todo>> fetchTodos() => (super.noSuchMethod(
-        Invocation.method(
-          #fetchTodos,
-          [],
-        ),
-        returnValue: _i7.Future<List<_i8.Todo>>.value(<_i8.Todo>[]),
-      ) as _i7.Future<List<_i8.Todo>>);
+        returnValue: _i8.Future<bool>.value(false),
+      ) as _i8.Future<bool>);
 }
