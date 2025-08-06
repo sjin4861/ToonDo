@@ -26,7 +26,7 @@ class TodoModel extends HiveObject {
   DateTime endDate;
 
   @HiveField(7)
-  int eisenhower; // TODO: 0,1,2,3 인지 1,2,3,4 인지 서버 API 스펙 확인 필요
+  int eisenhower; // 0: 중요하지않고 급하지않음, 1: 급함, 2: 중요함, 3: 중요하고 급함
 
   @HiveField(8)
   bool isSynced; // 로컬 데이터 동기화 여부
