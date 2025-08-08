@@ -18,10 +18,8 @@ class MyPageProfileSection extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 프로필 이미지 렌더링
         _buildProfileImage(userUiModel),
         const SizedBox(width: AppSpacing.spacing24),
-        // 사용자 이름 및 사용 일 수 정보
         _buildProfileInfo(userUiModel),
       ],
     );

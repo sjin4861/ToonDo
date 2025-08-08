@@ -1,4 +1,3 @@
-import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:domain/entities/goal.dart';
 import 'package:domain/entities/status.dart';

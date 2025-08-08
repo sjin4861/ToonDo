@@ -1,15 +1,16 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:domain/entities/todo.dart';
+import 'package:presentation/designsystem/colors/app_colors.dart';
 
 Color getBorderColor(Todo todo) {
     if (todo.importance == 1 && todo.urgency == 1) {
-      return Color(0xffF8C0C1);
+      return AppColors.red300;
     } else if (todo.importance == 1 && todo.urgency == 0) {
-      return Color(0xFFB0DFFB);
+      return AppColors.blue300;
     } else if (todo.importance == 0 && todo.urgency == 1) {
-      return Color(0xffFBEB9C);
+      return AppColors.yellow300;
     } else {
-      return Color(0xffA9A29C);
+      return AppColors.brown300;
     }
   }

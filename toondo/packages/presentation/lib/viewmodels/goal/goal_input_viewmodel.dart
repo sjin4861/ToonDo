@@ -22,6 +22,9 @@ class GoalInputViewModel extends ChangeNotifier {
   String? goalNameError;
   String? dateError;
 
+  bool withoutDeadline = false;
+  bool showOnHome = false;
+
   final Goal? targetGoal;
   final CreateGoalRemoteUseCase createGoalRemoteUseCase;
   final SaveGoalLocalUseCase saveGoalLocalUseCase;
@@ -54,7 +57,9 @@ class GoalInputViewModel extends ChangeNotifier {
   Future<Goal?> saveGoal(BuildContext context) async {
     if (!validateInput()) {
       try {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('입력한 정보를 확인해주세요.')));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('입력한 정보를 확인해주세요.')));
       } catch (_) {}
       return null;
     }
@@ -74,7 +79,9 @@ class GoalInputViewModel extends ChangeNotifier {
         final created = await createGoalRemoteUseCase(newGoal);
         await saveGoalLocalUseCase(created);
         try {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('목표가 성공적으로 저장되었습니다.')));
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('목표가 성공적으로 저장되었습니다.')));
         } catch (_) {}
         // Reset input fields for new goal.
         goalNameController.clear();
@@ -87,13 +94,17 @@ class GoalInputViewModel extends ChangeNotifier {
         await updateGoalRemoteUseCase(newGoal);
         await updateGoalLocalUseCase(newGoal);
         try {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('목표가 성공적으로 수정되었습니다.')));
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('목표가 성공적으로 수정되었습니다.')));
         } catch (_) {}
         return newGoal;
       }
     } catch (e) {
       try {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('목표 저장 중 오류가 발생했습니다.')));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('목표 저장 중 오류가 발생했습니다.')));
       } catch (_) {}
       print('Error saving goal: $e');
       return null;
@@ -165,5 +176,17 @@ class GoalInputViewModel extends ChangeNotifier {
         selectEndDate(pickedDate);
       }
     }
+  }
+
+  void toggleWithoutDeadline(bool value) {
+    withoutDeadline = value;
+    // TODO: 마감일 필드 초기화 등 필요시 처리
+    notifyListeners();
+  }
+
+  void toggleShowOnHome(bool value) {
+    showOnHome = value;
+    // TODO: 홈화면 노출 관련 처리
+    notifyListeners();
   }
 }

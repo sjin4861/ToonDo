@@ -58,7 +58,7 @@ class AppColors {
   static const Color green200 = Color(0xFFD4E7BA);
   static const Color green300 = Color(0xFFB3D88F);
   static const Color green400 = Color(0xFF90C85F);
-  static const Color green500 = Color(0xFF72B84A);
+  static const Color green500 = Color(0xFF78B545);
   static const Color green600 = Color(0xFF548734);
   static const Color green700 = Color(0xFF3D5D26);
   static const Color green800 = Color(0xFF263B1A);

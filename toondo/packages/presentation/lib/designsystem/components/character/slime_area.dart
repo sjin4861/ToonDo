@@ -1,9 +1,9 @@
 import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:presentation/designsystem/components/character/slime_character_widget.dart';
+import 'package:presentation/designsystem/components/character/speech_bubble.dart';
 import 'package:presentation/viewmodels/character/slime_character_vm.dart';
-import 'package:presentation/widgets/character/slime_character_widget.dart';
-import 'package:presentation/widgets/character/speech_bubble.dart';
 import 'package:provider/provider.dart';
 
 class SlimeArea extends StatelessWidget {
@@ -61,7 +61,7 @@ class _SlimeStack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const w = 300.0, shadowDx = -10.0, shadowDy = 24.0, shadowScale = 0.96;
+    const w = 300.0, shadowDx = -10.0, shadowDy = 32.0, shadowScale = 0.94;
     final viewModel = context.watch<SlimeCharacterViewModel>();
 
     return SizedBox(
@@ -75,7 +75,7 @@ class _SlimeStack extends StatelessWidget {
             offset: const Offset(shadowDx, shadowDy),
             child: Transform.scale(
               scale: shadowScale,
-              child: Assets.images.imgHomeShadowPng.image(width: w - 120),
+              child: Assets.images.imgHomeShadowPng.image(width: w - 122),
             ),
           ),
           

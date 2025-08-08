@@ -4,7 +4,7 @@ import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/designsystem/typography/app_typography.dart';
 import 'package:presentation/viewmodels/my_page/notification_setting/time_picker_viewmodel.dart';
-import 'package:presentation/views/mypage/widget/notification_setting/time_picker/time_picker_bottom_sheet.dart';
+import 'package:presentation/views/mypage/widget/notification_setting/time_picker_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:get_it/get_it.dart';
 import 'package:presentation/viewmodels/global/app_notification_viewmodel.dart';

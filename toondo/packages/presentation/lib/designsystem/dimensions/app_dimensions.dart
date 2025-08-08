@@ -28,6 +28,7 @@ class AppDimensions {
   static const double iconSize20 = 20.0;
   static const double iconSize24 = 24.0;
   static const double iconSize32 = 32.0;
+  static const double iconSize50 = 50.0;
 
   // Profile Image
   static const double profileImageSize = 84.0;
@@ -77,12 +78,20 @@ class AppDimensions {
   static const double bottomSheetTopRadius = borderRadius24;
   static const double bottomSheetHandleHeight = 8.0;
   static const double bottomSheetHandleWidth = 126.0;
-  static const double bottomSheetHeight = 458.0;
+  static const double goalEditBottomSheetHeight = 270.0;
+  static const double todoEditBottomSheetHeightDDay = 270.0;
+  static const double todoEditBottomSheetHeightDaily = 340.0;
+  static const double goalCompleteBottomSheetHeight = 340.0;
+  static const double goalIconBottomSheetHeight = 458.0;
+  static const double timePickerBottomSheetHeight = 460.0;
   static const double iconCircleSize = 40.0;
 
   // Dialog
   static const double dialogCornerRadius = 16.0;
   static const double dialogPadding = AppSpacing.spacing24;
+
+  // Home Item
+  static const double homeItemHeight = 60.0;
 
   // Todo Item
   static const double paddingTodoItem = 12.0;
