@@ -9,7 +9,6 @@ import 'package:domain/usecases/todo/delete_todo.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
-
 @LazySingleton()
 class TodoManageViewModel extends ChangeNotifier {
   final DeleteTodoUseCase _deleteTodoUseCase;
@@ -34,11 +33,11 @@ class TodoManageViewModel extends ChangeNotifier {
     required GetGoalsLocalUseCase getGoalsLocalUseCase,
     DateTime? initialDate,
   }) : _deleteTodoUseCase = deleteTodoUseCase,
-        _getTodosUseCase = getTodosUseCase,
-        _updateTodoStatusUseCase = updateTodoStatusUseCase,
-        _updateTodoDatesUseCase = updateTodoDatesUseCase,
-        _getGoalsLocalUseCase = getGoalsLocalUseCase,
-        selectedDate = initialDate ?? DateTime.now();
+       _getTodosUseCase = getTodosUseCase,
+       _updateTodoStatusUseCase = updateTodoStatusUseCase,
+       _updateTodoDatesUseCase = updateTodoDatesUseCase,
+       _getGoalsLocalUseCase = getGoalsLocalUseCase,
+       selectedDate = initialDate ?? DateTime.now();
 
   Future<void> loadTodos() async {
     try {
@@ -81,27 +80,29 @@ class TodoManageViewModel extends ChangeNotifier {
       selectedDate.day,
     );
 
-    List<Todo> todosForSelectedDate = allTodos.where((todo) {
-      return (todo.startDate.isBefore(selectedDateOnly) || _isSameDay(todo.startDate, selectedDateOnly)) &&
-          (todo.endDate.isAfter(selectedDateOnly) || _isSameDay(todo.endDate, selectedDateOnly));
-    }).toList();
+    List<Todo> todosForSelectedDate =
+        allTodos.where((todo) {
+          return (todo.startDate.isBefore(selectedDateOnly) ||
+                  _isSameDay(todo.startDate, selectedDateOnly)) &&
+              (todo.endDate.isAfter(selectedDateOnly) ||
+                  _isSameDay(todo.endDate, selectedDateOnly));
+        }).toList();
 
     if (selectedFilter == TodoFilterOption.goal && selectedGoalId != null) {
-      todosForSelectedDate = todosForSelectedDate
-          .where((todo) => todo.goalId == selectedGoalId)
-          .toList();
+      todosForSelectedDate =
+          todosForSelectedDate
+              .where((todo) => todo.goalId == selectedGoalId)
+              .toList();
     } else if (selectedFilter == TodoFilterOption.importance) {
-      todosForSelectedDate = todosForSelectedDate
-          .where((todo) => todo.importance == 1)
-          .toList();
+      // TODO: eisenhower 필드로 변경 필요 - importance는 더 이상 존재하지 않음
+      todosForSelectedDate =
+          todosForSelectedDate.where((todo) => todo.importance == 1).toList();
     } else if (selectedFilter == TodoFilterOption.dDay) {
-      todosForSelectedDate = todosForSelectedDate
-          .where((todo) => todo.isDDayTodo())
-          .toList();
+      todosForSelectedDate =
+          todosForSelectedDate.where((todo) => todo.isDDayTodo()).toList();
     } else if (selectedFilter == TodoFilterOption.daily) {
-      todosForSelectedDate = todosForSelectedDate
-          .where((todo) => !todo.isDDayTodo())
-          .toList();
+      todosForSelectedDate =
+          todosForSelectedDate.where((todo) => !todo.isDDayTodo()).toList();
     }
 
     dDayTodos =
@@ -110,11 +111,12 @@ class TodoManageViewModel extends ChangeNotifier {
         todosForSelectedDate.where((todo) => !todo.isDDayTodo()).toList();
 
     dDayTodos.sort(
-          (a, b) => a.endDate
+      (a, b) => a.endDate
           .difference(selectedDateOnly)
           .inDays
           .compareTo(b.endDate.difference(selectedDateOnly).inDays),
     );
+    // TODO: eisenhower 필드로 정렬 로직 변경 필요 - importance는 더 이상 존재하지 않음
     dailyTodos.sort((a, b) => b.importance.compareTo(a.importance));
 
     notifyListeners();
@@ -126,6 +128,7 @@ class TodoManageViewModel extends ChangeNotifier {
       final idx = allTodos.indexWhere((t) => t.id == todo.id);
       if (idx != -1) {
         // 상태 변경된 새 Todo 생성 후 반영
+        // TODO: urgency, importance 필드를 eisenhower 필드로 변경 필요
         final updated = Todo(
           id: todo.id,
           title: todo.title,
@@ -166,12 +169,11 @@ class TodoManageViewModel extends ChangeNotifier {
     }
   }
 
-
   Future<void> updateTodoDates(
-      Todo todo,
-      DateTime newStartDate,
-      DateTime newEndDate,
-      ) async {
+    Todo todo,
+    DateTime newStartDate,
+    DateTime newEndDate,
+  ) async {
     try {
       await _updateTodoDatesUseCase(todo, newStartDate, newEndDate);
       await loadTodos();
@@ -188,4 +190,3 @@ class TodoManageViewModel extends ChangeNotifier {
     return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 }
-
