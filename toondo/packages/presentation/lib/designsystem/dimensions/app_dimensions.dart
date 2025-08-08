@@ -13,6 +13,9 @@ class AppDimensions {
   // Input Field
   static const double inputFieldHeight = 40.0;
 
+  // List Tile
+  static const double tileHeight = 52.0;
+
   // Date Field
   static const double dateFieldHeight = 32.0;
   static const double dateFieldWidth = 156.0;
@@ -20,10 +23,15 @@ class AppDimensions {
   static const double widthDateFieldText = 108.0;
 
   // Icon Size
+  static const double iconSize12 = 12.0;
   static const double iconSize16 = 16.0;
   static const double iconSize20 = 20.0;
   static const double iconSize24 = 24.0;
   static const double iconSize32 = 32.0;
+  static const double iconSize50 = 50.0;
+
+  // Profile Image
+  static const double profileImageSize = 84.0;
 
   // Radius
   static const double borderRadius8 = 8.0;
@@ -70,12 +78,20 @@ class AppDimensions {
   static const double bottomSheetTopRadius = borderRadius24;
   static const double bottomSheetHandleHeight = 8.0;
   static const double bottomSheetHandleWidth = 126.0;
-  static const double bottomSheetHeight = 458.0;
+  static const double goalEditBottomSheetHeight = 270.0;
+  static const double todoEditBottomSheetHeightDDay = 270.0;
+  static const double todoEditBottomSheetHeightDaily = 340.0;
+  static const double goalCompleteBottomSheetHeight = 340.0;
+  static const double goalIconBottomSheetHeight = 458.0;
+  static const double timePickerBottomSheetHeight = 460.0;
   static const double iconCircleSize = 40.0;
 
   // Dialog
   static const double dialogCornerRadius = 16.0;
   static const double dialogPadding = AppSpacing.spacing24;
+
+  // Home Item
+  static const double homeItemHeight = 60.0;
 
   // Todo Item
   static const double paddingTodoItem = 12.0;
@@ -88,6 +104,7 @@ class AppDimensions {
   static const double todoItemBorderWidth = 1.5;
   static const double checkboxBorderWidth = 1.5;
   static const double checkboxSize = 20.0;
+  static const double todoMaxContentWidth = 320.0;
 
   // Goal Item
   static const double goalItemHeight = 60.0;
@@ -102,14 +119,14 @@ class AppDimensions {
 
   // Navigation Bar
   static const double navBarIconPadding = paddingNavBarIcon;
-  static const double bottomNavBarHeight = 112.0;
+  static const double bottomNavBarHeight = 64.0;
   static const double topBarHeight = 56.0;
 
   // Segmented Control
   static const double segmentedControlRadius = borderRadius16;
 
   // Menu Bar
-  static const double menuBarHeight = 45.0;
+  static const double menuBarHeight = 44.0;
   static const double menuBarWidth = 320.0;
 
   // Eisenhower

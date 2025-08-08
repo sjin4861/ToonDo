@@ -1,8 +1,9 @@
+import 'package:common/constants/auth_constraints.dart';
 import 'package:domain/usecases/user/get_user.dart';
 import 'package:domain/usecases/user/update_nickname.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
-import 'package:presentation/models/account_setting_user_ui_model.dart';
+import 'package:presentation/models/my_page_user_ui_model.dart';
 import 'package:presentation/viewmodels/my_page/my_page_viewmodel.dart';
 
 @injectable
@@ -17,68 +18,39 @@ class AccountSettingViewModel extends ChangeNotifier {
     required this.myPageViewModel,
   });
 
-  String? _errorMessage;
   bool _isLoading = false;
-
-  String? get errorMessage => _errorMessage;
-
   bool get isLoading => _isLoading;
 
-  AccountSettingUserUiModel? _userUiModel;
+  MyPageUserUiModel? _userUiModel;
+  MyPageUserUiModel? get userUiModel => _userUiModel;
 
-  AccountSettingUserUiModel? get userUiModel => _userUiModel;
+  String? _nicknameErrorMessage;
+  String? get nicknameErrorMessage => _nicknameErrorMessage;
 
-  /// 휴대전화 번호를 보기 좋은 형태로 포맷팅
-  String _formatPhoneNumber(String phoneNumber) {
-    // 숫자만 추출
-    final digits = phoneNumber.replaceAll(RegExp(r'[^0-9]'), '');
-    
-    // 11자리 휴대전화 번호인지 확인
-    if (digits.length == 11 && digits.startsWith('010')) {
-      return '${digits.substring(0, 3)}-${digits.substring(3, 7)}-${digits.substring(7)}';
-    }
-    
-    // 원본 반환 (포맷팅 불가능한 경우)
-    return phoneNumber;
-  }
+  String? _currentPasswordError;
+  String? _newPasswordError;
+  String? _confirmPasswordError;
+
+  String? get currentPasswordError => _currentPasswordError;
+  String? get newPasswordError => _newPasswordError;
+  String? get confirmPasswordError => _confirmPasswordError;
 
   Future<void> loadUser() async {
-    print('[AccountSettingViewModel] 사용자 정보 로드 시작');
     _isLoading = true;
     notifyListeners();
 
     try {
       final user = await getUserUseCase();
-      print('[AccountSettingViewModel] 로드된 사용자 정보:');
-      print('  - 닉네임: ${user.nickname}');
-      print('  - 휴대전화: ${user.phoneNumber}');
-      print('  - ID: ${user.id}');
-      print('  - loginId: ${user.loginId}');
-      
-      _userUiModel = AccountSettingUserUiModel(
-        nickname: user.nickname ?? '닉네임 없음',
-        phoneNumber: user.phoneNumber != null 
-            ? _formatPhoneNumber(user.phoneNumber!) 
-            : _formatPhoneNumber(user.loginId),
-      );
-      print('[AccountSettingViewModel] UI 모델 생성 완료: ${_userUiModel?.nickname}, ${_userUiModel?.phoneNumber}');
-      _errorMessage = null;
+      _userUiModel = MyPageUserUiModel.fromDomain(user);
     } catch (e) {
-      print('[AccountSettingViewModel] 사용자 정보 로드 실패: $e');
-      _errorMessage = '유저 정보를 불러오는 데 실패했습니다.';
+      // Handle user load error if needed
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  String? _nicknameErrorMessage;
-
-  String? get nicknameErrorMessage => _nicknameErrorMessage;
-
   Future<bool> updateNickname(String newNickname) async {
-    print('[AccountSettingViewModel] 닉네임 변경 요청: $newNickname');
-    
     if (newNickname.trim().isEmpty) {
       _nicknameErrorMessage = '신규 닉네임을 입력해주세요';
       notifyListeners();
@@ -102,25 +74,78 @@ class AccountSettingViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      print('[AccountSettingViewModel] UseCase 호출 시작...');
       final updatedUser = await updateNickNameUseCase(newNickname);
-      print('[AccountSettingViewModel] UseCase 호출 성공: ${updatedUser.nickname}');
-      
-      _userUiModel = AccountSettingUserUiModel.fromDomain(updatedUser);
-      print('[AccountSettingViewModel] UI 모델 업데이트 완료');
-      
-      // MyPageViewModel도 새로고침
-      print('[AccountSettingViewModel] MyPageViewModel 새로고침...');
+      _userUiModel = MyPageUserUiModel.fromDomain(updatedUser);
       myPageViewModel.loadUser();
-      
       return true;
     } catch (e) {
-      print('[AccountSettingViewModel] 닉네임 변경 실패: $e');
       _nicknameErrorMessage = '닉네임 변경에 실패했습니다: ${e.toString()}';
       return false;
     } finally {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  Future<bool> updatePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    if (!validatePasswordChangeInputs(currentPassword, newPassword, confirmPassword)) {
+      return false;
+    }
+
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      // TODO: 실제 서버 호출
+      // await updatePasswordUseCase(currentPassword, newPassword);
+      return true;
+    } catch (e) {
+      _currentPasswordError = '비밀번호 변경에 실패했습니다.';
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  bool validatePasswordChangeInputs(
+      String current,
+      String newPwd,
+      String confirmPwd,
+      ) {
+    _currentPasswordError = null;
+    _newPasswordError = null;
+    _confirmPasswordError = null;
+
+    if (current.isEmpty) {
+      _currentPasswordError = AuthConstraints.passwordEmptyError;
+    }
+
+    if (newPwd.isEmpty) {
+      _newPasswordError = AuthConstraints.passwordEmptyError;
+    } else {
+      if (newPwd.length < AuthConstraints.passwordMinLength ||
+          newPwd.length > AuthConstraints.passwordMaxLength) {
+        _newPasswordError = AuthConstraints.passwordLengthError;
+      } else if (!RegExp(AuthConstraints.passwordPattern).hasMatch(newPwd)) {
+        _newPasswordError = AuthConstraints.passwordFormatError;
+      }
+    }
+
+    if (confirmPwd.isEmpty) {
+      _confirmPasswordError = AuthConstraints.confirmPasswordEmptyError;
+    } else if (newPwd != confirmPwd) {
+      _confirmPasswordError = AuthConstraints.confirmPasswordMismatchError;
+    }
+
+    notifyListeners();
+
+    return _currentPasswordError == null &&
+        _newPasswordError == null &&
+        _confirmPasswordError == null;
   }
 }

@@ -1,35 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:domain/usecases/user/update_nickname.dart';
-import 'package:presentation/views/home/home_screen.dart';
-import 'package:presentation/views/onboarding/onboarding2_screen.dart';
 
-@LazySingleton()
+@injectable
 class OnboardingViewModel extends ChangeNotifier {
   final UpdateNickNameUseCase updateNickNameUseCase;
   bool initialized = false;
-  bool _isDisposed = false; // 추가: disposed 상태 플래그
+  bool _isDisposed = false;
+  int _step = 1;
+  int get step => _step;
 
   String nickname = '';
-  String? nicknameError; // 추가: 닉네임 에러 상태
-  
-  // 추가: 텍스트 컨트롤러를 ViewModel에 두어 재생성 문제 방지
+  String? nicknameError;
   final TextEditingController nicknameController = TextEditingController();
 
-  OnboardingViewModel({
-    required this.updateNickNameUseCase,
-  });
+  OnboardingViewModel({required this.updateNickNameUseCase});
 
-  Future<void> initialize(BuildContext context) async {
+  Future<void> initialize({required VoidCallback onNext}) async {
     if (initialized) return;
     initialized = true;
     await Future.delayed(const Duration(seconds: 3));
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => Onboarding2Page(), // userId 전달
-      ),
-    );
+    onNext();
+  }
+
+  set step(int value) {
+    _step = value;
+    notifyListeners();
+    _handleAutoStepProgress();
+  }
+
+  void startAutoProgress() {
+    _handleAutoStepProgress();
+  }
+
+  void _handleAutoStepProgress() {
+    if (_step == 1 || _step == 2) {
+      Future.delayed(const Duration(seconds: 3), () {
+        if (_step == 1) {
+          step = 2;
+        } else if (_step == 2) {
+          step = 3;
+        }
+      });
+    }
+  }
+
+  void setNickname(String nickname) {
+    this.nickname = nickname;
+    nicknameController.text = nickname;
+    notifyListeners();
   }
 
   Future<void> saveNickname() async {
@@ -39,9 +58,12 @@ class OnboardingViewModel extends ChangeNotifier {
       throw Exception('닉네임 업데이트에 실패했습니다: ${e.toString()}');
     }
   }
-  
+
   // 닉네임 검증 후 에러 설정 메서드
-  void validateNickname(BuildContext context) async {
+  Future<void> validateNickname({
+    required VoidCallback onSuccess,
+    required Function(String) onError,
+  }) async {
     final text = nicknameController.text.trim();
     if (text.isEmpty) {
       nicknameError = '닉네임을 입력해주세요.';
@@ -55,18 +77,12 @@ class OnboardingViewModel extends ChangeNotifier {
     nicknameError = null;
     nickname = text;
     notifyListeners();
+
     try {
       await saveNickname();
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (_) => HomeScreen()),
-        (route) => false,
-      );
+      onSuccess();
     } catch (e) {
-      // 에러 발생 시 스낵바 처리 (위젯 단에서 처리해도 됨)
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('닉네임 저장 중 오류가 발생했습니다: $e')),
-      );
+      onError(e.toString());
     }
   }
 
@@ -81,13 +97,10 @@ class OnboardingViewModel extends ChangeNotifier {
       super.notifyListeners();
     }
   }
-  
+
   @override
   void dispose() {
     _isDisposed = true;
-    // LazySingleton이므로 컨트롤러를 dispose하지 않음
-    // nicknameController.dispose();
-    // ...기타 dispose 필요한 코드...
     super.dispose();
   }
 }

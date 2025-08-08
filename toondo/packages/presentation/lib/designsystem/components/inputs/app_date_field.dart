@@ -30,6 +30,11 @@ class AppDateField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Text(
+          label,
+          style: AppTypography.caption1Regular.copyWith(color: AppColors.status100),
+        ),
+        SizedBox(height: AppSpacing.spacing8),
         GestureDetector(
           onTap: onTap,
           child: Container(

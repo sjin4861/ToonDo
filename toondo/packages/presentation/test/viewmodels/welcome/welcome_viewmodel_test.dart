@@ -44,7 +44,7 @@ void main() {
         when(mockGetTokenUseCase.call()).thenAnswer((_) async => null);
         
         // When
-        await viewModel.checkIfLoggedIn(mockContext);
+        await viewModel.init(mockContext);
         
         // Then
         verify(mockGetTokenUseCase.call()).called(1);
@@ -62,7 +62,7 @@ void main() {
         when(mockGetTokenUseCase.call()).thenAnswer((_) async => validToken);
 
         // When
-        await viewModel.checkIfLoggedIn(mockContext);
+        await viewModel.init(mockContext);
         
         // Then
         verify(mockGetTokenUseCase.call()).called(1);
@@ -81,7 +81,7 @@ void main() {
         when(mockLogoutUseCase.call()).thenAnswer((_) async {});
 
         // When
-        await viewModel.checkIfLoggedIn(mockContext);
+        await viewModel.init(mockContext);
         
         // Then
         verify(mockGetTokenUseCase.call()).called(1);
@@ -94,12 +94,12 @@ void main() {
     group('로그인 방법', () {
       test('continueWithGoogle 호출 시 에러가 발생하지 않아야 한다', () {
         // When/Then
-        expect(() => viewModel.continueWithGoogle(), returnsNormally);
+        expect(() => viewModel.continueWithGoogle(mockContext), returnsNormally);
       });
 
       test('continueWithKakao 호출 시 에러가 발생하지 않아야 한다', () {
         // When/Then
-        expect(() => viewModel.continueWithKakao(), returnsNormally);
+        expect(() => viewModel.continueWithKakao(mockContext), returnsNormally);
       });
 
       test('continueWithPhoneNumber 호출 시 회원가입 화면으로 이동해야 한다', () {

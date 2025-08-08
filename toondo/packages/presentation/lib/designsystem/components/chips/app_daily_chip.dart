@@ -56,7 +56,7 @@ class AppDailyChip extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: isSelected ? AppColors.green500 : Colors.transparent,
-          border: Border.all(color: AppColors.green500, width: AppDimensions.chipBorderWidth),
+          border: Border.all(color: AppColors.green500, width: 0.2),
           borderRadius: BorderRadius.only(
             topLeft: isLeft ? const Radius.circular(AppDimensions.chipBorderRadius) : Radius.zero,
             bottomLeft: isLeft ? const Radius.circular(AppDimensions.chipBorderRadius) : Radius.zero,

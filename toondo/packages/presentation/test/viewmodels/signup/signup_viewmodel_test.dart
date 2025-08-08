@@ -6,6 +6,7 @@ import 'package:domain/entities/user.dart';
 import 'package:presentation/viewmodels/signup/signup_viewmodel.dart';
 import '../../helpers/test_data.dart';
 import 'package:mockito/annotations.dart';
+import '../login/login_viewmodel_test.mocks.dart';
 import 'signup_viewmodel_test.mocks.dart';
 
 @GenerateMocks([
@@ -25,6 +26,7 @@ void main() {
     viewModel = SignupViewModel(
       registerUserUseCase: mockRegisterUseCase,
       checkLoginIdExistsUseCase: mockCheckLoginIdExistsUseCase,
+      loginUseCase: MockLoginUseCase(),
     );
   });
 
@@ -46,7 +48,7 @@ void main() {
         viewModel.setLoginId(TestData.testLoginId);
         
         expect(viewModel.loginId, TestData.testLoginId);
-        expect(viewModel.loginIdController.text, TestData.testLoginId);
+        expect(viewModel.loginIdTextController.text, TestData.testLoginId);
       });
     });
 
@@ -55,7 +57,7 @@ void main() {
         viewModel.setPassword(TestData.testPassword);
         
         expect(viewModel.password, TestData.testPassword);
-        expect(viewModel.passwordController.text, TestData.testPassword);
+        expect(viewModel.passwordTextController.text, TestData.testPassword);
       });
     });
 
@@ -162,16 +164,16 @@ void main() {
       test('nextStep은 현재 단계를 증가시켜야 한다', () {
         expect(viewModel.currentStep, 1);
         
-        viewModel.nextStep();
+        viewModel.goToNextStep();
         
         expect(viewModel.currentStep, 2);
       });
 
       test('goBack은 현재 단계를 감소시켜야 한다', () {
-        viewModel.nextStep(); // step = 2
+        viewModel.goToNextStep(); // step = 2
         expect(viewModel.currentStep, 2);
         
-        viewModel.goBack();
+        viewModel.goToPreviousStep();
         
         expect(viewModel.currentStep, 1);
       });
@@ -179,7 +181,7 @@ void main() {
       test('1단계에서 goBack을 호출해도 단계가 감소하지 않아야 한다', () {
         expect(viewModel.currentStep, 1);
         
-        viewModel.goBack();
+        viewModel.goToPreviousStep();
         
         expect(viewModel.currentStep, 1);
       });

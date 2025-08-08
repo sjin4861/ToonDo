@@ -32,9 +32,13 @@ class AppGoalCategoryToggle extends StatelessWidget {
               onTap: () => onChanged(index),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.spacing8,
+                ),
                 height: AppDimensions.goalCategoryToggleHeight,
-                width: AppDimensions.goalCategoryToggleWidth,
-                // ← 고정 너비
+                constraints: BoxConstraints(
+                  minWidth: AppDimensions.goalCategoryToggleWidth,
+                ),
                 decoration: BoxDecoration(
                   color: isSelected ? AppColors.green100 : Colors.transparent,
                   borderRadius: BorderRadius.circular(AppDimensions.radiusPill),

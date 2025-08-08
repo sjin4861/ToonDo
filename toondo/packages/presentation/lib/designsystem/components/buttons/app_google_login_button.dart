@@ -37,7 +37,7 @@ class AppGoogleLoginButton extends StatelessWidget {
           ),
           const SizedBox(width: AppSpacing.spacing12),
           Text(
-            '구글로 가입하기',
+            '구글로 계속하기',
             textAlign: TextAlign.center,
             style: AppTypography.h3Bold.copyWith(color: AppColors.status100),
           ),

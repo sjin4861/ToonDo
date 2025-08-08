@@ -4,12 +4,19 @@ class AppColors {
   // Status
   static const Color status100 = Color(0xFF1C1D1B);
   static const Color status0 = Color(0xFFFFFFFF);
+  static const Color status100_75 = Color(0xBF1C1D1B); // 75%
+  static const Color status100_50 = Color(0x801C1D1B); // 50%
+  static const Color status100_25 = Color(0x331C1D1B); // 25%
+
+  static const Color backgroundNormal = Color(0xFFFDFDFD);
+  static const Color bottomIconColor = Color(0xFF7F7F7F);
 
   // Border
   static const Color borderLight = Color(0x331C1D1B);
   static const Color borderDisabled = Color(0x7FDDDDDD);
   static const Color dividerLight = Color(0x3F1C1D1B);
   static const Color borderUnselected = Color(0xFFDDDDDD);
+  static const Color myPageBorder = Color(0xFFE4F0DA);
 
   // AppButton 관련
   static const Color buttonDisabledBackground = Color(0xFFEEEEEE);
@@ -51,7 +58,7 @@ class AppColors {
   static const Color green200 = Color(0xFFD4E7BA);
   static const Color green300 = Color(0xFFB3D88F);
   static const Color green400 = Color(0xFF90C85F);
-  static const Color green500 = Color(0xFF72B84A);
+  static const Color green500 = Color(0xFF78B545);
   static const Color green600 = Color(0xFF548734);
   static const Color green700 = Color(0xFF3D5D26);
   static const Color green800 = Color(0xFF263B1A);
