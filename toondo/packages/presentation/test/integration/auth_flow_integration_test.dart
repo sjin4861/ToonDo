@@ -10,12 +10,7 @@ import '../helpers/test_data.dart';
 import 'package:mockito/annotations.dart';
 import 'auth_flow_integration_test.mocks.dart';
 
-@GenerateMocks([
-  RegisterUseCase,
-  LoginUseCase,
-  CheckLoginIdExistsUseCase,
-])
-
+@GenerateMocks([RegisterUseCase, LoginUseCase, CheckLoginIdExistsUseCase])
 void main() {
   late MockRegisterUseCase mockRegisterUseCase;
   late MockLoginUseCase mockLoginUseCase;
@@ -36,6 +31,7 @@ void main() {
         loginUseCase: mockLoginUseCase,
       );
 
+      // TODO: User 엔티티에서 points 필드가 제거되고 createdAt 필드가 추가됨 - 테스트 데이터 업데이트 필요
       final testUser = User(
         id: 123,
         loginId: TestData.testLoginId,
@@ -44,10 +40,12 @@ void main() {
       );
 
       // Mock 설정
-      when(mockCheckLoginIdExistsUseCase.call(TestData.testLoginId))
-          .thenAnswer((_) async => false);
-      when(mockRegisterUseCase.call(TestData.testLoginId, TestData.testPassword))
-          .thenAnswer((_) async => testUser);
+      when(
+        mockCheckLoginIdExistsUseCase.call(TestData.testLoginId),
+      ).thenAnswer((_) async => false);
+      when(
+        mockRegisterUseCase.call(TestData.testLoginId, TestData.testPassword),
+      ).thenAnswer((_) async => testUser);
 
       // When: 회원가입 프로세스 실행
       // 1단계: 로그인 ID 입력 및 검증
@@ -67,16 +65,19 @@ void main() {
       expect(signupViewModel.currentStep, 2);
 
       // UseCase 호출 검증
-      verify(mockCheckLoginIdExistsUseCase.call(TestData.testLoginId)).called(1);
-      verify(mockRegisterUseCase.call(TestData.testLoginId, TestData.testPassword)).called(1);
+      verify(
+        mockCheckLoginIdExistsUseCase.call(TestData.testLoginId),
+      ).called(1);
+      verify(
+        mockRegisterUseCase.call(TestData.testLoginId, TestData.testPassword),
+      ).called(1);
     });
 
     test('회원가입 후 로그인 플로우가 성공해야 한다', () async {
       // Given: 회원가입이 완료된 상태라고 가정
-      final loginViewModel = LoginViewModel(
-        loginUseCase: mockLoginUseCase,
-      );
+      final loginViewModel = LoginViewModel(loginUseCase: mockLoginUseCase);
 
+      // TODO: User 엔티티에서 points 필드가 제거되고 createdAt 필드가 추가됨 - 테스트 데이터 업데이트 필요
       final testUser = User(
         id: 123,
         loginId: TestData.testLoginId,
@@ -85,8 +86,9 @@ void main() {
       );
 
       // Mock 설정
-      when(mockLoginUseCase.call(TestData.testLoginId, TestData.testPassword))
-          .thenAnswer((_) async => testUser);
+      when(
+        mockLoginUseCase.call(TestData.testLoginId, TestData.testPassword),
+      ).thenAnswer((_) async => testUser);
 
       // When: 로그인 실행
       loginViewModel.loginIdController.text = TestData.testLoginId;
@@ -99,7 +101,9 @@ void main() {
       expect(loginViewModel.passwordError, null);
 
       // UseCase 호출 검증
-      verify(mockLoginUseCase.call(TestData.testLoginId, TestData.testPassword)).called(1);
+      verify(
+        mockLoginUseCase.call(TestData.testLoginId, TestData.testPassword),
+      ).called(1);
     });
 
     test('중복된 로그인 ID로 회원가입 시도 시 실패해야 한다', () async {
@@ -111,8 +115,9 @@ void main() {
       );
 
       // Mock 설정: 이미 존재하는 로그인 ID
-      when(mockCheckLoginIdExistsUseCase.call(TestData.testLoginId))
-          .thenAnswer((_) async => true);
+      when(
+        mockCheckLoginIdExistsUseCase.call(TestData.testLoginId),
+      ).thenAnswer((_) async => true);
 
       // When: 중복된 로그인 ID로 검증 시도
       signupViewModel.setLoginId(TestData.testLoginId);
@@ -125,22 +130,23 @@ void main() {
       expect(signupViewModel.currentStep, 1); // 1단계에 머물러 있어야 함
 
       // UseCase 호출 검증
-      verify(mockCheckLoginIdExistsUseCase.call(TestData.testLoginId)).called(1);
+      verify(
+        mockCheckLoginIdExistsUseCase.call(TestData.testLoginId),
+      ).called(1);
       verifyNever(mockRegisterUseCase.call(any, any));
     });
 
     test('잘못된 로그인 정보로 로그인 시도 시 실패해야 한다', () async {
       // Given: 로그인 ViewModel 준비
-      final loginViewModel = LoginViewModel(
-        loginUseCase: mockLoginUseCase,
-      );
+      final loginViewModel = LoginViewModel(loginUseCase: mockLoginUseCase);
 
       const wrongLoginId = 'wronguser';
       const wrongPassword = 'wrongpassword';
 
       // Mock 설정: 잘못된 정보로 로그인 실패
-      when(mockLoginUseCase.call(wrongLoginId, wrongPassword))
-          .thenThrow(Exception('Invalid credentials'));
+      when(
+        mockLoginUseCase.call(wrongLoginId, wrongPassword),
+      ).thenThrow(Exception('Invalid credentials'));
 
       // When: 잘못된 정보로 로그인 시도
       loginViewModel.loginIdController.text = wrongLoginId;
