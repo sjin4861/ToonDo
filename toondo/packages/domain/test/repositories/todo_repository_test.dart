@@ -159,7 +159,7 @@ void main() {
       // 2. 완료된 할일
       final completedTodo = TestData.createTestTodo(
         id: 'completed',
-        status: 100.0,
+        status: 1.0, // 완료 상태는 1.0
       );
       
       // Act & Assert
