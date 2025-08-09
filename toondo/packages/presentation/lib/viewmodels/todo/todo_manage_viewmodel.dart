@@ -94,9 +94,9 @@ class TodoManageViewModel extends ChangeNotifier {
               .where((todo) => todo.goalId == selectedGoalId)
               .toList();
     } else if (selectedFilter == TodoFilterOption.importance) {
-      // TODO: eisenhower 필드로 변경 필요 - importance는 더 이상 존재하지 않음
+      // eisenhower 필드로 변경 - 중요하고 긴급한 항목들(2: 중요, 3: 중요+긴급)
       todosForSelectedDate =
-          todosForSelectedDate.where((todo) => todo.importance == 1).toList();
+          todosForSelectedDate.where((todo) => todo.eisenhower >= 2).toList();
     } else if (selectedFilter == TodoFilterOption.dDay) {
       todosForSelectedDate =
           todosForSelectedDate.where((todo) => todo.isDDayTodo()).toList();
@@ -116,8 +116,8 @@ class TodoManageViewModel extends ChangeNotifier {
           .inDays
           .compareTo(b.endDate.difference(selectedDateOnly).inDays),
     );
-    // TODO: eisenhower 필드로 정렬 로직 변경 필요 - importance는 더 이상 존재하지 않음
-    dailyTodos.sort((a, b) => b.importance.compareTo(a.importance));
+    // eisenhower 필드로 정렬 - 중요도 순으로 정렬 (높은 값이 더 중요)
+    dailyTodos.sort((a, b) => b.eisenhower.compareTo(a.eisenhower));
 
     notifyListeners();
   }
@@ -127,8 +127,7 @@ class TodoManageViewModel extends ChangeNotifier {
       await _updateTodoStatusUseCase(todo, status);
       final idx = allTodos.indexWhere((t) => t.id == todo.id);
       if (idx != -1) {
-        // 상태 변경된 새 Todo 생성 후 반영
-        // TODO: urgency, importance 필드를 eisenhower 필드로 변경 필요
+        // 상태 변경된 새 Todo 생성 후 반영 - eisenhower 필드로 변경
         final updated = Todo(
           id: todo.id,
           title: todo.title,
@@ -137,8 +136,7 @@ class TodoManageViewModel extends ChangeNotifier {
           goalId: todo.goalId,
           status: status,
           comment: todo.comment,
-          urgency: todo.urgency,
-          importance: todo.importance,
+          eisenhower: todo.eisenhower,
         );
         allTodos[idx] = updated;
       }
