@@ -24,16 +24,15 @@ class TodoModelAdapter extends TypeAdapter<TodoModel> {
       goalId: fields[2] as String?,
       status: fields[3] as double,
       comment: fields[4] as String,
-      urgency: fields[7] as int,
-      importance: fields[8] as int,
-      isSynced: fields[9] as bool,
+      eisenhower: fields[7] as int,
+      isSynced: fields[8] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, TodoModel obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -49,10 +48,8 @@ class TodoModelAdapter extends TypeAdapter<TodoModel> {
       ..writeByte(6)
       ..write(obj.endDate)
       ..writeByte(7)
-      ..write(obj.urgency)
+      ..write(obj.eisenhower)
       ..writeByte(8)
-      ..write(obj.importance)
-      ..writeByte(9)
       ..write(obj.isSynced);
   }
 

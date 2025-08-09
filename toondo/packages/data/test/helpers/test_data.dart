@@ -8,7 +8,6 @@ class TestData {
   static const String testLoginId = 'testuser123';
   static const String testPassword = 'TestPass123!';
   static const String testNickname = '테스트유저';
-  static const String testEmail = 'test@example.com';
 
   // 테스트용 사용자 생성
   static User createTestUser({
@@ -16,11 +15,7 @@ class TestData {
     String? loginId,
     String? nickname = '테스트 사용자',
   }) {
-    return User(
-      id: id,
-      loginId: loginId ?? testLoginId,
-      nickname: nickname,
-    );
+    return User(id: id, loginId: loginId ?? testLoginId, nickname: nickname);
   }
 
   // 테스트용 목표 생성 (ID만 변경하여 여러 개의 목표 생성 가능)
@@ -55,7 +50,7 @@ class TestData {
       ),
     );
   }
-  
+
   // 테스트용 할일 생성
   static Todo createTestTodo({
     required String id,
@@ -65,8 +60,7 @@ class TestData {
     String comment = '',
     DateTime? startDate,
     DateTime? endDate,
-    int urgency = 1,
-    int importance = 1,
+    int eisenhower = 0, // 0: 중요하지 않고 급하지 않음, 1: 급함, 2: 중요함, 3: 중요하고 급함
   }) {
     return Todo(
       id: id,
@@ -76,11 +70,10 @@ class TestData {
       comment: comment,
       startDate: startDate ?? DateTime.now(),
       endDate: endDate ?? DateTime.now().add(const Duration(days: 1)),
-      urgency: urgency,
-      importance: importance,
+      eisenhower: eisenhower,
     );
   }
-  
+
   // 테스트용 할일 목록 생성
   static List<Todo> createTestTodos({int count = 3, String? goalId}) {
     return List.generate(
@@ -89,9 +82,8 @@ class TestData {
         id: 'todo_$index',
         title: '테스트 할일 $index',
         goalId: goalId,
-        status: index * 25.0,
-        urgency: (index % 2) + 1,
-        importance: (index % 2) + 1,
+        status: index == 0 ? 0.0 : 1.0, // 첫 번째는 진행중, 나머지는 완료
+        eisenhower: index % 4, // 0~3 사이의 아이젠하워 값
       ),
     );
   }

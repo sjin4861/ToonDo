@@ -12,6 +12,7 @@ class TestData {
   static const String testEmail = 'test@example.com';
 
   // 테스트용 사용자 객체
+  // TODO: User 엔티티에서 points 필드가 제거되고 createdAt 필드가 추가됨 - 테스트 데이터 업데이트 필요
   static final User testUser = User(
     id: 1,
     loginId: testLoginId,
@@ -20,17 +21,13 @@ class TestData {
   );
 
   /// 테스트용 사용자 생성
+  // TODO: User 엔티티에서 points 필드가 제거되고 createdAt 필드가 추가됨 - 테스트 데이터 업데이트 필요
   static User createTestUser({
     int id = 1,
     String name = '테스트 사용자',
     String email = 'test@example.com',
   }) {
-    return User(
-      id: id,
-      loginId: email,
-      nickname: name,
-      points: 0,
-    );
+    return User(id: id, loginId: email, nickname: name, points: 0);
   }
 
   /// 테스트용 목표 생성
@@ -135,25 +132,35 @@ class TestData {
   static List<Todo> createTestTodos() {
     return [
       // 데일리 투두
-      createDailyTodo(id: 'daily-1', title: '데일리 투두 1', goalId: 'goal-1', importance: 1),
-      createDailyTodo(id: 'daily-2', title: '데일리 투두 2', goalId: 'goal-2', urgency: 1),
-      
+      createDailyTodo(
+        id: 'daily-1',
+        title: '데일리 투두 1',
+        goalId: 'goal-1',
+        importance: 1,
+      ),
+      createDailyTodo(
+        id: 'daily-2',
+        title: '데일리 투두 2',
+        goalId: 'goal-2',
+        urgency: 1,
+      ),
+
       // D-Day 투두
       createDDayTodo(
-        id: 'dday-1', 
-        title: 'D-Day 투두 1', 
+        id: 'dday-1',
+        title: 'D-Day 투두 1',
         goalId: 'goal-1',
         startDate: DateTime(2025, 5, 3),
         endDate: DateTime(2025, 5, 7),
-        importance: 1, 
-        urgency: 1
+        importance: 1,
+        urgency: 1,
       ),
       createDDayTodo(
-        id: 'dday-2', 
-        title: 'D-Day 투두 2', 
+        id: 'dday-2',
+        title: 'D-Day 투두 2',
         goalId: 'goal-2',
         startDate: DateTime(2025, 5, 4),
-        endDate: DateTime(2025, 5, 10)
+        endDate: DateTime(2025, 5, 10),
       ),
     ];
   }

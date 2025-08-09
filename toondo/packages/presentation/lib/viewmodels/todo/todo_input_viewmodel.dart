@@ -30,6 +30,7 @@ class TodoInputViewModel extends ChangeNotifier {
   EisenhowerType _selectedEisenhowerType = EisenhowerType.notImportantNotUrgent;
   EisenhowerType get selectedEisenhowerType => _selectedEisenhowerType;
 
+  // TODO: importance, urgency 필드 제거하고 eisenhower 필드만 사용하도록 리팩토링 필요
   int importance = 0;
   int urgency = 0;
   bool isOnboarding;
@@ -50,15 +51,16 @@ class TodoInputViewModel extends ChangeNotifier {
     required CreateTodoUseCase createTodoUseCase,
     required UpdateTodoUseCase updateTodoUseCase,
     required GetGoalsLocalUseCase getGoalsLocalUseCase,
-  })  : _createTodoUseCase = createTodoUseCase,
-        _updateTodoUseCase = updateTodoUseCase,
-        _getGoalsLocalUseCase = getGoalsLocalUseCase {
+  }) : _createTodoUseCase = createTodoUseCase,
+       _updateTodoUseCase = updateTodoUseCase,
+       _getGoalsLocalUseCase = getGoalsLocalUseCase {
     if (todo != null) {
       titleController.text = todo!.title;
       isTitleNotEmpty = titleController.text.isNotEmpty;
       selectedGoalId = todo!.goalId;
       startDate = todo!.startDate;
       endDate = todo!.endDate;
+      // TODO: todo.eisenhower 필드에서 importance/urgency 값을 매핑하도록 변경 필요
       importance = todo!.importance.toInt();
       urgency = todo!.urgency.toInt();
       _selectedEisenhowerType = _mapToEisenhowerType(importance, urgency);
@@ -81,13 +83,18 @@ class TodoInputViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  // TODO: importance, urgency 매핑 로직을 eisenhower 필드 기반으로 변경 필요
   EisenhowerType _mapToEisenhowerType(int importance, int urgency) {
-    if (importance == 1 && urgency == 1) return EisenhowerType.importantAndUrgent;
-    if (importance == 1 && urgency == 0) return EisenhowerType.importantNotUrgent;
-    if (importance == 0 && urgency == 1) return EisenhowerType.urgentNotImportant;
+    if (importance == 1 && urgency == 1)
+      return EisenhowerType.importantAndUrgent;
+    if (importance == 1 && urgency == 0)
+      return EisenhowerType.importantNotUrgent;
+    if (importance == 0 && urgency == 1)
+      return EisenhowerType.urgentNotImportant;
     return EisenhowerType.notImportantNotUrgent;
   }
 
+  // TODO: importance, urgency 기반 EisenhowerType 설정을 eisenhower 값으로 직접 설정하도록 변경 필요
   void setEisenhowerType(EisenhowerType type) {
     _selectedEisenhowerType = type;
 
@@ -152,9 +159,9 @@ class TodoInputViewModel extends ChangeNotifier {
   }
 
   Future<void> selectDate(
-      BuildContext context, {
-        required bool isStartDate,
-      }) async {
+    BuildContext context, {
+    required bool isStartDate,
+  }) async {
     DateTime initialDate = DateTime.now();
     if (isStartDate && startDate != null) {
       initialDate = startDate!;
@@ -191,6 +198,7 @@ class TodoInputViewModel extends ChangeNotifier {
     final normalizedStart = isDailyTodo ? today : (startDate ?? today);
     final normalizedEnd = isDailyTodo ? today : (endDate ?? today);
 
+    // TODO: importance, urgency 필드를 eisenhower 필드로 변경 필요
     return Todo(
       id: todo?.id ?? now.millisecondsSinceEpoch.toString(),
       title: title,
