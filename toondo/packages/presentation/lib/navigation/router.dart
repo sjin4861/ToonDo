@@ -55,14 +55,6 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => NicknameChangeScreen());
       case RoutePaths.accountSettingPasswordChange:
         return MaterialPageRoute(builder: (_) => PasswordChangeScreen());
-      // GPT 대화 기능은 추후 개발 예정으로 비활성화
-      // case RoutePaths.slimeChat:
-      //   return MaterialPageRoute(
-      //     builder: (_) => ChangeNotifierProvider<ChatViewModel>.value(
-      //       value: GetIt.instance<ChatViewModel>(),
-      //       child: const SlimeChatPage(),
-      //     ),
-      //   );
       default:
         return MaterialPageRoute(
           builder:
