@@ -57,12 +57,11 @@ void main() {
       });
 
       test('유효한 정보로 로그인이 성공해야 한다', () async {
-        // TODO: User 엔티티에서 points 필드가 제거되고 createdAt 필드가 추가됨 - 테스트 데이터 업데이트 필요
+        // User 엔티티에서 points 필드가 제거됨
         final testUser = User(
           id: 123,
           loginId: TestData.testLoginId,
           nickname: TestData.testNickname,
-          points: 0,
         );
 
         viewModel.loginIdController.text = TestData.testLoginId;
