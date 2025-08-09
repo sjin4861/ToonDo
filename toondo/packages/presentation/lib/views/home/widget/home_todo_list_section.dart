@@ -1,4 +1,3 @@
-import 'package:domain/entities/status.dart';
 import 'package:domain/entities/todo.dart';
 import 'package:flutter/material.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
