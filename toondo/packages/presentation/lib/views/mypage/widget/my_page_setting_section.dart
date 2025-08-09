@@ -15,7 +15,6 @@ class MyPageSettingSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final vm = context.read<MyPageViewModel>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
