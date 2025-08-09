@@ -3,15 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:domain/entities/todo.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
 
-// TODO: importance, urgency 필드 기반 로직을 eisenhower 필드 기반으로 변경 필요
+// eisenhower 값을 기반으로 테두리 색상 결정
 Color getBorderColor(Todo todo) {
-  if (todo.importance == 1 && todo.urgency == 1) {
-    return AppColors.red300;
-  } else if (todo.importance == 1 && todo.urgency == 0) {
-    return AppColors.blue300;
-  } else if (todo.importance == 0 && todo.urgency == 1) {
-    return AppColors.yellow300;
-  } else {
-    return AppColors.brown300;
+  switch (todo.eisenhower) {
+    case 0: // 중요하지 않고 긴급하지 않음
+      return AppColors.brown300;
+    case 1: // 중요하지 않지만 긴급함
+      return AppColors.yellow300;
+    case 2: // 중요하지만 긴급하지 않음
+      return AppColors.blue300;
+    case 3: // 중요하고 긴급함
+      return AppColors.red300;
+    default:
+      return AppColors.brown300;
   }
 }
