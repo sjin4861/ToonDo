@@ -40,7 +40,7 @@ class HomeViewModel extends ChangeNotifier {
 
   Future<void> loadTodos() async {
     try {
-      _todos = await _getTodosUseCase();
+      _todos = _getTodosUseCase();
 
       notifyListeners();
     } catch (e) {
@@ -100,14 +100,10 @@ class HomeViewModel extends ChangeNotifier {
   // ─── 초기화 / 정리 ─────────────────────────
   Future<void> _init() async {
     await Future.wait([loadGoals(), _loadNickname()]);
-    // GPT 대화 기능은 추후 개발 예정으로 비활성화
-    // _listenChatToggle();
   }
 
   @override
   void dispose() {
-    // GPT 대화 기능은 추후 개발 예정으로 비활성화
-    // _chatSub.cancel();
     super.dispose();
   }
 
