@@ -1,13 +1,3 @@
-// dart format width=80
-// GENERATED CODE - DO NOT MODIFY BY HAND
-
-// **************************************************************************
-// InjectableConfigGenerator
-// **************************************************************************
-
-// ignore_for_file: type=lint
-// coverage:ignore-file
-
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:domain/entities/goal.dart' as _i876;
 import 'package:domain/entities/todo.dart' as _i429;
@@ -18,7 +8,6 @@ import 'package:domain/usecases/auth/login.dart' as _i1068;
 import 'package:domain/usecases/auth/logout.dart' as _i969;
 import 'package:domain/usecases/auth/register.dart' as _i899;
 import 'package:domain/usecases/character/slime_on_gesture.dart' as _i610;
-import 'package:domain/usecases/character/slime_on_massage.dart' as _i642;
 import 'package:domain/usecases/goal/create_goal_remote.dart' as _i343;
 import 'package:domain/usecases/goal/delete_goal_local.dart' as _i563;
 import 'package:domain/usecases/goal/delete_goal_remote.dart' as _i397;
@@ -52,7 +41,6 @@ import 'package:domain/usecases/user/get_user_nickname.dart' as _i849;
 import 'package:domain/usecases/user/update_nickname.dart' as _i910;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
-import 'package:presentation/viewmodels/character/chat_viewmodel.dart' as _i178;
 import 'package:presentation/viewmodels/character/slime_character_vm.dart'
     as _i88;
 import 'package:presentation/viewmodels/global/app_notification_viewmodel.dart'
@@ -137,9 +125,6 @@ extension GetItInjectableX on _i174.GetIt {
         getGoalsLocalUseCase: gh<_i477.GetGoalsLocalUseCase>(),
         initialDate: gh<DateTime>(),
       ),
-    );
-    gh.factory<_i178.ChatViewModel>(
-      () => _i178.ChatViewModel(gh<_i642.SlimeOnMessageUseCase>()),
     );
     gh.factory<_i705.SignupViewModel>(
       () => _i705.SignupViewModel(
