@@ -1,9 +1,7 @@
-import 'package:data/models/slime_character_model.dart';
 import 'package:domain/entities/theme_mode_type.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:get_it/get_it.dart';
-import 'package:presentation/viewmodels/character/chat_viewmodel.dart';
 import 'package:presentation/viewmodels/global/app_notification_viewmodel.dart';
 import 'package:presentation/viewmodels/onboarding/onboarding_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +26,6 @@ Future<void> main() async {
   Hive.registerAdapter(GoalModelAdapter());
   Hive.registerAdapter(UserModelAdapter());
   Hive.registerAdapter(GoalStatusEnumAdapter());
-  Hive.registerAdapter(SlimeCharacterModelAdapter());             // ★ 추가
 
 
   // Hive 박스 열기
@@ -36,7 +33,6 @@ Future<void> main() async {
   await Hive.openBox<TodoModel>('deleted_todos');
   await Hive.openBox<GoalModel>('goals');
   await Hive.openBox<UserModel>('user');
-  await Hive.openBox<SlimeCharacterModel>('character');           // ★ 추가
 
 
   // 의존성 주입
@@ -94,7 +90,6 @@ class MyAppState extends State<MyApp> {
         ChangeNotifierProvider(
             create: (_) => GetIt.instance<GoalManagementViewModel>()),
         ChangeNotifierProvider(create: (_) => GetIt.instance<HomeViewModel>()),
-        ChangeNotifierProvider(create: (_) => GetIt.instance<ChatViewModel>()),
         ChangeNotifierProvider(
             create: (_) => GetIt.instance<OnboardingViewModel>()),
       ],
