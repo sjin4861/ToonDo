@@ -16,13 +16,13 @@ class TodoRepositoryImpl implements TodoRepository {
 
   @override
   Future<List<Todo>> fetchTodos() async {
-    // TODO: 백엔드와 얘기 필요 - API 스펙 확정 후 구현
+    // TODO: 백엔드와 API 스펙 논의 필요
     throw UnimplementedError('백엔드와 API 스펙 논의 필요');
   }
 
   @override
   Future<bool> commitTodos() async {
-    // TODO: 백엔드와 얘기 필요 - API 스펙 확정 후 구현
+    // TODO: 백엔드와 API 스펙 논의 필요
     throw UnimplementedError('백엔드와 API 스펙 논의 필요');
   }
 
