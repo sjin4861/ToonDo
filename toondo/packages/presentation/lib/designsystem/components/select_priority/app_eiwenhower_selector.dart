@@ -19,8 +19,8 @@ class AppEisenhowerSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: 24,
-      runSpacing: 16,
+      spacing: AppSpacing.spacing24,
+      runSpacing: AppSpacing.spacing16,
       children: eisenhowerOptions.map((option) {
         final isSelected = option.type == selectedType;
 

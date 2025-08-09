@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:common/gen/assets.gen.dart';
@@ -6,8 +7,7 @@ import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/designsystem/typography/app_typography.dart';
 
-class AppTodoItem extends StatelessWidget {
-  final Key? dismissKey;
+class AppTodoItem extends StatefulWidget {
   final String title;
   final String? iconPath;
   final String? subTitle;
@@ -15,11 +15,10 @@ class AppTodoItem extends StatelessWidget {
   final Color levelColor;
   final ValueChanged<bool>? onCheckedChanged;
   final VoidCallback? onTap;
-  final VoidCallback? onSwipeLeft;
+  final VoidCallback? onDelete;
 
   const AppTodoItem({
     super.key,
-    this.dismissKey,
     required this.title,
     this.iconPath,
     this.subTitle,
@@ -27,64 +26,164 @@ class AppTodoItem extends StatelessWidget {
     this.levelColor = AppColors.eisenhowerSelectedBg1,
     this.onCheckedChanged,
     this.onTap,
-    this.onSwipeLeft,
+    this.onDelete,
   });
 
   @override
+  State<AppTodoItem> createState() => _AppTodoItemState();
+}
+
+class _AppTodoItemState extends State<AppTodoItem> {
+  double _dragOffset = 0.0;
+  double _maxDrag = 120.0;
+  Timer? _resetTimer;
+
+  void _onHorizontalDragUpdate(DragUpdateDetails details) {
+    _resetTimer?.cancel();
+
+    setState(() {
+      _dragOffset = (_dragOffset + details.delta.dx).clamp(-_maxDrag, 0.0);
+    });
+  }
+
+  void _onHorizontalDragEnd(DragEndDetails details) {
+    if (_dragOffset < -_maxDrag * 0.8) {
+      setState(() {
+        _dragOffset = -_maxDrag;
+      });
+      _resetTimer = Timer(const Duration(seconds: 3), () {
+        if (mounted) {
+          setState(() => _dragOffset = 0.0);
+        }
+      });
+    } else {
+      setState(() {
+        _dragOffset = 0.0;
+      });
+    }
+  }
+
+  void _handleDelete() {
+    _resetTimer?.cancel();
+    widget.onDelete?.call();
+  }
+
+  @override
+  void dispose() {
+    _resetTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Dismissible(
-      key: dismissKey!,
-      direction: DismissDirection.endToStart,
-      onDismissed: (_) => onSwipeLeft?.call(),
-      background: Container(
-        height: AppDimensions.todoItemHeight,
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing12),
-        color: AppColors.red600,
-        child: const Icon(
-          Icons.delete,
-          color: AppColors.status0,
-        ),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(AppDimensions.todoItemBorderRadius),
-          child: Container(
-            height: AppDimensions.todoItemHeight,
-            padding: const EdgeInsets.all(AppDimensions.paddingTodoItem),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(AppDimensions.todoItemBorderRadius),
-              border: Border.all(
-                color: isChecked
-                    ? AppColors.itemCompletedBorder
-                    : levelColor,
-                width: AppDimensions.todoItemBorderWidth,
+    final radius = BorderRadius.circular(AppDimensions.todoItemBorderRadius);
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        _maxDrag = constraints.maxWidth;
+
+        return SizedBox(
+          height: AppDimensions.todoItemHeight,
+          child: Stack(
+            children: [
+              // 전체 배경
+              Positioned.fill(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(
+                    AppDimensions.todoItemBorderRadius,
+                  ),
+                  child: Container(
+                    color: AppColors.green500,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.spacing12,
+                    ),
+                    child: Center(
+                      child: GestureDetector(
+                        onTap: _handleDelete,
+                        child: Container(
+                          width: 312,
+                          height: AppDimensions.todoItemHeight,
+                          decoration: BoxDecoration(
+                            color: AppColors.green500,
+                            borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Icon(Icons.delete, color: AppColors.status0),
+                              Text(
+                                '삭제하기',
+                                style: AppTypography.body1Bold.copyWith(
+                                  color: AppColors.status0,
+                                ),
+                              ),
+                              SizedBox(width: AppSpacing.spacing24),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              color: isChecked
-                  ? AppColors.itemCompletedBackground
-                  : Colors.transparent,
-            ),
-            child: Row(
-              children: [
-                _buildIcon(),
-                const SizedBox(width: AppSpacing.spacing12),
-                Expanded(child: _buildTitleWithOptionalSubtitle()),
-                const SizedBox(width: AppSpacing.spacing12),
-                _buildCheckbox(),
-              ],
-            ),
+
+              // 카드
+              AnimatedPositioned(
+                duration: const Duration(milliseconds: 100),
+                left: _dragOffset,
+                right: -_dragOffset,
+                top: 0,
+                bottom: 0,
+                child: GestureDetector(
+                  onHorizontalDragUpdate: _onHorizontalDragUpdate,
+                  onHorizontalDragEnd: _onHorizontalDragEnd,
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: widget.onTap,
+                      borderRadius: radius,
+                      child: Container(
+                        padding: const EdgeInsets.all(
+                          AppDimensions.paddingTodoItem,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: radius,
+                          border: Border.all(
+                            color:
+                                widget.isChecked
+                                    ? AppColors.itemCompletedBorder
+                                    : widget.levelColor,
+                            width: AppDimensions.todoItemBorderWidth,
+                          ),
+                          color:
+                              widget.isChecked
+                                  ? AppColors.itemCompletedBackground
+                                  : AppColors.backgroundNormal,
+                        ),
+                        child: Row(
+                          children: [
+                            _buildIcon(),
+                            const SizedBox(width: AppSpacing.spacing12),
+                            Expanded(child: _buildTitleWithOptionalSubtitle()),
+                            const SizedBox(width: AppSpacing.spacing12),
+                            _buildCheckbox(),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
   Widget _buildIcon() {
-    final backgroundColor = isChecked
-        ? AppColors.itemCompletedBorder
-        : levelColor;
+    final backgroundColor =
+        widget.isChecked ? AppColors.itemCompletedBorder : widget.levelColor;
 
     return CircleAvatar(
       radius: AppDimensions.goalIconRadius,
@@ -92,13 +191,11 @@ class AppTodoItem extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(AppDimensions.goalIconInnerPadding),
         child: SvgPicture.asset(
-          iconPath ?? Assets.icons.icHelpCircle.path,
+          widget.iconPath ?? Assets.icons.icHelpCircle.path,
           width: AppDimensions.goalIconSize,
           height: AppDimensions.goalIconSize,
           colorFilter: ColorFilter.mode(
-            isChecked
-                ? AppColors.status100.withOpacity(0.5)
-                : AppColors.status100,
+            widget.isChecked ? AppColors.status100_50 : AppColors.status100,
             BlendMode.srcIn,
           ),
         ),
@@ -107,13 +204,14 @@ class AppTodoItem extends StatelessWidget {
   }
 
   Widget _buildTitleWithOptionalSubtitle() {
-    if (subTitle == null || subTitle!.isEmpty) {
+    if (widget.subTitle == null || widget.subTitle!.isEmpty) {
       return Text(
-        title,
+        widget.title,
         style: AppTypography.body2Bold.copyWith(
-          color: isChecked
-              ? AppColors.status100.withOpacity(0.3)
-              : AppColors.status100,
+          color:
+              widget.isChecked
+                  ? AppColors.status100.withOpacity(0.3)
+                  : AppColors.status100,
         ),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
@@ -125,22 +223,24 @@ class AppTodoItem extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          title,
+          widget.title,
           style: AppTypography.body2Bold.copyWith(
-            color: isChecked
-                ? AppColors.status100.withOpacity(0.3)
-                : AppColors.status100,
+            color:
+                widget.isChecked
+                    ? AppColors.status100.withOpacity(0.3)
+                    : AppColors.status100,
           ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: AppSpacing.spacing4),
         Text(
-          subTitle!,
+          widget.subTitle!,
           style: AppTypography.caption3Regular.copyWith(
-            color: isChecked
-                ? AppColors.status100.withOpacity(0.3)
-                : AppColors.status100.withOpacity(0.6),
+            color:
+                widget.isChecked
+                    ? AppColors.status100.withOpacity(0.3)
+                    : AppColors.status100.withOpacity(0.6),
           ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -154,9 +254,9 @@ class AppTodoItem extends StatelessWidget {
       width: AppDimensions.checkboxSize,
       height: AppDimensions.checkboxSize,
       child: Checkbox(
-        value: isChecked,
+        value: widget.isChecked,
         onChanged: (value) {
-          if (value != null) onCheckedChanged?.call(value);
+          if (value != null) widget.onCheckedChanged?.call(value);
         },
         side: const BorderSide(
           color: AppColors.borderLight,

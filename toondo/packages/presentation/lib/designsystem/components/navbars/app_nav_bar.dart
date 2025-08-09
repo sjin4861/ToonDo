@@ -20,19 +20,18 @@ class AppNavBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: AppColors.status0,
       elevation: 0,
-      leading: Padding(
-        padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacing24, vertical: AppSpacing.spacing14),
-        child: IconButton(
-          icon: Icon(Icons.arrow_back_ios, size: AppDimensions.iconSize16, color: AppColors.status100),
-          onPressed: onBack ?? () => Navigator.of(context).maybePop(),
-        ),
+      leading: IconButton(
+          padding: const EdgeInsets.only(left: AppSpacing.spacing20),
+        icon: Icon(Icons.arrow_back_ios, size: AppDimensions.iconSize16, color: AppColors.status100),
+        onPressed: onBack ?? () => Navigator.of(context).maybePop(),
       ),
       centerTitle: false,
       titleSpacing: 0,
       title: Text(
-        title,
-        style: AppTypography.h2Regular.copyWith(
-          color: AppColors.status100,
+          title,
+          style: AppTypography.h2Regular.copyWith(
+            color: AppColors.status100,
+            height: 1.0,
         ),
       ),
       bottom: const PreferredSize(

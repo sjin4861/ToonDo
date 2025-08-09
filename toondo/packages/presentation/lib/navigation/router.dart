@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:presentation/views/home/home_screen.dart';
 import 'package:presentation/views/goal/goal_progress_screen.dart';
 import 'package:presentation/views/welcome/welcome_screen.dart';
-import 'package:presentation/views/auth/signup_screen.dart';
+import 'package:presentation/views/auth/signup/signup_screen.dart';
 import 'package:presentation/navigation/route_paths.dart';
 import 'package:presentation/views/goal/manage/goal_manage_screen.dart';
 import 'package:presentation/views/mypage/my_page_screen.dart';

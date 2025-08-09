@@ -104,7 +104,7 @@ extension GetItInjectableX on _i174.GetIt {
         deleteAccountUseCase: gh<_i728.DeleteAccountUseCase>(),
       ),
     );
-    gh.lazySingleton<_i197.WelcomeViewModel>(
+    gh.factory<_i197.WelcomeViewModel>(
       () => _i197.WelcomeViewModel(
         getTokenUseCase: gh<_i415.GetTokenUseCase>(),
         logoutUseCase: gh<_i969.LogoutUseCase>(),
@@ -138,17 +138,15 @@ extension GetItInjectableX on _i174.GetIt {
         initialDate: gh<DateTime>(),
       ),
     );
-    gh.lazySingleton<_i72.TodoInputViewModel>(
-      () => _i72.TodoInputViewModel(
-        todo: gh<_i429.Todo>(),
-        isDDayTodo: gh<bool>(),
-        createTodoUseCase: gh<_i834.CreateTodoUseCase>(),
-        updateTodoUseCase: gh<_i375.UpdateTodoUseCase>(),
-        getGoalsLocalUseCase: gh<_i477.GetGoalsLocalUseCase>(),
-      ),
-    );
     gh.factory<_i178.ChatViewModel>(
       () => _i178.ChatViewModel(gh<_i642.SlimeOnMessageUseCase>()),
+    );
+    gh.factory<_i705.SignupViewModel>(
+      () => _i705.SignupViewModel(
+        registerUserUseCase: gh<_i899.RegisterUseCase>(),
+        checkLoginIdExistsUseCase: gh<_i138.CheckLoginIdExistsUseCase>(),
+        loginUseCase: gh<_i1068.LoginUseCase>(),
+      ),
     );
     gh.lazySingleton<_i370.AppNotificationViewModel>(
       () => _i370.AppNotificationViewModel(
@@ -156,14 +154,18 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i930.SetNotificationSettingsUseCase>(),
       ),
     );
-    gh.lazySingleton<_i705.SignupViewModel>(
-      () => _i705.SignupViewModel(
-        registerUserUseCase: gh<_i899.RegisterUseCase>(),
-        checkLoginIdExistsUseCase: gh<_i138.CheckLoginIdExistsUseCase>(),
-      ),
-    );
     gh.factory<_i393.TimePickerViewModel>(
       () => _i393.TimePickerViewModel(gh<_i236.SetReminderTime>()),
+    );
+    gh.lazySingleton<_i742.GoalInputViewModel>(
+      () => _i742.GoalInputViewModel(
+        createGoalRemoteUseCase: gh<_i343.CreateGoalRemoteUseCase>(),
+        saveGoalLocalUseCase: gh<_i881.SaveGoalLocalUseCase>(),
+        updateGoalRemoteUseCase: gh<_i200.UpdateGoalRemoteUseCase>(),
+        updateGoalLocalUseCase: gh<_i1031.UpdateGoalLocalUseCase>(),
+        targetGoal: gh<_i876.Goal>(),
+        isFromOnboarding: gh<bool>(),
+      ),
     );
     gh.factory<_i272.MyPageViewModel>(
       () => _i272.MyPageViewModel(
@@ -173,13 +175,14 @@ extension GetItInjectableX on _i174.GetIt {
         logoutUseCase: gh<_i969.LogoutUseCase>(),
       ),
     );
-    gh.lazySingleton<_i742.GoalInputViewModel>(
-      () => _i742.GoalInputViewModel(
-        createGoalRemoteUseCase: gh<_i343.CreateGoalRemoteUseCase>(),
-        saveGoalLocalUseCase: gh<_i881.SaveGoalLocalUseCase>(),
-        updateGoalRemoteUseCase: gh<_i200.UpdateGoalRemoteUseCase>(),
-        updateGoalLocalUseCase: gh<_i1031.UpdateGoalLocalUseCase>(),
-        targetGoal: gh<_i876.Goal>(),
+    gh.lazySingleton<_i72.TodoInputViewModel>(
+      () => _i72.TodoInputViewModel(
+        todo: gh<_i429.Todo>(),
+        isDDayTodo: gh<bool>(),
+        isOnboarding: gh<bool>(),
+        createTodoUseCase: gh<_i834.CreateTodoUseCase>(),
+        updateTodoUseCase: gh<_i375.UpdateTodoUseCase>(),
+        getGoalsLocalUseCase: gh<_i477.GetGoalsLocalUseCase>(),
       ),
     );
     gh.factory<_i942.NotificationSettingViewModel>(
@@ -189,12 +192,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i88.SlimeCharacterViewModel>(
       () => _i88.SlimeCharacterViewModel(gh<_i610.SlimeOnGestureUseCase>()),
-    );
-    gh.lazySingleton<_i370.HomeViewModel>(
-      () => _i370.HomeViewModel(
-        gh<_i243.GetInProgressGoalsUseCase>(),
-        gh<_i849.GetUserNicknameUseCase>(),
-      ),
     );
     gh.factory<_i501.AccountSettingViewModel>(
       () => _i501.AccountSettingViewModel(
@@ -209,7 +206,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i366.SetThemeModeUseCase>(),
       ),
     );
-    gh.lazySingleton<_i657.OnboardingViewModel>(
+    gh.lazySingleton<_i370.HomeViewModel>(
+      () => _i370.HomeViewModel(
+        gh<_i243.GetInProgressGoalsUseCase>(),
+        gh<_i849.GetUserNicknameUseCase>(),
+        gh<_i362.GetAllTodosUseCase>(),
+      ),
+    );
+    gh.factory<_i657.OnboardingViewModel>(
       () => _i657.OnboardingViewModel(
         updateNickNameUseCase: gh<_i910.UpdateNickNameUseCase>(),
       ),

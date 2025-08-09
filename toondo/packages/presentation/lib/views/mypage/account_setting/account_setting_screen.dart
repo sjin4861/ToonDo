@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:presentation/viewmodels/my_page/account_setting/account_setting_viewmodel.dart';
-import 'package:presentation/views/mypage/account_setting/account_setting_scaffold.dart';
+import 'package:presentation/views/base_scaffold.dart';
+import 'package:presentation/views/mypage/account_setting/account_setting_body.dart';
 import 'package:provider/provider.dart';
 
 class AccountSettingScreen extends StatelessWidget {
@@ -15,7 +16,7 @@ class AccountSettingScreen extends StatelessWidget {
         vm.loadUser();
         return vm;
       },
-      child: const AccountSettingScaffold(),
+      child: BaseScaffold(title: '계정관리', body: AccountSettingBody()),
     );
   }
 }

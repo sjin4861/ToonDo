@@ -30,6 +30,9 @@ class $AssetsIconsGen {
   SvgGenImage get ic100point =>
       const SvgGenImage('assets/icons/ic_100point.svg');
 
+  /// File path: assets/icons/ic_account.svg
+  SvgGenImage get icAccount => const SvgGenImage('assets/icons/ic_account.svg');
+
   /// File path: assets/icons/ic_activity.svg
   SvgGenImage get icActivity =>
       const SvgGenImage('assets/icons/ic_activity.svg');
@@ -68,6 +71,22 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_bookmark.svg
   SvgGenImage get icBookmark =>
       const SvgGenImage('assets/icons/ic_bookmark.svg');
+
+  /// File path: assets/icons/ic_bottom_add.svg
+  SvgGenImage get icBottomAdd =>
+      const SvgGenImage('assets/icons/ic_bottom_add.svg');
+
+  /// File path: assets/icons/ic_bottom_goal.svg
+  SvgGenImage get icBottomGoal =>
+      const SvgGenImage('assets/icons/ic_bottom_goal.svg');
+
+  /// File path: assets/icons/ic_bottom_todo.svg
+  SvgGenImage get icBottomTodo =>
+      const SvgGenImage('assets/icons/ic_bottom_todo.svg');
+
+  /// File path: assets/icons/ic_bottom_user.svg
+  SvgGenImage get icBottomUser =>
+      const SvgGenImage('assets/icons/ic_bottom_user.svg');
 
   /// File path: assets/icons/ic_calendar.svg
   SvgGenImage get icCalendar =>
@@ -121,6 +140,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_database.svg
   SvgGenImage get icDatabase =>
       const SvgGenImage('assets/icons/ic_database.svg');
+
+  /// File path: assets/icons/ic_display.svg
+  SvgGenImage get icDisplay => const SvgGenImage('assets/icons/ic_display.svg');
 
   /// File path: assets/icons/ic_download-cloud.svg
   SvgGenImage get icDownloadCloud =>
@@ -255,6 +277,14 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_mypage.svg
   SvgGenImage get icMypage => const SvgGenImage('assets/icons/ic_mypage.svg');
 
+  /// File path: assets/icons/ic_notification.svg
+  SvgGenImage get icNotification =>
+      const SvgGenImage('assets/icons/ic_notification.svg');
+
+  /// File path: assets/icons/ic_notification_circle.svg
+  SvgGenImage get icNotificationCircle =>
+      const SvgGenImage('assets/icons/ic_notification_circle.svg');
+
   /// File path: assets/icons/ic_pen-tool.svg
   SvgGenImage get icPenTool =>
       const SvgGenImage('assets/icons/ic_pen-tool.svg');
@@ -315,6 +345,9 @@ class $AssetsIconsGen {
 
   /// File path: assets/icons/ic_store.svg
   SvgGenImage get icStore => const SvgGenImage('assets/icons/ic_store.svg');
+
+  /// File path: assets/icons/ic_sync.svg
+  SvgGenImage get icSync => const SvgGenImage('assets/icons/ic_sync.svg');
 
   /// File path: assets/icons/ic_table.svg
   SvgGenImage get icTable => const SvgGenImage('assets/icons/ic_table.svg');
@@ -385,6 +418,7 @@ class $AssetsIconsGen {
   /// List of all assets
   List<SvgGenImage> get values => [
         ic100point,
+        icAccount,
         icActivity,
         icAiAnalysis,
         icAirplay,
@@ -396,6 +430,10 @@ class $AssetsIconsGen {
         icBookOpen,
         icBook,
         icBookmark,
+        icBottomAdd,
+        icBottomGoal,
+        icBottomTodo,
+        icBottomUser,
         icCalendar,
         icCamera,
         icCheckCircle,
@@ -411,6 +449,7 @@ class $AssetsIconsGen {
         icCompass,
         icCpu,
         icDatabase,
+        icDisplay,
         icDownloadCloud,
         icDownload,
         icEdit2,
@@ -452,6 +491,8 @@ class $AssetsIconsGen {
         icMonster,
         icMoon,
         icMypage,
+        icNotification,
+        icNotificationCircle,
         icPenTool,
         icPhoneCall,
         icPieChart,
@@ -470,6 +511,7 @@ class $AssetsIconsGen {
         icStar,
         icStats,
         icStore,
+        icSync,
         icTable,
         icTag,
         icTarget,
@@ -507,6 +549,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/img_character.svg
   SvgGenImage get imgCharacter =>
       const SvgGenImage('assets/images/img_character.svg');
+
+  /// File path: assets/images/img_character_happy.png
+  AssetGenImage get imgCharacterHappy =>
+      const AssetGenImage('assets/images/img_character_happy.png');
 
   /// File path: assets/images/img_cup_of_coffee.svg
   SvgGenImage get imgCupOfCoffee =>
@@ -551,6 +597,18 @@ class $AssetsImagesGen {
   AssetGenImage get imgPhone =>
       const AssetGenImage('assets/images/img_phone.png');
 
+  /// File path: assets/images/img_profile_1.png
+  AssetGenImage get imgProfile1 =>
+      const AssetGenImage('assets/images/img_profile_1.png');
+
+  /// File path: assets/images/img_profile_2.png
+  AssetGenImage get imgProfile2 =>
+      const AssetGenImage('assets/images/img_profile_2.png');
+
+  /// File path: assets/images/img_profile_3.png
+  AssetGenImage get imgProfile3 =>
+      const AssetGenImage('assets/images/img_profile_3.png');
+
   /// File path: assets/images/img_profile_default.svg
   SvgGenImage get imgProfileDefault =>
       const SvgGenImage('assets/images/img_profile_default.svg');
@@ -563,11 +621,16 @@ class $AssetsImagesGen {
   SvgGenImage get imgSpeechBubble =>
       const SvgGenImage('assets/images/img_speech_bubble.svg');
 
+  /// File path: assets/images/img_welcome_character.png
+  AssetGenImage get imgWelcomeCharacter =>
+      const AssetGenImage('assets/images/img_welcome_character.png');
+
   /// List of all assets
   List<dynamic> get values => [
         imgBackgroundFlowers,
         imgBackgroundGrass,
         imgCharacter,
+        imgCharacterHappy,
         imgCupOfCoffee,
         imgEllipse,
         imgGoogle,
@@ -579,9 +642,13 @@ class $AssetsImagesGen {
         imgKakao,
         imgMainCharacter,
         imgPhone,
+        imgProfile1,
+        imgProfile2,
+        imgProfile3,
         imgProfileDefault,
         imgShadow,
-        imgSpeechBubble
+        imgSpeechBubble,
+        imgWelcomeCharacter
       ];
 }
 

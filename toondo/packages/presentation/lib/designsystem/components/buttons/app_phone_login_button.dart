@@ -36,7 +36,7 @@ class AppPhoneLoginButton extends StatelessWidget {
           ),
           const SizedBox(width: AppSpacing.spacing12),
           Text(
-            '번호로 가입하기',
+            '번호로 계속하기',
             textAlign: TextAlign.center,
             style: AppTypography.h3Bold.copyWith(color: AppColors.status100),
           ),

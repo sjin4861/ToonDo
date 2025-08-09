@@ -1,5 +1,3 @@
-// lib/viewmodels/my_page/my_page_viewmodel.dart
-
 import 'package:domain/usecases/auth/logout.dart';
 import 'package:domain/usecases/user/get_user.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +18,9 @@ class MyPageViewModel extends ChangeNotifier {
     required this.commitTodosUseCase,
     required this.fetchTodosUseCase,
     required this.logoutUseCase,
-  });
+  }){
+    loadUser();
+  }
 
   String? _errorMessage;
   bool _isLoading = false;
@@ -34,12 +34,12 @@ class MyPageViewModel extends ChangeNotifier {
 
   Future<void> loadUser() async {
     _isLoading = true;
-    notifyListeners();
 
     try {
       final user = await getUserUseCase();
       _userUiModel = MyPageUserUiModel.fromDomain(user);
       _errorMessage = null;
+      notifyListeners();
     } catch (e) {
       _errorMessage = '유저 정보를 불러오는 데 실패했습니다.';
     } finally {
