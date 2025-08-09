@@ -142,22 +142,22 @@ void main() {
       });
 
       test('중요도별 필터링 시 중요도가 높은 투두만 표시되어야 한다', () {
-        // TODO: importance 필터를 eisenhower 기반 필터로 변경 필요
+        // eisenhower 필터 테스트 - 중요한 항목들(eisenhower >= 2) 필터링
         // When
         viewModel.updateSelectedFilter(TodoFilterOption.importance);
 
         // Then
         expect(viewModel.selectedFilter, TodoFilterOption.importance);
 
-        // 중요도(importance)가 1인 투두만 필터링되어야 함
+        // eisenhower 값이 2 이상인 투두만 필터링되어야 함 (중요한 항목들)
         expect(viewModel.dDayTodos.length, 1);
         expect(viewModel.dailyTodos.length, 1);
         expect(
-          viewModel.dDayTodos.every((todo) => todo.importance == 1),
+          viewModel.dDayTodos.every((todo) => todo.eisenhower >= 2),
           isTrue,
         );
         expect(
-          viewModel.dailyTodos.every((todo) => todo.importance == 1),
+          viewModel.dailyTodos.every((todo) => todo.eisenhower >= 2),
           isTrue,
         );
       });
