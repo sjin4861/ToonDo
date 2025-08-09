@@ -1,6 +1,7 @@
 import 'package:domain/entities/goal.dart';
 import 'package:domain/entities/status.dart';
 import 'package:domain/entities/todo.dart';
+import 'package:domain/entities/user.dart';
 
 class TestData {
   // 테스트용 목표 생성 (ID만 변경하여 여러 개의 목표 생성 가능)
@@ -56,6 +57,21 @@ class TestData {
       startDate: startDate ?? DateTime.now(),
       endDate: endDate ?? DateTime.now().add(const Duration(days: 1)),
       eisenhower: eisenhower,
+    );
+  }
+
+  // 테스트용 사용자 생성
+  static User createTestUser({
+    required int id,
+    String loginId = 'testuser',
+    String? nickname,
+    DateTime? createdAt,
+  }) {
+    return User(
+      id: id,
+      loginId: loginId,
+      nickname: nickname ?? '테스트사용자',
+      createdAt: createdAt ?? DateTime.now(),
     );
   }
 
