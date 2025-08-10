@@ -30,8 +30,6 @@ class TodoInputViewModel extends ChangeNotifier {
   EisenhowerType _selectedEisenhowerType = EisenhowerType.notImportantNotUrgent;
   EisenhowerType get selectedEisenhowerType => _selectedEisenhowerType;
 
-  int importance = 0;
-  int urgency = 0;
   bool isOnboarding;
 
   String? get startDateError => _startDateError;
@@ -50,18 +48,17 @@ class TodoInputViewModel extends ChangeNotifier {
     required CreateTodoUseCase createTodoUseCase,
     required UpdateTodoUseCase updateTodoUseCase,
     required GetGoalsLocalUseCase getGoalsLocalUseCase,
-  })  : _createTodoUseCase = createTodoUseCase,
-        _updateTodoUseCase = updateTodoUseCase,
-        _getGoalsLocalUseCase = getGoalsLocalUseCase {
+  }) : _createTodoUseCase = createTodoUseCase,
+       _updateTodoUseCase = updateTodoUseCase,
+       _getGoalsLocalUseCase = getGoalsLocalUseCase {
     if (todo != null) {
       titleController.text = todo!.title;
       isTitleNotEmpty = titleController.text.isNotEmpty;
       selectedGoalId = todo!.goalId;
       startDate = todo!.startDate;
       endDate = todo!.endDate;
-      importance = todo!.importance.toInt();
-      urgency = todo!.urgency.toInt();
-      _selectedEisenhowerType = _mapToEisenhowerType(importance, urgency);
+      // eisenhower 필드에서 EisenhowerType으로 매핑
+      _selectedEisenhowerType = _mapEisenhowerToType(todo!.eisenhower);
       isDailyTodo = todo!.startDate == todo!.endDate;
     } else {
       isDailyTodo = !isDDayTodo;
@@ -81,35 +78,39 @@ class TodoInputViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  EisenhowerType _mapToEisenhowerType(int importance, int urgency) {
-    if (importance == 1 && urgency == 1) return EisenhowerType.importantAndUrgent;
-    if (importance == 1 && urgency == 0) return EisenhowerType.importantNotUrgent;
-    if (importance == 0 && urgency == 1) return EisenhowerType.urgentNotImportant;
-    return EisenhowerType.notImportantNotUrgent;
+  // eisenhower 값을 EisenhowerType으로 매핑
+  EisenhowerType _mapEisenhowerToType(int eisenhower) {
+    switch (eisenhower) {
+      case 0:
+        return EisenhowerType.notImportantNotUrgent;
+      case 1:
+        return EisenhowerType.urgentNotImportant;
+      case 2:
+        return EisenhowerType.importantNotUrgent;
+      case 3:
+        return EisenhowerType.importantAndUrgent;
+      default:
+        return EisenhowerType.notImportantNotUrgent;
+    }
   }
 
-  void setEisenhowerType(EisenhowerType type) {
-    _selectedEisenhowerType = type;
-
+  // EisenhowerType을 eisenhower 값으로 매핑
+  int _mapTypeToEisenhower(EisenhowerType type) {
     switch (type) {
       case EisenhowerType.notImportantNotUrgent:
-        importance = 0;
-        urgency = 0;
-        break;
-      case EisenhowerType.importantNotUrgent:
-        importance = 1;
-        urgency = 0;
-        break;
+        return 0;
       case EisenhowerType.urgentNotImportant:
-        importance = 0;
-        urgency = 1;
-        break;
+        return 1;
+      case EisenhowerType.importantNotUrgent:
+        return 2;
       case EisenhowerType.importantAndUrgent:
-        importance = 1;
-        urgency = 1;
-        break;
+        return 3;
     }
+  }
 
+  // EisenhowerType 설정
+  void setEisenhowerType(EisenhowerType type) {
+    _selectedEisenhowerType = type;
     notifyListeners();
   }
 
@@ -152,9 +153,9 @@ class TodoInputViewModel extends ChangeNotifier {
   }
 
   Future<void> selectDate(
-      BuildContext context, {
-        required bool isStartDate,
-      }) async {
+    BuildContext context, {
+    required bool isStartDate,
+  }) async {
     DateTime initialDate = DateTime.now();
     if (isStartDate && startDate != null) {
       initialDate = startDate!;
@@ -191,14 +192,14 @@ class TodoInputViewModel extends ChangeNotifier {
     final normalizedStart = isDailyTodo ? today : (startDate ?? today);
     final normalizedEnd = isDailyTodo ? today : (endDate ?? today);
 
+    // EisenhowerType을 eisenhower 값으로 변환
     return Todo(
       id: todo?.id ?? now.millisecondsSinceEpoch.toString(),
       title: title,
       startDate: normalizedStart,
       endDate: normalizedEnd,
       goalId: selectedGoalId,
-      importance: importance,
-      urgency: urgency,
+      eisenhower: _mapTypeToEisenhower(_selectedEisenhowerType),
     );
   }
 

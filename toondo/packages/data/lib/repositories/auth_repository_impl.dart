@@ -18,27 +18,37 @@ class AuthRepositoryImpl implements AuthRepository {
     this.secureLocalDataSource,
   );
 
-  @override
+    @override
   Future<User> registerUser(String loginId, String password) async {
-    final responseData = await remoteDataSource.registerUser(
+    final accessToken = await remoteDataSource.registerUser(
       loginId,
       password,
     );
-    final token = responseData['token'] as String;
-    await secureLocalDataSource.saveToken(token);
-    final userModel = UserModel.fromJson(responseData);
-    await localDataSource.cacheUser(userModel);
-    return userModel.toEntity();
+    await secureLocalDataSource.saveToken(accessToken);
+    
+    // 토큰만 저장하고 빈 사용자 객체 반환
+    final emptyUser = User(
+      id: 0,
+      loginId: loginId,
+      nickname: null,
+    );
+    await localDataSource.cacheUser(UserModel.fromEntity(emptyUser));
+    return emptyUser;
   }
 
   @override
   Future<User> login(String loginId, String password) async {
-    final responseData = await remoteDataSource.login(loginId, password);
-    final token = responseData['token'] as String;
-    await secureLocalDataSource.saveToken(token);
-    final userModel = UserModel.fromJson(responseData);
-    await localDataSource.cacheUser(userModel);
-    return userModel.toEntity();
+    final accessToken = await remoteDataSource.login(loginId, password);
+    await secureLocalDataSource.saveToken(accessToken);
+    
+    // 토큰만 저장하고 빈 사용자 객체 반환
+    final emptyUser = User(
+      id: 0,
+      loginId: loginId,
+      nickname: null,
+    );
+    await localDataSource.cacheUser(UserModel.fromEntity(emptyUser));
+    return emptyUser;
   }
 
   @override

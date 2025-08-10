@@ -11,26 +11,20 @@ class TestData {
   static const String testNickname = '테스트유저';
   static const String testEmail = 'test@example.com';
 
-  // 테스트용 사용자 객체
+  // 테스트용 사용자 객체 - User 엔티티에서 points 필드가 제거됨
   static final User testUser = User(
     id: 1,
     loginId: testLoginId,
     nickname: testNickname,
-    points: 0,
   );
 
-  /// 테스트용 사용자 생성
+  /// 테스트용 사용자 생성 - User 엔티티에서 points 필드가 제거됨
   static User createTestUser({
     int id = 1,
     String name = '테스트 사용자',
     String email = 'test@example.com',
   }) {
-    return User(
-      id: id,
-      loginId: email,
-      nickname: name,
-      points: 0,
-    );
+    return User(id: id, loginId: email, nickname: name);
   }
 
   /// 테스트용 목표 생성
@@ -62,7 +56,7 @@ class TestData {
     ];
   }
 
-  /// 테스트용 투두 생성
+  /// 테스트용 투두 생성 - importance, urgency 필드를 eisenhower 필드로 변경
   static Todo createTestTodo({
     String id = 'test-todo-id',
     String title = '테스트 투두',
@@ -70,8 +64,7 @@ class TestData {
     DateTime? startDate,
     DateTime? endDate,
     double status = 0.0,
-    int importance = 0,
-    int urgency = 0,
+    int eisenhower = 0,
   }) {
     return Todo(
       id: id,
@@ -80,20 +73,18 @@ class TestData {
       startDate: startDate ?? DateTime(2025, 5, 5),
       endDate: endDate ?? DateTime(2025, 5, 5),
       status: status,
-      importance: importance,
-      urgency: urgency,
+      eisenhower: eisenhower,
     );
   }
 
-  /// 테스트용 데일리 투두 생성
+  /// 테스트용 데일리 투두 생성 - importance, urgency 필드를 eisenhower 필드로 변경
   static Todo createDailyTodo({
     String id = 'daily-todo-id',
     String title = '데일리 투두',
     String? goalId,
     DateTime? date,
     double status = 0.0,
-    int importance = 0,
-    int urgency = 0,
+    int eisenhower = 0,
   }) {
     final todoDate = date ?? DateTime(2025, 5, 5);
     return Todo(
@@ -103,12 +94,11 @@ class TestData {
       startDate: todoDate,
       endDate: todoDate,
       status: status,
-      importance: importance,
-      urgency: urgency,
+      eisenhower: eisenhower,
     );
   }
 
-  /// 테스트용 D-Day 투두 생성
+  /// 테스트용 D-Day 투두 생성 - importance, urgency 필드를 eisenhower 필드로 변경
   static Todo createDDayTodo({
     String id = 'dday-todo-id',
     String title = 'D-Day 투두',
@@ -116,8 +106,7 @@ class TestData {
     DateTime? startDate,
     DateTime? endDate,
     double status = 0.0,
-    int importance = 0,
-    int urgency = 0,
+    int eisenhower = 0,
   }) {
     return Todo(
       id: id,
@@ -126,8 +115,7 @@ class TestData {
       startDate: startDate ?? DateTime(2025, 5, 1),
       endDate: endDate ?? DateTime(2025, 5, 10),
       status: status,
-      importance: importance,
-      urgency: urgency,
+      eisenhower: eisenhower,
     );
   }
 
@@ -135,25 +123,35 @@ class TestData {
   static List<Todo> createTestTodos() {
     return [
       // 데일리 투두
-      createDailyTodo(id: 'daily-1', title: '데일리 투두 1', goalId: 'goal-1', importance: 1),
-      createDailyTodo(id: 'daily-2', title: '데일리 투두 2', goalId: 'goal-2', urgency: 1),
-      
+      createDailyTodo(
+        id: 'daily-1',
+        title: '데일리 투두 1',
+        goalId: 'goal-1',
+        eisenhower: 2, // 중요하지만 긴급하지 않음
+      ),
+      createDailyTodo(
+        id: 'daily-2',
+        title: '데일리 투두 2',
+        goalId: 'goal-2',
+        eisenhower: 1, // 중요하지 않지만 긴급함
+      ),
+
       // D-Day 투두
       createDDayTodo(
-        id: 'dday-1', 
-        title: 'D-Day 투두 1', 
+        id: 'dday-1',
+        title: 'D-Day 투두 1',
         goalId: 'goal-1',
         startDate: DateTime(2025, 5, 3),
         endDate: DateTime(2025, 5, 7),
-        importance: 1, 
-        urgency: 1
+        eisenhower: 3, // 중요하고 긴급함
       ),
       createDDayTodo(
-        id: 'dday-2', 
-        title: 'D-Day 투두 2', 
+        id: 'dday-2',
+        title: 'D-Day 투두 2',
         goalId: 'goal-2',
         startDate: DateTime(2025, 5, 4),
-        endDate: DateTime(2025, 5, 10)
+        endDate: DateTime(2025, 5, 10),
+        eisenhower: 0, // 중요하지 않고 긴급하지 않음
       ),
     ];
   }

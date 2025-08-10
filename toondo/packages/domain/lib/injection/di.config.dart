@@ -23,8 +23,6 @@ import 'package:domain/usecases/auth/login.dart' as _i1068;
 import 'package:domain/usecases/auth/logout.dart' as _i969;
 import 'package:domain/usecases/auth/register.dart' as _i899;
 import 'package:domain/usecases/character/slime_on_gesture.dart' as _i610;
-import 'package:domain/usecases/character/slime_on_massage.dart' as _i642;
-import 'package:domain/usecases/character/toggle_chat_mode.dart' as _i657;
 import 'package:domain/usecases/goal/create_goal_remote.dart' as _i343;
 import 'package:domain/usecases/goal/delete_goal_local.dart' as _i563;
 import 'package:domain/usecases/goal/delete_goal_remote.dart' as _i397;
@@ -58,7 +56,6 @@ import 'package:domain/usecases/todo/update_todo_status.dart' as _i183;
 import 'package:domain/usecases/user/get_user.dart' as _i991;
 import 'package:domain/usecases/user/get_user_nickname.dart' as _i849;
 import 'package:domain/usecases/user/update_nickname.dart' as _i910;
-import 'package:domain/usecases/user/update_points.dart' as _i1049;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -87,6 +84,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i969.LogoutUseCase>(
       () => _i969.LogoutUseCase(gh<_i427.AuthRepository>()),
     );
+    gh.factory<_i236.SetReminderTime>(
+      () => _i236.SetReminderTime(gh<_i267.NotificationSettingRepository>()),
+    );
     gh.factory<_i22.GetNotificationSettingsUseCase>(
       () => _i22.GetNotificationSettingsUseCase(
         gh<_i267.NotificationSettingRepository>(),
@@ -96,9 +96,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i930.SetNotificationSettingsUseCase(
         gh<_i267.NotificationSettingRepository>(),
       ),
-    );
-    gh.factory<_i236.SetReminderTime>(
-      () => _i236.SetReminderTime(gh<_i267.NotificationSettingRepository>()),
     );
     gh.factory<_i129.GetThemeModeUseCase>(
       () => _i129.GetThemeModeUseCase(gh<_i578.ThemeRepository>()),
@@ -175,9 +172,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i739.UpdateGoalProgressUseCase>(
       () => _i739.UpdateGoalProgressUseCase(gh<_i559.GoalRepository>()),
     );
-    gh.factory<_i1049.UpdateUserPointsUseCase>(
-      () => _i1049.UpdateUserPointsUseCase(gh<_i988.UserRepository>()),
-    );
     gh.factory<_i910.UpdateNickNameUseCase>(
       () => _i910.UpdateNickNameUseCase(gh<_i988.UserRepository>()),
     );
@@ -186,12 +180,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i849.GetUserNicknameUseCase>(
       () => _i849.GetUserNicknameUseCase(gh<_i988.UserRepository>()),
-    );
-    gh.factory<_i642.SlimeOnMessageUseCase>(
-      () => _i642.SlimeOnMessageUseCase(gh<_i657.SlimeRepository>()),
-    );
-    gh.factory<_i657.ToggleChatModeUseCase>(
-      () => _i657.ToggleChatModeUseCase(gh<_i657.SlimeRepository>()),
     );
     gh.factory<_i610.SlimeOnGestureUseCase>(
       () => _i610.SlimeOnGestureUseCase(gh<_i657.SlimeRepository>()),

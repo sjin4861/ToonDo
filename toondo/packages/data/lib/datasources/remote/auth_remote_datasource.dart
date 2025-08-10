@@ -36,114 +36,68 @@ class AuthRemoteDataSource{
   ///   print('회원가입 실패: $e');
   /// }
   /// ```
-  Future<Map<String, dynamic>> registerUser(
+  Future<String> registerUser(
     String loginId,
     String password,
   ) async {
-    // TODO: 개발 중에는 목 응답 사용, 실제 서버 연결 시 아래 주석 해제
-    // 임시 목 응답 반환
-    await Future.delayed(Duration(milliseconds: 1000)); // 네트워크 지연 시뮬레이션
-    
-    return {
-      'token': 'mock_jwt_token_${DateTime.now().millisecondsSinceEpoch}',
-      'userId': DateTime.now().millisecondsSinceEpoch % 1000 + 1, // 임시 고유 ID
-      'loginId': loginId,
-      'nickname': null,
-      'points': 0,
-    };
-    
-    /* 실제 서버 연결 코드
-    if (loginId == Constants.testLoginId){
-      return {
-        'token': 'test_token',
-        'userId': -1,
-        'loginId': loginId,
-        'nickname': '',
-        'points': 0,
-      };
-    }
-    
     final url = Uri.parse('$baseUrl/users/signup');
     final response = await httpClient.post(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'loginId': loginId, 'password': password}),
-    );
-
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      final responseData = jsonDecode(response.body) as Map<String, dynamic>;
-      return responseData;
-    } else {
-      throw Exception('회원가입 실패: ${response.body}');
-    }
-    */
-  }
-
-  Future<Map<String, dynamic>> login(
-    String loginId,
-    String password,
-  ) async {
-    // TODO: 개발 중에는 목 응답 사용, 실제 서버 연결 시 아래 주석 해제
-    // 임시 목 응답 반환
-    await Future.delayed(Duration(milliseconds: 1000)); // 네트워크 지연 시뮬레이션
-    
-    return {
-      'token': 'mock_jwt_token_${DateTime.now().millisecondsSinceEpoch}',
-      'userId': DateTime.now().millisecondsSinceEpoch % 1000 + 1, // 임시 고유 ID
-      'loginId': loginId,
-      'nickname': '$loginId의 닉네임',
-      'points': 100,
-    };
-    
-    /* 실제 서버 연결 코드
-    final url = Uri.parse('$baseUrl/users/login');
-    final response = await httpClient.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'loginId': loginId, 'password': password}),
-    );
-
-    if (response.statusCode == 200) {
-      final responseData = jsonDecode(response.body) as Map<String, dynamic>;
-      return responseData;
-    } else {
-      throw Exception('로그인 실패: ${response.body}');
-    }
-    */
-  }
-
-  Future<bool> isLoginIdRegistered(String loginId) async {
-    // TODO: 개발 중에는 목 응답 사용, 실제 서버 연결 시 아래 주석 해제
-    await Future.delayed(Duration(milliseconds: 500)); // 네트워크 지연 시뮬레이션
-    
-    // 개발용 목 데이터: 일부 아이디는 이미 존재하는 것으로 처리
-    const existingLoginIds = [
-      'testuser',
-      'admin',
-      'user123',
-      'demo',
-      'sample',
-      'test123',
-      'example',
-    ];
-    
-    return existingLoginIds.contains(loginId.toLowerCase());
-    
-    /* 실제 서버 연결 코드
-    final url = Uri.parse('$baseUrl/users/check-login-id');
-    final response = await httpClient.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'loginId': loginId}),
+      body: jsonEncode({
+        'loginId': loginId,
+        'password': password,
+      }),
     );
 
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
-      return responseData['exists'];
+      return responseData['accessToken'];
+    } else if (response.statusCode == 400) {
+      final error = jsonDecode(response.body)['error'];
+      throw Exception(error ?? '이미 존재하는 로그인 ID입니다.');
+    } else if (response.statusCode == 500) {
+      throw Exception('서버 내부 오류가 발생했습니다.');
     } else {
-      throw Exception('아이디 확인 실패');
+      throw Exception('회원가입 실패: ${response.body}');
     }
-    */
+  }
+
+  Future<String> login(
+    String loginId,
+    String password,
+  ) async {
+    final url = Uri.parse('$baseUrl/users/login');
+    final response = await httpClient.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'loginId': loginId,
+        'password': password,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
+      return responseData['accessToken'];
+    } else if (response.statusCode == 400) {
+      final error = jsonDecode(response.body)['error'];
+      throw Exception(error ?? '로그인 정보가 올바르지 않습니다.');
+    } else if (response.statusCode == 500) {
+      throw Exception('서버 내부 오류가 발생했습니다.');
+    } else {
+      throw Exception('로그인 실패: ${response.body}');
+    }
+  }
+
+  Future<bool> isLoginIdRegistered(String loginId) async {
+    final url = Uri.parse('$baseUrl/users/check-loginid?loginid=$loginId');
+    final response = await httpClient.get(url);
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data['exists'] == true;
+    }
+    throw Exception('아이디 확인 실패: ${response.body}');
   }
 
   Future<void> deleteAccount() async {

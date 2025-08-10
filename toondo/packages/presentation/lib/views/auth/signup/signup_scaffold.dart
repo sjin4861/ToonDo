@@ -21,9 +21,9 @@ class SignupScaffold extends StatelessWidget {
         });
 
         switch (viewModel.currentStep) {
-          case 1:
+          case SignupStep.loginId:
             return const SignupStep1();
-        // case 2:
+        // case SignupStep.password:
         //   return SignupStep2();
           default:
             return const SignupStep1(); // fallback

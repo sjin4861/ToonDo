@@ -1,5 +1,4 @@
 import 'package:data/models/goal_model.dart';
-import 'package:data/models/slime_character_model.dart';
 import 'package:data/models/todo_model.dart';
 import 'package:data/models/user_model.dart';
 import 'package:data/models/goal_status_enum.dart';
@@ -17,10 +16,6 @@ abstract class RegisterModule {
 
   @preResolve
   Future<Box<UserModel>> get userBox => Hive.openBox<UserModel>('users');
-   /* ───────── 새 캐릭터 박스 ───────── */
-  @preResolve
-  Future<Box<SlimeCharacterModel>> get characterBox =>
-      Hive.openBox<SlimeCharacterModel>('character');     // ⭐ 추가
       
   @preResolve
   @Named('todoBox')

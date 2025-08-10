@@ -100,7 +100,7 @@ class AnimationLocalDataSource {
     return _idle;
   }
 
-  /* GPT 응답 기다릴 때 */
+  /* 타이핑 애니메이션 */
   Future<void> playTyping() => _play('s', oneShot: false);  // blink(loop)
 
 }

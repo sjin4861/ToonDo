@@ -5,14 +5,15 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i6;
 
-import 'package:data/datasources/local/auth_local_datasource.dart' as _i7;
-import 'package:data/datasources/local/secure_local_datasource.dart' as _i9;
+import 'package:data/datasources/local/auth_local_datasource.dart' as _i8;
+import 'package:data/datasources/local/secure_local_datasource.dart' as _i10;
 import 'package:data/datasources/remote/auth_remote_datasource.dart' as _i5;
-import 'package:data/models/user_model.dart' as _i8;
+import 'package:data/models/user_model.dart' as _i9;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i4;
 import 'package:hive/hive.dart' as _i3;
 import 'package:http/http.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i7;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -78,7 +79,7 @@ class MockAuthRemoteDataSource extends _i1.Mock
       ) as _i2.Client);
 
   @override
-  _i6.Future<Map<String, dynamic>> registerUser(
+  _i6.Future<String> registerUser(
     String? loginId,
     String? password,
   ) =>
@@ -90,12 +91,20 @@ class MockAuthRemoteDataSource extends _i1.Mock
             password,
           ],
         ),
-        returnValue:
-            _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
-      ) as _i6.Future<Map<String, dynamic>>);
+        returnValue: _i6.Future<String>.value(_i7.dummyValue<String>(
+          this,
+          Invocation.method(
+            #registerUser,
+            [
+              loginId,
+              password,
+            ],
+          ),
+        )),
+      ) as _i6.Future<String>);
 
   @override
-  _i6.Future<Map<String, dynamic>> login(
+  _i6.Future<String> login(
     String? loginId,
     String? password,
   ) =>
@@ -107,9 +116,17 @@ class MockAuthRemoteDataSource extends _i1.Mock
             password,
           ],
         ),
-        returnValue:
-            _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
-      ) as _i6.Future<Map<String, dynamic>>);
+        returnValue: _i6.Future<String>.value(_i7.dummyValue<String>(
+          this,
+          Invocation.method(
+            #login,
+            [
+              loginId,
+              password,
+            ],
+          ),
+        )),
+      ) as _i6.Future<String>);
 
   @override
   _i6.Future<bool> isLoginIdRegistered(String? loginId) => (super.noSuchMethod(
@@ -135,22 +152,22 @@ class MockAuthRemoteDataSource extends _i1.Mock
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockAuthLocalDataSource extends _i1.Mock
-    implements _i7.AuthLocalDataSource {
+    implements _i8.AuthLocalDataSource {
   MockAuthLocalDataSource() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Box<_i8.UserModel> get userBox => (super.noSuchMethod(
+  _i3.Box<_i9.UserModel> get userBox => (super.noSuchMethod(
         Invocation.getter(#userBox),
-        returnValue: _FakeBox_1<_i8.UserModel>(
+        returnValue: _FakeBox_1<_i9.UserModel>(
           this,
           Invocation.getter(#userBox),
         ),
-      ) as _i3.Box<_i8.UserModel>);
+      ) as _i3.Box<_i9.UserModel>);
 
   @override
-  _i6.Future<void> cacheUser(_i8.UserModel? user) => (super.noSuchMethod(
+  _i6.Future<void> cacheUser(_i9.UserModel? user) => (super.noSuchMethod(
         Invocation.method(
           #cacheUser,
           [user],
@@ -174,7 +191,7 @@ class MockAuthLocalDataSource extends _i1.Mock
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockSecureLocalDataSource extends _i1.Mock
-    implements _i9.SecureLocalDataSource {
+    implements _i10.SecureLocalDataSource {
   MockSecureLocalDataSource() {
     _i1.throwOnMissingStub(this);
   }

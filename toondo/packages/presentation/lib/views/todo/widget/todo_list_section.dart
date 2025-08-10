@@ -95,7 +95,8 @@ class TodoListSection extends StatelessWidget {
                       orElse: () => Goal.empty(),
                     );
 
-                    final isCompleted = todo.status >= 100;
+                    // status 값이 0.0(진행)/1.0(완료) 기준으로 변경됨
+                    final isCompleted = todo.status >= 1.0;
                     final iconPath = matchedGoal!.icon;
                     final levelColor = getBorderColor(todo);
 

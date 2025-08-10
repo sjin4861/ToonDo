@@ -33,7 +33,7 @@ class SignupScreen extends StatelessWidget {
           }
 
           switch (viewModel.currentStep) {
-            case 1:
+            case SignupStep.loginId:
               return const SignupStep1();
             default:
               return const SignupStep1();

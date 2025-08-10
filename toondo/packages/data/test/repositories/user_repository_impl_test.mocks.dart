@@ -13,6 +13,7 @@ import 'package:domain/repositories/auth_repository.dart' as _i5;
 import 'package:hive/hive.dart' as _i2;
 import 'package:http/http.dart' as _i4;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i10;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -131,16 +132,6 @@ class MockUserLocalDatasource extends _i1.Mock
       ) as _i8.Future<_i3.User>);
 
   @override
-  _i8.Future<void> updateUserPoints(int? newPoint) => (super.noSuchMethod(
-        Invocation.method(
-          #updateUserPoints,
-          [newPoint],
-        ),
-        returnValue: _i8.Future<void>.value(),
-        returnValueForMissingStub: _i8.Future<void>.value(),
-      ) as _i8.Future<void>);
-
-  @override
   _i8.Future<void> setNickName(String? newNickName) => (super.noSuchMethod(
         Invocation.method(
           #setNickName,
@@ -198,20 +189,44 @@ class MockUserRemoteDatasource extends _i1.Mock
       ) as _i5.AuthRepository);
 
   @override
-  _i8.Future<_i3.User> changeNickName(String? newNickName) =>
-      (super.noSuchMethod(
+  _i8.Future<_i3.User> getUserMe() => (super.noSuchMethod(
         Invocation.method(
-          #changeNickName,
-          [newNickName],
+          #getUserMe,
+          [],
         ),
         returnValue: _i8.Future<_i3.User>.value(_FakeUser_1(
           this,
           Invocation.method(
-            #changeNickName,
-            [newNickName],
+            #getUserMe,
+            [],
           ),
         )),
       ) as _i8.Future<_i3.User>);
+
+  @override
+  _i8.Future<void> updatePassword(String? newPassword) => (super.noSuchMethod(
+        Invocation.method(
+          #updatePassword,
+          [newPassword],
+        ),
+        returnValue: _i8.Future<void>.value(),
+        returnValueForMissingStub: _i8.Future<void>.value(),
+      ) as _i8.Future<void>);
+
+  @override
+  _i8.Future<String> changeNickName(String? nickname) => (super.noSuchMethod(
+        Invocation.method(
+          #changeNickName,
+          [nickname],
+        ),
+        returnValue: _i8.Future<String>.value(_i10.dummyValue<String>(
+          this,
+          Invocation.method(
+            #changeNickName,
+            [nickname],
+          ),
+        )),
+      ) as _i8.Future<String>);
 
   @override
   _i8.Future<void> deleteAccount() => (super.noSuchMethod(
@@ -222,19 +237,4 @@ class MockUserRemoteDatasource extends _i1.Mock
         returnValue: _i8.Future<void>.value(),
         returnValueForMissingStub: _i8.Future<void>.value(),
       ) as _i8.Future<void>);
-
-  @override
-  _i8.Future<_i3.User> updateUserPoints(int? delta) => (super.noSuchMethod(
-        Invocation.method(
-          #updateUserPoints,
-          [delta],
-        ),
-        returnValue: _i8.Future<_i3.User>.value(_FakeUser_1(
-          this,
-          Invocation.method(
-            #updateUserPoints,
-            [delta],
-          ),
-        )),
-      ) as _i8.Future<_i3.User>);
 }

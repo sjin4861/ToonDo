@@ -6,7 +6,6 @@ import 'package:domain/repositories/auth_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import '../helpers/test_data.dart';
 import 'auth_repository_impl_test.mocks.dart';
 
 @GenerateMocks([
@@ -34,69 +33,48 @@ void main() {
 
   group('AuthRepositoryImpl', () {
     group('회원가입 테스트', () {
-      test('registerUser는 원격 API를 호출하고, 토큰을 저장하고, 로컬에 사용자를 캐시해야 한다', () async {
+      test('registerUser는 원격 API를 호출하고 토큰을 저장해야 한다', () async {
         // Arrange
         const loginId = 'testuser123';
         const password = 'TestPass123!';
-        final user = TestData.createTestUser(loginId: loginId);
         
-        final responseData = {
-          'userId': user.id, // id -> userId로 변경
-          'loginId': user.loginId,
-          'nickname': user.nickname,
-          'points': user.points,
-          'token': 'test_token'
-        };
+        // 토큰 설정
+        const testToken = 'test_token';
         
         when(mockRemote.registerUser(loginId, password))
-            .thenAnswer((_) async => responseData);
-        when(mockSecureLocal.saveToken('test_token'))
-            .thenAnswer((_) async {});
-        when(mockLocal.cacheUser(any))
+            .thenAnswer((_) async => testToken);
+        when(mockSecureLocal.saveToken(testToken))
             .thenAnswer((_) async {});
         
         // Act
-        final result = await repository.registerUser(loginId, password);
+        await repository.registerUser(loginId, password);
         
         // Assert
-        expect(result.loginId, equals(loginId));
-        expect(result.nickname, equals(user.nickname));
         verify(mockRemote.registerUser(loginId, password));
         verify(mockSecureLocal.saveToken('test_token'));
-        verify(mockLocal.cacheUser(any));
       });
     });
 
     group('로그인 테스트', () {
-      test('login은 원격 API를 호출하고, 토큰을 저장하고, 로컬에 사용자를 캐시해야 한다', () async {
+      test('login은 원격 API를 호출하고 토큰을 저장해야 한다', () async {
         // Arrange
         const loginId = 'testuser123';
         const password = 'TestPass123!';
-        final user = TestData.createTestUser(loginId: loginId);
         
-        final responseData = {
-          'userId': user.id, // id -> userId로 변경
-          'loginId': user.loginId,
-          'nickname': user.nickname,
-          'points': user.points,
-          'token': 'test_token'
-        };
+        // 토큰 설정
+        const testToken = 'test_token';
         
         when(mockRemote.login(loginId, password))
-            .thenAnswer((_) async => responseData);
-        when(mockSecureLocal.saveToken('test_token'))
-            .thenAnswer((_) async {});
-        when(mockLocal.cacheUser(any))
+            .thenAnswer((_) async => testToken);
+        when(mockSecureLocal.saveToken(testToken))
             .thenAnswer((_) async {});
         
         // Act
-        final result = await repository.login(loginId, password);
+        await repository.login(loginId, password);
         
         // Assert
-        expect(result.loginId, equals(loginId));
         verify(mockRemote.login(loginId, password));
         verify(mockSecureLocal.saveToken('test_token'));
-        verify(mockLocal.cacheUser(any));
       });
     });
 

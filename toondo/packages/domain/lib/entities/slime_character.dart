@@ -7,14 +7,14 @@ class SlimeCharacter {
 
   const SlimeCharacter({
     required this.name,
-    this.conversationHistory = const [],
+    required this.conversationHistory,
     required this.rolePrompt,
-    this.props = const [],
+    required this.props,
     required this.animationState,
   });
 
   @override
   String toString() {
-    return 'SlimeCharacter(name: $name, conversationHistory: $conversationHistory, rolePrompt: $rolePrompt, props: $props, animationState: $animationState)';
+    return 'SlimeCharacter(name: $name, animationState: $animationState)';
   }
 }
