@@ -538,10 +538,6 @@ class $AssetsIconsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
-  /// File path: assets/images/img_background_flowers.svg
-  SvgGenImage get imgBackgroundFlowers =>
-      const SvgGenImage('assets/images/img_background_flowers.svg');
-
   /// File path: assets/images/img_background_grass.svg
   SvgGenImage get imgBackgroundGrass =>
       const SvgGenImage('assets/images/img_background_grass.svg');
@@ -627,7 +623,6 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<dynamic> get values => [
-        imgBackgroundFlowers,
         imgBackgroundGrass,
         imgCharacter,
         imgCharacterHappy,
