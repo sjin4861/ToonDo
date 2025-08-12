@@ -19,11 +19,23 @@ class GoalRemoteDataSource {
   // GET /api/v1/goals?status=1 status=1: 완료 + 포기
   Future<List<Goal>> readGoals() async {
     // TODO: 임시로 X-Custom-User-Id 헤더 사용 (auth 시스템이 준비되면 JWT로 변경)
+    // final token = await authRepository.getToken();
+    // if (token == null) {
+    //   throw Exception('JWT 토큰이 없습니다.');
+    // }
+
     final url = Uri.parse('${Constants.baseUrl}/api/v1/goals');
     print('📡 요청 URL: $url');
 
+    // 토큰 형식 확인 및 수정 (Bearer 프리픽스가 중복되지 않도록)
+    // String authToken = token;
+    // if (!token.startsWith('Bearer ') && !token.startsWith('bearer ')) {
+    //   authToken = 'Bearer $token';
+    // }
+
     final headers = {
       'X-Custom-User-Id': '15', // 임시 사용자 ID
+      // 'Authorization': authToken, // JWT 사용 시 활성화
       'Content-Type': 'application/json; charset=UTF-8',
     };
 
@@ -67,10 +79,23 @@ class GoalRemoteDataSource {
 
   Future<Goal> createGoal(Goal goal) async {
     // TODO: 임시로 X-Custom-User-Id 헤더 사용 (auth 시스템이 준비되면 JWT로 변경)
+    // final token = await authRepository.getToken();
+    // if (token == null) {
+    //   throw Exception('JWT 토큰이 없습니다.');
+    // }
+    // print('🪪 JWT 토큰: $token');
+
     final url = Uri.parse('${Constants.baseUrl}/api/v1/goals');
+
+    // 토큰 형식 확인 및 수정 (Bearer 프리픽스가 중복되지 않도록)
+    // String authToken = token;
+    // if (!token.startsWith('Bearer ') && !token.startsWith('bearer ')) {
+    //   authToken = 'Bearer $token';
+    // }
 
     final headers = {
       'X-Custom-User-Id': '15', // 임시 사용자 ID
+      // 'Authorization': authToken, // JWT 사용 시 활성화
       'Content-Type': 'application/json; charset=UTF-8',
     };
 
@@ -129,11 +154,23 @@ class GoalRemoteDataSource {
 
   Future<void> updateGoal(Goal goal) async {
     // TODO: 임시로 X-Custom-User-Id 헤더 사용 (auth 시스템이 준비되면 JWT로 변경)
+    // final token = await authRepository.getToken();
+    // if (token == null) {
+    //   throw Exception('JWT 토큰이 없습니다.');
+    // }
+
     final url = Uri.parse('${Constants.baseUrl}/api/v1/goals/${goal.id}');
     print('🔄 목표 업데이트 요청 URL: $url');
 
+    // 토큰 형식 확인 및 수정 (Bearer 프리픽스가 중복되지 않도록)
+    // String authToken = token;
+    // if (!token.startsWith('Bearer ') && !token.startsWith('bearer ')) {
+    //   authToken = 'Bearer $token';
+    // }
+
     final headers = {
       'X-Custom-User-Id': '15', // 임시 사용자 ID
+      // 'Authorization': authToken, // JWT 사용 시 활성화
       'Content-Type': 'application/json; charset=UTF-8',
     };
 
@@ -189,11 +226,23 @@ class GoalRemoteDataSource {
   // TODO : URL: api/v1/goals/{goalId}인데 Delete인지 확인 필요
   Future<void> deleteGoal(String goalId) async {
     // TODO: 임시로 X-Custom-User-Id 헤더 사용 (auth 시스템이 준비되면 JWT로 변경)
+    // final token = await authRepository.getToken();
+    // if (token == null) {
+    //   throw Exception('JWT 토큰이 없습니다.');
+    // }
+
     final url = Uri.parse('${Constants.baseUrl}/api/v1/goals/$goalId');
     print('🗑️ 목표 삭제 요청 URL: $url');
 
+    // 토큰 형식 확인 및 수정
+    // String authToken = token;
+    // if (!token.startsWith('Bearer ') && !token.startsWith('bearer ')) {
+    //   authToken = 'Bearer $token';
+    // }
+
     final headers = {
       'X-Custom-User-Id': '15', // 임시 사용자 ID
+      // 'Authorization': authToken, // JWT 사용 시 활성화
       'Content-Type': 'application/json; charset=UTF-8',
     };
 
@@ -241,13 +290,25 @@ class GoalRemoteDataSource {
   // TODO3 : 관련해서 status 그냥 boolean으로 변경해도 될 것 같은데 검토 필요
   Future<bool> updateGoalStatus(Goal goal, Status newStatus) async {
     // TODO: 임시로 X-Custom-User-Id 헤더 사용 (auth 시스템이 준비되면 JWT로 변경)
+    // final token = await authRepository.getToken();
+    // if (token == null) {
+    //   throw Exception('JWT 토큰이 없습니다.');
+    // }
+
     final url = Uri.parse(
       '${Constants.baseUrl}/api/v1/goals/${goal.id}/status',
     );
     print('🔄 목표 상태 업데이트 요청 URL: $url');
 
+    // 토큰 형식 확인 및 수정 (Bearer 프리픽스가 중복되지 않도록)
+    // String authToken = token;
+    // if (!token.startsWith('Bearer ') && !token.startsWith('bearer ')) {
+    //   authToken = 'Bearer $token';
+    // }
+
     final headers = {
       'X-Custom-User-Id': '15', // 임시 사용자 ID
+      // 'Authorization': authToken, // JWT 사용 시 활성화
       'Content-Type': 'application/json; charset=UTF-8',
     };
 
@@ -306,6 +367,10 @@ class GoalRemoteDataSource {
   // TODO : Method PUT -> PATCH로 변경 필요
   Future<bool> updateGoalProgress(Goal goal, double newProgress) async {
     // TODO: 임시로 X-Custom-User-Id 헤더 사용 (auth 시스템이 준비되면 JWT로 변경)
+    // final token = await authRepository.getToken();
+    // if (token == null) {
+    //   throw Exception('JWT 토큰이 없습니다.');
+    // }
 
     // progress 값 검증 (선택 사항, 서버에서 검증하지만 클라이언트에서도 한번 더)
     if (newProgress < 0 || newProgress > 100) {
@@ -317,8 +382,15 @@ class GoalRemoteDataSource {
     );
     print('📊 목표 진행률 업데이트 요청 URL: $url');
 
+    // 토큰 형식 확인 및 수정 (Bearer 프리픽스가 중복되지 않도록)
+    // String authToken = token;
+    // if (!token.startsWith('Bearer ') && !token.startsWith('bearer ')) {
+    //   authToken = 'Bearer $token';
+    // }
+
     final headers = {
       'X-Custom-User-Id': '15', // 임시 사용자 ID
+      // 'Authorization': authToken, // JWT 사용 시 활성화
       'Content-Type': 'application/json; charset=UTF-8',
     };
 
