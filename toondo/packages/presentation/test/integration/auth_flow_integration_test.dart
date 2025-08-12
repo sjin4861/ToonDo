@@ -54,7 +54,7 @@ void main() {
       // 2단계: 비밀번호 입력 및 회원가입 완료
       signupViewModel.setPassword(TestData.testPassword);
       signupViewModel.setConfirmPassword(TestData.testPassword);
-      
+
       try {
         await signupViewModel.validatePassword();
       } catch (e) {
@@ -131,7 +131,10 @@ void main() {
       expect(loginIdValid, false);
       expect(signupViewModel.loginIdError, '이미 가입된 아이디입니다. 로그인을 시도해보세요.');
       expect(signupViewModel.isSignupComplete, false);
-      expect(signupViewModel.currentStep, SignupStep.loginId); // 첫 단계에 머물러 있어야 함
+      expect(
+        signupViewModel.currentStep,
+        SignupStep.loginId,
+      ); // 첫 단계에 머물러 있어야 함
 
       // UseCase 호출 검증
       verify(

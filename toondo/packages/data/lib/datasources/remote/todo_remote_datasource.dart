@@ -19,15 +19,7 @@ class TodoRemoteDataSource {
     int? goalId,
     required String eisenhower,
   }) async {
-    final token = await authRepository.getToken();
-    if (token == null) {
-      throw Exception('JWT 토큰이 없습니다. 다시 로그인해주세요.');
-    }
-
-    // 토큰에 이미 Bearer 접두사가 있는지 확인
-    final String authHeader =
-        token.startsWith('Bearer ') ? token : 'Bearer $token';
-
+    // TODO: 임시로 X-Custom-User-Id 헤더 사용 (auth 시스템이 준비되면 JWT로 변경)
     final requestBody = {
       "title": title,
       "startDate": startDate.toIso8601String().split('T')[0],
@@ -41,7 +33,7 @@ class TodoRemoteDataSource {
       final response = await client.post(
         url,
         headers: {
-          'Authorization': authHeader,
+          'X-Custom-User-Id': '15', // 임시 사용자 ID
           'Content-Type': 'application/json',
         },
         body: jsonEncode(requestBody),
@@ -71,15 +63,7 @@ class TodoRemoteDataSource {
   }
 
   Future<Map<String, List<Todo>>> fetchTodosByDate(DateTime date) async {
-    final token = await authRepository.getToken();
-    if (token == null) {
-      throw Exception('JWT 토큰이 없습니다. 다시 로그인해주세요.');
-    }
-
-    // 토큰에 이미 Bearer 접두사가 있는지 확인
-    final String authHeader =
-        token.startsWith('Bearer ') ? token : 'Bearer $token';
-
+    // TODO: 임시로 X-Custom-User-Id 헤더 사용 (auth 시스템이 준비되면 JWT로 변경)
     final dateString = date.toIso8601String().split('T')[0]; // YYYY-MM-DD 형식
     final url = Uri.parse(
       '${Constants.baseUrl}/api/v1/by-date?date=$dateString',
@@ -88,7 +72,7 @@ class TodoRemoteDataSource {
     try {
       final response = await client.get(
         url,
-        headers: {'Authorization': authHeader},
+        headers: {'X-Custom-User-Id': '15'}, // 임시 사용자 ID
       );
 
       if (response.statusCode == 200) {
@@ -154,21 +138,13 @@ class TodoRemoteDataSource {
   }
 
   Future<List<Todo>> fetchTodosByGoal(int goalId) async {
-    final token = await authRepository.getToken();
-    if (token == null) {
-      throw Exception('JWT 토큰이 없습니다. 다시 로그인해주세요.');
-    }
-
-    // 토큰에 이미 Bearer 접두사가 있는지 확인
-    final String authHeader =
-        token.startsWith('Bearer ') ? token : 'Bearer $token';
-
+    // TODO: 임시로 X-Custom-User-Id 헤더 사용 (auth 시스템이 준비되면 JWT로 변경)
     final url = Uri.parse('${Constants.baseUrl}/api/v1/todos/by-goal/$goalId');
 
     try {
       final response = await client.get(
         url,
-        headers: {'Authorization': authHeader},
+        headers: {'X-Custom-User-Id': '15'}, // 임시 사용자 ID
       );
 
       if (response.statusCode == 200) {
@@ -212,21 +188,13 @@ class TodoRemoteDataSource {
   }
 
   Future<Todo> fetchTodoById(int todoId) async {
-    final token = await authRepository.getToken();
-    if (token == null) {
-      throw Exception('JWT 토큰이 없습니다. 다시 로그인해주세요.');
-    }
-
-    // 토큰에 이미 Bearer 접두사가 있는지 확인
-    final String authHeader =
-        token.startsWith('Bearer ') ? token : 'Bearer $token';
-
+    // TODO: 임시로 X-Custom-User-Id 헤더 사용 (auth 시스템이 준비되면 JWT로 변경)
     final url = Uri.parse('${Constants.baseUrl}/api/v1/todos/$todoId');
 
     try {
       final response = await client.get(
         url,
-        headers: {'Authorization': authHeader},
+        headers: {'X-Custom-User-Id': '15'}, // 임시 사용자 ID
       );
 
       if (response.statusCode == 200) {
@@ -271,15 +239,7 @@ class TodoRemoteDataSource {
     int? goalId,
     required String eisenhower,
   }) async {
-    final token = await authRepository.getToken();
-    if (token == null) {
-      throw Exception('JWT 토큰이 없습니다. 다시 로그인해주세요.');
-    }
-
-    // 토큰에 이미 Bearer 접두사가 있는지 확인
-    final String authHeader =
-        token.startsWith('Bearer ') ? token : 'Bearer $token';
-
+    // TODO: 임시로 X-Custom-User-Id 헤더 사용 (auth 시스템이 준비되면 JWT로 변경)
     final requestBody = {
       "title": title,
       "startDate": startDate.toIso8601String().split('T')[0],
@@ -293,7 +253,7 @@ class TodoRemoteDataSource {
       final response = await client.put(
         url,
         headers: {
-          'Authorization': authHeader,
+          'X-Custom-User-Id': '15', // 임시 사용자 ID
           'Content-Type': 'application/json',
         },
         body: jsonEncode(requestBody),
@@ -323,21 +283,13 @@ class TodoRemoteDataSource {
   }
 
   Future<Map<String, dynamic>> toggleTodoStatus(int todoId) async {
-    final token = await authRepository.getToken();
-    if (token == null) {
-      throw Exception('JWT 토큰이 없습니다. 다시 로그인해주세요.');
-    }
-
-    // 토큰에 이미 Bearer 접두사가 있는지 확인
-    final String authHeader =
-        token.startsWith('Bearer ') ? token : 'Bearer $token';
-
+    // TODO: 임시로 X-Custom-User-Id 헤더 사용 (auth 시스템이 준비되면 JWT로 변경)
     final url = Uri.parse('${Constants.baseUrl}/api/v1/todos/$todoId/status');
 
     try {
       final response = await client.patch(
         url,
-        headers: {'Authorization': authHeader},
+        headers: {'X-Custom-User-Id': '15'}, // 임시 사용자 ID
       );
 
       if (response.statusCode == 200) {
@@ -364,21 +316,13 @@ class TodoRemoteDataSource {
   }
 
   Future<bool> deleteTodo(int todoId) async {
-    final token = await authRepository.getToken();
-    if (token == null) {
-      throw Exception('JWT 토큰이 없습니다. 다시 로그인해주세요.');
-    }
-
-    // 토큰에 이미 Bearer 접두사가 있는지 확인
-    final String authHeader =
-        token.startsWith('Bearer ') ? token : 'Bearer $token';
-
+    // TODO: 임시로 X-Custom-User-Id 헤더 사용 (auth 시스템이 준비되면 JWT로 변경)
     final url = Uri.parse('${Constants.baseUrl}/api/v1/todos/$todoId');
 
     try {
       final response = await client.delete(
         url,
-        headers: {'Authorization': authHeader},
+        headers: {'X-Custom-User-Id': '15'}, // 임시 사용자 ID
       );
 
       if (response.statusCode == 200) {
