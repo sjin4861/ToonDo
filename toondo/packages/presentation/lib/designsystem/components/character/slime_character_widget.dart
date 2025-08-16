@@ -43,7 +43,7 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> {
 
   Future<void> _debugPrintAnimationNames() async {
     await RiveFile.initialize();
-    final data = await rootBundle.load(Assets.rives.gifSlime.path);
+    final data = await rootBundle.load(Assets.rives.gifYellowSlime.path);
     final file = RiveFile.import(data);
     final artboard = file.mainArtboard;
     for (final a in artboard.animations) {
@@ -95,7 +95,7 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> {
             child: SizedBox(
               width: 195, // 30% 증가 (150 → 195)
               height: 195, // 30% 증가 (150 → 195)
-              child: Assets.rives.gifSlime.rive(
+              child: Assets.rives.gifYellowSlime.rive(
                 fit: BoxFit.contain,
                 controllers: controllers,
                 alignment: Alignment.center,

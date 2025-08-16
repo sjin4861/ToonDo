@@ -41,7 +41,7 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> with Single
   
   Future<void> _debugPrintAnimationNames() async {
     await RiveFile.initialize();          // ★ 추가
-    final data = await rootBundle.load(Assets.rives.gifSlime.path); // ② 문자열 path 그대로
+    final data = await rootBundle.load(Assets.rives.gifYellowSlime.path); // ② 문자열 path 그대로
     final file = RiveFile.import(data);                             // ③ 바로 파싱
     final artboard = file.mainArtboard;
     for (final a in artboard.animations) {
