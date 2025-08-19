@@ -262,4 +262,14 @@ class AppTypography {
     fontWeight: FontWeight.w400,
     height: 1.5,
   );
+
+  static const TextStyle speechBubbleRegular = TextStyle(
+    fontFamily: FontFamily.nanumOgBiCe,
+    fontWeight: FontWeight.w400,
+    fontStyle: FontStyle.normal,
+    fontSize: 12,
+    height: 1.0,
+    letterSpacing: 0.12,
+    color: Color(0xFF605956),
+  );
 }
