@@ -20,11 +20,11 @@ class SyncBottomSheet extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _buildTitle(),
-          const SizedBox(height: AppSpacing.spacing32),
+          SizedBox(height: AppSpacing.spacing32),
           _buildLoadButton(context, viewModel),
-          const SizedBox(height: AppSpacing.spacing16),
+          SizedBox(height: AppSpacing.spacing16),
           _buildSaveButton(context, viewModel),
-          const SizedBox(height: AppSpacing.spacing44),
+          SizedBox(height: AppSpacing.spacing44),
         ],
       ),
     );
@@ -52,7 +52,7 @@ class SyncBottomSheet extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.green500,
           elevation: 0,
-          padding: const EdgeInsets.symmetric(
+          padding: EdgeInsets.symmetric(
             horizontal: AppSpacing.spacing40,
             vertical: AppSpacing.spacing12,
           ),
@@ -79,7 +79,7 @@ class SyncBottomSheet extends StatelessWidget {
           Navigator.pop(context);
         },
         style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(
+          padding: EdgeInsets.symmetric(
             horizontal: AppSpacing.spacing40,
             vertical: AppSpacing.spacing12,
           ),

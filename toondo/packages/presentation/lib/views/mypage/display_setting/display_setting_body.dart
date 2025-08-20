@@ -22,7 +22,7 @@ class DisplaySettingBody extends StatelessWidget {
 
   Widget _buildDisplaySettingTitle() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.spacing14),
+      padding: EdgeInsets.symmetric(vertical: AppSpacing.spacing14),
       child: Text(
         '다크모드 설정',
         style: AppTypography.body1SemiBold.copyWith(

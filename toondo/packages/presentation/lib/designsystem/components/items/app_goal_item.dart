@@ -92,7 +92,7 @@ class _AppGoalItemState extends State<AppGoalItem> {
                     color: AppColors.green500,
                     borderRadius: radius,
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing12),
+                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacing12),
                   child: Center(
                     child: GestureDetector(
                       onTap: _handleDelete,
@@ -113,7 +113,7 @@ class _AppGoalItemState extends State<AppGoalItem> {
                                 color: AppColors.status0,
                               ),
                             ),
-                            const SizedBox(width: AppSpacing.spacing24),
+                            SizedBox(width: AppSpacing.spacing24),
                           ],
                         ),
                       ),
@@ -162,9 +162,9 @@ class _AppGoalItemState extends State<AppGoalItem> {
                         child: Row(
                           children: [
                             _buildIcon(),
-                            const SizedBox(width: AppSpacing.spacing12),
+                            SizedBox(width: AppSpacing.spacing12),
                             Expanded(child: _buildTitleWithOptionalSubtitle()),
-                            const SizedBox(width: AppSpacing.spacing12),
+                            SizedBox(width: AppSpacing.spacing12),
                             _buildCheckbox(),
                           ],
                         ),
@@ -196,7 +196,7 @@ class _AppGoalItemState extends State<AppGoalItem> {
           width: AppDimensions.goalItemBorderWidth,
         ),
       ),
-      padding: const EdgeInsets.all(AppDimensions.goalIconInnerPadding),
+      padding: EdgeInsets.all(AppDimensions.goalIconInnerPadding),
       child: SvgPicture.asset(
         widget.iconPath ?? Assets.icons.icHelpCircle.path,
         width: AppDimensions.goalIconSize,
@@ -237,7 +237,7 @@ class _AppGoalItemState extends State<AppGoalItem> {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        const SizedBox(height: AppSpacing.spacing4),
+        SizedBox(height: AppSpacing.spacing4),
         Text(
           widget.subTitle!,
           style: AppTypography.caption3Regular.copyWith(
@@ -261,7 +261,7 @@ class _AppGoalItemState extends State<AppGoalItem> {
         onChanged: (value) {
           if (value != null) widget.onCheckedChanged?.call(value);
         },
-        side: const BorderSide(
+        side: BorderSide(
           color: AppColors.borderLight,
           width: AppDimensions.checkboxBorderWidth,
         ),

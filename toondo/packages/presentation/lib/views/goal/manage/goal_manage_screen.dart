@@ -21,7 +21,7 @@ class GoalManageScreen extends StatelessWidget {
         body: Align(alignment: Alignment.topCenter, child: GoalManageBody()),
         bottomWidget: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(
+            padding: EdgeInsets.symmetric(
               horizontal: AppSpacing.spacing24,
               vertical: AppSpacing.spacing8,
             ),

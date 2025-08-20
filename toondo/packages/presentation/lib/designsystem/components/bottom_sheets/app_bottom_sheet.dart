@@ -22,18 +22,18 @@ class AppBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final content = [
-      const SizedBox(height: AppSpacing.spacing22),
+      SizedBox(height: AppSpacing.spacing22),
       const BottomSheetDragIndicator(),
-      const SizedBox(height: AppSpacing.spacing30),
+      SizedBox(height: AppSpacing.spacing30),
       body,
-      const SizedBox(height: AppSpacing.spacing44),
+      SizedBox(height: AppSpacing.spacing44),
     ];
 
     // ✨ fixedHeight가 설정된 경우: hug content 모드
     if (fixedHeight != null) {
       return Container(
         height: fixedHeight,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: Color(0xFFFDFDFD),
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(AppDimensions.bottomSheetTopRadius),
@@ -53,7 +53,7 @@ class AppBottomSheet extends StatelessWidget {
       expand: false,
       builder: (context, scrollController) {
         return Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: Color(0xFFFDFDFD),
             borderRadius: BorderRadius.vertical(
               top: Radius.circular(AppDimensions.bottomSheetTopRadius),

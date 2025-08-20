@@ -30,7 +30,7 @@ class AppEisenhowerSelector extends StatelessWidget {
             width: AppDimensions.eisenhowerButtonWidth,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              padding: const EdgeInsets.all(AppSpacing.spacing8),
+              padding: EdgeInsets.all(AppSpacing.spacing8),
               decoration: BoxDecoration(
                 color: isSelected ? option.bgColor : Colors.transparent,
                 borderRadius: BorderRadius.circular(AppDimensions.borderRadius8),
@@ -58,7 +58,7 @@ class AppEisenhowerSelector extends StatelessWidget {
                       BlendMode.srcIn,
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.spacing4),
+                  SizedBox(height: AppSpacing.spacing4),
                   Text(
                     option.label,
                     textAlign: TextAlign.center,

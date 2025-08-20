@@ -19,7 +19,7 @@ class NotificationToggleTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, AppSpacing.spacing14, 0, AppSpacing.spacing14 + AppSpacing.spacing8),
+      padding: EdgeInsets.fromLTRB(0, AppSpacing.spacing14, 0, AppSpacing.spacing14 + AppSpacing.spacing8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

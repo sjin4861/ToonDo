@@ -33,7 +33,7 @@ class DoubleActionButtons extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
               ),
-              padding: const EdgeInsets.all(AppSpacing.spacing16),
+              padding: EdgeInsets.all(AppSpacing.spacing16),
               elevation: 0,
               shadowColor: Colors.transparent,
             ),
@@ -45,7 +45,7 @@ class DoubleActionButtons extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: AppSpacing.spacing16),
+        SizedBox(width: AppSpacing.spacing16),
         Expanded(
           flex: 2,
           child: ElevatedButton(
@@ -57,7 +57,7 @@ class DoubleActionButtons extends StatelessWidget {
               ),
               elevation: 0,
               shadowColor: Colors.transparent,
-              padding: const EdgeInsets.all(AppSpacing.spacing16),
+              padding: EdgeInsets.all(AppSpacing.spacing16),
             ),
             child: Text(
               nextText,

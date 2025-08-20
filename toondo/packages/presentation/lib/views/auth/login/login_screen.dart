@@ -26,7 +26,7 @@ class LoginScreen extends StatelessWidget {
             title: '로그인',
             body: LoginBody(passedLoginId: passedLoginId),
             bottomWidget: SafeArea(
-              minimum: const EdgeInsets.all(AppSpacing.spacing24),
+              minimum: EdgeInsets.all(AppSpacing.spacing24),
               child: DoubleActionButtons(
                 backText: '뒤로',
                 nextText: '다음으로',

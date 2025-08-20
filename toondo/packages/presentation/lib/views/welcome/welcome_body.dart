@@ -19,13 +19,13 @@ class WelcomeBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(height: AppSpacing.spacing184),
+          SizedBox(height: AppSpacing.spacing184),
           _buildCharacterSection(),
-          const SizedBox(height: AppSpacing.spacing28),
+          SizedBox(height: AppSpacing.spacing28),
           _buildWelcomeText(),
-          const SizedBox(height: AppSpacing.spacing52),
+          SizedBox(height: AppSpacing.spacing52),
           _buildButtons(context),
-          const SizedBox(height: AppSpacing.spacing120),
+          SizedBox(height: AppSpacing.spacing120),
           _buildTermsText(),
         ],
       ),
@@ -53,7 +53,7 @@ class WelcomeBody extends StatelessWidget {
             color: AppColors.status100_75,
           ),
         ),
-        const SizedBox(height: AppSpacing.spacing8),
+        SizedBox(height: AppSpacing.spacing8),
         RichText(
           text: TextSpan(
             children: [
@@ -86,12 +86,12 @@ class WelcomeBody extends StatelessWidget {
           AppGoogleLoginButton(
             onPressed: () => viewModel.continueWithGoogle(context),
           ),
-          const SizedBox(height: AppSpacing.spacing16),
+          SizedBox(height: AppSpacing.spacing16),
 
           AppKakaoLoginButton(
             onPressed: () => viewModel.continueWithKakao(context),
           ),
-          const SizedBox(height: AppSpacing.spacing16),
+          SizedBox(height: AppSpacing.spacing16),
 
           AppPhoneLoginButton(
             onPressed: () => viewModel.continueWithPhoneNumber(context),

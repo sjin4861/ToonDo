@@ -31,7 +31,7 @@ class _NicknameChangeScreenState extends State<NicknameChangeScreen> {
       body: NicknameChangeBody(controller: _newNicknameController),
       bottomWidget: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(
+          padding: EdgeInsets.symmetric(
             horizontal: AppSpacing.spacing24,
             vertical: AppSpacing.spacing8,
           ),

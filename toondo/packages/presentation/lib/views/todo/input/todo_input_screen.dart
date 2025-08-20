@@ -37,7 +37,7 @@ class TodoInputScreen extends StatelessWidget {
             : (todo != null ? '투두 수정' : '투두 작성'),
         bottomWidget: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(
+            padding: EdgeInsets.symmetric(
               horizontal: AppSpacing.spacing24,
               vertical: AppSpacing.spacing8,
             ),

@@ -84,7 +84,7 @@ class _GoalNameInputFieldState extends State<GoalNameInputField> {
                                   fit: BoxFit.contain,
                                 ),
                               )
-                              : const Icon(
+                              : Icon(
                                 Icons.add,
                                 color: AppColors.green500,
                                 size: AppDimensions.iconSize16,
@@ -92,7 +92,7 @@ class _GoalNameInputFieldState extends State<GoalNameInputField> {
                     ),
                   ),
             ),
-            const SizedBox(width: AppSpacing.spacing8),
+            SizedBox(width: AppSpacing.spacing8),
             Expanded(
               child: SizedBox(
                 height: AppDimensions.inputFieldHeight,

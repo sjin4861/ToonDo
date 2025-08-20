@@ -26,14 +26,14 @@ class LoginBody extends StatelessWidget {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            const SizedBox(height: AppSpacing.spacing8),
+            SizedBox(height: AppSpacing.spacing8),
             Text(
               '비밀번호를 입력하고 로그인하세요.',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: const Color(0xBF1C1D1B),
               ),
             ),
-            const SizedBox(height: AppSpacing.spacing32),
+            SizedBox(height: AppSpacing.spacing32),
             AppInputField(
               label: '아이디',
               controller: viewModel.loginIdController,
@@ -44,7 +44,7 @@ class LoginBody extends StatelessWidget {
                   ? viewModel.loginError
                   : null,
             ),
-            const SizedBox(height: AppSpacing.spacing24),
+            SizedBox(height: AppSpacing.spacing24),
             AppInputField(
               label: '비밀번호',
               controller: viewModel.passwordController,
@@ -54,7 +54,7 @@ class LoginBody extends StatelessWidget {
               onChanged: viewModel.setPassword,
               errorText: viewModel.passwordError,
             ),
-            const SizedBox(height: AppSpacing.spacing32),
+            SizedBox(height: AppSpacing.spacing32),
           ],
         ),
       ),

@@ -37,11 +37,11 @@ class WelcomeGradientBackground extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(gradient: kWelcomeGradient),
-      child: const Padding(
+      child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: AppSpacing.screenHorizontalPadding,
         ),
-        child: WelcomeBody(),
+        child: const WelcomeBody(),
       ),
     );
   }

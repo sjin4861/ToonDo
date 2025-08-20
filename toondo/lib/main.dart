@@ -16,6 +16,7 @@ import 'package:data/models/user_model.dart';
 import 'package:data/models/goal_model.dart';
 import 'package:data/models/goal_status_enum.dart';
 import 'package:toondo/injection/di.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -81,32 +82,41 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => widget.themeVM),
-        ChangeNotifierProvider(create: (_) => widget.notificationVM),
-        ChangeNotifierProvider(
-            create: (_) => GetIt.instance<SignupViewModel>()),
-        ChangeNotifierProvider(
-            create: (_) => GetIt.instance<GoalManagementViewModel>()),
-        ChangeNotifierProvider(create: (_) => GetIt.instance<HomeViewModel>()),
-        ChangeNotifierProvider(
-            create: (_) => GetIt.instance<OnboardingViewModel>()),
-      ],
-      child: Consumer<AppThemeViewModel>(
-        builder: (context, vm, _) {
-          return MaterialApp(
-            themeMode: vm.mode.toFlutterMode(),
-            theme: ThemeData.light().copyWith(
-              scaffoldBackgroundColor: const Color(0xFFFDFDFD), // 라이트 모드 배경색
+    return ScreenUtilInit(
+        designSize: const Size(375, 812),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (context, child) {
+          return MultiProvider(
+            providers: [
+              ChangeNotifierProvider(create: (_) => widget.themeVM),
+              ChangeNotifierProvider(create: (_) => widget.notificationVM),
+              ChangeNotifierProvider(
+                  create: (_) => GetIt.instance<SignupViewModel>()),
+              ChangeNotifierProvider(
+                  create: (_) => GetIt.instance<GoalManagementViewModel>()),
+              ChangeNotifierProvider(
+                  create: (_) => GetIt.instance<HomeViewModel>()),
+              ChangeNotifierProvider(
+                  create: (_) => GetIt.instance<OnboardingViewModel>()),
+            ],
+            child: Consumer<AppThemeViewModel>(
+              builder: (context, vm, _) {
+                return MaterialApp(
+                  themeMode: vm.mode.toFlutterMode(),
+                  theme: ThemeData.light().copyWith(
+                    scaffoldBackgroundColor: const Color(
+                        0xFFFDFDFD), // 라이트 모드 배경색
+                  ),
+                  navigatorKey: navigatorKey,
+                  initialRoute: '/',
+                  onGenerateRoute: AppRouter.generateRoute,
+                  darkTheme: ThemeData.dark(),
+                );
+              },
             ),
-            navigatorKey: navigatorKey,
-            initialRoute: '/',
-            onGenerateRoute: AppRouter.generateRoute,
-            darkTheme: ThemeData.dark(),
           );
         },
-      ),
     );
   }
 }

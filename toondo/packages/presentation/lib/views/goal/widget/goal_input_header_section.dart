@@ -31,7 +31,7 @@ class GoalInputHeaderSection extends StatelessWidget {
             color: AppColors.green500
           )
         ),
-        const SizedBox(height: AppSpacing.spacing8),
+        SizedBox(height: AppSpacing.spacing8),
         Text(
           subtitle,
           style: AppTypography.caption1Regular.copyWith(

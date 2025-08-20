@@ -23,42 +23,6 @@ class SlimeArea extends StatelessWidget {
 class _SlimeStack extends StatelessWidget {
   const _SlimeStack();
 
-  /// 메시지 내용에 따라 말풍선 색상 결정
-  Color _getBubbleColor(String message) {
-    // 화나는 메시지
-    if (message.contains('아야') || message.contains('그만') || message.contains('간지러워') || message.contains('아프다') || message.contains('😠') || message.contains('😤') || message.contains('😡') || message.contains('💢')) {
-      return const Color(0xFFD32F2F); // 빨간색 (화남)
-    }
-    // 클릭 반응 메시지
-    else if (message.contains('클릭') || message.contains('터치') || message.contains('놀고') || message.contains('친구')) {
-      return const Color(0xFFFF5722); // 빨간색 계열
-    }
-    // 축하 메시지
-    else if (message.contains('축하') || message.contains('완벽') || message.contains('최고') || message.contains('🎉') || message.contains('🏆')) {
-      return const Color(0xFFFF9800); // 주황색
-    }
-    // 격려 메시지
-    else if (message.contains('괜찮아') || message.contains('실수') || message.contains('천천히') || message.contains('믿어')) {
-      return const Color(0xFF9C27B0); // 보라색
-    }
-    // 동기부여 메시지
-    else if (message.contains('할 수 있어') || message.contains('포기하지') || message.contains('꿈을') || message.contains('💪') || message.contains('🚀')) {
-      return const Color(0xFFE91E63); // 핑크색
-    }
-    // 시간대 인사말
-    else if (message.contains('아침') || message.contains('점심') || message.contains('저녁') || message.contains('☀️') || message.contains('🌙')) {
-      return const Color(0xFF2196F3); // 파란색
-    }
-    // 상호작용 메시지
-    else if (message.contains('도와줄게') || message.contains('집중력') || message.contains('쉬어') || message.contains('수고') || message.contains('스트레칭') || message.contains('물')) {
-      return const Color(0xFF00BCD4); // 청록색
-    }
-    // 기본 친근한 인사말
-    else {
-      return const Color(0xFF4CAF50); // 초록색
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     const w = 300.0, shadowDx = -10.0, shadowDy = 32.0, shadowScale = 0.94;
@@ -125,20 +89,15 @@ class _SlimeStack extends StatelessWidget {
           ),
           
           // 말풍선
-          if (viewModel.showGreeting && viewModel.currentGreeting != null)
+          if (viewModel.showGreeting &&
+              viewModel.animationKey.value != 'jump')
             Positioned(
-              bottom: 260, // 말풍선을 더 위로 올림 (230 → 260)
+              bottom: 270,
               child: SpeechBubble(
-                message: viewModel.currentGreeting!,
-                backgroundColor: _getBubbleColor(viewModel.currentGreeting!),
-                textColor: Colors.white,
-                maxWidth: 240, // 말풍선 크기는 유지
-                displayDuration: const Duration(seconds: 5), // 표시 시간 유지
-                onTap: () {
-                  viewModel.hideGreeting();
-                },
+                text: viewModel.currentGreeting!,
+                maxWidth: 240,
               ),
-            ),
+            )
         ],
       ),
     );

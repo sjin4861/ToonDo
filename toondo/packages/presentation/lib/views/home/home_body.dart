@@ -20,7 +20,7 @@ class HomeBody extends StatelessWidget {
         const HomeBackground(),
 
         Padding(
-          padding: const EdgeInsets.symmetric(
+          padding: EdgeInsets.symmetric(
             horizontal: AppSpacing.spacing18,
             vertical: AppSpacing.spacing24,
           ),
@@ -31,7 +31,7 @@ class HomeBody extends StatelessWidget {
                 selectedIndex: homeVM.selectedTabIndex,
                 onChanged: homeVM.changeTab,
               ),
-              const SizedBox(height: AppSpacing.spacing24),
+              SizedBox(height: AppSpacing.spacing24),
               Expanded(
                 child: homeVM.selectedTabIndex == 0
                     ? HomeTodoListSection(todos: homeVM.todayTop3Todos)

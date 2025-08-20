@@ -16,9 +16,9 @@ class SignupStep2Body extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: AppSpacing.spacing64),
+        SizedBox(height: AppSpacing.spacing64),
         _buildHeaderText(),
-        const SizedBox(height: AppSpacing.spacing56),
+        SizedBox(height: AppSpacing.spacing56),
         AppInputField(
           label: '비밀번호',
           controller: viewModel.passwordTextController,

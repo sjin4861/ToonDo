@@ -84,7 +84,7 @@ class AppButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing16),
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacing16),
         ),
 
         child: Text(
