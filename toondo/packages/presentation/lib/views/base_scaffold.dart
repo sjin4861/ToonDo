@@ -35,7 +35,7 @@ class BaseScaffold extends StatelessWidget {
           extendBody
               ? body
               : Padding(
-                padding: const EdgeInsets.symmetric(
+                padding: EdgeInsets.symmetric(
                   horizontal: AppSpacing.screenHorizontalPadding,
                 ),
                 child: body,

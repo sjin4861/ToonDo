@@ -25,9 +25,9 @@ class PasswordChangeBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: AppSpacing.spacing24),
+        SizedBox(height: AppSpacing.spacing24),
         _buildTitle(),
-        const SizedBox(height: AppSpacing.spacing24),
+        SizedBox(height: AppSpacing.spacing24),
         AppInputField(
           label: '현재 비밀번호',
           controller: currentPasswordController,
@@ -36,7 +36,7 @@ class PasswordChangeBody extends StatelessWidget {
           showToggleVisibility: true,
           errorText: viewModel.currentPasswordError,
         ),
-        const SizedBox(height: AppSpacing.spacing24),
+        SizedBox(height: AppSpacing.spacing24),
         AppInputField(
           label: '새 비밀번호',
           controller: newPasswordController,
@@ -45,7 +45,7 @@ class PasswordChangeBody extends StatelessWidget {
           showToggleVisibility: true,
           errorText: viewModel.newPasswordError,
         ),
-        const SizedBox(height: AppSpacing.spacing24),
+        SizedBox(height: AppSpacing.spacing24),
         AppInputField(
           label: '새 비밀번호 확인',
           controller: confirmPasswordController,

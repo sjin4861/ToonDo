@@ -58,7 +58,7 @@ class GoalInputBody extends StatelessWidget {
           showError: viewModel.dateError != null,
           onTap: () => viewModel.selectDate(context, isStartDate: true),
         ),
-        const SizedBox(width: AppSpacing.spacing12),
+        SizedBox(width: AppSpacing.spacing12),
         AppDateField(
           label: '마감일',
           date: viewModel.endDate,
@@ -116,7 +116,7 @@ class GoalInputBody extends StatelessWidget {
               )
                   : null,
             ),
-            const SizedBox(width: AppSpacing.spacing12),
+            SizedBox(width: AppSpacing.spacing12),
             Baseline(
               baseline: 9,
               baselineType: TextBaseline.alphabetic,

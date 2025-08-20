@@ -32,7 +32,7 @@ class AppGoalCategoryToggle extends StatelessWidget {
               onTap: () => onChanged(index),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.symmetric(
+                padding: EdgeInsets.symmetric(
                   horizontal: AppSpacing.spacing8,
                 ),
                 height: AppDimensions.goalCategoryToggleHeight,

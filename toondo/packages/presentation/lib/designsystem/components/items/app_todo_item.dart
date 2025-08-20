@@ -94,7 +94,7 @@ class _AppTodoItemState extends State<AppTodoItem> {
                   ),
                   child: Container(
                     color: AppColors.green500,
-                    padding: const EdgeInsets.symmetric(
+                    padding: EdgeInsets.symmetric(
                       horizontal: AppSpacing.spacing12,
                     ),
                     child: Center(
@@ -143,7 +143,7 @@ class _AppTodoItemState extends State<AppTodoItem> {
                       onTap: widget.onTap,
                       borderRadius: radius,
                       child: Container(
-                        padding: const EdgeInsets.all(
+                        padding: EdgeInsets.all(
                           AppDimensions.paddingTodoItem,
                         ),
                         decoration: BoxDecoration(
@@ -163,9 +163,9 @@ class _AppTodoItemState extends State<AppTodoItem> {
                         child: Row(
                           children: [
                             _buildIcon(),
-                            const SizedBox(width: AppSpacing.spacing12),
+                            SizedBox(width: AppSpacing.spacing12),
                             Expanded(child: _buildTitleWithOptionalSubtitle()),
-                            const SizedBox(width: AppSpacing.spacing12),
+                            SizedBox(width: AppSpacing.spacing12),
                             _buildCheckbox(),
                           ],
                         ),
@@ -189,7 +189,7 @@ class _AppTodoItemState extends State<AppTodoItem> {
       radius: AppDimensions.goalIconRadius,
       backgroundColor: backgroundColor,
       child: Padding(
-        padding: const EdgeInsets.all(AppDimensions.goalIconInnerPadding),
+        padding: EdgeInsets.all(AppDimensions.goalIconInnerPadding),
         child: SvgPicture.asset(
           widget.iconPath ?? Assets.icons.icHelpCircle.path,
           width: AppDimensions.goalIconSize,
@@ -233,7 +233,7 @@ class _AppTodoItemState extends State<AppTodoItem> {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        const SizedBox(height: AppSpacing.spacing4),
+        SizedBox(height: AppSpacing.spacing4),
         Text(
           widget.subTitle!,
           style: AppTypography.caption3Regular.copyWith(
@@ -258,7 +258,7 @@ class _AppTodoItemState extends State<AppTodoItem> {
         onChanged: (value) {
           if (value != null) widget.onCheckedChanged?.call(value);
         },
-        side: const BorderSide(
+        side: BorderSide(
           color: AppColors.borderLight,
           width: AppDimensions.checkboxBorderWidth,
         ),

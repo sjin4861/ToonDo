@@ -21,7 +21,7 @@ class AppNavBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: AppColors.status0,
       elevation: 0,
       leading: IconButton(
-          padding: const EdgeInsets.only(left: AppSpacing.spacing20),
+          padding: EdgeInsets.only(left: AppSpacing.spacing20),
         icon: Icon(Icons.arrow_back_ios, size: AppDimensions.iconSize16, color: AppColors.status100),
         onPressed: onBack ?? () => Navigator.of(context).maybePop(),
       ),

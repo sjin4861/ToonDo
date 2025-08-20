@@ -58,10 +58,10 @@ class AppDailyChip extends StatelessWidget {
           color: isSelected ? AppColors.green500 : Colors.transparent,
           border: Border.all(color: AppColors.green500, width: 0.2),
           borderRadius: BorderRadius.only(
-            topLeft: isLeft ? const Radius.circular(AppDimensions.chipBorderRadius) : Radius.zero,
-            bottomLeft: isLeft ? const Radius.circular(AppDimensions.chipBorderRadius) : Radius.zero,
-            topRight: isLeft ? Radius.zero : const Radius.circular(AppDimensions.chipBorderRadius),
-            bottomRight: isLeft ? Radius.zero : const Radius.circular(AppDimensions.chipBorderRadius),
+            topLeft: isLeft ? Radius.circular(AppDimensions.chipBorderRadius) : Radius.zero,
+            bottomLeft: isLeft ? Radius.circular(AppDimensions.chipBorderRadius) : Radius.zero,
+            topRight: isLeft ? Radius.zero : Radius.circular(AppDimensions.chipBorderRadius),
+            bottomRight: isLeft ? Radius.zero : Radius.circular(AppDimensions.chipBorderRadius),
           ),
         ),
         child: Text(

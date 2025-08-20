@@ -57,11 +57,11 @@ class _GoalCategory extends StatelessWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: goals.length,
-          separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.spacing12),
+          separatorBuilder: (_, __) => SizedBox(height: AppSpacing.spacing12),
           itemBuilder: (context, index) {
             final goal = goals[index];
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing8),
+              padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacing8),
               child: AppGoalItem(
                 dismissKey: ValueKey(goal.id),
                 onDelete: () { viewModel.deleteGoal(goal.id); },
@@ -99,7 +99,7 @@ class _GoalCategory extends StatelessWidget {
             );
           },
         ),
-        const SizedBox(height: AppSpacing.spacing16),
+        SizedBox(height: AppSpacing.spacing16),
       ],
     );
   }

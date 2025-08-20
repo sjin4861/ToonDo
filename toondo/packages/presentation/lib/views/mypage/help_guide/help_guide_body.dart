@@ -13,10 +13,10 @@ class HelpGuideBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<HelpGuideViewModel>();
-    final trailingIcon = const Icon(
+    final trailingIcon = Icon(
       Icons.arrow_forward_ios,
       size: AppDimensions.iconSize16,
-      color: Color(0xFFD9D9D9),
+      color: const Color(0xFFD9D9D9),
     );
 
     return Column(

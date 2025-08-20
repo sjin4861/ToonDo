@@ -21,13 +21,13 @@ class MyPageSettingTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.spacing8),
+      margin: EdgeInsets.only(bottom: AppSpacing.spacing8),
       child: InkWell(
         onTap: onTap,
         child: Container(
           height: AppDimensions.tileHeight,
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(
+          padding: EdgeInsets.symmetric(
             vertical: AppSpacing.spacing14,
           ),
           color: Colors.transparent,
@@ -35,7 +35,7 @@ class MyPageSettingTile extends StatelessWidget {
             children: [
               if (leadingIcon != null) ...[
                 leadingIcon!,
-                const SizedBox(width: AppSpacing.spacing8),
+                SizedBox(width: AppSpacing.spacing8),
               ],
               Text(
                 title,

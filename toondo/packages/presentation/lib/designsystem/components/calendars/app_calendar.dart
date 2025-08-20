@@ -105,7 +105,7 @@ class _CalendarState extends State<Calendar> {
             ),
           ],
         ),
-        const SizedBox(height: AppSpacing.spacing16),
+        SizedBox(height: AppSpacing.spacing16),
         isWeeklyView ? _buildWeeklyCalendar() : _buildMonthlyCalendar(),
       ],
     );

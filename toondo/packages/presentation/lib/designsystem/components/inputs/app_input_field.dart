@@ -74,7 +74,7 @@ class _AppInputFieldState extends State<AppInputField> {
           widget.label,
           style: AppTypography.caption1Regular.copyWith(color: _textColor()),
         ),
-        const SizedBox(height: AppSpacing.spacing8),
+        SizedBox(height: AppSpacing.spacing8),
         SizedBox(
           height: AppDimensions.inputFieldHeight,
           child: TextField(
@@ -91,7 +91,7 @@ class _AppInputFieldState extends State<AppInputField> {
               ),
               filled: true,
               fillColor: AppColors.status0,
-              contentPadding: const EdgeInsets.symmetric(
+              contentPadding: EdgeInsets.symmetric(
                 horizontal: AppSpacing.spacing16,
               ),
               enabledBorder: _getBorder(borderColor),
@@ -118,7 +118,7 @@ class _AppInputFieldState extends State<AppInputField> {
             ),
           ),
         ),
-        const SizedBox(height: AppSpacing.spacing8),
+        SizedBox(height: AppSpacing.spacing8),
         if (widget.errorText != null)
           Text(
             widget.errorText!,

@@ -22,7 +22,7 @@ class MyPageSettingSection extends StatelessWidget {
           '설정',
           style: AppTypography.h2SemiBold.copyWith(color: AppColors.status100),
         ),
-        const SizedBox(height: AppSpacing.spacing16),
+        SizedBox(height: AppSpacing.spacing16),
         MyPageSettingTile(
           title: '동기화',
           leadingIcon: Assets.icons.icSync.svg(
@@ -50,10 +50,10 @@ class MyPageSettingSection extends StatelessWidget {
             width: AppDimensions.iconSize16,
             height: AppDimensions.iconSize16,
           ),
-          trailing: const Icon(
+          trailing: Icon(
             Icons.arrow_forward_ios,
             size: AppDimensions.iconSize16,
-            color: Color(0xFFD9D9D9),
+            color: const Color(0xFFD9D9D9),
           ),
           onTap: () {
             Navigator.pushNamed(context, RoutePaths.displaySetting);
@@ -80,10 +80,10 @@ class MyPageSettingSection extends StatelessWidget {
             width: AppDimensions.iconSize16,
             height: AppDimensions.iconSize16,
           ),
-          trailing: const Icon(
+          trailing: Icon(
             Icons.arrow_forward_ios,
             size: AppDimensions.iconSize16,
-            color: Color(0xFFD9D9D9),
+            color: const Color(0xFFD9D9D9),
           ),
           onTap: () {
             Navigator.pushNamed(context, RoutePaths.accountSetting);

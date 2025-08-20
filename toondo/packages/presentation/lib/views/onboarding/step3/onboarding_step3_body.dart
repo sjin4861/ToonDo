@@ -16,9 +16,9 @@ class OnboardingStep3Body extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: AppSpacing.spacing64),
+        SizedBox(height: AppSpacing.spacing64),
         _buildHeaderText(),
-        const SizedBox(height: AppSpacing.spacing56),
+        SizedBox(height: AppSpacing.spacing56),
         AppInputField(
           label: '닉네임',
           controller: viewModel.nicknameController,
@@ -44,7 +44,7 @@ class OnboardingStep3Body extends StatelessWidget {
           '닉네임을 설정해주세요',
           style: AppTypography.h2Bold.copyWith(color: AppColors.green500),
         ),
-        const SizedBox(height: AppSpacing.spacing8),
+        SizedBox(height: AppSpacing.spacing8),
         Text(
           '앱에서 사용할 닉네임을 입력해주세요.',
           style: AppTypography.caption1Regular.copyWith(

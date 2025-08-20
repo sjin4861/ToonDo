@@ -24,9 +24,9 @@ class TodoManageBody extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _buildHeader(viewModel),
-            const SizedBox(height: AppSpacing.spacing32),
+            SizedBox(height: AppSpacing.spacing32),
             ConstrainedBox(
-              constraints: const BoxConstraints(
+              constraints: BoxConstraints(
                 maxWidth: AppDimensions.todoMaxContentWidth,
               ),
               child: _buildContent(viewModel),
@@ -41,7 +41,7 @@ class TodoManageBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const SizedBox(height: AppSpacing.spacing40),
+        SizedBox(height: AppSpacing.spacing40),
         Calendar(
           selectedDate: viewModel.selectedDate,
           onDateSelected: viewModel.updateSelectedDate,
@@ -57,7 +57,7 @@ class TodoManageBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _buildMenuSection(viewModel),
-          const SizedBox(height: AppSpacing.spacing16),
+          SizedBox(height: AppSpacing.spacing16),
           _buildTodoList(viewModel),
         ],
       ),
@@ -75,7 +75,7 @@ class TodoManageBody extends StatelessWidget {
             viewModel.updateSelectedFilter(index.toFilter());
           },
         ),
-        const SizedBox(height: AppSpacing.spacing16),
+        SizedBox(height: AppSpacing.spacing16),
         _buildGoalToggle(viewModel),
       ],
     );
@@ -83,7 +83,7 @@ class TodoManageBody extends StatelessWidget {
 
   Widget _buildGoalToggle(TodoManageViewModel viewModel) {
     if (viewModel.selectedFilter != TodoFilterOption.goal) {
-      return const SizedBox(height: AppSpacing.spacing8);
+      return SizedBox(height: AppSpacing.spacing8);
     }
 
     return AppGoalCategoryToggle(
@@ -109,7 +109,7 @@ class TodoManageBody extends StatelessWidget {
               viewModel: viewModel,
               isDDay: true,
             ),
-            const SizedBox(height: AppSpacing.spacing28),
+            SizedBox(height: AppSpacing.spacing28),
             TodoListSection(
               title: '데일리 투두',
               todos: viewModel.dailyTodos,

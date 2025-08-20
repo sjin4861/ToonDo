@@ -40,7 +40,7 @@ class AppDateField extends StatelessWidget {
           child: Container(
             height: AppDimensions.dateFieldHeight,
             width: AppDimensions.dateFieldWidth,
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing12),
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacing12),
             decoration: BoxDecoration(
               border: Border.all(color: borderColor, width: 1),
               borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
@@ -64,7 +64,7 @@ class AppDateField extends StatelessWidget {
         ),
         if (showError)
           Padding(
-            padding: const EdgeInsets.only(top: AppDimensions.paddingDateFieldErrorTop),
+            padding: EdgeInsets.only(top: AppDimensions.paddingDateFieldErrorTop),
             child: Text(
               '$label을 선택해주세요',
               style: AppTypography.caption1Regular.copyWith(color: AppColors.red500),

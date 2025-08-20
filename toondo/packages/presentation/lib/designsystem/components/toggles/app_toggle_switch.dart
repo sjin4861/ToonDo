@@ -21,7 +21,7 @@ class AppToggleSwitch extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         width: AppDimensions.toggleWidth,
         height: AppDimensions.toggleHeight,
-        padding: const EdgeInsets.all(AppSpacing.spacing4),
+        padding: EdgeInsets.all(AppSpacing.spacing4),
         decoration: BoxDecoration(
           color: value ? AppColors.green500 : AppColors.brown100,
           borderRadius: BorderRadius.circular(AppDimensions.radiusPill),

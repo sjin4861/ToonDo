@@ -16,7 +16,7 @@ class HomeTodoListSection extends StatelessWidget {
   Widget build(BuildContext context) {
     if (todos.isEmpty) {
       return Padding(
-        padding: const EdgeInsets.only(top: AppSpacing.spacing32),
+        padding: EdgeInsets.only(top: AppSpacing.spacing32),
         child: Align(
           alignment: Alignment.topCenter,
           child: Text(
@@ -33,7 +33,7 @@ class HomeTodoListSection extends StatelessWidget {
       child: Column(
         children: todos.map((todo) {
           return Padding(
-            padding: const EdgeInsets.only(
+            padding: EdgeInsets.only(
               bottom: AppSpacing.spacing12,
             ),
             child: HomeListItem(

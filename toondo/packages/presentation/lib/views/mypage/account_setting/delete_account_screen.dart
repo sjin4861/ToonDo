@@ -31,7 +31,7 @@ class DeleteAccountScreen extends StatelessWidget {
             title: '계정 탈퇴',
             body: const DeleteAccountBody(),
             bottomWidget: SafeArea(
-              minimum: const EdgeInsets.all(AppSpacing.spacing24),
+              minimum: EdgeInsets.all(AppSpacing.spacing24),
               child: DoubleActionButtons(
                 backText: '취소',
                 nextText: '탈퇴하기',

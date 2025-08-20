@@ -53,7 +53,7 @@ class AppGoalDropdown extends StatelessWidget {
           onTap: onToggle,
           child: Container(
             height: 40,
-            padding: const EdgeInsets.symmetric(
+            padding: EdgeInsets.symmetric(
               horizontal: AppSpacing.spacing12,
             ),
             decoration: BoxDecoration(
@@ -90,7 +90,7 @@ class AppGoalDropdown extends StatelessWidget {
         // ▼ Dropdown
         if (isExpanded)
           Container(
-            margin: const EdgeInsets.only(top: AppSpacing.spacing8),
+            margin: EdgeInsets.only(top: AppSpacing.spacing8),
             decoration: BoxDecoration(
               border: Border.all(color: const Color(0xFFDDDDDD)),
               borderRadius: BorderRadius.circular(10),
@@ -117,13 +117,13 @@ class AppGoalDropdown extends StatelessWidget {
                         isSelected
                             ? const Color(0x80E4F0DA) // 선택 항목 배경
                             : Colors.transparent,
-                        padding: const EdgeInsets.symmetric(
+                        padding: EdgeInsets.symmetric(
                           horizontal: AppSpacing.spacing12,
                         ),
                         child: Row(
                             children: [
                             _buildIcon(item.iconPath, isSelected: isSelected),
-                        const SizedBox(width: AppSpacing.spacing16),
+                        SizedBox(width: AppSpacing.spacing16),
                         Expanded(
                           child: Text(
                             item.title,
@@ -170,7 +170,7 @@ class AppGoalDropdown extends StatelessWidget {
     return Container(
       width: AppDimensions.iconSize24,
       height: AppDimensions.iconSize24,
-      padding: const EdgeInsets.all(AppSpacing.spacing4),
+      padding: EdgeInsets.all(AppSpacing.spacing4),
       decoration: BoxDecoration(
         color:
         isSelected

@@ -40,8 +40,8 @@ class HomeListItem extends StatelessWidget {
       onTap: onTap,
       child: Container(
         height: AppDimensions.homeItemHeight,
-        margin: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing16),
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing16),
+        margin: EdgeInsets.symmetric(horizontal: AppSpacing.spacing16),
+        padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacing16),
         decoration: BoxDecoration(
           color: AppColors.backgroundNormal,
           borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
@@ -49,7 +49,7 @@ class HomeListItem extends StatelessWidget {
         child: Row(
           children: [
             _buildIcon(goalToUse),
-            const SizedBox(width: AppSpacing.spacing12),
+            SizedBox(width: AppSpacing.spacing12),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -63,7 +63,7 @@ class HomeListItem extends StatelessWidget {
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: AppSpacing.spacing4),
+                  SizedBox(height: AppSpacing.spacing4),
                   Text(
                     dDay != null ? '$dateRange $dDay' : dateRange,
                     style: AppTypography.caption3Regular.copyWith(
@@ -94,7 +94,7 @@ class HomeListItem extends StatelessWidget {
         border: borderColor != null ? Border.all(color: borderColor, width: 1) : null,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.spacing4),
+        padding: EdgeInsets.all(AppSpacing.spacing4),
         child: FittedBox(
           fit: BoxFit.contain,
           child: _buildIconFromPath(goalToUse?.icon),

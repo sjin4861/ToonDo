@@ -50,14 +50,14 @@ class AppThemeRadioButton extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: AppSpacing.spacing8),
+          SizedBox(height: AppSpacing.spacing8),
           Text(
             type.label,
             style: AppTypography.body1Regular.copyWith(
               color: AppColors.status100,
             ),
           ),
-          const SizedBox(height: AppSpacing.spacing8),
+          SizedBox(height: AppSpacing.spacing8),
           Container(
             width: AppDimensions.radioSize,
             height: AppDimensions.radioSize,

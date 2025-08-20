@@ -47,7 +47,7 @@ class GoalInputScreen extends StatelessWidget {
             body: const GoalInputBody(),
             bottomWidget: SafeArea(
               child: Padding(
-                padding: const EdgeInsets.symmetric(
+                padding: EdgeInsets.symmetric(
                   horizontal: AppSpacing.spacing24,
                   vertical: AppSpacing.spacing8,
                 ),
