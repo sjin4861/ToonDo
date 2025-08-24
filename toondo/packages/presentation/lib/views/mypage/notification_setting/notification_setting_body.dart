@@ -28,11 +28,6 @@ class NotificationSettingBody extends StatelessWidget {
           onChanged: (_) => vm.toggleAll(),
         ),
         NotificationToggleTile(
-          title: '분석리포트 알림',
-          value: vm.settings.report,
-          onChanged: (_) => vm.toggleReport(),
-        ),
-        NotificationToggleTile(
           title: '리마인드 알림',
           value: vm.settings.reminder,
           onChanged: (_) => vm.toggleReminder(),
