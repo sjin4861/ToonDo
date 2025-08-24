@@ -59,7 +59,7 @@ class AppGoalDropdown extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               color: const Color(0xFFE4F0D9),
-              borderRadius: BorderRadius.circular(AppDimensions.borderRadius24),
+              borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
             ),
             child: Row(
               children: [
@@ -89,56 +89,71 @@ class AppGoalDropdown extends StatelessWidget {
         ),
 
         // ▼ Dropdown
+        // ▼ Dropdown
         if (isExpanded)
           Container(
             margin: EdgeInsets.only(top: AppSpacing.v8),
             decoration: BoxDecoration(
               border: Border.all(color: AppColors.borderUnselected, width: 1.w),
-              borderRadius: BorderRadius.circular(10.r),
+              borderRadius: BorderRadius.circular(24.r),
             ),
             child: Column(
-              children: List.generate(items.length * 2 - 1, (index) {
-                if (index.isOdd) {
+              children: List.generate(items.length * 2 - 1, (rawIndex) {
+                if (rawIndex.isOdd) {
                   return Divider(
                     height: 1.h,
                     thickness: 1.h,
                     color: AppColors.borderUnselected,
                   );
-                } else {
-                  final item = items[index ~/ 2];
-                  final isSelected = item.id.toString() == selectedId;
-
-                  return GestureDetector(
-                    onTap: () => onItemSelected(item.id),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(6.r),
-                      child: Container(
-                        height: 40.h,
-                        color: isSelected
-                            ? AppColors.myPageBorder.withOpacity(0.5)
-                            : Colors.transparent,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: AppSpacing.h12,
-                        ),
-                        child: Row(
-                          children: [
-                            _buildIcon(item.iconPath, isSelected: isSelected),
-                            SizedBox(width: AppSpacing.h16),
-                            Expanded(
-                              child: Text(
-                                item.title,
-                                style: (isSelected
-                                    ? AppTypography.body2Medium
-                                    : AppTypography.body2Regular)
-                                    .copyWith(color: AppColors.status100),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
                 }
+
+                final index = rawIndex ~/ 2;
+                final item = items[index];
+                final isSelected = item.id.toString() == selectedId;
+
+                final isFirst = index == 0;
+                final isLast  = index == items.length - 1;
+
+                final BorderRadius rowRadius = (items.length == 1)
+                    ? BorderRadius.circular(AppDimensions.radiusPill)
+                    : isFirst
+                    ? BorderRadius.vertical(
+                  top: Radius.circular(24.r),
+                )
+                    : isLast
+                    ? BorderRadius.vertical(
+                  bottom: Radius.circular(24.r),
+                )
+                    : BorderRadius.zero;
+
+                return GestureDetector(
+                  onTap: () => onItemSelected(item.id),
+                  child: Container(
+                    height: 40.h,
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? AppColors.myPageBorder.withOpacity(0.5)
+                          : Colors.transparent,
+                      borderRadius: rowRadius,
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.h12),
+                    child: Row(
+                      children: [
+                        _buildIcon(item.iconPath, isSelected: isSelected),
+                        SizedBox(width: AppSpacing.h16),
+                        Expanded(
+                          child: Text(
+                            item.title,
+                            style: (isSelected
+                                ? AppTypography.body2Medium
+                                : AppTypography.body2Regular)
+                                .copyWith(color: AppColors.status100),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
               }),
             ),
           ),
