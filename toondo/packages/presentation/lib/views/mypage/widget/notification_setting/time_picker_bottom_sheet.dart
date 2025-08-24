@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
 import 'package:presentation/designsystem/components/bottom_sheets/app_bottom_sheet.dart';
@@ -41,15 +42,15 @@ class TimePickerBottomSheet extends StatelessWidget {
 
   Widget _buildPickerRow(TimePickerViewModel viewModel) {
     return SizedBox(
-      height: 180,
+      height: 170.h,
       child: Stack(
         alignment: Alignment.center,
         children: [
           Positioned(
-            top: 0,
+            top: 0.h,
             child: Container(
-              width: 298,
-              height: 48,
+              width: 298.w,
+              height: 48.h,
               decoration: BoxDecoration(
                 color: const Color(0xFFF8F8F8),
                 borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
@@ -57,10 +58,10 @@ class TimePickerBottomSheet extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 56,
+            top: 54.h,
             child: Container(
-              width: 298,
-              height: 68,
+              width: 298.w,
+              height: 60.h,
               decoration: BoxDecoration(
                 color: AppColors.green100,
                 borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
@@ -68,10 +69,10 @@ class TimePickerBottomSheet extends StatelessWidget {
             ),
           ),
           Positioned(
-            bottom: 0,
+            bottom: 0.h,
             child: Container(
-              width: 298,
-              height: 48,
+              width: 298.w,
+              height: 48.h,
               decoration: BoxDecoration(
                 color: const Color(0xFFF8F8F8),
                 borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
@@ -98,10 +99,10 @@ class TimePickerBottomSheet extends StatelessWidget {
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: AppSpacing.h8),
-                    child: const Text(
+                    child: Text(
                       ':',
                       style: TextStyle(
-                        fontSize: 32,
+                        fontSize: 32.sp,
                         fontWeight: FontWeight.bold,
                         color: AppColors.green500,
                       ),
@@ -132,7 +133,7 @@ class TimePickerBottomSheet extends StatelessWidget {
         },
         style: OutlinedButton.styleFrom(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimensions.borderRadius20),
+            borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
           ),
           side: const BorderSide(color: AppColors.green500),
         ),
@@ -175,13 +176,13 @@ class _TimeWheelPickerState extends State<_TimeWheelPicker> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 180,
-      width: 70,
+      height: 200.h,
+      width: 70.w,
       child: ListWheelScrollView.useDelegate(
         controller: _controller,
-        itemExtent: 60,
-        perspective: 0.002,
-        diameterRatio: 1.2,
+        itemExtent: 60.h,
+        perspective: 0.001,
+        diameterRatio: 2.4,
         physics: const FixedExtentScrollPhysics(),
         onSelectedItemChanged: (index) {
           widget.onSelected(widget.items[index]);
@@ -196,10 +197,8 @@ class _TimeWheelPickerState extends State<_TimeWheelPicker> {
                 style: TextStyle(
                   fontFamily: 'Pretendard Variable',
                   fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                  fontSize: widget.isKoreanAmPm ? 24 : (isSelected ? 40 : 32),
+                  fontSize: widget.isKoreanAmPm ? 20.sp : (isSelected ? 36.sp : 24.sp),
                   color: isSelected ? AppColors.green500 : const Color(0xFF8D8E8D),
-                  height: 1.0,
-                  letterSpacing: 1.5,
                 ),
               ),
             );
