@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:presentation/designsystem/components/buttons/app_button.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/views/base_scaffold.dart';
+import 'package:presentation/views/home/home_screen.dart';
 import 'package:presentation/views/todo/input/todo_input_body.dart';
 import 'package:provider/provider.dart';
 import 'package:get_it/get_it.dart';
@@ -16,7 +17,12 @@ class TodoInputScreen extends StatelessWidget {
   final Todo? todo;
   final bool isOnboarding;
 
-  const TodoInputScreen({super.key, this.isDDayTodo = true, this.todo, this.isOnboarding = false});
+  const TodoInputScreen({
+    super.key,
+    this.isDDayTodo = true,
+    this.todo,
+    this.isOnboarding = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +38,7 @@ class TodoInputScreen extends StatelessWidget {
           ),
       child: BaseScaffold(
         body: TodoInputBody(),
-        title: isOnboarding
-            ? '시작하기'
-            : (todo != null ? '투두 수정' : '투두 작성'),
+        title: isOnboarding ? '시작하기' : (todo != null ? '투두 수정' : '투두 작성'),
         bottomWidget: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(
@@ -45,28 +49,40 @@ class TodoInputScreen extends StatelessWidget {
               builder:
                   (context) => AppButton(
                     label: todo != null ? '수정하기' : '작성하기',
-                    onPressed: () {
-                      final viewModel = context.read<TodoInputViewModel>();
-                      if (todo != null) {
-                        viewModel.updateTodo(
-                          onSuccess: () => Navigator.pop(context),
-                          onError: (msg) {
-                            ScaffoldMessenger.of(
-                              context,
-                            ).showSnackBar(SnackBar(content: Text(msg)));
-                          },
-                        );
-                      } else {
-                        viewModel.createTodo(
-                          onSuccess: () => Navigator.pop(context),
-                          onError: (msg) {
-                            ScaffoldMessenger.of(
-                              context,
-                            ).showSnackBar(SnackBar(content: Text(msg)));
-                          },
-                        );
+                      onPressed: () {
+                        final viewModel = context.read<TodoInputViewModel>();
+
+                        if (todo != null) {
+                          viewModel.updateTodo(
+                            onSuccess: () => Navigator.pop(context),
+                            onError: (msg) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(msg)),
+                              );
+                            },
+                          );
+                        } else {
+                          viewModel.createTodo(
+                            onSuccess: () {
+                              if (isOnboarding) {
+                                // 온보딩 플로우에서는 홈으로 이동
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => const HomeScreen()),
+                                      (route) => false,
+                                );
+                              } else {
+                                Navigator.pop(context);
+                              }
+                            },
+                            onError: (msg) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(msg)),
+                              );
+                            },
+                          );
+                        }
                       }
-                    },
                   ),
             ),
           ),

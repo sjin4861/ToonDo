@@ -21,17 +21,19 @@ class WelcomeViewModel extends ChangeNotifier {
 
   void continueWithGoogle(BuildContext context) {
     // Todo: 구글 로그인 구현
-    Navigator.push(
+    Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => HomeScreen()),
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+          (route) => false,
     );
   }
 
   void continueWithKakao(BuildContext context) {
     // Todo: 카카오 로그인 구현. 임시로 홈 화면으로 이동
-    Navigator.push(
+    Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => HomeScreen()),
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+          (route) => false,
     );
   }
 
@@ -43,9 +45,10 @@ class WelcomeViewModel extends ChangeNotifier {
   }
 
   void continueWithoutLogin(BuildContext context) {
-    Navigator.pushReplacement(
+    Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => HomeScreen()),
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+          (route) => false,
     );
   }
 
