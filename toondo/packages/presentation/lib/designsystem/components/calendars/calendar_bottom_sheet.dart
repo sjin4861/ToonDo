@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:presentation/designsystem/colors/app_colors.dart';
+import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
+import 'package:presentation/designsystem/spacing/app_spacing.dart';
+import 'package:presentation/designsystem/typography/app_typography.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class SelectDateBottomSheet extends StatefulWidget {
@@ -24,17 +28,19 @@ class _SelectDateBottomSheetState extends State<SelectDateBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      decoration: BoxDecoration(
+        color: AppColors.status0,
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppDimensions.borderRadius16),
+        ),
       ),
       child: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
-            top: 24,
-            left: 16,
-            right: 16,
+            top: AppSpacing.spacing24,
+            left: AppSpacing.spacing16,
+            right: AppSpacing.spacing16,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -49,61 +55,46 @@ class _SelectDateBottomSheetState extends State<SelectDateBottomSheet> {
                 headerStyle: HeaderStyle(
                   titleCentered: true,
                   formatButtonVisible: false,
-                  titleTextStyle: TextStyle(
-                    color: Color(0xFF535353),
-                    fontSize: 20,
-                    fontFamily: 'Pretendard Variable',
-                    fontWeight: FontWeight.w700,
+                  titleTextStyle: AppTypography.h1Bold.copyWith(
+                    color: AppColors.bottomIconColor,
                   ),
-                  leftChevronIcon: Icon(Icons.chevron_left, color: Color(0xFF535353)),
-                  rightChevronIcon: Icon(Icons.chevron_right, color: Color(0xFF535353)),
+                  leftChevronIcon: const Icon(
+                    Icons.chevron_left,
+                    color: AppColors.bottomIconColor,
+                  ),
+                  rightChevronIcon: const Icon(
+                    Icons.chevron_right,
+                    color: AppColors.bottomIconColor,
+                  ),
                 ),
                 daysOfWeekStyle: DaysOfWeekStyle(
-                  weekendStyle: TextStyle(
-                    color: Color(0x4C3C3C43),
-                    fontSize: 13,
-                    fontFamily: 'Pretendard Variable',
-                    fontWeight: FontWeight.w600,
+                  weekendStyle: AppTypography.body2SemiBold.copyWith(
+                    color: AppColors.status100.withOpacity(0.3),
                   ),
-                  weekdayStyle: TextStyle(
-                    color: Color(0x4C3C3C43),
-                    fontSize: 13,
-                    fontFamily: 'Pretendard Variable',
-                    fontWeight: FontWeight.w600,
+                  weekdayStyle: AppTypography.body2SemiBold.copyWith(
+                    color: AppColors.status100.withOpacity(0.3),
                   ),
                 ),
                 calendarStyle: CalendarStyle(
-                  defaultTextStyle: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontFamily: 'Pretendard Variable',
-                    fontWeight: FontWeight.w400,
+                  defaultTextStyle: AppTypography.h1Regular.copyWith(
+                    color: AppColors.status100,
                   ),
-                  weekendTextStyle: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontFamily: 'Pretendard Variable',
-                    fontWeight: FontWeight.w400,
+                  weekendTextStyle: AppTypography.h1Regular.copyWith(
+                    color: AppColors.status100,
                   ),
-                  selectedDecoration: BoxDecoration(
-                    color: Color(0xFF78B545),
+                  selectedDecoration: const BoxDecoration(
+                    color: AppColors.green500,
                     shape: BoxShape.circle,
                   ),
-                  selectedTextStyle: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontFamily: 'Pretendard Variable',
-                    fontWeight: FontWeight.w700,
+                  selectedTextStyle: AppTypography.h1Bold.copyWith(
+                    color: AppColors.status0,
                   ),
                   todayDecoration: BoxDecoration(
-                    color: Color(0x1F78B545),
+                    color: AppColors.green500.withOpacity(0.12),
                     shape: BoxShape.circle,
                   ),
-                  todayTextStyle: TextStyle(
-                    color: Color(0xFF78B545),
-                    fontSize: 20,
-                    fontFamily: 'Pretendard Variable',
-                    fontWeight: FontWeight.w700,
+                  todayTextStyle: AppTypography.h1Bold.copyWith(
+                    color: AppColors.green500,
                   ),
                 ),
                 onDaySelected: (selectedDay, focusedDay) {

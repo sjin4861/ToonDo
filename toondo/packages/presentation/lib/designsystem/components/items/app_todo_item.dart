@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:common/gen/assets.gen.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
@@ -101,7 +102,7 @@ class _AppTodoItemState extends State<AppTodoItem> {
                       child: GestureDetector(
                         onTap: _handleDelete,
                         child: Container(
-                          width: 312,
+                          width: 312.w,
                           height: AppDimensions.todoItemHeight,
                           decoration: BoxDecoration(
                             color: AppColors.green500,

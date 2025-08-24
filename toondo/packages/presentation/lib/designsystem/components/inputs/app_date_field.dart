@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:common/gen/assets.gen.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
@@ -42,7 +43,7 @@ class AppDateField extends StatelessWidget {
             width: AppDimensions.dateFieldWidth,
             padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacing12),
             decoration: BoxDecoration(
-              border: Border.all(color: borderColor, width: 1),
+              border: Border.all(color: borderColor, width: 1.w),
               borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
             ),
             child: Row(
@@ -52,7 +53,7 @@ class AppDateField extends StatelessWidget {
                   height: AppDimensions.iconSize16,
                   colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: AppSpacing.spacing8),
                 Text(
                     hasValue ? DateFormat('yyyy년 M월 d일').format(date!) : '$label을 선택하세요',
                     style: AppTypography.caption1Regular.copyWith(color: textColor),

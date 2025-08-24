@@ -36,6 +36,7 @@ class AppDimensions {
 
   // Radius
   static double borderRadius8 = 8.0.r;
+  static double borderRadius10 = 10.0.r;
   static double borderRadius12 = 12.0.r;
   static double borderRadius16 = 16.0.r;
   static double borderRadius20 = 20.0.r;

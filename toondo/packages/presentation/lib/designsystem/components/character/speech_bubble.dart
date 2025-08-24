@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:presentation/designsystem/colors/app_colors.dart';
 import 'package:presentation/designsystem/typography/app_typography.dart';
 
 class SpeechBubble extends StatelessWidget {
@@ -14,21 +16,40 @@ class SpeechBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textStyle = AppTypography.speechBubbleRegular;
+
+    // 반응형 값들
+    final double maxW = maxWidth.w;
+    final double padH = 20.w;
+    final double padTop = 8.h;
+    final double padBottom = 4.h;
+    final double extraWidth = 4.w;
+
+    // TextPainter로 실제 텍스트 폭/높이 측정
     final textSpan = TextSpan(text: text, style: textStyle);
     final textPainter = TextPainter(
       text: textSpan,
       maxLines: null,
       textDirection: TextDirection.ltr,
-    )..layout(maxWidth: maxWidth - 40); // padding 고려
+    )..layout(maxWidth: maxW - (padH * 2) - extraWidth);
 
-    final width = textPainter.width + 44; // 좌우 패딩 포함
-    final height = textPainter.height + 24; // 상하 패딩 + 꼬리 높이 포함
+    final double bubbleW =
+    (textPainter.width + (padH * 2) + extraWidth).clamp(0, maxW);
+    final double bubbleH = textPainter.height + padTop + padBottom + 6.h; // 꼬리 높이 포함
 
     return CustomPaint(
-      painter: SpeechBubblePainter(width: width, height: height),
+      painter: SpeechBubblePainter(
+        width: bubbleW,
+        height: bubbleH,
+        color: const Color(0xFFFFFEFB),
+        borderColor: AppColors.status100_50,
+        radius: 16.r,
+        tailHeight: 6.h,
+        tailWidth: 10.w,
+        borderWidth: 0.1.w,
+      ),
       child: Container(
-        width: width,
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 4),
+        width: bubbleW,
+        padding: EdgeInsets.fromLTRB(padH, padTop, padH, padBottom),
         child: Text(
           text,
           style: textStyle,
@@ -53,12 +74,12 @@ class SpeechBubblePainter extends CustomPainter {
   SpeechBubblePainter({
     required this.width,
     required this.height,
-    this.color = const Color(0xFFFFFEFB),
-    this.radius = 16,
-    this.tailHeight = 6,
-    this.tailWidth = 10,
-    this.borderColor = const Color(0x801C1D1B),
-    this.borderWidth = 0.1,
+    this.color = const Color(0xFFFFFEFB),        // AppColors에 동일 항목 없음 → 원본 유지
+    this.radius = 16,                             // 빌드에서 .r로 전달됨
+    this.tailHeight = 6,                          // 빌드에서 .h로 전달됨
+    this.tailWidth = 10,                          // 빌드에서 .w로 전달됨
+    this.borderColor = AppColors.status100_50,    // 0x801C1D1B 매핑
+    this.borderWidth = 0.1,                       // 빌드에서 .w로 전달됨
   });
 
   @override
@@ -80,13 +101,25 @@ class SpeechBubblePainter extends CustomPainter {
       ..arcToPoint(Offset(width - radius, 0), radius: Radius.circular(radius), clockwise: false)
       ..close();
 
-    canvas.drawPath(path, Paint()..color = color);
-    canvas.drawPath(path, Paint()
+    final fillPaint = Paint()..color = color;
+    final strokePaint = Paint()
       ..color = borderColor
       ..style = PaintingStyle.stroke
-      ..strokeWidth = borderWidth);
+      ..strokeWidth = borderWidth;
+
+    canvas.drawPath(path, fillPaint);
+    canvas.drawPath(path, strokePaint);
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
+  bool shouldRepaint(covariant SpeechBubblePainter old) {
+    return width != old.width ||
+        height != old.height ||
+        color != old.color ||
+        radius != old.radius ||
+        tailHeight != old.tailHeight ||
+        tailWidth != old.tailWidth ||
+        borderColor != old.borderColor ||
+        borderWidth != old.borderWidth;
+  }
 }

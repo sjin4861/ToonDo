@@ -28,36 +28,38 @@ class AppGoalCategoryToggle extends StatelessWidget {
             padding: EdgeInsets.only(
               right: index == labels.length - 1 ? 0 : AppSpacing.spacing8,
             ),
-            child: GestureDetector(
-              onTap: () => onChanged(index),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                padding: EdgeInsets.symmetric(
-                  horizontal: AppSpacing.spacing8,
-                ),
-                height: AppDimensions.goalCategoryToggleHeight,
-                constraints: BoxConstraints(
-                  minWidth: AppDimensions.goalCategoryToggleWidth,
-                ),
-                decoration: BoxDecoration(
-                  color: isSelected ? AppColors.green100 : Colors.transparent,
-                  borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
-                  border: Border.all(
-                    color: const Color(0x401D1B40),
-                    width: 0.5,
+            child: Material(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
+                onTap: () => onChanged(index),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeOutCubic,
+                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacing8),
+                  height: AppDimensions.goalCategoryToggleHeight,
+                  constraints: BoxConstraints(
+                    minWidth: AppDimensions.goalCategoryToggleWidth,
                   ),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  labels[index],
-                  style:
-                      isSelected
-                          ? AppTypography.body3Bold.copyWith(
-                            color: AppColors.status100,
-                          )
-                          : AppTypography.body3Regular.copyWith(
-                            color: const Color(0xFF7F7F7F),
-                          ),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: isSelected ? AppColors.green100 : Colors.transparent,
+                    borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
+                    border: Border.all(
+                      color: AppColors.borderLight,
+                      width: 0.5,
+                    ),
+                  ),
+                  child: Text(
+                    labels[index],
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: (isSelected ? AppTypography.body3Bold : AppTypography.body3Regular).copyWith(
+                      color: isSelected ? AppColors.status100 : AppColors.bottomIconColor,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
             ),

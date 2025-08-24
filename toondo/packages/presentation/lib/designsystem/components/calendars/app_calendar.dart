@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
+import 'package:presentation/designsystem/typography/app_typography.dart';
 
 class Calendar extends StatefulWidget {
   final DateTime selectedDate;
@@ -55,17 +58,12 @@ class _CalendarState extends State<Calendar> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 10.0),
+              padding: EdgeInsets.only(left: 10.w),
               child: Text(
                 isWeeklyView
                     ? DateFormat('M월').format(currentDate)
                     : DateFormat('yyyy년 M월').format(currentDate),
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'Pretendard Variable',
-                  fontSize: 16,
-                  letterSpacing: 0.15,
-                ),
+                style: AppTypography.h2Bold.copyWith(letterSpacing: 0.15),
               ),
             ),
             Row(
@@ -78,26 +76,23 @@ class _CalendarState extends State<Calendar> {
                   icon: Icon(Icons.chevron_right, color: Color(0xFF1C1D1B)),
                   onPressed: _goToNextPeriod,
                 ),
-                SizedBox(width: 4),
+                SizedBox(width: 4.w),
                 GestureDetector(
                   onTap: _toggleCalendarView,
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 4.h,
+                    ),
                     decoration: ShapeDecoration(
                       color: Color(0xFFE4F0D9),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(AppDimensions.borderRadius10),
                       ),
                     ),
                     child: Text(
                       isWeeklyView ? '주' : '월',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w500,
-                        fontFamily: 'Pretendard Variable',
-                        fontSize: 10,
-                        letterSpacing: 0.15,
-                        height: 1.2,
-                      ),
+                      style: AppTypography.caption1Medium,
                     ),
                   ),
                 ),
@@ -143,19 +138,19 @@ class _CalendarState extends State<Calendar> {
                 child: Center(
                   child: Text(
                     dayLabel,
-                    style: TextStyle(
-                      color: const Color(0xFF1C1D1B),
-                      fontSize: 10,
-                      fontFamily: 'Pretendard Variable',
-                      fontWeight: index == todayIndex ? FontWeight.w700 : FontWeight.w400,
-                      letterSpacing: 0.15,
-                    ),
+                    style: (index == todayIndex
+                            ? AppTypography.caption1Bold
+                            : AppTypography.caption1Regular)
+                        .copyWith(
+                          color: const Color(0xFF1C1D1B),
+                          letterSpacing: 0.15,
+                        ),
                   ),
                 ),
               );
             }),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: AppSpacing.spacing4),
           // 날짜 셀
           Row(
             children: List.generate(7, (index) {
@@ -171,8 +166,8 @@ class _CalendarState extends State<Calendar> {
                   child: Center(
                     // <-- 핵심: 내부 정렬은 Center로
                     child: Container(
-                      width: 32,
-                      height: 32,
+                      width: 32.w,
+                      height: 32.w,
                       decoration: BoxDecoration(
                         color:
                             isSelected
@@ -180,22 +175,20 @@ class _CalendarState extends State<Calendar> {
                                 : isCurrentMonth
                                 ? const Color(0x7FE4F0D9)
                                 : const Color(0x7FEEEEEE),
-                        borderRadius: BorderRadius.circular(1000),
+                          borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
                       ),
                       child: Center(
                         child: Text(
                           '${date.day}',
-                          style: TextStyle(
-                            color:
-                                isSelected
-                                    ? Colors.white
-                                    : isCurrentMonth
-                                    ? const Color(0xFF535353)
-                                    : const Color(0xBF535353),
-                            fontSize: 10,
-                            fontFamily: 'Pretendard Variable',
-                            fontWeight:
-                                isSelected ? FontWeight.w700 : FontWeight.w400,
+                          style: (isSelected
+                              ? AppTypography.caption1Bold
+                              : AppTypography.caption1Regular)
+                              .copyWith(
+                            color: isSelected
+                                ? Colors.white
+                                : isCurrentMonth
+                                ? const Color(0xFF535353)
+                                : const Color(0xBF535353),
                             letterSpacing: 0.15,
                           ),
                         ),
@@ -239,11 +232,8 @@ class _CalendarState extends State<Calendar> {
                   child: Center(
                     child: Text(
                       label,
-                      style: const TextStyle(
-                        color: Color(0xFF1C1D1B),
-                        fontSize: 10,
-                        fontFamily: 'Pretendard Variable',
-                        fontWeight: FontWeight.w400,
+                      style: AppTypography.caption1Regular.copyWith(
+                        color: const Color(0xFF1C1D1B),
                         letterSpacing: 0.15,
                       ),
                     ),
@@ -251,12 +241,12 @@ class _CalendarState extends State<Calendar> {
                 );
               }).toList(),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: AppSpacing.spacing8),
         // 날짜 셀
         Column(
           children: List.generate(totalWeeks, (weekIndex) {
             return Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
+              padding: EdgeInsets.only(bottom: AppSpacing.spacing8),
               child: Row(
                 children: List.generate(7, (dayIndex) {
                   int daysToAdd = weekIndex * 7 + dayIndex;
@@ -273,8 +263,8 @@ class _CalendarState extends State<Calendar> {
                       onTap: () => widget.onDateSelected(date),
                       child: Center(
                         child: Container(
-                          width: 32,
-                          height: 32,
+                          width: 32.w,
+                          height: 32.w,
                           decoration: BoxDecoration(
                             color:
                                 isSelected
@@ -282,24 +272,20 @@ class _CalendarState extends State<Calendar> {
                                     : isCurrentMonth
                                     ? const Color(0x7FE4F0D9)
                                     : const Color(0x7FEEEEEE),
-                            borderRadius: BorderRadius.circular(1000),
+                            borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
                           ),
                           child: Center(
                             child: Text(
                               '${date.day}',
-                              style: TextStyle(
-                                color:
-                                    isSelected
-                                        ? Colors.white
-                                        : isCurrentMonth
-                                        ? const Color(0xFF535353)
-                                        : const Color(0xBF535353),
-                                fontSize: 10,
-                                fontFamily: 'Pretendard Variable',
-                                fontWeight:
-                                    isSelected
-                                        ? FontWeight.w600
-                                        : FontWeight.w400,
+                              style: (isSelected
+                                  ? AppTypography.caption1SemiBold
+                                  : AppTypography.caption1Regular)
+                                  .copyWith(
+                                color: isSelected
+                                    ? Colors.white
+                                    : isCurrentMonth
+                                    ? const Color(0xFF535353)
+                                    : const Color(0xBF535353),
                                 letterSpacing: 0.15,
                               ),
                             ),

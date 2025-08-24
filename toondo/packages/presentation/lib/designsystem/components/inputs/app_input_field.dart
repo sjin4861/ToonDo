@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
 import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
@@ -48,7 +49,7 @@ class _AppInputFieldState extends State<AppInputField> {
   OutlineInputBorder _getBorder(Color color) {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
-      borderSide: BorderSide(color: color, width: 1),
+      borderSide: BorderSide(color: color, width: 1.w),
     );
   }
 

@@ -1,5 +1,6 @@
 import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
 import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
@@ -52,7 +53,7 @@ class AppGoalDropdown extends StatelessWidget {
         GestureDetector(
           onTap: onToggle,
           child: Container(
-            height: 40,
+            height: 40.h,
             padding: EdgeInsets.symmetric(
               horizontal: AppSpacing.spacing12,
             ),
@@ -80,7 +81,7 @@ class AppGoalDropdown extends StatelessWidget {
                   isExpanded
                       ? Icons.keyboard_arrow_up
                       : Icons.keyboard_arrow_down,
-                  color: const Color(0xFF1C1D1B),
+                  color: AppColors.status100,
                 ),
               ],
             ),
@@ -92,16 +93,16 @@ class AppGoalDropdown extends StatelessWidget {
           Container(
             margin: EdgeInsets.only(top: AppSpacing.spacing8),
             decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xFFDDDDDD)),
-              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: AppColors.borderUnselected, width: 1.w),
+              borderRadius: BorderRadius.circular(10.r),
             ),
             child: Column(
               children: List.generate(items.length * 2 - 1, (index) {
                 if (index.isOdd) {
-                  return const Divider(
-                    height: 1,
-                    thickness: 1,
-                    color: Color(0xFFDDDDDD),
+                  return Divider(
+                    height: 1.h,
+                    thickness: 1.h,
+                    color: AppColors.borderUnselected,
                   );
                 } else {
                   final item = items[index ~/ 2];
@@ -110,37 +111,34 @@ class AppGoalDropdown extends StatelessWidget {
                   return GestureDetector(
                     onTap: () => onItemSelected(item.id),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: BorderRadius.circular(6.r),
                       child: Container(
-                        height: 40,
-                        color:
-                        isSelected
-                            ? const Color(0x80E4F0DA) // 선택 항목 배경
+                        height: 40.h,
+                        color: isSelected
+                            ? AppColors.myPageBorder.withOpacity(0.5)
                             : Colors.transparent,
                         padding: EdgeInsets.symmetric(
                           horizontal: AppSpacing.spacing12,
                         ),
                         child: Row(
-                            children: [
+                          children: [
                             _buildIcon(item.iconPath, isSelected: isSelected),
-                        SizedBox(width: AppSpacing.spacing16),
-                        Expanded(
-                          child: Text(
-                            item.title,
-                            style:
-                            isSelected
-                                ? AppTypography.body2Medium.copyWith(
-                              color: AppColors.status100,
-                            )
-                                : AppTypography.body2Regular.copyWith(
-                              color: AppColors.status100,
+                            SizedBox(width: AppSpacing.spacing16),
+                            Expanded(
+                              child: Text(
+                                item.title,
+                                style: (isSelected
+                                    ? AppTypography.body2Medium
+                                    : AppTypography.body2Regular)
+                                    .copyWith(color: AppColors.status100),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],),
+                      ),
                     ),
-                  ),);
-              }
+                  );
+                }
               }),
             ),
           ),
@@ -148,11 +146,12 @@ class AppGoalDropdown extends StatelessWidget {
     );
   }
 
-  Widget _buildIcon(String? iconPath, {
-    required bool isSelected,
-    IconData fallbackIcon = Icons.help_outline,
-  }) {
-    Widget iconWidget;
+  Widget _buildIcon(
+      String? iconPath, {
+        required bool isSelected,
+        IconData fallbackIcon = Icons.help_outline,
+      }) {
+    final Widget iconWidget;
     if (iconPath != null && iconPath.endsWith('.svg')) {
       iconWidget = SvgPicture.asset(
         iconPath,
@@ -172,10 +171,9 @@ class AppGoalDropdown extends StatelessWidget {
       height: AppDimensions.iconSize24,
       padding: EdgeInsets.all(AppSpacing.spacing4),
       decoration: BoxDecoration(
-        color:
-        isSelected
-            ? const Color(0x7FAED28F) // 선택됨
-            : const Color(0x7FDDDDDD), // 비선택
+        color: isSelected
+            ? const Color(0x7FAED28F)
+            : AppColors.borderUnselected.withOpacity(0.5),
         shape: BoxShape.circle,
       ),
       child: iconWidget,
