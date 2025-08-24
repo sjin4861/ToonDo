@@ -15,7 +15,10 @@ class LoginBody extends StatelessWidget {
 
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 32, 24, 32),
+        padding: EdgeInsets.symmetric(
+          horizontal: AppSpacing.h24,
+          vertical: AppSpacing.v32,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -26,25 +29,26 @@ class LoginBody extends StatelessWidget {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            SizedBox(height: AppSpacing.spacing8),
+            SizedBox(height: AppSpacing.v8),
             Text(
               '비밀번호를 입력하고 로그인하세요.',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: const Color(0xBF1C1D1B),
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: const Color(0xBF1C1D1B)),
             ),
-            SizedBox(height: AppSpacing.spacing32),
+            SizedBox(height: AppSpacing.v32),
             AppInputField(
               label: '아이디',
               controller: viewModel.loginIdController,
               hintText: passedLoginId != null ? null : '아이디를 입력하세요',
               isEnabled: passedLoginId == null,
-              errorText: (viewModel.loginError != null &&
-                  viewModel.loginIdController.text.trim().isEmpty)
-                  ? viewModel.loginError
-                  : null,
+              errorText:
+                  (viewModel.loginError != null &&
+                          viewModel.loginIdController.text.trim().isEmpty)
+                      ? viewModel.loginError
+                      : null,
             ),
-            SizedBox(height: AppSpacing.spacing24),
+            SizedBox(height: AppSpacing.v24),
             AppInputField(
               label: '비밀번호',
               controller: viewModel.passwordController,
@@ -54,7 +58,7 @@ class LoginBody extends StatelessWidget {
               onChanged: viewModel.setPassword,
               errorText: viewModel.passwordError,
             ),
-            SizedBox(height: AppSpacing.spacing32),
+            SizedBox(height: AppSpacing.v32),
           ],
         ),
       ),

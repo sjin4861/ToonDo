@@ -40,8 +40,8 @@ class _PasswordChangeScreenState extends State<PasswordChangeScreen> {
       bottomWidget: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: AppSpacing.spacing24,
-            vertical: AppSpacing.spacing8,
+            horizontal: AppSpacing.h24,
+            vertical: AppSpacing.v8,
           ),
           child: AppButton(
             label: '변경하기',

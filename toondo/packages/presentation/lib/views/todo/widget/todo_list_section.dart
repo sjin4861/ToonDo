@@ -49,8 +49,8 @@ class TodoListSection extends StatelessWidget {
               },
               child: Container(
                 padding: EdgeInsets.symmetric(
-                  horizontal: AppSpacing.spacing8,
-                  vertical: AppSpacing.spacing6,
+                  horizontal: AppSpacing.h8,
+                  vertical: AppSpacing.v6,
                 ),
                 decoration: ShapeDecoration(
                   shape: RoundedRectangleBorder(
@@ -72,7 +72,7 @@ class TodoListSection extends StatelessWidget {
                         color: AppColors.status100,
                       ),
                     ),
-                    SizedBox(width: AppSpacing.spacing4),
+                    SizedBox(width: AppSpacing.h4),
                     Icon(
                       Icons.add_circle_outline,
                       size: AppDimensions.iconSize12,
@@ -82,7 +82,7 @@ class TodoListSection extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: AppSpacing.spacing14),
+            SizedBox(height: AppSpacing.v14),
             todos.isNotEmpty
                 ? ListView.separated(
                   shrinkWrap: true,
@@ -171,7 +171,7 @@ class TodoListSection extends StatelessWidget {
                     );
                   },
                   separatorBuilder:
-                      (_, __) => SizedBox(height: AppSpacing.spacing8),
+                      (_, __) => SizedBox(height: AppSpacing.v8),
                 )
                 : const Center(
                   child: Text(

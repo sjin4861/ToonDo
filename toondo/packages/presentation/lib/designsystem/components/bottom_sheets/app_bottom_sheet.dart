@@ -22,11 +22,11 @@ class AppBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final content = [
-      SizedBox(height: AppSpacing.spacing22),
+      SizedBox(height: AppSpacing.v22),
       const BottomSheetDragIndicator(),
-      SizedBox(height: AppSpacing.spacing30),
+      SizedBox(height: AppSpacing.v30),
       body,
-      SizedBox(height: AppSpacing.spacing44),
+      SizedBox(height: AppSpacing.v44),
     ];
 
     // ✨ fixedHeight가 설정된 경우: hug content 모드

@@ -22,8 +22,8 @@ class AppEisenhowerSelector extends StatelessWidget {
     final radius = BorderRadius.circular(AppDimensions.borderRadius8);
 
     return Wrap(
-      spacing: AppSpacing.spacing24,
-      runSpacing: AppSpacing.spacing16,
+      spacing: AppSpacing.h22,
+      runSpacing: AppSpacing.v16,
       children: eisenhowerOptions.map((option) {
         final bool isSelected = option.type == selectedType;
 
@@ -42,7 +42,7 @@ class AppEisenhowerSelector extends StatelessWidget {
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 220),
                   curve: Curves.easeOutCubic,
-                  padding: EdgeInsets.all(AppSpacing.spacing8),
+                  padding: EdgeInsets.all(AppSpacing.a4),
                   decoration: BoxDecoration(
                     color: isSelected ? option.bgColor : Colors.transparent,
                     borderRadius: radius,
@@ -65,7 +65,7 @@ class AppEisenhowerSelector extends StatelessWidget {
                           BlendMode.srcIn,
                         ),
                       ),
-                      SizedBox(height: AppSpacing.spacing4),
+                      SizedBox(height: AppSpacing.v4),
                       Text(
                         option.label,
                         textAlign: TextAlign.center,

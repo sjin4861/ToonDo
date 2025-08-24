@@ -31,7 +31,7 @@ class AppToggleSwitch extends StatelessWidget {
             curve: Curves.easeOutCubic,
             width: AppDimensions.toggleWidth,
             height: AppDimensions.toggleHeight,
-            padding: EdgeInsets.all(AppSpacing.spacing4),
+            padding: EdgeInsets.all(AppSpacing.a4),
             decoration: BoxDecoration(
               color: value ? AppColors.green500 : AppColors.brown100,
               borderRadius: radius,

@@ -24,10 +24,9 @@ class TodoInputBody extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: AppSpacing.spacing32),
+            SizedBox(height: AppSpacing.v32),
             if (viewModel.isOnboarding)
               _buildOnboardingHeader(),
-
             Align(
               alignment: Alignment.centerRight,
               child: AppDailyChip(
@@ -37,7 +36,7 @@ class TodoInputBody extends StatelessWidget {
                 },
               ),
             ),
-            SizedBox(height: AppSpacing.spacing16),
+            SizedBox(height: AppSpacing.v16),
             AppInputField(
               label: '투두 이름',
               controller: viewModel.titleController,
@@ -45,24 +44,24 @@ class TodoInputBody extends StatelessWidget {
               errorText: viewModel.titleError,
               onChanged: (_) => viewModel.onTitleChanged(),
             ),
-            SizedBox(height: AppSpacing.spacing24),
+            SizedBox(height: AppSpacing.v24),
             GoalSelectionSection(viewModel: viewModel),
-            SizedBox(height: AppSpacing.spacing24),
+            SizedBox(height: AppSpacing.v24),
             if (!viewModel.isDailyTodo)
               _buildDateSection(viewModel, context),
-            SizedBox(height: AppSpacing.spacing24),
+            SizedBox(height: AppSpacing.v24),
             Text(
               '아이젠하워',
               style: AppTypography.caption1Regular.copyWith(
                 color: AppColors.status100,
               ),
             ),
-            SizedBox(height: AppSpacing.spacing8),
+            SizedBox(height: AppSpacing.v8),
             AppEisenhowerSelector(
               selectedType: viewModel.selectedEisenhowerType,
               onChanged: viewModel.setEisenhowerType,
             ),
-            SizedBox(height: AppSpacing.spacing24),
+            SizedBox(height: AppSpacing.v24),
             if (viewModel.isOnboarding)
               const AppTipText(
                 title: 'TIP',
@@ -85,7 +84,7 @@ class TodoInputBody extends StatelessWidget {
           showError: viewModel.startDateError != null,
           onTap: () => viewModel.selectDate(context, isStartDate: true),
         ),
-        SizedBox(width: AppSpacing.spacing18),
+        SizedBox(width: AppSpacing.h16),
         AppDateField(
           label: '마감일',
           date: viewModel.endDate,
@@ -104,12 +103,12 @@ class TodoInputBody extends StatelessWidget {
           '목표의 투두를 만들어 볼까요?',
           style: AppTypography.h2Bold.copyWith(color: AppColors.green500),
         ),
-        SizedBox(height: AppSpacing.spacing8),
+        SizedBox(height: AppSpacing.v8),
         Text(
           '지금 바로 투두(To-Do)를 만들면 나의 목표를 현실로 만들 수 있어요!',
           style: AppTypography.caption1Regular.copyWith(color: AppColors.status100_75),
         ),
-        SizedBox(height: AppSpacing.spacing40),
+        SizedBox(height: AppSpacing.v40),
       ],
     );
   }

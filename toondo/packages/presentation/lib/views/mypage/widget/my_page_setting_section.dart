@@ -22,7 +22,7 @@ class MyPageSettingSection extends StatelessWidget {
           '설정',
           style: AppTypography.h2SemiBold.copyWith(color: AppColors.status100),
         ),
-        SizedBox(height: AppSpacing.spacing16),
+        SizedBox(height: AppSpacing.v16),
         MyPageSettingTile(
           title: '동기화',
           leadingIcon: Assets.icons.icSync.svg(

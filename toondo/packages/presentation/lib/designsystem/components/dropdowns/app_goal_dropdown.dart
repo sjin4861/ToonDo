@@ -55,7 +55,7 @@ class AppGoalDropdown extends StatelessWidget {
           child: Container(
             height: 40.h,
             padding: EdgeInsets.symmetric(
-              horizontal: AppSpacing.spacing12,
+              horizontal: AppSpacing.h12,
             ),
             decoration: BoxDecoration(
               color: const Color(0xFFE4F0D9),
@@ -68,7 +68,7 @@ class AppGoalDropdown extends StatelessWidget {
                   isSelected: true,
                   fallbackIcon: Icons.help_outline,
                 ),
-                SizedBox(width: AppSpacing.spacing16),
+                SizedBox(width: AppSpacing.h16),
                 Expanded(
                   child: Text(
                     selectedItem.title,
@@ -91,7 +91,7 @@ class AppGoalDropdown extends StatelessWidget {
         // ▼ Dropdown
         if (isExpanded)
           Container(
-            margin: EdgeInsets.only(top: AppSpacing.spacing8),
+            margin: EdgeInsets.only(top: AppSpacing.v8),
             decoration: BoxDecoration(
               border: Border.all(color: AppColors.borderUnselected, width: 1.w),
               borderRadius: BorderRadius.circular(10.r),
@@ -118,12 +118,12 @@ class AppGoalDropdown extends StatelessWidget {
                             ? AppColors.myPageBorder.withOpacity(0.5)
                             : Colors.transparent,
                         padding: EdgeInsets.symmetric(
-                          horizontal: AppSpacing.spacing12,
+                          horizontal: AppSpacing.h12,
                         ),
                         child: Row(
                           children: [
                             _buildIcon(item.iconPath, isSelected: isSelected),
-                            SizedBox(width: AppSpacing.spacing16),
+                            SizedBox(width: AppSpacing.h16),
                             Expanded(
                               child: Text(
                                 item.title,
@@ -169,7 +169,7 @@ class AppGoalDropdown extends StatelessWidget {
     return Container(
       width: AppDimensions.iconSize24,
       height: AppDimensions.iconSize24,
-      padding: EdgeInsets.all(AppSpacing.spacing4),
+      padding: EdgeInsets.all(AppSpacing.a4),
       decoration: BoxDecoration(
         color: isSelected
             ? const Color(0x7FAED28F)

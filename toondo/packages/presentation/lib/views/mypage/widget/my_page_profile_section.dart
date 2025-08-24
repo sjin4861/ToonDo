@@ -19,7 +19,7 @@ class MyPageProfileSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildProfileImage(userUiModel),
-        SizedBox(width: AppSpacing.spacing24),
+        SizedBox(width: AppSpacing.h24),
         _buildProfileInfo(userUiModel),
       ],
     );
@@ -44,12 +44,12 @@ class MyPageProfileSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        SizedBox(height: AppSpacing.spacing16),
+        SizedBox(height: AppSpacing.v16),
         Text(
           userUiModel?.displayName ?? '이름 없음',
           style: AppTypography.h2SemiBold.copyWith(color: Colors.black, height: 1.0),
         ),
-        SizedBox(height: AppSpacing.spacing12),
+        SizedBox(height: AppSpacing.v12),
         Text.rich(
           TextSpan(
             children: [
@@ -84,7 +84,7 @@ class MyPageProfileSection extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(width: AppSpacing.spacing38),
+        SizedBox(width: AppSpacing.h38),
       ],
     );
   }

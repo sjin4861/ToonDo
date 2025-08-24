@@ -16,9 +16,9 @@ class SignupStep2Body extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: AppSpacing.spacing64),
+        SizedBox(height: AppSpacing.v64),
         _buildHeaderText(),
-        SizedBox(height: AppSpacing.spacing56),
+        SizedBox(height: AppSpacing.v56),
         AppInputField(
           label: '비밀번호',
           controller: viewModel.passwordTextController,
@@ -29,7 +29,7 @@ class SignupStep2Body extends StatelessWidget {
           errorText: viewModel.passwordError,
           onChanged: (value) => viewModel.setPassword(value),
         ),
-        SizedBox(height: AppSpacing.spacing24),
+        SizedBox(height: AppSpacing.v24),
         AppInputField(
           label: '비밀번호 확인',
           controller: viewModel.confirmPasswordTextController,
@@ -53,7 +53,7 @@ class SignupStep2Body extends StatelessWidget {
           '툰두와 처음 만나셨네요! 👋🏻',
           style: AppTypography.h2Bold.copyWith(color: AppColors.green500),
         ),
-        SizedBox(height: AppSpacing.spacing8),
+        SizedBox(height: AppSpacing.v8),
         Text(
           '영문과 숫자를 조합한 8~20자의 비밀번호를 만들어주세요.',
           style: AppTypography.caption1Regular.copyWith(

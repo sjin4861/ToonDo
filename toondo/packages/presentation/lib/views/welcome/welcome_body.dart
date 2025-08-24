@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:common/gen/assets.gen.dart';
 import 'package:presentation/viewmodels/welcome/welcome_viewmodel.dart';
@@ -19,13 +20,13 @@ class WelcomeBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(height: AppSpacing.spacing184),
+          SizedBox(height: AppSpacing.v184),
           _buildCharacterSection(),
-          SizedBox(height: AppSpacing.spacing28),
+          SizedBox(height: AppSpacing.v28),
           _buildWelcomeText(),
-          SizedBox(height: AppSpacing.spacing52),
+          SizedBox(height: AppSpacing.v52),
           _buildButtons(context),
-          SizedBox(height: AppSpacing.spacing120),
+          SizedBox(height: AppSpacing.v120),
           _buildTermsText(),
         ],
       ),
@@ -36,8 +37,8 @@ class WelcomeBody extends StatelessWidget {
     return Column(
       children: [
         Assets.images.imgWelcomeCharacter.image(
-          width: 187,
-          height: 140,
+          width: 187.w,
+          height: 140.h,
         ),
       ],
     );
@@ -53,7 +54,7 @@ class WelcomeBody extends StatelessWidget {
             color: AppColors.status100_75,
           ),
         ),
-        SizedBox(height: AppSpacing.spacing8),
+        SizedBox(height: AppSpacing.v8),
         RichText(
           text: TextSpan(
             children: [
@@ -86,12 +87,12 @@ class WelcomeBody extends StatelessWidget {
           AppGoogleLoginButton(
             onPressed: () => viewModel.continueWithGoogle(context),
           ),
-          SizedBox(height: AppSpacing.spacing16),
+          SizedBox(height: AppSpacing.v16),
 
           AppKakaoLoginButton(
             onPressed: () => viewModel.continueWithKakao(context),
           ),
-          SizedBox(height: AppSpacing.spacing16),
+          SizedBox(height: AppSpacing.v16),
 
           AppPhoneLoginButton(
             onPressed: () => viewModel.continueWithPhoneNumber(context),

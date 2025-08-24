@@ -21,7 +21,7 @@ class HelpGuideBody extends StatelessWidget {
 
     return Column(
       children: [
-        SizedBox(height: AppSpacing.spacing24),
+        SizedBox(height: AppSpacing.v24),
         MyPageSettingTile(
           title: '앱 버전',
           trailing: Text(

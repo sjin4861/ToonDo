@@ -26,7 +26,7 @@ class AppGoalCategoryToggle extends StatelessWidget {
 
           return Padding(
             padding: EdgeInsets.only(
-              right: index == labels.length - 1 ? 0 : AppSpacing.spacing8,
+              right: index == labels.length - 1 ? 0 : AppSpacing.h8,
             ),
             child: Material(
               color: Colors.transparent,
@@ -37,7 +37,7 @@ class AppGoalCategoryToggle extends StatelessWidget {
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   curve: Curves.easeOutCubic,
-                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacing8),
+                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.h8),
                   height: AppDimensions.goalCategoryToggleHeight,
                   constraints: BoxConstraints(
                     minWidth: AppDimensions.goalCategoryToggleWidth,

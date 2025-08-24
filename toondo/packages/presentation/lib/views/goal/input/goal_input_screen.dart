@@ -48,8 +48,8 @@ class GoalInputScreen extends StatelessWidget {
             bottomWidget: SafeArea(
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: AppSpacing.spacing24,
-                  vertical: AppSpacing.spacing8,
+                  horizontal: AppSpacing.h24,
+                  vertical: AppSpacing.v8,
                 ),
                 child:
                     isFromOnboarding

@@ -16,9 +16,9 @@ class SignupStep1Body extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: AppSpacing.spacing64),
+        SizedBox(height: AppSpacing.v64),
         _buildHeaderText(),
-        SizedBox(height: AppSpacing.spacing56),
+        SizedBox(height: AppSpacing.v56),
         AppInputField(
           label: '아이디',
           controller: viewModel.loginIdTextController,
@@ -39,7 +39,7 @@ class SignupStep1Body extends StatelessWidget {
           '아이디를 설정해주세요',
           style: AppTypography.h2Bold.copyWith(color: AppColors.green500),
         ),
-        SizedBox(height: AppSpacing.spacing8),
+        SizedBox(height: AppSpacing.v8),
         Text(
           '아이디를 입력하여 가입하세요.',
           style: AppTypography.caption1Regular.copyWith(

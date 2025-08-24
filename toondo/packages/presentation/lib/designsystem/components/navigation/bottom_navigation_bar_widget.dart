@@ -99,7 +99,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
               BlendMode.srcIn,
             ),
           ),
-          SizedBox(height: AppSpacing.spacing4),
+          SizedBox(height: AppSpacing.v4),
           if (label != null)
             Text(
               label,

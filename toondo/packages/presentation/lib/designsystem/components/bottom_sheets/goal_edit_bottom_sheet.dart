@@ -28,11 +28,11 @@ class GoalEditBottomSheet extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _buildTitle(),
-          SizedBox(height: AppSpacing.spacing32),
+          SizedBox(height: AppSpacing.v32),
           _buildEditButton(),
-          SizedBox(height: AppSpacing.spacing16),
+          SizedBox(height: AppSpacing.v16),
           _buildDeleteButton(),
-          SizedBox(height: AppSpacing.spacing44),
+          SizedBox(height: AppSpacing.v44),
         ],
       ),
     );
@@ -45,10 +45,10 @@ class GoalEditBottomSheet extends StatelessWidget {
         buildGoalIconWithCircle(
           iconPath,
           size: AppDimensions.iconSize24,
-          innerPadding: AppSpacing.spacing4,
+          innerPadding: AppSpacing.a4,
           borderWidth: 1.2,
         ),
-        SizedBox(width: AppSpacing.spacing8),
+        SizedBox(width: AppSpacing.h8),
         Text(
           title,
           style: AppTypography.h1Bold.copyWith(
@@ -73,7 +73,7 @@ class GoalEditBottomSheet extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.green500,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimensions.borderRadius20),
+            borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
           ),
           elevation: 0,
         ),
@@ -97,9 +97,9 @@ class GoalEditBottomSheet extends StatelessWidget {
           style: AppTypography.h2Bold.copyWith(color: AppColors.green500),
         ),
         style: OutlinedButton.styleFrom(
-          padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacing40, vertical: AppSpacing.spacing12),
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.h40, vertical: AppSpacing.v12),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimensions.borderRadius20),
+            borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
           ),
           side: const BorderSide(color: AppColors.green500),
         ),

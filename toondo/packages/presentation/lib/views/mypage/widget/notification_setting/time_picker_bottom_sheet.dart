@@ -29,11 +29,11 @@ class TimePickerBottomSheet extends StatelessWidget {
             '시간 설정',
             style: AppTypography.h1Bold.copyWith(color: AppColors.status100),
           ),
-          SizedBox(height: AppSpacing.spacing32),
+          SizedBox(height: AppSpacing.v32),
           _buildPickerRow(viewModel),
-          SizedBox(height: AppSpacing.spacing40),
+          SizedBox(height: AppSpacing.v40),
           _buildSaveButton(context, viewModel),
-          SizedBox(height: AppSpacing.spacing32),
+          SizedBox(height: AppSpacing.v32),
         ],
       ),
     );
@@ -90,14 +90,14 @@ class TimePickerBottomSheet extends StatelessWidget {
                     onSelected: viewModel.setAmPm,
                     isKoreanAmPm: true,
                   ),
-                  SizedBox(width: AppSpacing.spacing12),
+                  SizedBox(width: AppSpacing.h12),
                   _TimeWheelPicker(
                     items: _hourItems,
                     selectedItem: viewModel.hour,
                     onSelected: viewModel.setHour,
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacing8),
+                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.h8),
                     child: const Text(
                       ':',
                       style: TextStyle(

@@ -34,7 +34,7 @@ class GoalSelectionSection extends StatelessWidget {
             color: AppColors.status100,
           ),
         ),
-        SizedBox(height: AppSpacing.spacing8),
+        SizedBox(height: AppSpacing.v8),
         AppGoalDropdown(
           items: dropdownItems,
           selectedId: viewModel.selectedGoalId,

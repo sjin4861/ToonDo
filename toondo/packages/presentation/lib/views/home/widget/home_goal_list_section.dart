@@ -13,7 +13,7 @@ class HomeGoalListSection extends StatelessWidget {
   Widget build(BuildContext context) {
     if (goals.isEmpty) {
       return Padding(
-        padding: EdgeInsets.only(top: AppSpacing.spacing32),
+        padding: EdgeInsets.only(top: AppSpacing.v32),
         child: Align(
           alignment: Alignment.topCenter,
           child: Text(
@@ -30,7 +30,7 @@ class HomeGoalListSection extends StatelessWidget {
             goals.map((goal) {
               return Padding(
                 padding: EdgeInsets.only(
-                  bottom: AppSpacing.spacing12,
+                  bottom: AppSpacing.v12,
                 ),
                 child: HomeListItem(
                   goal: goal,

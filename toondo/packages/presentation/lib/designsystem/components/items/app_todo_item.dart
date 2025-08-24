@@ -96,7 +96,7 @@ class _AppTodoItemState extends State<AppTodoItem> {
                   child: Container(
                     color: AppColors.green500,
                     padding: EdgeInsets.symmetric(
-                      horizontal: AppSpacing.spacing12,
+                      horizontal: AppSpacing.h12,
                     ),
                     child: Center(
                       child: GestureDetector(
@@ -118,7 +118,7 @@ class _AppTodoItemState extends State<AppTodoItem> {
                                   color: AppColors.status0,
                                 ),
                               ),
-                              SizedBox(width: AppSpacing.spacing24),
+                              SizedBox(width: AppSpacing.h24),
                             ],
                           ),
                         ),
@@ -164,9 +164,9 @@ class _AppTodoItemState extends State<AppTodoItem> {
                         child: Row(
                           children: [
                             _buildIcon(),
-                            SizedBox(width: AppSpacing.spacing12),
+                            SizedBox(width: AppSpacing.h12),
                             Expanded(child: _buildTitleWithOptionalSubtitle()),
-                            SizedBox(width: AppSpacing.spacing12),
+                            SizedBox(width: AppSpacing.h12),
                             _buildCheckbox(),
                           ],
                         ),
@@ -234,7 +234,7 @@ class _AppTodoItemState extends State<AppTodoItem> {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        SizedBox(height: AppSpacing.spacing4),
+        SizedBox(height: AppSpacing.v4),
         Text(
           widget.subTitle!,
           style: AppTypography.caption3Regular.copyWith(

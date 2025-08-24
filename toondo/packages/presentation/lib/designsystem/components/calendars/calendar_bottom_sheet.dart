@@ -38,9 +38,9 @@ class _SelectDateBottomSheetState extends State<SelectDateBottomSheet> {
         child: Padding(
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
-            top: AppSpacing.spacing24,
-            left: AppSpacing.spacing16,
-            right: AppSpacing.spacing16,
+            top: AppSpacing.v24,
+            left: AppSpacing.h16,
+            right: AppSpacing.h16,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,

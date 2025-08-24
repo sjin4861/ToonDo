@@ -20,8 +20,8 @@ class SpeechBubble extends StatelessWidget {
     // 반응형 값들
     final double maxW = maxWidth.w;
     final double padH = 20.w;
-    final double padTop = 8.h;
-    final double padBottom = 4.h;
+    final double padTop = 6.h;
+    final double padBottom = 10.h;
     final double extraWidth = 4.w;
 
     // TextPainter로 실제 텍스트 폭/높이 측정
@@ -42,7 +42,7 @@ class SpeechBubble extends StatelessWidget {
         height: bubbleH,
         color: const Color(0xFFFFFEFB),
         borderColor: AppColors.status100_50,
-        radius: 16.r,
+        radius: 14.r,
         tailHeight: 6.h,
         tailWidth: 10.w,
         borderWidth: 0.1.w,
@@ -74,12 +74,12 @@ class SpeechBubblePainter extends CustomPainter {
   SpeechBubblePainter({
     required this.width,
     required this.height,
-    this.color = const Color(0xFFFFFEFB),        // AppColors에 동일 항목 없음 → 원본 유지
-    this.radius = 16,                             // 빌드에서 .r로 전달됨
-    this.tailHeight = 6,                          // 빌드에서 .h로 전달됨
-    this.tailWidth = 10,                          // 빌드에서 .w로 전달됨
-    this.borderColor = AppColors.status100_50,    // 0x801C1D1B 매핑
-    this.borderWidth = 0.1,                       // 빌드에서 .w로 전달됨
+    this.color = const Color(0xFFFFFEFB),
+    this.radius = 16,
+    this.tailHeight = 6,
+    this.tailWidth = 10,
+    this.borderColor = AppColors.status100_50,
+    this.borderWidth = 0.1,
   });
 
   @override

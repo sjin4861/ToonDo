@@ -19,9 +19,9 @@ class GoalManageBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(height: AppSpacing.spacing20),
+          SizedBox(height: AppSpacing.v20),
           _HeaderSection(viewModel: viewModel),
-          SizedBox(height: AppSpacing.spacing24),
+          SizedBox(height: AppSpacing.v24),
           viewModel.filteredGoals.isEmpty
               ? _EmptyMessage(viewModel: viewModel)
               : GoalManageListSection(viewModel: viewModel),
@@ -45,7 +45,7 @@ class _HeaderSection extends StatelessWidget {
           '목표 관리하기',
           style: AppTypography.h2Bold.copyWith(color: AppColors.status100),
         ),
-        SizedBox(height: AppSpacing.spacing28),
+        SizedBox(height: AppSpacing.v28),
         AppSelectableMenuBar(
           labels: const ['진행', '완료'],
           selectedIndex: _filterTypeToIndex(viewModel.filterType),
@@ -53,7 +53,7 @@ class _HeaderSection extends StatelessWidget {
             viewModel.setFilterType(_indexToFilterType(index));
           },
         ),
-        SizedBox(height: AppSpacing.spacing16),
+        SizedBox(height: AppSpacing.v16),
         if (viewModel.filterType == GoalFilterType.completed)
           AppGoalCategoryToggle(
             labels: const ['성공리스트', '실패리스트', '포기리스트'],

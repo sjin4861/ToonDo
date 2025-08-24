@@ -19,7 +19,7 @@ class AppDimensions {
 
   // Date Field
   static double dateFieldHeight = 32.0.h;
-  static double dateFieldWidth = 156.0.w;
+  static double dateFieldWidth = 154.0.w;
   static double calendarCellSize = 44.0;
   static double widthDateFieldText = 108.0.w;
 
@@ -44,17 +44,10 @@ class AppDimensions {
   static double radiusPill = 1000.0.r;
 
   // Semantic Padding
-  static double paddingCard = AppSpacing.spacing16;
   static double paddingListItem = 20.0.w;
-  static double paddingBottomSheetTop = AppSpacing.spacing24;
-  static double paddingNavBarIcon = AppSpacing.spacing8;
+  static double paddingBottomSheetTop = AppSpacing.v24;
   static double paddingDropdown = 12.0.w;
-  static double paddingDateFieldLabelToInput = AppSpacing.spacing8;
-  static double paddingDateFieldErrorTop = AppSpacing.spacing4;
-
-  // Semantic Margin
-  static double marginBottomButton = AppSpacing.spacing32;
-  static double marginTopDropdown = AppSpacing.spacing8;
+  static double paddingDateFieldErrorTop = AppSpacing.v4;
 
   // Chip
   static double chipHeight = 24.0.h;
@@ -74,7 +67,6 @@ class AppDimensions {
 
   // Radio
   static double radioSize = 20.0.w;
-  static double radioLabelSpacing = AppSpacing.spacing8;
 
   // BottomSheet
   static double bottomSheetTopRadius = borderRadius24;
@@ -87,10 +79,6 @@ class AppDimensions {
   static double goalIconBottomSheetHeight = 458.0.h;
   static double timePickerBottomSheetHeight = 460.0.h;
   static double iconCircleSize = 40.0.w;
-
-  // Dialog
-  static double dialogCornerRadius = 16.0.r;
-  static double dialogPadding = AppSpacing.spacing24;
 
   // Home Item
   static double homeItemHeight = 60.0.h;
@@ -115,12 +103,7 @@ class AppDimensions {
   static double goalItemWidth = 320.0.w;
   static double goalItemBorderWidth = 1.0;
 
-  // Dropdown
-  static double dropdownSpacing = AppSpacing.spacing8;
-  static double dropdownRadius = borderRadius24;
-
   // Navigation Bar
-  static double navBarIconPadding = paddingNavBarIcon;
   static double bottomNavBarHeight = 64.0.h;
   static double topBarHeight = 56.0.h;
 

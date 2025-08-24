@@ -100,7 +100,7 @@ class _CalendarState extends State<Calendar> {
             ),
           ],
         ),
-        SizedBox(height: AppSpacing.spacing16),
+        SizedBox(height: AppSpacing.v16),
         isWeeklyView ? _buildWeeklyCalendar() : _buildMonthlyCalendar(),
       ],
     );
@@ -150,7 +150,7 @@ class _CalendarState extends State<Calendar> {
               );
             }),
           ),
-          SizedBox(height: AppSpacing.spacing4),
+          SizedBox(height: AppSpacing.v4),
           // 날짜 셀
           Row(
             children: List.generate(7, (index) {
@@ -241,12 +241,12 @@ class _CalendarState extends State<Calendar> {
                 );
               }).toList(),
         ),
-        SizedBox(height: AppSpacing.spacing8),
+        SizedBox(height: AppSpacing.v8),
         // 날짜 셀
         Column(
           children: List.generate(totalWeeks, (weekIndex) {
             return Padding(
-              padding: EdgeInsets.only(bottom: AppSpacing.spacing8),
+              padding: EdgeInsets.only(bottom: AppSpacing.v8),
               child: Row(
                 children: List.generate(7, (dayIndex) {
                   int daysToAdd = weekIndex * 7 + dayIndex;

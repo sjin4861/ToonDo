@@ -22,7 +22,7 @@ class AppTipText extends StatelessWidget {
           title,
           style: AppTypography.caption1Bold.copyWith(color: AppColors.green500),
         ),
-        SizedBox(width: AppSpacing.spacing14),
+        SizedBox(width: AppSpacing.h14),
         Expanded(
           child: Text(
             description,

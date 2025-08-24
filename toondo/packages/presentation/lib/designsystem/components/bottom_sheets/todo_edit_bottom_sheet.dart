@@ -34,15 +34,15 @@ class TodoEditBottomSheet extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _buildTitle(),
-          SizedBox(height: AppSpacing.spacing32),
+          SizedBox(height: AppSpacing.h32),
           _buildEditButton(),
-          SizedBox(height: AppSpacing.spacing16),
+          SizedBox(height: AppSpacing.h16),
           _buildDeleteButton(),
           if (isDaily) ...[
-            SizedBox(height: AppSpacing.spacing16),
+            SizedBox(height: AppSpacing.h16),
             _buildDelayButton(),
           ],
-          SizedBox(height: AppSpacing.spacing44),
+          SizedBox(height: AppSpacing.h44),
         ],
       ),
     );
@@ -55,11 +55,11 @@ class TodoEditBottomSheet extends StatelessWidget {
         buildTodoIconWithCircle(
           iconPath,
           size: AppDimensions.iconSize24,
-          innerPadding: AppSpacing.spacing4,
+          innerPadding: AppSpacing.a4,
           borderWidth: 1.2,
           backgroundColor: iconBgColor,
         ),
-        SizedBox(width: AppSpacing.spacing8),
+        SizedBox(width: AppSpacing.h8),
         Text(
           title,
           style: AppTypography.h1Bold.copyWith(
@@ -85,7 +85,7 @@ class TodoEditBottomSheet extends StatelessWidget {
           backgroundColor: AppColors.green500,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimensions.borderRadius20),
+            borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
           ),
         ),
       ),
@@ -108,9 +108,9 @@ class TodoEditBottomSheet extends StatelessWidget {
           style: AppTypography.h2Bold.copyWith(color: AppColors.green500),
         ),
         style: OutlinedButton.styleFrom(
-          padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacing40, vertical: AppSpacing.spacing12),
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.h40, vertical: AppSpacing.v12),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimensions.borderRadius20),
+            borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
           ),
           side: const BorderSide(color: AppColors.green500),
         ),
@@ -134,9 +134,9 @@ class TodoEditBottomSheet extends StatelessWidget {
           style: AppTypography.h2Bold.copyWith(color: AppColors.green500),
         ),
         style: OutlinedButton.styleFrom(
-          padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacing40, vertical: AppSpacing.spacing12),
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.h40, vertical: AppSpacing.v12),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimensions.borderRadius20),
+            borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
           ),
           side: const BorderSide(color: AppColors.green500),
         ),

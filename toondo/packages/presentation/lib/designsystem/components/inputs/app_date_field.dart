@@ -35,13 +35,13 @@ class AppDateField extends StatelessWidget {
           label,
           style: AppTypography.caption1Regular.copyWith(color: AppColors.status100),
         ),
-        SizedBox(height: AppSpacing.spacing8),
+        SizedBox(height: AppSpacing.v8),
         GestureDetector(
           onTap: onTap,
           child: Container(
             height: AppDimensions.dateFieldHeight,
             width: AppDimensions.dateFieldWidth,
-            padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacing12),
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.h12),
             decoration: BoxDecoration(
               border: Border.all(color: borderColor, width: 1.w),
               borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
@@ -53,7 +53,7 @@ class AppDateField extends StatelessWidget {
                   height: AppDimensions.iconSize16,
                   colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
                 ),
-                SizedBox(width: AppSpacing.spacing8),
+                SizedBox(width: AppSpacing.h8),
                 Text(
                     hasValue ? DateFormat('yyyy년 M월 d일').format(date!) : '$label을 선택하세요',
                     style: AppTypography.caption1Regular.copyWith(color: textColor),

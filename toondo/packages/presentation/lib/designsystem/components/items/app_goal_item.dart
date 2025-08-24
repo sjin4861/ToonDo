@@ -92,7 +92,7 @@ class _AppGoalItemState extends State<AppGoalItem> {
                     color: AppColors.green500,
                     borderRadius: radius,
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacing12.w),
+                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.h12),
                   child: Center(
                     child: GestureDetector(
                       onTap: _handleDelete,
@@ -113,7 +113,7 @@ class _AppGoalItemState extends State<AppGoalItem> {
                                 color: AppColors.status0,
                               ),
                             ),
-                            SizedBox(width: AppSpacing.spacing24.w),
+                            SizedBox(width: AppSpacing.h24),
                           ],
                         ),
                       ),
@@ -140,10 +140,10 @@ class _AppGoalItemState extends State<AppGoalItem> {
                       borderRadius: radius,
                       child: Container(
                         padding: EdgeInsets.fromLTRB(
-                          AppSpacing.spacing12.w,
-                          AppSpacing.spacing12.h,
-                          AppSpacing.spacing16.w,
-                          AppSpacing.spacing12.h,
+                          AppSpacing.h12,
+                          AppSpacing.v12,
+                          AppSpacing.h16,
+                          AppSpacing.v12,
                         ),
                         decoration: BoxDecoration(
                           borderRadius: radius,
@@ -160,9 +160,9 @@ class _AppGoalItemState extends State<AppGoalItem> {
                         child: Row(
                           children: [
                             _buildIcon(),
-                            SizedBox(width: AppSpacing.spacing12.w),
+                            SizedBox(width: AppSpacing.h12),
                             Expanded(child: _buildTitleWithOptionalSubtitle()),
-                            SizedBox(width: AppSpacing.spacing12.w),
+                            SizedBox(width: AppSpacing.h12),
                             _buildCheckbox(),
                           ],
                         ),
@@ -235,7 +235,7 @@ class _AppGoalItemState extends State<AppGoalItem> {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        SizedBox(height: AppSpacing.spacing4.h),
+        SizedBox(height: AppSpacing.v4),
         Text(
           widget.subTitle!,
           style: AppTypography.caption3Regular.copyWith(
