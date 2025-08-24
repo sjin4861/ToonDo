@@ -19,7 +19,7 @@ class SpeechBubble extends StatelessWidget {
 
     // 반응형 값들
     final double maxW = maxWidth.w;
-    final double padH = 20.w;
+    final double padH = 18.w;
     final double padTop = 6.h;
     final double padBottom = 10.h;
     final double extraWidth = 4.w;
