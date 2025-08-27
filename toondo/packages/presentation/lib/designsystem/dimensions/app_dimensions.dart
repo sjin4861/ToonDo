@@ -24,12 +24,12 @@ class AppDimensions {
   static double widthDateFieldText = 108.0.w;
 
   // Icon Size
-  static double iconSize12 = 12.0.w;
-  static double iconSize16 = 16.0.w;
-  static double iconSize20 = 20.0.w;
-  static double iconSize24 = 24.0.w;
-  static double iconSize32 = 32.0.w;
-  static double iconSize50 = 50.0.w;
+  static double iconSize12 = 12.0.r;
+  static double iconSize16 = 16.0.r;
+  static double iconSize20 = 20.0.r;
+  static double iconSize24 = 24.0.r;
+  static double iconSize32 = 32.0.r;
+  static double iconSize50 = 50.0.r;
 
   // Profile Image
   static double profileImageSize = 84.0.w;

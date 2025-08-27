@@ -102,12 +102,15 @@ class WelcomeBody extends StatelessWidget {
   }
 
   Widget _buildTermsText() {
-    return Text(
-        '버튼을 눌러 다음 화면으로 이동 시,\n서비스 이용 약관 및 개인정보 처리 방안에 동의한 것으로 간주합니다.',
-        textAlign: TextAlign.center,
-        style: AppTypography.caption3Regular.copyWith(
-          color: AppColors.green600
-        ),
+    return SafeArea(
+      top: false,
+      child: Text(
+          '버튼을 눌러 다음 화면으로 이동 시,\n서비스 이용 약관 및 개인정보 처리 방안에 동의한 것으로 간주합니다.',
+          textAlign: TextAlign.center,
+          style: AppTypography.caption3Regular.copyWith(
+            color: AppColors.green600
+          ),
+      ),
     );
   }
 }

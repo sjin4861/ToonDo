@@ -8,28 +8,28 @@ class AppTypography {
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 18.sp,
     fontWeight: FontWeight.w700,
-    height: 1.22,
+    height: 1.22.h,
   );
 
   static final TextStyle h1SemiBold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 18.sp,
     fontWeight: FontWeight.w600,
-    height: 1.22,
+    height: 1.22.h,
   );
 
   static final TextStyle h1Medium = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 18.sp,
     fontWeight: FontWeight.w500,
-    height: 1.22,
+    height: 1.22.h,
   );
 
   static final TextStyle h1Regular = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 18.sp,
     fontWeight: FontWeight.w400,
-    height: 1.22,
+    height: 1.22.h,
   );
 
   // h2
@@ -37,14 +37,14 @@ class AppTypography {
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 16.sp,
     fontWeight: FontWeight.w700,
-    height: 1.25,
+    height: 1.25.h,
   );
 
   static final TextStyle h2SemiBold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 16.sp,
     fontWeight: FontWeight.w600,
-    height: 1.25,
+    height: 1.25.h,
   );
 
   static final TextStyle h2Medium = TextStyle(
@@ -58,7 +58,7 @@ class AppTypography {
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 16.sp,
     fontWeight: FontWeight.w400,
-    height: 1.25,
+    height: 1.25.h,
   );
 
   // h3
@@ -66,28 +66,28 @@ class AppTypography {
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 14.sp,
     fontWeight: FontWeight.w700,
-    height: 1.29,
+    height: 1.29.h,
   );
 
   static final TextStyle h3SemiBold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 14.sp,
     fontWeight: FontWeight.w600,
-    height: 1.29,
+    height: 1.29.h,
   );
 
   static final TextStyle h3Medium = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 14.sp,
     fontWeight: FontWeight.w500,
-    height: 1.29,
+    height: 1.29.h,
   );
 
   static final TextStyle h3Regular = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 14.sp,
     fontWeight: FontWeight.w400,
-    height: 1.29,
+    height: 1.29.h,
   );
 
   // body1
@@ -95,28 +95,28 @@ class AppTypography {
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 14.sp,
     fontWeight: FontWeight.w700,
-    height: 1.29,
+    height: 1.29.h,
   );
 
   static final TextStyle body1SemiBold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 14.sp,
     fontWeight: FontWeight.w600,
-    height: 1.29,
+    height: 1.29.h,
   );
 
   static final TextStyle body1Medium = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 14.sp,
     fontWeight: FontWeight.w500,
-    height: 1.29,
+    height: 1.29.h,
   );
 
   static final TextStyle body1Regular = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 14.sp,
     fontWeight: FontWeight.w400,
-    height: 1.29,
+    height: 1.29.h,
   );
 
   // body2
@@ -124,28 +124,28 @@ class AppTypography {
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 12.sp,
     fontWeight: FontWeight.w700,
-    height: 1.33,
+    height: 1.33.h,
   );
 
   static final TextStyle body2SemiBold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 12.sp,
     fontWeight: FontWeight.w600,
-    height: 1.33,
+    height: 1.33.h,
   );
 
   static final TextStyle body2Medium = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 12.sp,
     fontWeight: FontWeight.w500,
-    height: 1.33,
+    height: 1.33.h,
   );
 
   static final TextStyle body2Regular = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 12.sp,
     fontWeight: FontWeight.w400,
-    height: 1.33,
+    height: 1.33.h,
   );
 
   // body3
@@ -153,28 +153,28 @@ class AppTypography {
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 11.sp,
     fontWeight: FontWeight.w700,
-    height: 1.33,
+    height: 1.33.h,
   );
 
   static final TextStyle body3SemiBold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 11.sp,
     fontWeight: FontWeight.w600,
-    height: 1.33,
+    height: 1.33.h,
   );
 
   static final TextStyle body3Medium = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 11.sp,
     fontWeight: FontWeight.w500,
-    height: 1.33,
+    height: 1.33.h,
   );
 
   static final TextStyle body3Regular = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 11.sp,
     fontWeight: FontWeight.w400,
-    height: 1.33,
+    height: 1.33.h,
   );
 
   // caption1
@@ -182,28 +182,28 @@ class AppTypography {
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 10.sp,
     fontWeight: FontWeight.w700,
-    height: 1.4,
+    height: 1.4.h,
   );
 
   static final TextStyle caption1SemiBold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 10.sp,
     fontWeight: FontWeight.w600,
-    height: 1.4,
+    height: 1.4.h,
   );
 
   static final TextStyle caption1Medium = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 10.sp,
     fontWeight: FontWeight.w500,
-    height: 1.4,
+    height: 1.4.h,
   );
 
   static final TextStyle caption1Regular = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 10.sp,
     fontWeight: FontWeight.w400,
-    height: 1.4,
+    height: 1.4.h,
   );
 
   // caption2
@@ -211,28 +211,28 @@ class AppTypography {
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 9.sp,
     fontWeight: FontWeight.w700,
-    height: 1.4,
+    height: 1.4.h,
   );
 
   static final TextStyle caption2SemiBold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 9.sp,
     fontWeight: FontWeight.w600,
-    height: 1.4,
+    height: 1.4.h,
   );
 
   static final TextStyle caption2Medium = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 9.sp,
     fontWeight: FontWeight.w500,
-    height: 1.4,
+    height: 1.4.h,
   );
 
   static final TextStyle caption2Regular = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 9.sp,
     fontWeight: FontWeight.w400,
-    height: 1.4,
+    height: 1.4.h,
   );
 
   // caption3
@@ -240,28 +240,28 @@ class AppTypography {
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 8.sp,
     fontWeight: FontWeight.w700,
-    height: 1.5,
+    height: 1.5.h,
   );
 
   static final TextStyle caption3SemiBold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 8.sp,
     fontWeight: FontWeight.w600,
-    height: 1.5,
+    height: 1.5.h,
   );
 
   static final TextStyle caption3Medium = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 8.sp,
     fontWeight: FontWeight.w500,
-    height: 1.5,
+    height: 1.5.h,
   );
 
   static final TextStyle caption3Regular = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
     fontSize: 8.sp,
     fontWeight: FontWeight.w400,
-    height: 1.5,
+    height: 1.5.h,
   );
 
   static final TextStyle speechBubbleRegular = TextStyle(
@@ -269,7 +269,7 @@ class AppTypography {
     fontWeight: FontWeight.w400,
     fontStyle: FontStyle.normal,
     fontSize: 12.sp,
-    height: 1.0,
+    height: 1.0.h,
     letterSpacing: 0.12.w,
     color: const Color(0xFF605956),
   );

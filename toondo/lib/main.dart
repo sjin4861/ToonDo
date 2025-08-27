@@ -17,6 +17,8 @@ import 'package:data/models/goal_model.dart';
 import 'package:data/models/goal_status_enum.dart';
 import 'package:toondo/injection/di.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +40,7 @@ Future<void> main() async {
 
   // 의존성 주입
   await configureAllDependencies();
+  await initializeDateFormatting('ko_KR', '');
 
   // 테마 공통 관리
   final themeVM = GetIt.instance<AppThemeViewModel>();
@@ -103,6 +106,16 @@ class MyAppState extends State<MyApp> {
             child: Consumer<AppThemeViewModel>(
               builder: (context, vm, _) {
                 return MaterialApp(
+                  locale: const Locale('ko', 'KR'),
+                  supportedLocales: const [
+                    Locale('ko', 'KR'),
+                    Locale('en', 'US'),
+                  ],
+                  localizationsDelegates: [
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
                   themeMode: vm.mode.toFlutterMode(),
                   theme: ThemeData.light().copyWith(
                     scaffoldBackgroundColor: const Color(
