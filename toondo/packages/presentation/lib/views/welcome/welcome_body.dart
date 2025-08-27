@@ -26,7 +26,7 @@ class WelcomeBody extends StatelessWidget {
           _buildWelcomeText(),
           SizedBox(height: AppSpacing.v52),
           _buildButtons(context),
-          SizedBox(height: AppSpacing.v120),
+          Spacer(),
           _buildTermsText(),
         ],
       ),
