@@ -1,5 +1,6 @@
 import 'package:domain/entities/theme_mode_type.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:get_it/get_it.dart';
 import 'package:presentation/viewmodels/global/app_notification_viewmodel.dart';
@@ -49,6 +50,12 @@ Future<void> main() async {
   // 알림 공통 관리
   final notificationVM = GetIt.instance<AppNotificationViewModel>();
   await notificationVM.load();
+
+  // 세로모드만 허용
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   runApp(MyApp(themeVM: themeVM, notificationVM: notificationVM));
 }
