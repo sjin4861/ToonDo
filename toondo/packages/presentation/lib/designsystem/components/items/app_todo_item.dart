@@ -234,7 +234,7 @@ class _AppTodoItemState extends State<AppTodoItem> {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        SizedBox(height: AppSpacing.v4),
+        SizedBox(height: 2),
         Text(
           widget.subTitle!,
           style: AppTypography.caption3Regular.copyWith(

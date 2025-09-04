@@ -116,6 +116,13 @@ class MyAppState extends State<MyApp> {
                     GlobalWidgetsLocalizations.delegate,
                     GlobalCupertinoLocalizations.delegate,
                   ],
+                  builder: (context, child) {
+                    final mq = MediaQuery.of(context);
+                    return MediaQuery(
+                      data: mq.copyWith(textScaler: TextScaler.noScaling),
+                      child: child!,
+                    );
+                  },
                   themeMode: vm.mode.toFlutterMode(),
                   theme: ThemeData.light().copyWith(
                     scaffoldBackgroundColor: const Color(

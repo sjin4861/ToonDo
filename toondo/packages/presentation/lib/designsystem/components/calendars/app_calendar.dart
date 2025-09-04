@@ -29,6 +29,21 @@ class _CalendarState extends State<Calendar> {
     });
   }
 
+  Widget _swipeWrapper({required Widget child}) {
+    return GestureDetector(
+      onHorizontalDragEnd: (details) {
+        if (details.primaryVelocity == null) return;
+        if (details.primaryVelocity! < 0) {
+          _goToNextPeriod();
+        } else if (details.primaryVelocity! > 0) {
+          _goToPreviousPeriod();
+        }
+      },
+      child: child,
+    );
+  }
+
+
   void _goToPreviousPeriod() {
     setState(() {
       if (isWeeklyView) {
@@ -117,15 +132,7 @@ class _CalendarState extends State<Calendar> {
     );
     List<String> weekDays = ['일', '월', '화', '수', '목', '금', '토'];
 
-    return GestureDetector(
-      onHorizontalDragEnd: (details) {
-        if (details.primaryVelocity == null) return;
-        if (details.primaryVelocity! < 0) {
-          _goToNextPeriod();
-        } else if (details.primaryVelocity! > 0) {
-          _goToPreviousPeriod();
-        }
-      },
+    return _swipeWrapper(
       child: Column(
         children: [
           // 요일 라벨
@@ -222,84 +229,86 @@ class _CalendarState extends State<Calendar> {
 
     List<String> weekDays = ['일', '월', '화', '수', '목', '금', '토'];
 
-    return Column(
-      children: [
-        // 요일 라벨
-        Row(
-          children:
-              weekDays.map((label) {
-                return Expanded(
-                  child: Center(
-                    child: Text(
-                      label,
-                      style: AppTypography.caption1Regular.copyWith(
-                        color: const Color(0xFF1C1D1B),
-                        letterSpacing: 0.15,
+    return _swipeWrapper(
+      child: Column(
+        children: [
+          // 요일 라벨
+          Row(
+            children:
+                weekDays.map((label) {
+                  return Expanded(
+                    child: Center(
+                      child: Text(
+                        label,
+                        style: AppTypography.caption1Regular.copyWith(
+                          color: const Color(0xFF1C1D1B),
+                          letterSpacing: 0.15,
+                        ),
                       ),
                     ),
-                  ),
-                );
-              }).toList(),
-        ),
-        SizedBox(height: AppSpacing.v8),
-        // 날짜 셀
-        Column(
-          children: List.generate(totalWeeks, (weekIndex) {
-            return Padding(
-              padding: EdgeInsets.only(bottom: AppSpacing.v8),
-              child: Row(
-                children: List.generate(7, (dayIndex) {
-                  int daysToAdd = weekIndex * 7 + dayIndex;
-                  DateTime date = calendarStartDate.add(
-                    Duration(days: daysToAdd),
                   );
-                  bool isCurrentMonth = date.month == month;
-                  bool isSelected =
-                      DateFormat('yyyy-MM-dd').format(date) ==
-                      DateFormat('yyyy-MM-dd').format(widget.selectedDate);
-
-                  return Expanded(
-                    child: GestureDetector(
-                      onTap: () => widget.onDateSelected(date),
-                      child: Center(
-                        child: Container(
-                          width: 32.w,
-                          height: 32.w,
-                          decoration: BoxDecoration(
-                            color:
-                                isSelected
-                                    ? const Color(0xFF78B545)
-                                    : isCurrentMonth
-                                    ? const Color(0x7FE4F0D9)
-                                    : const Color(0x7FEEEEEE),
-                            borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
-                          ),
-                          child: Center(
-                            child: Text(
-                              '${date.day}',
-                              style: (isSelected
-                                  ? AppTypography.caption1SemiBold
-                                  : AppTypography.caption1Regular)
-                                  .copyWith(
-                                color: isSelected
-                                    ? Colors.white
-                                    : isCurrentMonth
-                                    ? const Color(0xFF535353)
-                                    : const Color(0xBF535353),
-                                letterSpacing: 0.15,
+                }).toList(),
+          ),
+          SizedBox(height: AppSpacing.v8),
+          // 날짜 셀
+          Column(
+            children: List.generate(totalWeeks, (weekIndex) {
+              return Padding(
+                padding: EdgeInsets.only(bottom: AppSpacing.v8),
+                child: Row(
+                  children: List.generate(7, (dayIndex) {
+                    int daysToAdd = weekIndex * 7 + dayIndex;
+                    DateTime date = calendarStartDate.add(
+                      Duration(days: daysToAdd),
+                    );
+                    bool isCurrentMonth = date.month == month;
+                    bool isSelected =
+                        DateFormat('yyyy-MM-dd').format(date) ==
+                        DateFormat('yyyy-MM-dd').format(widget.selectedDate);
+      
+                    return Expanded(
+                      child: GestureDetector(
+                        onTap: () => widget.onDateSelected(date),
+                        child: Center(
+                          child: Container(
+                            width: 32.w,
+                            height: 32.w,
+                            decoration: BoxDecoration(
+                              color:
+                                  isSelected
+                                      ? const Color(0xFF78B545)
+                                      : isCurrentMonth
+                                      ? const Color(0x7FE4F0D9)
+                                      : const Color(0x7FEEEEEE),
+                              borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
+                            ),
+                            child: Center(
+                              child: Text(
+                                '${date.day}',
+                                style: (isSelected
+                                    ? AppTypography.caption1SemiBold
+                                    : AppTypography.caption1Regular)
+                                    .copyWith(
+                                  color: isSelected
+                                      ? Colors.white
+                                      : isCurrentMonth
+                                      ? const Color(0xFF535353)
+                                      : const Color(0xBF535353),
+                                  letterSpacing: 0.15,
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                }),
-              ),
-            );
-          }),
-        ),
-      ],
+                    );
+                  }),
+                ),
+              );
+            }),
+          ),
+        ],
+      ),
     );
   }
 }
