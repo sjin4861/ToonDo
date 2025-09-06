@@ -28,7 +28,7 @@ class OnboardingStep4Screen extends StatelessWidget {
                 const OnboardingStep4Body(),
                 const Spacer(),
                 Padding(
-                  padding: const EdgeInsets.all(AppSpacing.spacing24),
+                  padding: EdgeInsets.all(AppSpacing.a24),
                   child: DoubleActionButtons(
                         backText: '괜찮아',
                         nextText: '좋아!',

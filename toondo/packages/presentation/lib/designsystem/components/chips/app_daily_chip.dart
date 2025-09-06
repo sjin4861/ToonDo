@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
 import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 import 'package:presentation/designsystem/typography/app_typography.dart';
@@ -15,64 +16,93 @@ class AppDailyChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: AppDimensions.chipHeight,
-      decoration: BoxDecoration(
-        border: Border.all(color: AppColors.green500),
-        borderRadius: BorderRadius.circular(AppDimensions.chipBorderRadius),
-        color: Colors.transparent,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildSideChip(
-            label: '디데이',
-            isSelected: isLeftSelected,
-            onTap: () => onSelectedChanged(true),
-            isLeft: true,
-          ),
-          _buildSideChip(
-            label: '데일리',
-            isSelected: !isLeftSelected,
-            onTap: () => onSelectedChanged(false),
-            isLeft: false,
-          ),
-        ],
-      ),
-    );
-  }
+    final double h = AppDimensions.chipHeight;
+    final double w = AppDimensions.chipWidth;
+    final double r = AppDimensions.chipBorderRadius;
 
-  Widget _buildSideChip({
-    required String label,
-    required bool isSelected,
-    required VoidCallback onTap,
-    required bool isLeft,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
+    return Material(
+      color: Colors.transparent,
       child: Container(
-        height: AppDimensions.chipHeight,
-        width: AppDimensions.chipWidth,
-        alignment: Alignment.center,
+        height: h,
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.green500 : Colors.transparent,
-          border: Border.all(color: AppColors.green500, width: 0.2),
-          borderRadius: BorderRadius.only(
-            topLeft: isLeft ? const Radius.circular(AppDimensions.chipBorderRadius) : Radius.zero,
-            bottomLeft: isLeft ? const Radius.circular(AppDimensions.chipBorderRadius) : Radius.zero,
-            topRight: isLeft ? Radius.zero : const Radius.circular(AppDimensions.chipBorderRadius),
-            bottomRight: isLeft ? Radius.zero : const Radius.circular(AppDimensions.chipBorderRadius),
-          ),
+          border: Border.all(color: AppColors.green500, width: 1.w),
+          borderRadius: BorderRadius.circular(r),
+          color: Colors.transparent,
         ),
-        child: Text(
-          label,
-          style: (isSelected ? AppTypography.caption1Bold : AppTypography.caption1Regular).copyWith(
-            color: isSelected ? AppColors.status0 : AppColors.status100,
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _SideChip(
+              label: '디데이',
+              isSelected: isLeftSelected,
+              onTap: () => onSelectedChanged(true),
+              radius: BorderRadius.only(
+                topLeft: Radius.circular(r),
+                bottomLeft: Radius.circular(r),
+              ),
+              width: w,
+              height: h,
+            ),
+            _SideChip(
+              label: '데일리',
+              isSelected: !isLeftSelected,
+              onTap: () => onSelectedChanged(false),
+              radius: BorderRadius.only(
+                topRight: Radius.circular(r),
+                bottomRight: Radius.circular(r),
+              ),
+              width: w,
+              height: h,
+            ),
+          ],
         ),
       ),
     );
   }
-
 }
 
+class _SideChip extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+  final BorderRadius radius;
+  final double width;
+  final double height;
+
+  const _SideChip({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+    required this.radius,
+    required this.width,
+    required this.height,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final Color bg = isSelected ? AppColors.green500 : Colors.transparent;
+    final Color textColor = isSelected ? AppColors.status0 : AppColors.status100;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: radius,
+      child: Ink(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color: bg,
+          border: Border.all(color: AppColors.green500, width: 0.2.w),
+          borderRadius: radius,
+        ),
+        child: Center(
+          child: AnimatedDefaultTextStyle(
+            duration: const Duration(milliseconds: 150),
+            style: (isSelected ? AppTypography.caption1Bold : AppTypography.caption1Regular)
+                .copyWith(color: textColor),
+            child: Text(label, textAlign: TextAlign.center),
+          ),
+        ),
+      ),
+    );
+  }
+}

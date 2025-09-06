@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:common/gen/assets.gen.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
@@ -34,15 +35,15 @@ class AppDateField extends StatelessWidget {
           label,
           style: AppTypography.caption1Regular.copyWith(color: AppColors.status100),
         ),
-        SizedBox(height: AppSpacing.spacing8),
+        SizedBox(height: AppSpacing.v8),
         GestureDetector(
           onTap: onTap,
           child: Container(
             height: AppDimensions.dateFieldHeight,
             width: AppDimensions.dateFieldWidth,
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing12),
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.h12),
             decoration: BoxDecoration(
-              border: Border.all(color: borderColor, width: 1),
+              border: Border.all(color: borderColor, width: 1.w),
               borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
             ),
             child: Row(
@@ -52,7 +53,7 @@ class AppDateField extends StatelessWidget {
                   height: AppDimensions.iconSize16,
                   colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: AppSpacing.h8),
                 Text(
                     hasValue ? DateFormat('yyyy년 M월 d일').format(date!) : '$label을 선택하세요',
                     style: AppTypography.caption1Regular.copyWith(color: textColor),
@@ -64,7 +65,7 @@ class AppDateField extends StatelessWidget {
         ),
         if (showError)
           Padding(
-            padding: const EdgeInsets.only(top: AppDimensions.paddingDateFieldErrorTop),
+            padding: EdgeInsets.only(top: AppDimensions.paddingDateFieldErrorTop),
             child: Text(
               '$label을 선택해주세요',
               style: AppTypography.caption1Regular.copyWith(color: AppColors.red500),

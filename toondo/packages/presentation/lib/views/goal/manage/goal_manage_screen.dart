@@ -21,9 +21,9 @@ class GoalManageScreen extends StatelessWidget {
         body: Align(alignment: Alignment.topCenter, child: GoalManageBody()),
         bottomWidget: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.spacing24,
-              vertical: AppSpacing.spacing8,
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSpacing.h24,
+              vertical: AppSpacing.v8,
             ),
             child: AppButton(
               label: '목표 추가하기',

@@ -20,11 +20,11 @@ class SyncBottomSheet extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _buildTitle(),
-          const SizedBox(height: AppSpacing.spacing32),
+          SizedBox(height: AppSpacing.v32),
           _buildLoadButton(context, viewModel),
-          const SizedBox(height: AppSpacing.spacing16),
+          SizedBox(height: AppSpacing.v16),
           _buildSaveButton(context, viewModel),
-          const SizedBox(height: AppSpacing.spacing44),
+          SizedBox(height: AppSpacing.v44),
         ],
       ),
     );
@@ -52,12 +52,12 @@ class SyncBottomSheet extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.green500,
           elevation: 0,
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.spacing40,
-            vertical: AppSpacing.spacing12,
+          padding: EdgeInsets.symmetric(
+            horizontal: AppSpacing.h40,
+            vertical: AppSpacing.v12,
           ),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimensions.borderRadius20),
+            borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
           ),
         ),
         child: Text(
@@ -79,12 +79,12 @@ class SyncBottomSheet extends StatelessWidget {
           Navigator.pop(context);
         },
         style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.spacing40,
-            vertical: AppSpacing.spacing12,
+          padding: EdgeInsets.symmetric(
+            horizontal: AppSpacing.h40,
+            vertical: AppSpacing.v12,
           ),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimensions.borderRadius20),
+            borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
           ),
           side: const BorderSide(color: AppColors.green500),
         ),

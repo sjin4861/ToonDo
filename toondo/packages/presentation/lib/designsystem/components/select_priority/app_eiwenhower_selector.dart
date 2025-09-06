@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
 import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
@@ -18,55 +19,68 @@ class AppEisenhowerSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: AppSpacing.spacing24,
-      runSpacing: AppSpacing.spacing16,
-      children: eisenhowerOptions.map((option) {
-        final isSelected = option.type == selectedType;
+    final radius = BorderRadius.circular(AppDimensions.borderRadius8);
 
-        return GestureDetector(
-          onTap: () => onChanged(option.type),
-          child: SizedBox(
-            width: AppDimensions.eisenhowerButtonWidth,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              padding: const EdgeInsets.all(AppSpacing.spacing8),
-              decoration: BoxDecoration(
-                color: isSelected ? option.bgColor : Colors.transparent,
-                borderRadius: BorderRadius.circular(AppDimensions.borderRadius8),
-                border: Border.all(
-                  color: isSelected
-                      ? option.borderColor
-                      : Colors.transparent,
-                  width: 1,
-                ),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SvgPicture.asset(
-                    option.iconPath,
-                    width: AppDimensions.eisenhowerIconSize,
-                    height: AppDimensions.eisenhowerIconSize,
-                    colorFilter: isSelected
-                        ? ColorFilter.mode(
-                          option.selectedColor,
-                          BlendMode.srcIn,
-                        )
-                        : ColorFilter.mode(
-                      AppColors.eisenhowerUnselectedContent,
-                      BlendMode.srcIn,
+    return Wrap(
+      spacing: AppSpacing.h22,
+      runSpacing: AppSpacing.v16,
+      children: eisenhowerOptions.map((option) {
+        final bool isSelected = option.type == selectedType;
+
+        return SizedBox(
+          width: AppDimensions.eisenhowerButtonWidth,
+          child: Semantics(
+            button: true,
+            selected: isSelected,
+            label: option.label,
+            onTapHint: '${option.label} 선택',
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: radius,
+                onTap: () => onChanged(option.type),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 220),
+                  curve: Curves.easeOutCubic,
+                  padding: EdgeInsets.all(AppSpacing.a4),
+                  decoration: BoxDecoration(
+                    color: isSelected ? option.bgColor : Colors.transparent,
+                    borderRadius: radius,
+                    border: Border.all(
+                      color: isSelected ? option.borderColor : Colors.transparent,
+                      width: 1.w,
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.spacing4),
-                  Text(
-                    option.label,
-                    textAlign: TextAlign.center,
-                    style: isSelected
-                        ? AppTypography.caption3Bold.copyWith(color: option.selectedColor)
-                        : AppTypography.caption3Regular.copyWith(color: option.unselectedColor),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SvgPicture.asset(
+                        option.iconPath,
+                        width: AppDimensions.eisenhowerIconSize,
+                        height: AppDimensions.eisenhowerIconSize,
+                        colorFilter: ColorFilter.mode(
+                          isSelected
+                              ? option.selectedColor
+                              : AppColors.eisenhowerUnselectedContent,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      SizedBox(height: AppSpacing.v4),
+                      Text(
+                        option.label,
+                        textAlign: TextAlign.center,
+                        style: (isSelected
+                            ? AppTypography.caption3Bold
+                            : AppTypography.caption3Regular)
+                            .copyWith(
+                          color: isSelected
+                              ? option.selectedColor
+                              : option.unselectedColor,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),

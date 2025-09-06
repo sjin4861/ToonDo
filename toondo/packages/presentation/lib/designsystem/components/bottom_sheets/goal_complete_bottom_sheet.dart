@@ -37,19 +37,19 @@ class GoalCompleteBottomSheet extends StatelessWidget {
               color: AppColors.status100,
             ),
           ),
-          const SizedBox(height: AppSpacing.spacing24),
+          SizedBox(height: AppSpacing.v24),
           buildGoalIconWithCircle(
             iconPath,
             size: AppDimensions.iconSize50,
             borderWidth: 1,
-            innerPadding: AppSpacing.spacing4,
+            innerPadding: AppSpacing.a4,
             borderColor: AppColors.green500,
           ),
-          const SizedBox(height: AppSpacing.spacing18),
+          SizedBox(height: AppSpacing.v18),
           _buildGoalInfo(),
-          const SizedBox(height: AppSpacing.spacing32),
+          SizedBox(height: AppSpacing.v32),
           _buildConfirmButton(),
-          const SizedBox(height: AppSpacing.spacing44),
+          SizedBox(height: AppSpacing.v44),
         ],
       ),
     );
@@ -64,7 +64,7 @@ class GoalCompleteBottomSheet extends StatelessWidget {
             color: AppColors.status100,
           ),
         ),
-        const SizedBox(height: AppSpacing.spacing8),
+        SizedBox(height: AppSpacing.v8),
         Text(
           '${_formatDate(startDate)} ~ ${_formatDate(endDate)}',
           style: AppTypography.caption3Regular.copyWith(
@@ -85,9 +85,9 @@ class GoalCompleteBottomSheet extends StatelessWidget {
           backgroundColor: AppColors.green500,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimensions.borderRadius20),
+            borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing40, vertical: AppSpacing.spacing12),
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.h40, vertical: AppSpacing.v12),
         ),
         child: Text(
           '확인하기',

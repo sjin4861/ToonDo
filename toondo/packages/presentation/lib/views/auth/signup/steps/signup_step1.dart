@@ -18,7 +18,7 @@ class SignupStep1 extends StatelessWidget {
           title: '회원가입',
           body: SignupStep1Body(),
           bottomWidget: SafeArea(
-            minimum: const EdgeInsets.all(AppSpacing.spacing24),
+            minimum: EdgeInsets.all(AppSpacing.a24),
             child: DoubleActionButtons(
               backText: '뒤로',
               nextText: '아이디 중복 확인하기',

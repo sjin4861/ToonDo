@@ -19,15 +19,15 @@ class NicknameChangeBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: AppSpacing.spacing24),
+        SizedBox(height: AppSpacing.v24),
         _buildTitle(),
-        const SizedBox(height: AppSpacing.spacing24),
+        SizedBox(height: AppSpacing.v24),
         AppInputField(
           label: '현재 닉네임',
           controller: TextEditingController(text: currentNickname),
           isEnabled: false,
         ),
-        const SizedBox(height: AppSpacing.spacing24),
+        SizedBox(height: AppSpacing.v24),
         AppInputField(
           label: '새 닉네임',
           hintText: '2~10자의 닉네임 입력',

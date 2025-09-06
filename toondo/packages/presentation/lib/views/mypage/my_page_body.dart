@@ -11,13 +11,13 @@ class MyPageBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            SizedBox(height: AppSpacing.spacing32),
-            MyPageProfileSection(),
-            SizedBox(height: AppSpacing.spacing24),
-            Divider(color: AppColors.myPageBorder, height: 1),
-            SizedBox(height: AppSpacing.spacing32),
-            MyPageSettingSection(),
+          children: [
+            SizedBox(height: AppSpacing.v32),
+            const MyPageProfileSection(),
+            SizedBox(height: AppSpacing.v24),
+            const Divider(color: AppColors.myPageBorder, height: 1),
+            SizedBox(height: AppSpacing.v32),
+            const MyPageSettingSection(),
           ],
     );
   }

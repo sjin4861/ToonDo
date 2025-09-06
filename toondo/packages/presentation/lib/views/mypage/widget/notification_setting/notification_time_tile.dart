@@ -34,7 +34,7 @@ class NotificationTimeTile extends StatelessWidget {
               color: Color(0xFF858584),
             ),
           ),
-          const SizedBox(width: AppSpacing.spacing16),
+          SizedBox(width: AppSpacing.h16),
           Icon(Icons.arrow_forward_ios, size: AppDimensions.iconSize16, color: Color(0xFFD9D9D9)),
         ],
       ),

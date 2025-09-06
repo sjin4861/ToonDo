@@ -61,14 +61,14 @@ class OnboardingStep3Screen extends StatelessWidget {
                       color: AppColors.green500,
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.spacing8),
+                  SizedBox(height: AppSpacing.v8),
                   Text(
                     "툰두에서 사용하고 싶은 닉네임을 적어주세요",
                     style: AppTypography.caption1Regular.copyWith(
                       color: AppColors.status100_75,
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.spacing56),
+                  SizedBox(height: AppSpacing.v56),
                   AppInputField(
                     label: '닉네임',
                     controller: viewModel.nicknameController,

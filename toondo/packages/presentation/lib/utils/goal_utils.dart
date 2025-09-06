@@ -61,57 +61,68 @@ Map<String, List<Goal>> groupGoalsByCompletion(List<Goal> goals) {
 /// GOAL에서 사용하는 아이콘 스타일
 Widget buildGoalIconWithCircle(
     dynamic icon, {
-      double size = AppDimensions.goalIconSize,
-      double borderWidth = AppDimensions.goalItemBorderWidth,
-      double innerPadding = AppDimensions.goalIconInnerPadding,
-      Color borderColor = AppColors.green500,
+      double? size,
+      double? borderWidth,
+      double? innerPadding,
+      Color? borderColor,
       bool isChecked = false,
     }) {
+  final resolvedSize = size ?? AppDimensions.goalIconSize;
+  final resolvedBorderWidth = borderWidth ?? AppDimensions.goalItemBorderWidth;
+  final resolvedInnerPadding = innerPadding ?? AppDimensions.goalIconInnerPadding;
+  final resolvedBorderColor = borderColor ?? AppColors.green500;
+
   return Container(
-    width: size,
-    height: size,
+    width: resolvedSize,
+    height: resolvedSize,
     decoration: BoxDecoration(
       shape: BoxShape.circle,
       color: Colors.transparent,
       border: Border.all(
-        color: borderColor,
-        width: borderWidth,
+        color: resolvedBorderColor,
+        width: resolvedBorderWidth,
       ),
     ),
-    padding: EdgeInsets.all(innerPadding),
+    padding: EdgeInsets.all(resolvedInnerPadding),
     child: _buildGoalIcon(
       icon,
-      size: size - 2 * innerPadding,
+      size: resolvedSize - 2 * resolvedInnerPadding,
     ),
   );
 }
+
 
 /// TODO에서 사용하는 아이콘 스타일
 Widget buildTodoIconWithCircle(
     dynamic icon, {
       required Color backgroundColor,
-      double size = AppDimensions.goalIconSize,
-      double borderWidth = AppDimensions.goalItemBorderWidth,
-      double innerPadding = AppDimensions.goalIconInnerPadding,
+      double? size,
+      double? borderWidth,
+      double? innerPadding,
     }) {
+  final resolvedSize = size ?? AppDimensions.goalIconSize;
+  final resolvedBorderWidth = borderWidth ?? AppDimensions.goalItemBorderWidth;
+  final resolvedInnerPadding = innerPadding ?? AppDimensions.goalIconInnerPadding;
+
   return Container(
-    width: size,
-    height: size,
+    width: resolvedSize,
+    height: resolvedSize,
     decoration: BoxDecoration(
       shape: BoxShape.circle,
       color: backgroundColor,
       border: Border.all(
-        color: backgroundColor, // or Colors.transparent
-        width: borderWidth,
+        color: backgroundColor,
+        width: resolvedBorderWidth,
       ),
     ),
-    padding: EdgeInsets.all(innerPadding),
+    padding: EdgeInsets.all(resolvedInnerPadding),
     child: _buildGoalIcon(
       icon,
-      size: size - 2 * innerPadding,
+      size: resolvedSize - 2 * resolvedInnerPadding,
     ),
   );
 }
+
 
 
 /// 실제 아이콘을 반환하는 내부 함수

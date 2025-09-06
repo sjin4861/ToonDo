@@ -39,6 +39,9 @@ dependencies:
   injectable: ^2.5.0
   rxdart: ^0.28.0
   package_info_plus: ^8.3.0
+  flutter_screenutil: ^5.9.3
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:

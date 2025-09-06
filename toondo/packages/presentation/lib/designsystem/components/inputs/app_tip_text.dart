@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:presentation/designsystem/colors/app_colors.dart';
+import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
+import 'package:presentation/designsystem/spacing/app_spacing.dart';
+import 'package:presentation/designsystem/typography/app_typography.dart';
 
 class AppTipText extends StatelessWidget {
   final String title;
@@ -16,25 +20,13 @@ class AppTipText extends StatelessWidget {
       children: [
         Text(
           title,
-          style: TextStyle(
-            color: Color(0xFF78B545),
-            fontSize: 10,
-            fontFamily: 'Pretendard Variable',
-            fontWeight: FontWeight.w700,
-            letterSpacing: 0.15,
-          ),
+          style: AppTypography.caption1Bold.copyWith(color: AppColors.green500),
         ),
-        SizedBox(width: 14),
+        SizedBox(width: AppSpacing.h14),
         Expanded(
           child: Text(
             description,
-            style: TextStyle(
-              color: Color(0xBF1C1D1B),
-              fontSize: 10,
-              fontFamily: 'Pretendard Variable',
-              fontWeight: FontWeight.w400,
-              letterSpacing: 0.15,
-            ),
+            style: AppTypography.caption1Regular.copyWith(color: AppColors.status100_75,),
           ),
         ),
       ],

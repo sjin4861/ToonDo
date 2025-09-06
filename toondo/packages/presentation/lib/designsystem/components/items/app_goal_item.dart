@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:common/gen/assets.gen.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
 import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
@@ -75,33 +76,32 @@ class _AppGoalItemState extends State<AppGoalItem> {
 
   @override
   Widget build(BuildContext context) {
-    final radius = BorderRadius.circular(AppDimensions.goalItemBorderRadius);
+    final radius = BorderRadius.circular(AppDimensions.goalItemBorderRadius.r);
 
     return LayoutBuilder(
       builder: (context, constraints) {
         _maxDrag = constraints.maxWidth;
 
         return SizedBox(
-          height: AppDimensions.goalItemHeight,
+          height: AppDimensions.goalItemHeight.h,
           child: Stack(
             children: [
-              // Background (delete)
               Positioned.fill(
                 child: Container(
                   decoration: BoxDecoration(
                     color: AppColors.green500,
                     borderRadius: radius,
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing12),
+                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.h12),
                   child: Center(
                     child: GestureDetector(
                       onTap: _handleDelete,
                       child: Container(
-                        width: 312,
-                        height: AppDimensions.goalItemHeight,
+                        width: 312.w,
+                        height: AppDimensions.goalItemHeight.h,
                         decoration: BoxDecoration(
                           color: AppColors.green500,
-                          borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
+                          borderRadius: BorderRadius.circular(AppDimensions.radiusPill.r),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -113,7 +113,7 @@ class _AppGoalItemState extends State<AppGoalItem> {
                                 color: AppColors.status0,
                               ),
                             ),
-                            const SizedBox(width: AppSpacing.spacing24),
+                            SizedBox(width: AppSpacing.h24),
                           ],
                         ),
                       ),
@@ -121,8 +121,6 @@ class _AppGoalItemState extends State<AppGoalItem> {
                   ),
                 ),
               ),
-
-              // Card
               AnimatedPositioned(
                 duration: const Duration(milliseconds: 100),
                 left: _dragOffset,
@@ -142,10 +140,10 @@ class _AppGoalItemState extends State<AppGoalItem> {
                       borderRadius: radius,
                       child: Container(
                         padding: EdgeInsets.fromLTRB(
-                          AppSpacing.spacing12,
-                          AppSpacing.spacing12,
-                          AppSpacing.spacing16,
-                          AppSpacing.spacing12,
+                          AppSpacing.h12,
+                          AppSpacing.v12,
+                          AppSpacing.h16,
+                          AppSpacing.v12,
                         ),
                         decoration: BoxDecoration(
                           borderRadius: radius,
@@ -153,7 +151,7 @@ class _AppGoalItemState extends State<AppGoalItem> {
                             color: widget.isChecked
                                 ? AppColors.itemCompletedBorder
                                 : AppColors.green300,
-                            width: AppDimensions.goalItemBorderWidth,
+                            width: AppDimensions.goalItemBorderWidth.w,
                           ),
                           color: widget.isChecked
                               ? AppColors.itemCompletedBackground
@@ -162,9 +160,9 @@ class _AppGoalItemState extends State<AppGoalItem> {
                         child: Row(
                           children: [
                             _buildIcon(),
-                            const SizedBox(width: AppSpacing.spacing12),
+                            SizedBox(width: AppSpacing.h12),
                             Expanded(child: _buildTitleWithOptionalSubtitle()),
-                            const SizedBox(width: AppSpacing.spacing12),
+                            SizedBox(width: AppSpacing.h12),
                             _buildCheckbox(),
                           ],
                         ),
@@ -186,21 +184,21 @@ class _AppGoalItemState extends State<AppGoalItem> {
         : AppColors.green300;
 
     return Container(
-      width: AppDimensions.goalIconSize,
-      height: AppDimensions.goalIconSize,
+      width: AppDimensions.goalIconSize.w,
+      height: AppDimensions.goalIconSize.h,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: AppColors.backgroundNormal,
         border: Border.all(
           color: borderColor,
-          width: AppDimensions.goalItemBorderWidth,
+          width: AppDimensions.goalItemBorderWidth.w,
         ),
       ),
-      padding: const EdgeInsets.all(AppDimensions.goalIconInnerPadding),
+      padding: EdgeInsets.all(AppDimensions.goalIconInnerPadding.r),
       child: SvgPicture.asset(
         widget.iconPath ?? Assets.icons.icHelpCircle.path,
-        width: AppDimensions.goalIconSize,
-        height: AppDimensions.goalIconSize,
+        width: AppDimensions.goalIconSize.w,
+        height: AppDimensions.goalIconSize.h,
         colorFilter: ColorFilter.mode(
           widget.isChecked ? AppColors.status100_50 : AppColors.status100,
           BlendMode.srcIn,
@@ -237,7 +235,7 @@ class _AppGoalItemState extends State<AppGoalItem> {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        const SizedBox(height: AppSpacing.spacing4),
+        SizedBox(height: AppSpacing.v4),
         Text(
           widget.subTitle!,
           style: AppTypography.caption3Regular.copyWith(
@@ -254,16 +252,16 @@ class _AppGoalItemState extends State<AppGoalItem> {
 
   Widget _buildCheckbox() {
     return SizedBox(
-      width: AppDimensions.checkboxSize,
-      height: AppDimensions.checkboxSize,
+      width: AppDimensions.checkboxSize.w,
+      height: AppDimensions.checkboxSize.h,
       child: Checkbox(
         value: widget.isChecked,
         onChanged: (value) {
           if (value != null) widget.onCheckedChanged?.call(value);
         },
-        side: const BorderSide(
+        side: BorderSide(
           color: AppColors.borderLight,
-          width: AppDimensions.checkboxBorderWidth,
+          width: AppDimensions.checkboxBorderWidth.w,
         ),
         activeColor: AppColors.itemCompletedBorder,
         checkColor: AppColors.status0,

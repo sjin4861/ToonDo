@@ -30,7 +30,7 @@ class TodoListSection extends StatelessWidget {
     return Align(
       alignment: Alignment.center,
       child: ConstrainedBox(
-        constraints: const BoxConstraints(
+        constraints: BoxConstraints(
           maxWidth: AppDimensions.todoMaxContentWidth,
         ),
         child: Column(
@@ -48,9 +48,9 @@ class TodoListSection extends StatelessWidget {
                 viewModel.loadTodos();
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.spacing8,
-                  vertical: AppSpacing.spacing6,
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppSpacing.h8,
+                  vertical: AppSpacing.v6,
                 ),
                 decoration: ShapeDecoration(
                   shape: RoundedRectangleBorder(
@@ -72,8 +72,8 @@ class TodoListSection extends StatelessWidget {
                         color: AppColors.status100,
                       ),
                     ),
-                    const SizedBox(width: AppSpacing.spacing4),
-                    const Icon(
+                    SizedBox(width: AppSpacing.h4),
+                    Icon(
                       Icons.add_circle_outline,
                       size: AppDimensions.iconSize12,
                       color: AppColors.status100,
@@ -82,7 +82,7 @@ class TodoListSection extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: AppSpacing.spacing14),
+            SizedBox(height: AppSpacing.v14),
             todos.isNotEmpty
                 ? ListView.separated(
                   shrinkWrap: true,
@@ -171,7 +171,7 @@ class TodoListSection extends StatelessWidget {
                     );
                   },
                   separatorBuilder:
-                      (_, __) => const SizedBox(height: AppSpacing.spacing8),
+                      (_, __) => SizedBox(height: AppSpacing.v8),
                 )
                 : const Center(
                   child: Text(

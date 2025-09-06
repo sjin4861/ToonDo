@@ -39,7 +39,7 @@ class SlimeCharacterViewModel extends ChangeNotifier {
   Timer? _animationProtectionTimer;
 
   /// 인사말 표시 시간 (초)
-  static const int _greetingDisplayDuration = 3;
+  static const int _greetingDisplayDuration = 4;
 
   /// 자동 인사말 간격 (분)
   static const int _autoGreetingInterval = 3; // 5분에서 3분으로 단축

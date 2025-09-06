@@ -1,5 +1,6 @@
 import 'package:domain/entities/theme_mode_type.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:get_it/get_it.dart';
 import 'package:presentation/viewmodels/global/app_notification_viewmodel.dart';
@@ -16,6 +17,9 @@ import 'package:data/models/user_model.dart';
 import 'package:data/models/goal_model.dart';
 import 'package:data/models/goal_status_enum.dart';
 import 'package:toondo/injection/di.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,6 +41,7 @@ Future<void> main() async {
 
   // 의존성 주입
   await configureAllDependencies();
+  await initializeDateFormatting('ko_KR', '');
 
   // 테마 공통 관리
   final themeVM = GetIt.instance<AppThemeViewModel>();
@@ -45,6 +50,12 @@ Future<void> main() async {
   // 알림 공통 관리
   final notificationVM = GetIt.instance<AppNotificationViewModel>();
   await notificationVM.load();
+
+  // 세로모드만 허용
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   runApp(MyApp(themeVM: themeVM, notificationVM: notificationVM));
 }
@@ -81,32 +92,58 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => widget.themeVM),
-        ChangeNotifierProvider(create: (_) => widget.notificationVM),
-        ChangeNotifierProvider(
-            create: (_) => GetIt.instance<SignupViewModel>()),
-        ChangeNotifierProvider(
-            create: (_) => GetIt.instance<GoalManagementViewModel>()),
-        ChangeNotifierProvider(create: (_) => GetIt.instance<HomeViewModel>()),
-        ChangeNotifierProvider(
-            create: (_) => GetIt.instance<OnboardingViewModel>()),
-      ],
-      child: Consumer<AppThemeViewModel>(
-        builder: (context, vm, _) {
-          return MaterialApp(
-            themeMode: vm.mode.toFlutterMode(),
-            theme: ThemeData.light().copyWith(
-              scaffoldBackgroundColor: const Color(0xFFFDFDFD), // 라이트 모드 배경색
+    return ScreenUtilInit(
+        designSize: const Size(375, 812),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (context, child) {
+          return MultiProvider(
+            providers: [
+              ChangeNotifierProvider(create: (_) => widget.themeVM),
+              ChangeNotifierProvider(create: (_) => widget.notificationVM),
+              ChangeNotifierProvider(
+                  create: (_) => GetIt.instance<SignupViewModel>()),
+              ChangeNotifierProvider(
+                  create: (_) => GetIt.instance<GoalManagementViewModel>()),
+              ChangeNotifierProvider(
+                  create: (_) => GetIt.instance<HomeViewModel>()),
+              ChangeNotifierProvider(
+                  create: (_) => GetIt.instance<OnboardingViewModel>()),
+            ],
+            child: Consumer<AppThemeViewModel>(
+              builder: (context, vm, _) {
+                return MaterialApp(
+                  locale: const Locale('ko', 'KR'),
+                  supportedLocales: const [
+                    Locale('ko', 'KR'),
+                    Locale('en', 'US'),
+                  ],
+                  localizationsDelegates: [
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                  builder: (context, child) {
+                    final mq = MediaQuery.of(context);
+                    return MediaQuery(
+                      data: mq.copyWith(textScaler: TextScaler.noScaling),
+                      child: child!,
+                    );
+                  },
+                  themeMode: vm.mode.toFlutterMode(),
+                  theme: ThemeData.light().copyWith(
+                    scaffoldBackgroundColor: const Color(
+                        0xFFFDFDFD), // 라이트 모드 배경색
+                  ),
+                  navigatorKey: navigatorKey,
+                  initialRoute: '/',
+                  onGenerateRoute: AppRouter.generateRoute,
+                  darkTheme: ThemeData.dark(),
+                );
+              },
             ),
-            navigatorKey: navigatorKey,
-            initialRoute: '/',
-            onGenerateRoute: AppRouter.generateRoute,
-            darkTheme: ThemeData.dark(),
           );
         },
-      ),
     );
   }
 }

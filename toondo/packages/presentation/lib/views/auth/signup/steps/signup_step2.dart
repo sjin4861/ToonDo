@@ -36,7 +36,7 @@ class SignupStep2 extends StatelessWidget {
           title: '회원정보 확인',
           body: SignupStep2Body(),
           bottomWidget: SafeArea(
-            minimum: const EdgeInsets.all(AppSpacing.spacing24),
+            minimum: EdgeInsets.all(AppSpacing.a24),
             child: DoubleActionButtons(
               backText: '뒤로',
               nextText: '다음으로',

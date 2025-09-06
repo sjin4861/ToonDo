@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:common/gen/assets.gen.dart';
 import 'package:presentation/viewmodels/welcome/welcome_viewmodel.dart';
@@ -19,13 +20,13 @@ class WelcomeBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(height: AppSpacing.spacing184),
+          SizedBox(height: AppSpacing.v184),
           _buildCharacterSection(),
-          const SizedBox(height: AppSpacing.spacing28),
+          SizedBox(height: AppSpacing.v28),
           _buildWelcomeText(),
-          const SizedBox(height: AppSpacing.spacing52),
+          SizedBox(height: AppSpacing.v52),
           _buildButtons(context),
-          const SizedBox(height: AppSpacing.spacing120),
+          Spacer(),
           _buildTermsText(),
         ],
       ),
@@ -36,8 +37,8 @@ class WelcomeBody extends StatelessWidget {
     return Column(
       children: [
         Assets.images.imgWelcomeCharacter.image(
-          width: 187,
-          height: 140,
+          width: 187.w,
+          height: 140.h,
         ),
       ],
     );
@@ -53,7 +54,7 @@ class WelcomeBody extends StatelessWidget {
             color: AppColors.status100_75,
           ),
         ),
-        const SizedBox(height: AppSpacing.spacing8),
+        SizedBox(height: AppSpacing.v8),
         RichText(
           text: TextSpan(
             children: [
@@ -86,12 +87,12 @@ class WelcomeBody extends StatelessWidget {
           AppGoogleLoginButton(
             onPressed: () => viewModel.continueWithGoogle(context),
           ),
-          const SizedBox(height: AppSpacing.spacing16),
+          SizedBox(height: AppSpacing.v16),
 
           AppKakaoLoginButton(
             onPressed: () => viewModel.continueWithKakao(context),
           ),
-          const SizedBox(height: AppSpacing.spacing16),
+          SizedBox(height: AppSpacing.v16),
 
           AppPhoneLoginButton(
             onPressed: () => viewModel.continueWithPhoneNumber(context),
@@ -101,12 +102,15 @@ class WelcomeBody extends StatelessWidget {
   }
 
   Widget _buildTermsText() {
-    return Text(
-        '버튼을 눌러 다음 화면으로 이동 시,\n서비스 이용 약관 및 개인정보 처리 방안에 동의한 것으로 간주합니다.',
-        textAlign: TextAlign.center,
-        style: AppTypography.caption3Regular.copyWith(
-          color: AppColors.green600
-        ),
+    return SafeArea(
+      top: false,
+      child: Text(
+          '버튼을 눌러 다음 화면으로 이동 시,\n서비스 이용 약관 및 개인정보 처리 방안에 동의한 것으로 간주합니다.',
+          textAlign: TextAlign.center,
+          style: AppTypography.caption3Regular.copyWith(
+            color: AppColors.green600
+          ),
+      ),
     );
   }
 }

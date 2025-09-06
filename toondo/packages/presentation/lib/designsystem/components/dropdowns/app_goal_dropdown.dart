@@ -1,5 +1,6 @@
 import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
 import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
@@ -52,13 +53,13 @@ class AppGoalDropdown extends StatelessWidget {
         GestureDetector(
           onTap: onToggle,
           child: Container(
-            height: 40,
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.spacing12,
+            height: 40.h,
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSpacing.h12,
             ),
             decoration: BoxDecoration(
               color: const Color(0xFFE4F0D9),
-              borderRadius: BorderRadius.circular(AppDimensions.borderRadius24),
+              borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
             ),
             child: Row(
               children: [
@@ -67,7 +68,7 @@ class AppGoalDropdown extends StatelessWidget {
                   isSelected: true,
                   fallbackIcon: Icons.help_outline,
                 ),
-                SizedBox(width: AppSpacing.spacing16),
+                SizedBox(width: AppSpacing.h16),
                 Expanded(
                   child: Text(
                     selectedItem.title,
@@ -80,7 +81,7 @@ class AppGoalDropdown extends StatelessWidget {
                   isExpanded
                       ? Icons.keyboard_arrow_up
                       : Icons.keyboard_arrow_down,
-                  color: const Color(0xFF1C1D1B),
+                  color: AppColors.status100,
                 ),
               ],
             ),
@@ -88,59 +89,71 @@ class AppGoalDropdown extends StatelessWidget {
         ),
 
         // ▼ Dropdown
+        // ▼ Dropdown
         if (isExpanded)
           Container(
-            margin: const EdgeInsets.only(top: AppSpacing.spacing8),
+            margin: EdgeInsets.only(top: AppSpacing.v8),
             decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xFFDDDDDD)),
-              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: AppColors.borderUnselected, width: 1.w),
+              borderRadius: BorderRadius.circular(24.r),
             ),
             child: Column(
-              children: List.generate(items.length * 2 - 1, (index) {
-                if (index.isOdd) {
-                  return const Divider(
-                    height: 1,
-                    thickness: 1,
-                    color: Color(0xFFDDDDDD),
+              children: List.generate(items.length * 2 - 1, (rawIndex) {
+                if (rawIndex.isOdd) {
+                  return Divider(
+                    height: 1.h,
+                    thickness: 1.h,
+                    color: AppColors.borderUnselected,
                   );
-                } else {
-                  final item = items[index ~/ 2];
-                  final isSelected = item.id.toString() == selectedId;
+                }
 
-                  return GestureDetector(
-                    onTap: () => onItemSelected(item.id),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(6),
-                      child: Container(
-                        height: 40,
-                        color:
-                        isSelected
-                            ? const Color(0x80E4F0DA) // 선택 항목 배경
-                            : Colors.transparent,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.spacing12,
-                        ),
-                        child: Row(
-                            children: [
-                            _buildIcon(item.iconPath, isSelected: isSelected),
-                        const SizedBox(width: AppSpacing.spacing16),
+                final index = rawIndex ~/ 2;
+                final item = items[index];
+                final isSelected = item.id.toString() == selectedId;
+
+                final isFirst = index == 0;
+                final isLast  = index == items.length - 1;
+
+                final BorderRadius rowRadius = (items.length == 1)
+                    ? BorderRadius.circular(AppDimensions.radiusPill)
+                    : isFirst
+                    ? BorderRadius.vertical(
+                  top: Radius.circular(24.r),
+                )
+                    : isLast
+                    ? BorderRadius.vertical(
+                  bottom: Radius.circular(24.r),
+                )
+                    : BorderRadius.zero;
+
+                return GestureDetector(
+                  onTap: () => onItemSelected(item.id),
+                  child: Container(
+                    height: 40.h,
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? AppColors.myPageBorder.withOpacity(0.5)
+                          : Colors.transparent,
+                      borderRadius: rowRadius,
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.h12),
+                    child: Row(
+                      children: [
+                        _buildIcon(item.iconPath, isSelected: isSelected),
+                        SizedBox(width: AppSpacing.h16),
                         Expanded(
                           child: Text(
                             item.title,
-                            style:
-                            isSelected
-                                ? AppTypography.body2Medium.copyWith(
-                              color: AppColors.status100,
-                            )
-                                : AppTypography.body2Regular.copyWith(
-                              color: AppColors.status100,
-                            ),
+                            style: (isSelected
+                                ? AppTypography.body2Medium
+                                : AppTypography.body2Regular)
+                                .copyWith(color: AppColors.status100),
                           ),
                         ),
-                      ],),
+                      ],
                     ),
-                  ),);
-              }
+                  ),
+                );
               }),
             ),
           ),
@@ -148,11 +161,12 @@ class AppGoalDropdown extends StatelessWidget {
     );
   }
 
-  Widget _buildIcon(String? iconPath, {
-    required bool isSelected,
-    IconData fallbackIcon = Icons.help_outline,
-  }) {
-    Widget iconWidget;
+  Widget _buildIcon(
+      String? iconPath, {
+        required bool isSelected,
+        IconData fallbackIcon = Icons.help_outline,
+      }) {
+    final Widget iconWidget;
     if (iconPath != null && iconPath.endsWith('.svg')) {
       iconWidget = SvgPicture.asset(
         iconPath,
@@ -170,12 +184,11 @@ class AppGoalDropdown extends StatelessWidget {
     return Container(
       width: AppDimensions.iconSize24,
       height: AppDimensions.iconSize24,
-      padding: const EdgeInsets.all(AppSpacing.spacing4),
+      padding: EdgeInsets.all(AppSpacing.a4),
       decoration: BoxDecoration(
-        color:
-        isSelected
-            ? const Color(0x7FAED28F) // 선택됨
-            : const Color(0x7FDDDDDD), // 비선택
+        color: isSelected
+            ? const Color(0x7FAED28F)
+            : AppColors.borderUnselected.withOpacity(0.5),
         shape: BoxShape.circle,
       ),
       child: iconWidget,

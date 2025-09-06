@@ -25,9 +25,9 @@ class AccountSettingBody extends StatelessWidget {
         ? const Center(child: CircularProgressIndicator())
         : Column(
           children: [
-            const SizedBox(height: AppSpacing.spacing48),
+            SizedBox(height: AppSpacing.v48),
             _buildProfileImage(userUiModel),
-            const SizedBox(height: AppSpacing.spacing24),
+            SizedBox(height: AppSpacing.v24),
             AccountSettingTile(
               label: '닉네임',
               value: user?.displayName ?? '',

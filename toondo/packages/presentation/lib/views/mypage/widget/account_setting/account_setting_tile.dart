@@ -17,7 +17,7 @@ class AccountSettingTile extends StatelessWidget {
       onTap: onTap,
       child: Container(
         height: 52,
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.spacing14),
+        padding: EdgeInsets.symmetric(vertical: AppSpacing.v14),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -37,11 +37,11 @@ class AccountSettingTile extends StatelessWidget {
                       color: Color(0xFF858584),
                     ),
                   ),
-                const SizedBox(width: AppSpacing.spacing24),
-                const Icon(
+                SizedBox(width: AppSpacing.h24),
+                Icon(
                   Icons.arrow_forward_ios,
                   size: AppDimensions.iconSize16,
-                  color: Color(0xFFD9D9D9),
+                  color: const Color(0xFFD9D9D9),
                 ),
               ],
             ),

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:common/gen/assets.gen.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
@@ -94,14 +95,14 @@ class _AppTodoItemState extends State<AppTodoItem> {
                   ),
                   child: Container(
                     color: AppColors.green500,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.spacing12,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppSpacing.h12,
                     ),
                     child: Center(
                       child: GestureDetector(
                         onTap: _handleDelete,
                         child: Container(
-                          width: 312,
+                          width: 312.w,
                           height: AppDimensions.todoItemHeight,
                           decoration: BoxDecoration(
                             color: AppColors.green500,
@@ -117,7 +118,7 @@ class _AppTodoItemState extends State<AppTodoItem> {
                                   color: AppColors.status0,
                                 ),
                               ),
-                              SizedBox(width: AppSpacing.spacing24),
+                              SizedBox(width: AppSpacing.h24),
                             ],
                           ),
                         ),
@@ -143,7 +144,7 @@ class _AppTodoItemState extends State<AppTodoItem> {
                       onTap: widget.onTap,
                       borderRadius: radius,
                       child: Container(
-                        padding: const EdgeInsets.all(
+                        padding: EdgeInsets.all(
                           AppDimensions.paddingTodoItem,
                         ),
                         decoration: BoxDecoration(
@@ -163,9 +164,9 @@ class _AppTodoItemState extends State<AppTodoItem> {
                         child: Row(
                           children: [
                             _buildIcon(),
-                            const SizedBox(width: AppSpacing.spacing12),
+                            SizedBox(width: AppSpacing.h12),
                             Expanded(child: _buildTitleWithOptionalSubtitle()),
-                            const SizedBox(width: AppSpacing.spacing12),
+                            SizedBox(width: AppSpacing.h12),
                             _buildCheckbox(),
                           ],
                         ),
@@ -189,7 +190,7 @@ class _AppTodoItemState extends State<AppTodoItem> {
       radius: AppDimensions.goalIconRadius,
       backgroundColor: backgroundColor,
       child: Padding(
-        padding: const EdgeInsets.all(AppDimensions.goalIconInnerPadding),
+        padding: EdgeInsets.all(AppDimensions.goalIconInnerPadding),
         child: SvgPicture.asset(
           widget.iconPath ?? Assets.icons.icHelpCircle.path,
           width: AppDimensions.goalIconSize,
@@ -233,7 +234,7 @@ class _AppTodoItemState extends State<AppTodoItem> {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        const SizedBox(height: AppSpacing.spacing4),
+        SizedBox(height: 2),
         Text(
           widget.subTitle!,
           style: AppTypography.caption3Regular.copyWith(
@@ -258,7 +259,7 @@ class _AppTodoItemState extends State<AppTodoItem> {
         onChanged: (value) {
           if (value != null) widget.onCheckedChanged?.call(value);
         },
-        side: const BorderSide(
+        side: BorderSide(
           color: AppColors.borderLight,
           width: AppDimensions.checkboxBorderWidth,
         ),

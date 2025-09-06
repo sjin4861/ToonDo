@@ -22,14 +22,14 @@ class AppGoalIconBottomSheet extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: AppColors.status0,
-        borderRadius: const BorderRadius.only(
+        borderRadius: BorderRadius.only(
           topLeft: Radius.circular(AppDimensions.bottomSheetTopRadius),
           topRight: Radius.circular(AppDimensions.bottomSheetTopRadius),
         ),
       ),
       child: Column(
         children: [
-          const SizedBox(height: AppSpacing.spacing16),
+          SizedBox(height: AppSpacing.v16),
           Container(
             width: AppDimensions.bottomSheetHandleWidth,
             height: AppDimensions.bottomSheetHandleHeight,
@@ -38,15 +38,15 @@ class AppGoalIconBottomSheet extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
             ),
           ),
-          const SizedBox(height: AppDimensions.paddingBottomSheetTop),
+          SizedBox(height: AppDimensions.paddingBottomSheetTop),
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing28),
+              padding: EdgeInsets.symmetric(horizontal: AppSpacing.h28),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: iconCategories.entries.map((entry) {
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: AppSpacing.spacing16),
+                    padding: EdgeInsets.only(bottom: AppSpacing.v16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -56,17 +56,17 @@ class AppGoalIconBottomSheet extends StatelessWidget {
                             color: AppColors.status100,
                           ),
                         ),
-                        const SizedBox(height: AppSpacing.spacing8),
+                        SizedBox(height: AppSpacing.v8),
                         Wrap(
-                          spacing: AppSpacing.spacing16,
-                          runSpacing: AppSpacing.spacing16,
+                          spacing: AppSpacing.h16,
+                          runSpacing: AppSpacing.v16,
                           children: entry.value.map((iconPath) {
                             return GestureDetector(
                               onTap: () => onIconSelected(iconPath),
                               child: Container(
                                 width: AppDimensions.iconCircleSize,
                                 height: AppDimensions.iconCircleSize,
-                                padding: const EdgeInsets.all(AppSpacing.spacing8),
+                                padding: EdgeInsets.all(AppSpacing.a8),
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   border: Border.all(

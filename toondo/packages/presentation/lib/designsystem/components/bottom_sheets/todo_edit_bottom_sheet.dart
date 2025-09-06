@@ -34,15 +34,15 @@ class TodoEditBottomSheet extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _buildTitle(),
-          const SizedBox(height: AppSpacing.spacing32),
+          SizedBox(height: AppSpacing.h32),
           _buildEditButton(),
-          const SizedBox(height: AppSpacing.spacing16),
+          SizedBox(height: AppSpacing.h16),
           _buildDeleteButton(),
           if (isDaily) ...[
-            const SizedBox(height: AppSpacing.spacing16),
+            SizedBox(height: AppSpacing.h16),
             _buildDelayButton(),
           ],
-          const SizedBox(height: AppSpacing.spacing44),
+          SizedBox(height: AppSpacing.h44),
         ],
       ),
     );
@@ -55,11 +55,11 @@ class TodoEditBottomSheet extends StatelessWidget {
         buildTodoIconWithCircle(
           iconPath,
           size: AppDimensions.iconSize24,
-          innerPadding: AppSpacing.spacing4,
+          innerPadding: AppSpacing.a4,
           borderWidth: 1.2,
           backgroundColor: iconBgColor,
         ),
-        const SizedBox(width: AppSpacing.spacing8),
+        SizedBox(width: AppSpacing.h8),
         Text(
           title,
           style: AppTypography.h1Bold.copyWith(
@@ -76,7 +76,7 @@ class TodoEditBottomSheet extends StatelessWidget {
       height: AppDimensions.buttonHeight,
       child: ElevatedButton.icon(
         onPressed: onEdit,
-        icon: const Icon(Icons.edit, size: AppDimensions.iconSize24, color: Colors.white),
+        icon: Icon(Icons.edit, size: AppDimensions.iconSize24, color: Colors.white),
         label: Text(
           '수정하기',
           style: AppTypography.h2Bold.copyWith(color: Colors.white),
@@ -85,7 +85,7 @@ class TodoEditBottomSheet extends StatelessWidget {
           backgroundColor: AppColors.green500,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimensions.borderRadius20),
+            borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
           ),
         ),
       ),
@@ -98,7 +98,7 @@ class TodoEditBottomSheet extends StatelessWidget {
       height: AppDimensions.buttonHeight,
       child: OutlinedButton.icon(
         onPressed: onDelete,
-        icon: const Icon(
+        icon: Icon(
           Icons.delete,
           size: AppDimensions.iconSize20,
           color: AppColors.green500,
@@ -108,9 +108,9 @@ class TodoEditBottomSheet extends StatelessWidget {
           style: AppTypography.h2Bold.copyWith(color: AppColors.green500),
         ),
         style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing40, vertical: AppSpacing.spacing12),
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.h40, vertical: AppSpacing.v12),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimensions.borderRadius20),
+            borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
           ),
           side: const BorderSide(color: AppColors.green500),
         ),
@@ -124,7 +124,7 @@ class TodoEditBottomSheet extends StatelessWidget {
       height: AppDimensions.buttonHeight,
       child: OutlinedButton.icon(
         onPressed: onDelay,
-        icon: const Icon(
+        icon: Icon(
           Icons.arrow_circle_right,
           size: AppDimensions.iconSize20,
           color: AppColors.green500,
@@ -134,9 +134,9 @@ class TodoEditBottomSheet extends StatelessWidget {
           style: AppTypography.h2Bold.copyWith(color: AppColors.green500),
         ),
         style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing40, vertical: AppSpacing.spacing12),
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.h40, vertical: AppSpacing.v12),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimensions.borderRadius20),
+            borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
           ),
           side: const BorderSide(color: AppColors.green500),
         ),

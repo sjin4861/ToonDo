@@ -12,9 +12,9 @@ class DisplaySettingBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: AppSpacing.spacing24),
+        SizedBox(height: AppSpacing.v24),
         _buildDisplaySettingTitle(),
-        SizedBox(height: AppSpacing.spacing16),
+        SizedBox(height: AppSpacing.v16),
         ThemeModeOptionGroup(),
       ],
     );
@@ -22,7 +22,7 @@ class DisplaySettingBody extends StatelessWidget {
 
   Widget _buildDisplaySettingTitle() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.spacing14),
+      padding: EdgeInsets.symmetric(vertical: AppSpacing.v14),
       child: Text(
         '다크모드 설정',
         style: AppTypography.body1SemiBold.copyWith(

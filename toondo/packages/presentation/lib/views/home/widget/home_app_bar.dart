@@ -21,21 +21,6 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           color: AppColors.status100,
         ),
       ),
-      actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: AppSpacing.spacing16),
-          child: IconButton(
-            onPressed: () {
-              // TODO 추후 상점 화면 이동
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (_) => ()),
-              // );
-            },
-            icon: Assets.icons.icStore.svg(width: AppDimensions.iconCircleSize, height: AppDimensions.iconCircleSize),
-          ),
-        ),
-      ],
     );
   }
 

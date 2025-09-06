@@ -16,7 +16,7 @@ class NotificationSettingBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: AppSpacing.spacing24),
+        SizedBox(height: AppSpacing.v24),
         NotificationToggleTile(
           title: '효과음',
           value: vm.settings.sound,
@@ -28,17 +28,12 @@ class NotificationSettingBody extends StatelessWidget {
           onChanged: (_) => vm.toggleAll(),
         ),
         NotificationToggleTile(
-          title: '분석리포트 알림',
-          value: vm.settings.report,
-          onChanged: (_) => vm.toggleReport(),
-        ),
-        NotificationToggleTile(
           title: '리마인드 알림',
           value: vm.settings.reminder,
           onChanged: (_) => vm.toggleReminder(),
         ),
         const NotificationTimeTile(),
-        const SizedBox(height: AppSpacing.spacing16),
+        SizedBox(height: AppSpacing.v16),
         AppTipText(title: 'TIP ', description: '원하는 시간에 to-do 작성 알림을 받아보세요!'),
       ],
     );

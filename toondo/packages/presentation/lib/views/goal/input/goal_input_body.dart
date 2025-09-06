@@ -23,18 +23,18 @@ class GoalInputBody extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: AppSpacing.spacing48),
+            SizedBox(height: AppSpacing.v48),
             GoalInputHeaderSection(),
-            SizedBox(height: AppSpacing.spacing40),
+            SizedBox(height: AppSpacing.v40),
             GoalNameInputField(
               controller: viewModel.goalNameController,
               errorText: viewModel.goalNameError,
             ),
-            SizedBox(height: AppSpacing.spacing24),
+            SizedBox(height: AppSpacing.v24),
             _buildDateSection(viewModel, context),
-            SizedBox(height: AppSpacing.spacing18),
+            SizedBox(height: AppSpacing.v18),
             _buildOptions(viewModel),
-            SizedBox(height: AppSpacing.spacing24),
+            SizedBox(height: AppSpacing.v24),
             _buildTipSection(),
           ],
         ),
@@ -58,7 +58,7 @@ class GoalInputBody extends StatelessWidget {
           showError: viewModel.dateError != null,
           onTap: () => viewModel.selectDate(context, isStartDate: true),
         ),
-        const SizedBox(width: AppSpacing.spacing12),
+        SizedBox(width: AppSpacing.h12),
         AppDateField(
           label: '마감일',
           date: viewModel.endDate,
@@ -78,7 +78,7 @@ class GoalInputBody extends StatelessWidget {
           value: viewModel.withoutDeadline,
           onChanged: (v) => viewModel.toggleWithoutDeadline(v),
         ),
-        SizedBox(height: AppSpacing.spacing8),
+        SizedBox(height: AppSpacing.v8),
         _buildCustomCheckbox(
           label: '메인화면 노출',
           value: viewModel.showOnHome,
@@ -116,7 +116,7 @@ class GoalInputBody extends StatelessWidget {
               )
                   : null,
             ),
-            const SizedBox(width: AppSpacing.spacing12),
+            SizedBox(width: AppSpacing.h12),
             Baseline(
               baseline: 9,
               baselineType: TextBaseline.alphabetic,

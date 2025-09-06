@@ -1,265 +1,276 @@
 import 'package:flutter/material.dart';
 import 'package:common/gen/fonts.gen.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppTypography {
   // h1
-  static const TextStyle h1Bold = TextStyle(
+  static final TextStyle h1Bold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 18,
+    fontSize: 18.sp,
     fontWeight: FontWeight.w700,
-    height: 1.22,
+    height: 1.22.h,
   );
 
-  static const TextStyle h1SemiBold = TextStyle(
+  static final TextStyle h1SemiBold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 18,
+    fontSize: 18.sp,
     fontWeight: FontWeight.w600,
-    height: 1.22,
+    height: 1.22.h,
   );
 
-  static const TextStyle h1Medium = TextStyle(
+  static final TextStyle h1Medium = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 18,
+    fontSize: 18.sp,
     fontWeight: FontWeight.w500,
-    height: 1.22,
+    height: 1.22.h,
   );
 
-  static const TextStyle h1Regular = TextStyle(
+  static final TextStyle h1Regular = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 18,
+    fontSize: 18.sp,
     fontWeight: FontWeight.w400,
-    height: 1.22,
+    height: 1.22.h,
   );
 
   // h2
-  static const TextStyle h2Bold = TextStyle(
+  static final TextStyle h2Bold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 16,
+    fontSize: 16.sp,
     fontWeight: FontWeight.w700,
-    height: 1.25,
+    height: 1.25.h,
   );
 
-  static const TextStyle h2SemiBold = TextStyle(
+  static final TextStyle h2SemiBold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 16,
+    fontSize: 16.sp,
     fontWeight: FontWeight.w600,
-    height: 1.25,
+    height: 1.25.h,
   );
 
-  static const TextStyle h2Medium = TextStyle(
+  static final TextStyle h2Medium = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 16,
+    fontSize: 16.sp,
     fontWeight: FontWeight.w500,
     height: 1.25,
   );
 
-  static const TextStyle h2Regular = TextStyle(
+  static final TextStyle h2Regular = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 16,
+    fontSize: 16.sp,
     fontWeight: FontWeight.w400,
-    height: 1.25,
+    height: 1.25.h,
   );
 
   // h3
-  static const TextStyle h3Bold = TextStyle(
+  static final TextStyle h3Bold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 14,
+    fontSize: 14.sp,
     fontWeight: FontWeight.w700,
-    height: 1.29,
+    height: 1.29.h,
   );
 
-  static const TextStyle h3SemiBold = TextStyle(
+  static final TextStyle h3SemiBold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 14,
+    fontSize: 14.sp,
     fontWeight: FontWeight.w600,
-    height: 1.29,
+    height: 1.29.h,
   );
 
-  static const TextStyle h3Medium = TextStyle(
+  static final TextStyle h3Medium = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 14,
+    fontSize: 14.sp,
     fontWeight: FontWeight.w500,
-    height: 1.29,
+    height: 1.29.h,
   );
 
-  static const TextStyle h3Regular = TextStyle(
+  static final TextStyle h3Regular = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 14,
+    fontSize: 14.sp,
     fontWeight: FontWeight.w400,
-    height: 1.29,
+    height: 1.29.h,
   );
 
   // body1
-  static const TextStyle body1Bold = TextStyle(
+  static final TextStyle body1Bold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 14,
+    fontSize: 14.sp,
     fontWeight: FontWeight.w700,
-    height: 1.29,
+    height: 1.29.h,
   );
 
-  static const TextStyle body1SemiBold = TextStyle(
+  static final TextStyle body1SemiBold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 14,
+    fontSize: 14.sp,
     fontWeight: FontWeight.w600,
-    height: 1.29,
+    height: 1.29.h,
   );
 
-  static const TextStyle body1Medium = TextStyle(
+  static final TextStyle body1Medium = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 14,
+    fontSize: 14.sp,
     fontWeight: FontWeight.w500,
-    height: 1.29,
+    height: 1.29.h,
   );
 
-  static const TextStyle body1Regular = TextStyle(
+  static final TextStyle body1Regular = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 14,
+    fontSize: 14.sp,
     fontWeight: FontWeight.w400,
-    height: 1.29,
+    height: 1.29.h,
   );
 
   // body2
-  static const TextStyle body2Bold = TextStyle(
+  static final TextStyle body2Bold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 12,
+    fontSize: 12.sp,
     fontWeight: FontWeight.w700,
-    height: 1.33,
+    height: 1.33.h,
   );
 
-  static const TextStyle body2SemiBold = TextStyle(
+  static final TextStyle body2SemiBold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 12,
+    fontSize: 12.sp,
     fontWeight: FontWeight.w600,
-    height: 1.33,
+    height: 1.33.h,
   );
 
-  static const TextStyle body2Medium = TextStyle(
+  static final TextStyle body2Medium = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 12,
+    fontSize: 12.sp,
     fontWeight: FontWeight.w500,
-    height: 1.33,
+    height: 1.33.h,
   );
 
-  static const TextStyle body2Regular = TextStyle(
+  static final TextStyle body2Regular = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 12,
+    fontSize: 12.sp,
     fontWeight: FontWeight.w400,
-    height: 1.33,
+    height: 1.33.h,
   );
 
   // body3
-  static const TextStyle body3Bold = TextStyle(
+  static final TextStyle body3Bold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 11,
+    fontSize: 11.sp,
     fontWeight: FontWeight.w700,
-    height: 1.33,
+    height: 1.33.h,
   );
 
-  static const TextStyle body3SemiBold = TextStyle(
+  static final TextStyle body3SemiBold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 11,
+    fontSize: 11.sp,
     fontWeight: FontWeight.w600,
-    height: 1.33,
+    height: 1.33.h,
   );
 
-  static const TextStyle body3Medium = TextStyle(
+  static final TextStyle body3Medium = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 11,
+    fontSize: 11.sp,
     fontWeight: FontWeight.w500,
-    height: 1.33,
+    height: 1.33.h,
   );
 
-  static const TextStyle body3Regular = TextStyle(
+  static final TextStyle body3Regular = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 11,
+    fontSize: 11.sp,
     fontWeight: FontWeight.w400,
-    height: 1.33,
+    height: 1.33.h,
   );
 
   // caption1
-  static const TextStyle caption1Bold = TextStyle(
+  static final TextStyle caption1Bold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 10,
+    fontSize: 10.sp,
     fontWeight: FontWeight.w700,
-    height: 1.4,
+    height: 1.4.h,
   );
 
-  static const TextStyle caption1SemiBold = TextStyle(
+  static final TextStyle caption1SemiBold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 10,
+    fontSize: 10.sp,
     fontWeight: FontWeight.w600,
-    height: 1.4,
+    height: 1.4.h,
   );
 
-  static const TextStyle caption1Medium = TextStyle(
+  static final TextStyle caption1Medium = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 10,
+    fontSize: 10.sp,
     fontWeight: FontWeight.w500,
-    height: 1.4,
+    height: 1.4.h,
   );
 
-  static const TextStyle caption1Regular = TextStyle(
+  static final TextStyle caption1Regular = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 10,
+    fontSize: 10.sp,
     fontWeight: FontWeight.w400,
-    height: 1.4,
+    height: 1.4.h,
   );
 
   // caption2
-  static const TextStyle caption2Bold = TextStyle(
+  static final TextStyle caption2Bold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 9,
+    fontSize: 9.sp,
     fontWeight: FontWeight.w700,
-    height: 1.4,
+    height: 1.4.h,
   );
 
-  static const TextStyle caption2SemiBold = TextStyle(
+  static final TextStyle caption2SemiBold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 9,
+    fontSize: 9.sp,
     fontWeight: FontWeight.w600,
-    height: 1.4,
+    height: 1.4.h,
   );
 
-  static const TextStyle caption2Medium = TextStyle(
+  static final TextStyle caption2Medium = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 9,
+    fontSize: 9.sp,
     fontWeight: FontWeight.w500,
-    height: 1.4,
+    height: 1.4.h,
   );
 
-  static const TextStyle caption2Regular = TextStyle(
+  static final TextStyle caption2Regular = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 9,
+    fontSize: 9.sp,
     fontWeight: FontWeight.w400,
-    height: 1.4,
+    height: 1.4.h,
   );
 
   // caption3
-  static const TextStyle caption3Bold = TextStyle(
+  static final TextStyle caption3Bold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 8,
+    fontSize: 8.sp,
     fontWeight: FontWeight.w700,
-    height: 1.5,
+    height: 1.5.h,
   );
 
-  static const TextStyle caption3SemiBold = TextStyle(
+  static final TextStyle caption3SemiBold = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 8,
+    fontSize: 8.sp,
     fontWeight: FontWeight.w600,
-    height: 1.5,
+    height: 1.5.h,
   );
 
-  static const TextStyle caption3Medium = TextStyle(
+  static final TextStyle caption3Medium = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 8,
+    fontSize: 8.sp,
     fontWeight: FontWeight.w500,
-    height: 1.5,
+    height: 1.5.h,
   );
 
-  static const TextStyle caption3Regular = TextStyle(
+  static final TextStyle caption3Regular = TextStyle(
     fontFamily: FontFamily.pretendardVariable,
-    fontSize: 8,
+    fontSize: 8.sp,
     fontWeight: FontWeight.w400,
-    height: 1.5,
+    height: 1.5.h,
+  );
+
+  static final TextStyle speechBubbleRegular = TextStyle(
+    fontFamily: FontFamily.nanumOgBiCe,
+    fontWeight: FontWeight.w400,
+    fontStyle: FontStyle.normal,
+    fontSize: 12.sp,
+    height: 1.0.h,
+    letterSpacing: 0.12.w,
+    color: const Color(0xFF605956),
   );
 }

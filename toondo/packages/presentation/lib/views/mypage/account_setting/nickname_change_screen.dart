@@ -31,9 +31,9 @@ class _NicknameChangeScreenState extends State<NicknameChangeScreen> {
       body: NicknameChangeBody(controller: _newNicknameController),
       bottomWidget: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.spacing24,
-            vertical: AppSpacing.spacing8,
+          padding: EdgeInsets.symmetric(
+            horizontal: AppSpacing.h24,
+            vertical: AppSpacing.v8,
           ),
           child: AppButton(
             label: '변경하기',

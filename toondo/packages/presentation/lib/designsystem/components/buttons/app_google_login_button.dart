@@ -15,7 +15,7 @@ class AppGoogleLoginButton extends StatelessWidget {
     return OutlinedButton(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
-        fixedSize: const Size(AppDimensions.signInButtonWidth, AppDimensions.signInButtonHeight),
+        fixedSize: Size(AppDimensions.signInButtonWidth, AppDimensions.signInButtonHeight),
         backgroundColor: AppColors.status0,
         side: BorderSide(
           color: AppColors.borderLight,
@@ -24,7 +24,7 @@ class AppGoogleLoginButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing16),
+        padding: EdgeInsets.symmetric(horizontal: AppSpacing.h16),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -34,7 +34,7 @@ class AppGoogleLoginButton extends StatelessWidget {
             height: AppDimensions.iconSize32,
             fit: BoxFit.cover,
           ),
-          const SizedBox(width: AppSpacing.spacing12),
+          SizedBox(width: AppSpacing.h12),
           Text(
             '구글로 계속하기',
             textAlign: TextAlign.center,

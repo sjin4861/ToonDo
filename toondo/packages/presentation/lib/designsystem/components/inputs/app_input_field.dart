@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
 import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
@@ -48,7 +49,7 @@ class _AppInputFieldState extends State<AppInputField> {
   OutlineInputBorder _getBorder(Color color) {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
-      borderSide: BorderSide(color: color, width: 1),
+      borderSide: BorderSide(color: color, width: 1.w),
     );
   }
 
@@ -74,7 +75,7 @@ class _AppInputFieldState extends State<AppInputField> {
           widget.label,
           style: AppTypography.caption1Regular.copyWith(color: _textColor()),
         ),
-        const SizedBox(height: AppSpacing.spacing8),
+        SizedBox(height: AppSpacing.v8),
         SizedBox(
           height: AppDimensions.inputFieldHeight,
           child: TextField(
@@ -91,8 +92,8 @@ class _AppInputFieldState extends State<AppInputField> {
               ),
               filled: true,
               fillColor: AppColors.status0,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.spacing16,
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: AppSpacing.h16,
               ),
               enabledBorder: _getBorder(borderColor),
               focusedBorder: _getBorder(borderColor),
@@ -118,7 +119,7 @@ class _AppInputFieldState extends State<AppInputField> {
             ),
           ),
         ),
-        const SizedBox(height: AppSpacing.spacing8),
+        SizedBox(height: AppSpacing.v8),
         if (widget.errorText != null)
           Text(
             widget.errorText!,

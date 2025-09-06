@@ -153,9 +153,10 @@ class TodoInputViewModel extends ChangeNotifier {
   }
 
   Future<void> selectDate(
-    BuildContext context, {
-    required bool isStartDate,
-  }) async {
+      BuildContext context, {
+        required bool isStartDate,
+      }) async {
+    // 현재 값 기준으로 initialDate 선정
     DateTime initialDate = DateTime.now();
     if (isStartDate && startDate != null) {
       initialDate = startDate!;
@@ -163,28 +164,37 @@ class TodoInputViewModel extends ChangeNotifier {
       initialDate = endDate!;
     }
 
-    DateTime? pickedDate = await showModalBottomSheet<DateTime>(
+    // 표시용 범위 전달(있다면 시작/끝/사이만 보여짐)
+    final picked = await showModalBottomSheet<DateTime>(
       context: context,
       isScrollControlled: true,
       backgroundColor: const Color.fromRGBO(0, 0, 0, 0),
-      builder: (context) => SelectDateBottomSheet(initialDate: initialDate),
+      builder: (_) => SelectDateBottomSheet(
+        initialDate: initialDate,
+        rangeStart: startDate,
+        rangeEnd: endDate,
+      ),
     );
 
-    if (pickedDate != null) {
-      if (isStartDate) {
-        startDate = pickedDate;
-        if (endDate != null && startDate!.isAfter(endDate!)) {
-          endDate = startDate;
-        }
-      } else {
-        endDate = pickedDate;
-        if (startDate != null && endDate!.isBefore(startDate!)) {
-          startDate = endDate;
-        }
+    if (picked == null) return;
+
+    if (isStartDate) {
+      startDate = picked;
+      // 역전 방지: 기존 endDate가 start보다 앞이면 end를 start로 맞춤
+      if (endDate != null && startDate!.isAfter(endDate!)) {
+        endDate = startDate;
       }
-      notifyListeners();
+    } else {
+      endDate = picked;
+      // 역전 방지: 기존 startDate가 end보다 뒤면 start를 end로 맞춤
+      if (startDate != null && endDate!.isBefore(startDate!)) {
+        startDate = endDate;
+      }
     }
+
+    notifyListeners();
   }
+
 
   Todo _buildTodo() {
     final now = DateTime.now();

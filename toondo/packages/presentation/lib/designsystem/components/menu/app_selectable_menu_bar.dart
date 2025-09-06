@@ -66,7 +66,7 @@ class AppSelectableMenuBar extends StatelessWidget {
                             ),
                   ),
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacing24),
+                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.h24),
                     child: Text(
                       labels[index],
                       style:

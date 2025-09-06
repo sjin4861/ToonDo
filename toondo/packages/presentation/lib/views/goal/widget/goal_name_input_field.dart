@@ -35,7 +35,7 @@ class _GoalNameInputFieldState extends State<GoalNameInputField> {
             color: AppColors.status100,
           ),
         ),
-        SizedBox(height: AppSpacing.spacing8),
+        SizedBox(height: AppSpacing.v8),
         Row(
           children: [
             // 아이콘 선택 버튼
@@ -76,7 +76,7 @@ class _GoalNameInputFieldState extends State<GoalNameInputField> {
                       child:
                           viewModel.selectedIcon != null
                               ? Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: EdgeInsets.all(AppSpacing.a8),
                                 child: SvgPicture.asset(
                                   viewModel.selectedIcon!,
                                   width: AppDimensions.iconSize24,
@@ -84,7 +84,7 @@ class _GoalNameInputFieldState extends State<GoalNameInputField> {
                                   fit: BoxFit.contain,
                                 ),
                               )
-                              : const Icon(
+                              : Icon(
                                 Icons.add,
                                 color: AppColors.green500,
                                 size: AppDimensions.iconSize16,
@@ -92,7 +92,7 @@ class _GoalNameInputFieldState extends State<GoalNameInputField> {
                     ),
                   ),
             ),
-            const SizedBox(width: AppSpacing.spacing8),
+            SizedBox(width: AppSpacing.h8),
             Expanded(
               child: SizedBox(
                 height: AppDimensions.inputFieldHeight,
@@ -108,7 +108,7 @@ class _GoalNameInputFieldState extends State<GoalNameInputField> {
                       color: AppColors.status100_25,
                     ),
                     contentPadding: EdgeInsets.symmetric(
-                      horizontal: AppSpacing.spacing16,
+                      horizontal: AppSpacing.h16,
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(
@@ -141,7 +141,7 @@ class _GoalNameInputFieldState extends State<GoalNameInputField> {
           ],
         ),
         if (widget.errorText != null) ...[
-          SizedBox(height: AppSpacing.spacing4),
+          SizedBox(height: AppSpacing.v4),
           Text(
             widget.errorText!,
             style: AppTypography.caption1Regular.copyWith(
