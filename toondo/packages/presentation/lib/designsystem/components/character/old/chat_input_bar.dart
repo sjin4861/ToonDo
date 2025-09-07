@@ -98,7 +98,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
   void _openAttachSheet() async {
     // 실제 데이터 – 로컬 저장소에서 가져오기
     final goals = await GetIt.I<GetGoalsLocalUseCase>()();
-    final todos = GetIt.I<GetAllTodosUseCase>()();
+    final todos = await GetIt.I<GetAllTodosUseCase>()();
 
     await showModalBottomSheet(
       context: context,

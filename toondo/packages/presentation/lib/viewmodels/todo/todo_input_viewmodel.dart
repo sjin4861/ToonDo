@@ -22,6 +22,7 @@ class TodoInputViewModel extends ChangeNotifier {
   bool isDailyTodo = false;
   bool isTitleNotEmpty = false;
   bool showGoalDropdown = false;
+  bool showOnHome = false;
   String? titleError;
   String? _startDateError;
   String? _endDateError;
@@ -40,6 +41,7 @@ class TodoInputViewModel extends ChangeNotifier {
   final CreateTodoUseCase _createTodoUseCase;
   final UpdateTodoUseCase _updateTodoUseCase;
   final GetGoalsLocalUseCase _getGoalsLocalUseCase;
+  final String? initialGoalId; // 새로 생성된 목표 전달용
 
   TodoInputViewModel({
     this.todo,
@@ -48,6 +50,7 @@ class TodoInputViewModel extends ChangeNotifier {
     required CreateTodoUseCase createTodoUseCase,
     required UpdateTodoUseCase updateTodoUseCase,
     required GetGoalsLocalUseCase getGoalsLocalUseCase,
+  this.initialGoalId,
   }) : _createTodoUseCase = createTodoUseCase,
        _updateTodoUseCase = updateTodoUseCase,
        _getGoalsLocalUseCase = getGoalsLocalUseCase {
@@ -57,6 +60,7 @@ class TodoInputViewModel extends ChangeNotifier {
       selectedGoalId = todo!.goalId;
       startDate = todo!.startDate;
       endDate = todo!.endDate;
+      showOnHome = todo!.showOnHome;
       // eisenhower 필드에서 EisenhowerType으로 매핑
       _selectedEisenhowerType = _mapEisenhowerToType(todo!.eisenhower);
       isDailyTodo = todo!.startDate == todo!.endDate;
@@ -66,6 +70,11 @@ class TodoInputViewModel extends ChangeNotifier {
         startDate = null;
         endDate = null;
       }
+    }
+
+    // 새 목표에서 넘어온 경우 자동 연결
+    if (initialGoalId != null && selectedGoalId == null) {
+      selectedGoalId = initialGoalId;
     }
 
     titleController.addListener(_onTitleChanged);
@@ -111,6 +120,11 @@ class TodoInputViewModel extends ChangeNotifier {
   // EisenhowerType 설정
   void setEisenhowerType(EisenhowerType type) {
     _selectedEisenhowerType = type;
+    notifyListeners();
+  }
+
+  void toggleShowOnHome(bool value) {
+    showOnHome = value;
     notifyListeners();
   }
 
@@ -210,6 +224,7 @@ class TodoInputViewModel extends ChangeNotifier {
       endDate: normalizedEnd,
       goalId: selectedGoalId,
       eisenhower: _mapTypeToEisenhower(_selectedEisenhowerType),
+      showOnHome: showOnHome,
     );
   }
 

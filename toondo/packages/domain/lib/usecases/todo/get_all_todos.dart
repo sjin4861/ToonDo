@@ -7,7 +7,7 @@ class GetAllTodosUseCase {
   final TodoRepository repository;
   GetAllTodosUseCase(this.repository);
 
-  List<Todo> call() {
+  Future<List<Todo>> call() async {
     return repository.getLocalTodos();
   }
 }

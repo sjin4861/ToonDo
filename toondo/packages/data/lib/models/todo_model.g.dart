@@ -26,13 +26,14 @@ class TodoModelAdapter extends TypeAdapter<TodoModel> {
       comment: fields[4] as String,
       eisenhower: fields[7] as int,
       isSynced: fields[8] as bool,
+      showOnHome: fields[9] == null ? false : fields[9] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, TodoModel obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -50,7 +51,9 @@ class TodoModelAdapter extends TypeAdapter<TodoModel> {
       ..writeByte(7)
       ..write(obj.eisenhower)
       ..writeByte(8)
-      ..write(obj.isSynced);
+      ..write(obj.isSynced)
+      ..writeByte(9)
+      ..write(obj.showOnHome);
   }
 
   @override

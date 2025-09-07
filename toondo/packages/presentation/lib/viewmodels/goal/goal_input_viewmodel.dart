@@ -45,6 +45,7 @@ class GoalInputViewModel extends ChangeNotifier {
       startDate = targetGoal!.startDate;
       endDate = targetGoal!.endDate;
       selectedIcon = targetGoal!.icon;
+      showOnHome = targetGoal!.showOnHome;
     }
   }
 
@@ -72,6 +73,7 @@ class GoalInputViewModel extends ChangeNotifier {
       startDate: startDate!,
       endDate: endDate!,
       progress: targetGoal?.progress ?? 0.0,
+      showOnHome: showOnHome,
     );
 
     try {
@@ -180,7 +182,7 @@ class GoalInputViewModel extends ChangeNotifier {
 
   void toggleWithoutDeadline(bool value) {
     withoutDeadline = value;
-    // TODO: 마감일 필드 초기화 등 필요시 처리
+  // TODO: '마감일 없이 할래요' 기능 재설계 (현재는 단순 토글만 유지, endDate 변경 안 함)
     notifyListeners();
   }
 

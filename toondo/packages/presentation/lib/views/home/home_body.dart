@@ -15,40 +15,45 @@ class HomeBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final homeVM = context.watch<HomeViewModel>();
 
-    return Stack(
-      children: [
-        const HomeBackground(),
+    return RefreshIndicator(
+      onRefresh: () async {
+        await homeVM.refresh();
+      },
+      child: Stack(
+        children: [
+          const HomeBackground(),
 
-        Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: AppSpacing.h18,
-            vertical: AppSpacing.v24,
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSpacing.h18,
+              vertical: AppSpacing.v24,
+            ),
+            child: Column(
+              children: [
+                AppSelectableMenuBar(
+                  labels: ['투두', '목표'],
+                  selectedIndex: homeVM.selectedTabIndex,
+                  onChanged: homeVM.changeTab,
+                ),
+                SizedBox(height: AppSpacing.v24),
+                Expanded(
+                  child: homeVM.selectedTabIndex == 0
+                      ? HomeTodoListSection(todos: homeVM.todayTop3Todos)
+                      : HomeGoalListSection(goals: homeVM.todayTop3Goals),
+                ),
+              ],
+            ),
           ),
-          child: Column(
-            children: [
-              AppSelectableMenuBar(
-                labels: ['투두', '목표'],
-                selectedIndex: homeVM.selectedTabIndex,
-                onChanged: homeVM.changeTab,
-              ),
-              SizedBox(height: AppSpacing.v24),
-              Expanded(
-                child: homeVM.selectedTabIndex == 0
-                    ? HomeTodoListSection(todos: homeVM.todayTop3Todos)
-                    : HomeGoalListSection(goals: homeVM.todayTop3Goals),
-              ),
-            ],
-          ),
-        ),
 
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: FractionalTranslation(
-            translation: const Offset(0, -0.22),
-            child: const SlimeArea(),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: FractionalTranslation(
+              translation: const Offset(0, -0.22),
+              child: const SlimeArea(),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

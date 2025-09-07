@@ -9,6 +9,7 @@ class Todo {
   final DateTime startDate;
   final DateTime endDate;
   final int eisenhower; // TODO: 0,1,2,3 인지 1,2,3,4 인지 서버 API 스펙 확인 필요
+  final bool showOnHome; // 메인화면 노출 여부
 
   Todo({
     required this.id,
@@ -19,6 +20,7 @@ class Todo {
     this.status = 0.0,
     this.comment = '',
     this.eisenhower = 0,
+    this.showOnHome = false,
   });
 
   bool isDDayTodo() {

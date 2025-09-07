@@ -92,12 +92,12 @@ class MockGetAllTodosUseCase extends _i1.Mock
           as _i2.TodoRepository);
 
   @override
-  List<_i6.Todo> call() =>
+  _i5.Future<List<_i6.Todo>> call() =>
       (super.noSuchMethod(
             Invocation.method(#call, []),
-            returnValue: <_i6.Todo>[],
+            returnValue: _i5.Future<List<_i6.Todo>>.value(<_i6.Todo>[]),
           )
-          as List<_i6.Todo>);
+          as _i5.Future<List<_i6.Todo>>);
 }
 
 /// A class which mocks [UpdateTodoStatusUseCase].

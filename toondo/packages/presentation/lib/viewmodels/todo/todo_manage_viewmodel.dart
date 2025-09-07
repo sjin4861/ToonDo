@@ -42,7 +42,7 @@ class TodoManageViewModel extends ChangeNotifier {
   Future<void> loadTodos() async {
     try {
       // NOTE 원격 서버에서 가져오는 대신 로컬 데이터베이스에서만 Todo 불러오기 (수정필)
-      allTodos = _getTodosUseCase();
+      allTodos = await _getTodosUseCase();
       goals = await _getGoalsLocalUseCase();
       _filterAndCategorizeTodos();
       notifyListeners();
@@ -52,7 +52,7 @@ class TodoManageViewModel extends ChangeNotifier {
   }
 
   Future<List<Todo>> getTodos() async {
-    return _getTodosUseCase();
+    return await _getTodosUseCase();
   }
 
   void updateSelectedDate(DateTime date) {
@@ -137,6 +137,7 @@ class TodoManageViewModel extends ChangeNotifier {
           status: status,
           comment: todo.comment,
           eisenhower: todo.eisenhower,
+          showOnHome: todo.showOnHome,
         );
         allTodos[idx] = updated;
       }

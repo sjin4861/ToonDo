@@ -7,6 +7,7 @@ class Goal {
   final double progress;
   final DateTime startDate;
   final DateTime endDate;
+  final bool showOnHome; // 메인화면 노출 여부
   Status status;
 
   Goal({
@@ -16,6 +17,7 @@ class Goal {
     this.progress = 0.0,
     required this.startDate,
     required this.endDate,
+    this.showOnHome = false,
     this.status = Status.active,
   });
 
@@ -26,6 +28,7 @@ class Goal {
     double? progress,
     DateTime? startDate,
     DateTime? endDate,
+    bool? showOnHome,
     Status? status,
   }) {
     return Goal(
@@ -35,6 +38,7 @@ class Goal {
       progress: progress ?? this.progress,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
+      showOnHome: showOnHome ?? this.showOnHome,
       status: status ?? this.status,
     );
   }
@@ -58,6 +62,7 @@ class Goal {
           progress == other.progress &&
           startDate == other.startDate &&
           endDate == other.endDate &&
+          showOnHome == other.showOnHome &&
           status == other.status;
 
   @override
@@ -68,5 +73,6 @@ class Goal {
       progress.hashCode ^
       startDate.hashCode ^
       endDate.hashCode ^
+      showOnHome.hashCode ^
       status.hashCode;
 }
