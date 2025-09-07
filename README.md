@@ -1,9 +1,9 @@
 # ToonDo
-<img width="612" height="1245" alt="image" src="https://github.com/user-attachments/assets/c290dde9-8109-4995-84ba-cf9d6e4e0287" />
+<img width="332" alt="image" src="https://github.com/user-attachments/assets/c290dde9-8109-4995-84ba-cf9d6e4e0287" />
 
 **Home Screen**
 
-<img width="611" height="1208" alt="image" src="https://github.com/user-attachments/assets/8e2207ad-e8ba-40ec-ae92-4df27762896c" />
+<img width="332" alt="image" src="https://github.com/user-attachments/assets/8e2207ad-e8ba-40ec-ae92-4df27762896c" />
 
 **Goal Manage & Input Screen**
 
