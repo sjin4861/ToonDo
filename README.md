@@ -1,9 +1,9 @@
 # ToonDo
-<img width="318" alt="스크린샷 2024-12-01 오후 3 42 29" src="https://github.com/user-attachments/assets/21d50a98-10ff-4474-be2e-710267f42c6f">
+<img width="612" height="1245" alt="image" src="https://github.com/user-attachments/assets/c290dde9-8109-4995-84ba-cf9d6e4e0287" />
 
 **Home Screen**
 
-<img width="332" alt="스크린샷 2025-02-09 오전 12 46 03" src="https://github.com/user-attachments/assets/ac7ff4ad-b2c3-4bfe-b4cf-cf82d8aa6bae" />
+<img width="611" height="1208" alt="image" src="https://github.com/user-attachments/assets/8e2207ad-e8ba-40ec-ae92-4df27762896c" />
 
 **Goal Manage & Input Screen**
 
