@@ -31,7 +31,6 @@ Future<void> main() async {
   Hive.registerAdapter(UserModelAdapter());
   Hive.registerAdapter(GoalStatusEnumAdapter());
 
-
   // Hive 박스 열기
   await Hive.openBox<TodoModel>('todos');
   await Hive.openBox<TodoModel>('deleted_todos');
