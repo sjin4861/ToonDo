@@ -166,6 +166,15 @@ class SignupViewModel extends ChangeNotifier {
 
   void setLoginId(String id) {
     // print('SignupViewModel: setLoginId called with id=$id');
+    
+    // TODO: setState() during build 에러 해결 - notifyListeners() 호출 최적화
+    // TODO: 문제: build() 메서드에서 이 메서드가 호출되어 notifyListeners()가 빌드 중 재빌드를 요청
+    // TODO: 해결 방안 1: 값이 실제로 변경될 때만 notifyListeners() 호출
+    // TODO: 해결 방안 2: _setLoginIdSilent() 같은 조용한 setter 메서드 제공
+    // TODO: 해결 방안 3: didUpdateWidget이나 initState에서만 호출되도록 호출 지점 수정
+    // TODO: 임시 해결: 값이 동일하면 notifyListeners() 생략
+    if (loginId == id) return; // 동일한 값이면 업데이트 생략
+    
     loginId = id;
     loginIdTextController.text = id;
     notifyListeners();
