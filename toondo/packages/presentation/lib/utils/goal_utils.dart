@@ -8,8 +8,12 @@ import 'package:presentation/designsystem/colors/app_colors.dart';
 import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 
 /// 날짜를 문자열로 반환
-String buildGoalSubtitle(DateTime startDate, DateTime endDate) {
+String buildGoalSubtitle(DateTime startDate, DateTime? endDate) {
   final start = DateFormat('yyyy.MM.dd').format(startDate);
+  // TODO: '마감일 없이 할래요' 기능 - endDate가 null인 경우 표시 방식 변경
+  if (endDate == null) {
+    return '$start ~ 무제한'; // 또는 '$start ~ (마감일 없음)' 등
+  }
   final end = DateFormat('yyyy.MM.dd').format(endDate);
   return '$start ~ $end';
 }
@@ -20,7 +24,11 @@ bool isGoalChecked(Status status) {
 }
 
 /// 목표 종료일 기준 D-Day 계산
-int calculateDDay(DateTime endDate) {
+int calculateDDay(DateTime? endDate) {
+  // TODO: '마감일 없이 할래요' 기능 - endDate가 null인 경우 D-Day 계산 방식 변경
+  if (endDate == null) {
+    return -1; // 마감일이 없는 목표는 특별한 값 반환 (예: -1은 '무제한'을 의미)
+  }
   final now = DateTime.now();
   final today = DateTime(now.year, now.month, now.day);
   final diff = endDate.difference(today).inDays;
@@ -45,7 +53,8 @@ Map<String, List<Goal>> groupGoalsByCompletion(List<Goal> goals) {
       .where((g) => g.status == Status.completed)
       .toList();
   final failed = goals
-      .where((g) => g.status == Status.active && g.endDate.isBefore(now))
+      // TODO: '마감일 없이 할래요' 기능 - endDate가 null인 목표는 실패 판정에서 제외
+      .where((g) => g.status == Status.active && g.endDate != null && g.endDate!.isBefore(now))
       .toList();
   final givenUp = goals
       .where((g) => g.status == Status.givenUp)
