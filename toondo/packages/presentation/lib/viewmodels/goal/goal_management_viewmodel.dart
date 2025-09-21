@@ -65,7 +65,7 @@ class GoalManagementViewModel extends ChangeNotifier {
 
   Future<void> loadGoals() async {
     try {
-      _allGoals = await getGoalsLocalUseCase() ?? [];
+      _allGoals = await getGoalsLocalUseCase();
     } catch (_) {
       _allGoals = [];
     }
@@ -79,7 +79,7 @@ class GoalManagementViewModel extends ChangeNotifier {
     for (final goal in remoteGoals) {
       await updateGoalLocalUseCase(goal);
     }
-    _allGoals = await getGoalsLocalUseCase() ?? [];
+    _allGoals = await getGoalsLocalUseCase();
     notifyListeners();
   }
 
@@ -131,7 +131,10 @@ class GoalManagementViewModel extends ChangeNotifier {
   Future<void> _autoCompleteExpiredGoals() async {
     final today = DateTime.now().copyWith(hour: 0, minute: 0, second: 0);
     for (final goal in _allGoals) {
-      if (goal.status == Status.active && goal.endDate.isBefore(today)) {
+      // TODO: 메인화면 노출 문제 분석 - 자동 완료 로직에서 showOnHome 확인
+      // '마감일 없이 할래요' 기능 - endDate가 null인 목표는 자동 완료 대상에서 제외
+      if (goal.status == Status.active && goal.endDate != null && goal.endDate!.isBefore(today)) {
+        print('🔍 자동 완료 대상 목표: ${goal.name} (showOnHome: ${goal.showOnHome})');
         final updatedGoal = goal.copyWith(status: Status.completed);
         await updateGoalLocalUseCase(updatedGoal);
       }

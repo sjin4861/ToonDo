@@ -8,6 +8,8 @@ import 'package:domain/usecases/todo/update_todo_status.dart';
 import 'package:domain/usecases/todo/delete_todo.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
+import 'package:get_it/get_it.dart';
+import 'package:presentation/viewmodels/home/home_viewmodel.dart';
 
 @LazySingleton()
 class TodoManageViewModel extends ChangeNotifier {
@@ -152,6 +154,22 @@ class TodoManageViewModel extends ChangeNotifier {
       final target = allTodos.firstWhere((t) => t.id == id);
       await _deleteTodoUseCase(target);
       await loadTodos();
+      
+      // TODO: 투두 삭제 버그 수정 - 홈 뷰모델 동기화 누락
+      // TODO: 투두 삭제 후 홈 화면의 todayTop3Todos가 업데이트되지 않는 문제
+      // TODO: 해결 방안 1: GetIt.instance<HomeViewModel>().loadTodos() 호출
+      // TODO: 해결 방안 2: 전역 이벤트 버스 사용하여 삭제 이벤트 알림
+      // TODO: 해결 방안 3: Provider 패턴 개선으로 자동 동기화 구현
+      // TODO: 현재 상태: 투두 관리 화면에서는 삭제되지만 홈 화면에는 여전히 표시됨
+      
+      // 홈 뷰모델 동기화 - 투두 삭제 후 홈 화면 업데이트
+      try {
+        await GetIt.instance<HomeViewModel>().loadTodos();
+        print('🔄 투두 삭제 후 홈 뷰모델 동기화 완료');
+      } catch (e) {
+        print('⚠️ 홈 뷰모델 동기화 실패: $e');
+      }
+      
       notifyListeners();
     } catch (e) {
       print('Error deleting todo: $e');

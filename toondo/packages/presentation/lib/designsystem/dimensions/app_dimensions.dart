@@ -90,6 +90,8 @@ class AppDimensions {
   static double goalIconInnerPadding = 4.0.w;
   static double goalIconRadius = 12.0.r;
   static double todoItemBorderRadius = radiusPill;
+  // TODO: RenderFlex overflow 해결 - todoItemHeight 증가 고려 (현재 60.0.h에서 65.0.h 또는 70.0.h로)
+  // TODO: 디데이 투두에서 title + subtitle + spacing이 60.0.h를 초과하여 0.653 pixels overflow 발생
   static double todoItemHeight = 60.0.h;
   static double todoItemBorderWidth = 1.5;
   static double checkboxBorderWidth = 1.5;

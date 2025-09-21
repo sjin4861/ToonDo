@@ -50,21 +50,47 @@ class GoalInputBody extends StatelessWidget {
   }
 
   Widget _buildDateSection(GoalInputViewModel viewModel, BuildContext context) {
-    return Row(
+    return Column(
       children: [
-        AppDateField(
-          label: '시작일',
-          date: viewModel.startDate,
-          showError: viewModel.dateError != null,
-          onTap: () => viewModel.selectDate(context, isStartDate: true),
-        ),
-        SizedBox(width: AppSpacing.h12),
-        AppDateField(
-          label: '마감일',
-          date: viewModel.endDate,
-          showError: viewModel.dateError != null,
-          onTap: () => viewModel.selectDate(context, isStartDate: false),
-          enabled: !viewModel.withoutDeadline,
+        Row(
+          children: [
+            Expanded(
+              child: AppDateField(
+                label: '시작일',
+                date: viewModel.startDate,
+                showError: viewModel.dateError != null,
+                onTap: () => viewModel.selectDate(context, isStartDate: true),
+              ),
+            ),
+            SizedBox(width: AppSpacing.h12),
+            // TODO: AnimatedSwitcher 내부의 Expanded 위젯 에러 수정 완료
+            // TODO: 이전 문제: SizeTransition > FadeTransition > Expanded 계층으로 인해 Expanded가 직접적인 Flex 부모를 잃음
+            // TODO: 해결책: AnimatedSwitcher 외부에서 Expanded 처리하고 내부는 고정 크기 사용
+            Expanded(
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  return SizeTransition(
+                    sizeFactor: animation,
+                    axis: Axis.horizontal,
+                    child: FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    ),
+                  );
+                },
+                child: !viewModel.withoutDeadline
+                    ? AppDateField(
+                        key: const ValueKey('endDateField'),
+                        label: '마감일',
+                        date: viewModel.endDate,
+                        showError: viewModel.dateError != null,
+                        onTap: () => viewModel.selectDate(context, isStartDate: false),
+                      )
+                    : const SizedBox.shrink(key: ValueKey('noEndDate')),
+              ),
+            ),
+          ],
         ),
       ],
     );

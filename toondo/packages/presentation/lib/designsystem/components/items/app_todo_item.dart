@@ -165,6 +165,8 @@ class _AppTodoItemState extends State<AppTodoItem> {
                           children: [
                             _buildIcon(),
                             SizedBox(width: AppSpacing.h12),
+                            // TODO: RenderFlex overflow 추가 대안 - Expanded를 Flexible로 변경하여 flex 조정
+                            // TODO: 현재 Expanded는 남은 공간을 모두 차지하지만 내용이 overflow될 수 있음
                             Expanded(child: _buildTitleWithOptionalSubtitle()),
                             SizedBox(width: AppSpacing.h12),
                             _buildCheckbox(),
@@ -219,9 +221,18 @@ class _AppTodoItemState extends State<AppTodoItem> {
       );
     }
 
+    // TODO: RenderFlex overflow 버그 수정 - 디데이 투두에서 0.653 pixels 오버플로우 발생
+    // TODO: 문제 원인: 고정된 todoItemHeight 내에서 title + subtitle + spacing이 공간을 초과
+    // TODO: 해결 방안 1: Column을 Flexible 또는 Expanded로 감싸기
+    // TODO: 해결 방안 2: MainAxisSize.min 대신 MainAxisAlignment.center 사용
+    // TODO: 해결 방안 3: SizedBox(height: 2)를 1로 축소 (적용됨)
+    // TODO: 해결 방안 4: 폰트 크기나 라인 높이 조정
+    // TODO: 해결 방안 5: todoItemHeight 값 증가 고려
+    // TODO: 추가 해결: MainAxisAlignment.center로 수직 중앙 정렬하여 공간 부족 문제 완화
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center, // 수직 중앙 정렬 추가
       children: [
         Text(
           widget.title,
@@ -234,7 +245,7 @@ class _AppTodoItemState extends State<AppTodoItem> {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        SizedBox(height: 2),
+        SizedBox(height: 1), // TODO: RenderFlex overflow 수정 - 2에서 1로 줄임 (0.653 pixels 절약)
         Text(
           widget.subTitle!,
           style: AppTypography.caption3Regular.copyWith(

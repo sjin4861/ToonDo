@@ -10,7 +10,8 @@ class GoalCompleteBottomSheet extends StatelessWidget {
   final String goalTitle;
   final String iconPath;
   final DateTime startDate;
-  final DateTime endDate;
+  // TODO: '마감일 없이 할래요' 기능 - endDate를 nullable로 변경
+  final DateTime? endDate;
   final VoidCallback onConfirm;
 
   const GoalCompleteBottomSheet({
@@ -66,7 +67,10 @@ class GoalCompleteBottomSheet extends StatelessWidget {
         ),
         SizedBox(height: AppSpacing.v8),
         Text(
-          '${_formatDate(startDate)} ~ ${_formatDate(endDate)}',
+          // TODO: '마감일 없이 할래요' 기능 - endDate가 null인 경우 표시 방식 변경
+          endDate != null 
+              ? '${_formatDate(startDate)} ~ ${_formatDate(endDate!)}'
+              : '${_formatDate(startDate)} ~ 무제한',
           style: AppTypography.caption3Regular.copyWith(
             color: AppColors.status100_50,
           ),

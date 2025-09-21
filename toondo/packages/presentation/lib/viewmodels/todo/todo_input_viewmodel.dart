@@ -8,6 +8,8 @@ import 'package:presentation/designsystem/components/calendars/calendar_bottom_s
 import 'package:injectable/injectable.dart';
 import 'package:domain/usecases/goal/get_goals_local.dart';
 import 'package:presentation/models/eisenhower_model.dart'; // 여기 EisenhowerType enum이 정의됨
+import 'package:get_it/get_it.dart';
+import 'package:presentation/viewmodels/home/home_viewmodel.dart';
 
 @LazySingleton()
 class TodoInputViewModel extends ChangeNotifier {
@@ -22,7 +24,11 @@ class TodoInputViewModel extends ChangeNotifier {
   bool isDailyTodo = false;
   bool isTitleNotEmpty = false;
   bool showGoalDropdown = false;
-  bool showOnHome = false;
+  // TODO: UX 개선 - showOnHome 기본값을 true로 변경 고려  
+  // TODO: 현재 false로 설정되어 있어 사용자가 명시적으로 토글을 켜야 메인화면에 표시됨
+  // TODO: true로 변경하면 모든 새 투두가 기본적으로 메인화면에 표시되어 더 직관적
+  // TODO: 단점: 메인화면이 복잡해질 수 있음, 사용자 선택권 감소
+  bool showOnHome = false; // 기본값 유지 (변경 시 true로 수정)
   String? titleError;
   String? _startDateError;
   String? _endDateError;
@@ -125,6 +131,11 @@ class TodoInputViewModel extends ChangeNotifier {
 
   void toggleShowOnHome(bool value) {
     showOnHome = value;
+    // TODO: 메인화면 노출 기능 개선사항
+    // TODO: showOnHome 기본값이 false로 설정되어 있어 사용자가 명시적으로 토글을 켜야 메인화면에 노출됨
+    // TODO: UX 개선 고려사항: 기본값을 true로 변경하거나 사용자에게 명확한 안내 제공
+    // TODO: 저장 시 로깅 추가로 실제 값이 제대로 저장되는지 확인
+    print('🔍 투두 showOnHome 토글 변경: $value');
     notifyListeners();
   }
 
@@ -216,8 +227,11 @@ class TodoInputViewModel extends ChangeNotifier {
     final normalizedStart = isDailyTodo ? today : (startDate ?? today);
     final normalizedEnd = isDailyTodo ? today : (endDate ?? today);
 
+    // TODO: 메인화면 노출 문제 디버깅 - showOnHome 값 로깅
+    print('🔍 투두 생성 시 showOnHome 값: $showOnHome');
+    
     // EisenhowerType을 eisenhower 값으로 변환
-    return Todo(
+    final newTodo = Todo(
       id: todo?.id ?? now.millisecondsSinceEpoch.toString(),
       title: title,
       startDate: normalizedStart,
@@ -226,6 +240,9 @@ class TodoInputViewModel extends ChangeNotifier {
       eisenhower: _mapTypeToEisenhower(_selectedEisenhowerType),
       showOnHome: showOnHome,
     );
+    
+    print('🔍 생성된 투두 정보: ${newTodo.title}, showOnHome: ${newTodo.showOnHome}');
+    return newTodo;
   }
 
   bool _validateStartDate() {
@@ -273,6 +290,19 @@ class TodoInputViewModel extends ChangeNotifier {
       final newTodo = _buildTodo();
       final created = await _createTodoUseCase(newTodo);
       if (created) {
+        // TODO: 투두 생성 버그 수정 - 홈 뷰모델 동기화 누락
+        // TODO: 투두 생성 후 홈 화면의 todayTop3Todos가 업데이트되지 않는 문제
+        // TODO: 해결 방안: GetIt.instance<HomeViewModel>().loadTodos() 호출 필요
+        // TODO: 현재 상태: 새 투두 생성 후 홈 화면에 바로 반영되지 않음
+        
+        // 홈 뷰모델 동기화 - 투두 생성 후 홈 화면 업데이트
+        try {
+          await GetIt.instance<HomeViewModel>().loadTodos();
+          print('🔄 투두 생성 후 홈 뷰모델 동기화 완료');
+        } catch (e) {
+          print('⚠️ 홈 뷰모델 동기화 실패: $e');
+        }
+        
         onSuccess();
       } else {
         onError('투두 생성에 실패했어요.');

@@ -38,7 +38,10 @@ class HomeBody extends StatelessWidget {
                 SizedBox(height: AppSpacing.v24),
                 Expanded(
                   child: homeVM.selectedTabIndex == 0
-                      ? HomeTodoListSection(todos: homeVM.todayTop3Todos)
+                      ? HomeTodoListSection(
+                          todos: homeVM.todayTop3Todos,
+                          allGoals: homeVM.goals, // 투두 아이콘 표시를 위해 목표 리스트 전달
+                        )
                       : HomeGoalListSection(goals: homeVM.todayTop3Goals),
                 ),
               ],

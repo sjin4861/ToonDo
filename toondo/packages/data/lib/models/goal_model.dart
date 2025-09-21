@@ -22,7 +22,8 @@ class GoalModel extends HiveObject {
   DateTime startDate;
 
   @HiveField(5)
-  DateTime endDate;
+  // TODO: '마감일 없이 할래요' 기능 - GoalModel의 endDate를 nullable로 변경
+  DateTime? endDate; // nullable로 변경하여 마감일 없는 목표 지원
 
   @HiveField(6)
   bool isCompleted;
@@ -42,7 +43,8 @@ class GoalModel extends HiveObject {
     this.icon,
     this.progress = 0.0,
     required this.startDate,
-    required this.endDate,
+    // TODO: '마감일 없이 할래요' 기능 - GoalModel 생성자에서 endDate optional 처리
+    this.endDate, // required 제거
     this.isCompleted = false,
     this.status = GoalStatusEnum.active,
     this.isSynced = false,
@@ -79,13 +81,16 @@ class GoalModel extends HiveObject {
   }
 
   Map<String, dynamic> toJson() {
+    // '마감일 없이 할래요' 기능 - endDate가 null인 경우 2099-12-31로 변환하여 전송
+    final endDateToSend = endDate ?? DateTime(2099, 12, 31);
+    
     return {
       'goalId': id,
       'goalName': name,
       'icon': icon,
       'progress': progress,
       'startDate': startDate.toIso8601String().split('T')[0], // yyyy-MM-dd 형식으로 변환
-      'endDate': endDate.toIso8601String().split('T')[0],
+      'endDate': endDateToSend.toIso8601String().split('T')[0], // null인 경우 2099-12-31 전송
       'status': status.index,  // 열거형의 인덱스 전송
       'showOnHome': showOnHome,
     };
@@ -103,13 +108,23 @@ class GoalModel extends HiveObject {
         normalizedIcon = 'assets/icons/$fileName';
       }
     }
+    
+    // '마감일 없이 할래요' 기능 - 서버에서 2099-12-31이 오면 null로 변환
+    DateTime? parsedEndDate;
+    final endDateString = json['endDate'] as String?;
+    if (endDateString != null) {
+      final endDate = DateTime.parse(endDateString);
+      // 2099년 이후 날짜는 마감일 없음으로 간주
+      parsedEndDate = endDate.year >= 2099 ? null : endDate;
+    }
+    
     return GoalModel(
       id: json['goalId'].toString(), // 변경: 'id' 대신 'goalId'
       name: json['goalName'],        // 변경: 'name' 대신 'goalName'
       icon: normalizedIcon,
       progress: (json['progress'] as num).toDouble(),
       startDate: DateTime.parse(json['startDate']),
-      endDate: DateTime.parse(json['endDate']),
+      endDate: parsedEndDate, // 2099년 이후면 null로 처리
       isCompleted: false,            // API에서 isCompleted 미전달 시 기본값 사용
       status: json['status'] != null
           ? GoalStatusEnum.values[json['status']]
@@ -120,7 +135,12 @@ class GoalModel extends HiveObject {
   }
 
   double getExpectedProgress() {
-    final totalDuration = endDate.difference(startDate).inSeconds;
+    // TODO: '마감일 없이 할래요' 기능 - endDate가 null인 경우 예상 진행률 계산 로직 수정
+    if (endDate == null) {
+      // 마감일이 없는 목표는 시간 기반 진행률을 계산할 수 없음
+      return 0.0; // 또는 다른 계산 방식 적용
+    }
+    final totalDuration = endDate!.difference(startDate).inSeconds;
     final elapsedDuration = DateTime.now().difference(startDate).inSeconds;
     if (totalDuration <= 0) return 0.0;
     final double expectedProgress = (elapsedDuration / totalDuration) * 100;
@@ -142,7 +162,12 @@ class GoalModel extends HiveObject {
   }
 
   Duration getRemainingDuration() {
-    return endDate.difference(DateTime.now());
+    // TODO: '마감일 없이 할래요' 기능 - endDate가 null인 경우 남은 기간 계산 로직 수정
+    if (endDate == null) {
+      // 마감일이 없는 목표는 남은 기간이 무한대 또는 0
+      return Duration.zero; // 또는 Duration(days: 365 * 100) 등
+    }
+    return endDate!.difference(DateTime.now());
   }
 
   @override
