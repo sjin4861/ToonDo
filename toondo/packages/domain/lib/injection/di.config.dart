@@ -72,17 +72,20 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i728.DeleteAccountUseCase>(
       () => _i728.DeleteAccountUseCase(gh<_i427.AuthRepository>()),
     );
+    gh.factory<_i1068.LoginUseCase>(
+      () => _i1068.LoginUseCase(gh<_i427.AuthRepository>()),
+    );
     gh.factory<_i415.GetTokenUseCase>(
       () => _i415.GetTokenUseCase(gh<_i427.AuthRepository>()),
     );
-    gh.factory<_i1068.LoginUseCase>(
-      () => _i1068.LoginUseCase(gh<_i427.AuthRepository>()),
+    gh.factory<_i899.RegisterUseCase>(
+      () => _i899.RegisterUseCase(gh<_i427.AuthRepository>()),
     );
     gh.factory<_i969.LogoutUseCase>(
       () => _i969.LogoutUseCase(gh<_i427.AuthRepository>()),
     );
-    gh.factory<_i899.RegisterUseCase>(
-      () => _i899.RegisterUseCase(gh<_i427.AuthRepository>()),
+    gh.factory<_i236.SetReminderTime>(
+      () => _i236.SetReminderTime(gh<_i267.NotificationSettingRepository>()),
     );
     gh.factory<_i22.GetNotificationSettingsUseCase>(
       () => _i22.GetNotificationSettingsUseCase(
@@ -94,29 +97,17 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i267.NotificationSettingRepository>(),
       ),
     );
-    gh.factory<_i236.SetReminderTime>(
-      () => _i236.SetReminderTime(gh<_i267.NotificationSettingRepository>()),
-    );
     gh.factory<_i129.GetThemeModeUseCase>(
       () => _i129.GetThemeModeUseCase(gh<_i578.ThemeRepository>()),
     );
     gh.factory<_i366.SetThemeModeUseCase>(
       () => _i366.SetThemeModeUseCase(gh<_i578.ThemeRepository>()),
     );
-    gh.factory<_i133.AddTodoUseCase>(
-      () => _i133.AddTodoUseCase(gh<_i158.TodoRepository>()),
-    );
-    gh.factory<_i412.CommitTodosUseCase>(
-      () => _i412.CommitTodosUseCase(gh<_i158.TodoRepository>()),
-    );
     gh.factory<_i834.CreateTodoUseCase>(
       () => _i834.CreateTodoUseCase(gh<_i158.TodoRepository>()),
     );
-    gh.factory<_i552.DeleteTodoUseCase>(
-      () => _i552.DeleteTodoUseCase(gh<_i158.TodoRepository>()),
-    );
-    gh.factory<_i314.FetchTodosUseCase>(
-      () => _i314.FetchTodosUseCase(gh<_i158.TodoRepository>()),
+    gh.factory<_i133.AddTodoUseCase>(
+      () => _i133.AddTodoUseCase(gh<_i158.TodoRepository>()),
     );
     gh.factory<_i362.GetAllTodosUseCase>(
       () => _i362.GetAllTodosUseCase(gh<_i158.TodoRepository>()),
@@ -124,62 +115,71 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i375.UpdateTodoUseCase>(
       () => _i375.UpdateTodoUseCase(gh<_i158.TodoRepository>()),
     );
-    gh.factory<_i182.UpdateTodoDatesUseCase>(
-      () => _i182.UpdateTodoDatesUseCase(gh<_i158.TodoRepository>()),
+    gh.factory<_i412.CommitTodosUseCase>(
+      () => _i412.CommitTodosUseCase(gh<_i158.TodoRepository>()),
     );
     gh.factory<_i183.UpdateTodoStatusUseCase>(
       () => _i183.UpdateTodoStatusUseCase(gh<_i158.TodoRepository>()),
     );
-    gh.factory<_i343.CreateGoalRemoteUseCase>(
-      () => _i343.CreateGoalRemoteUseCase(gh<_i559.GoalRepository>()),
+    gh.factory<_i314.FetchTodosUseCase>(
+      () => _i314.FetchTodosUseCase(gh<_i158.TodoRepository>()),
     );
-    gh.factory<_i563.DeleteGoalLocalUseCase>(
-      () => _i563.DeleteGoalLocalUseCase(gh<_i559.GoalRepository>()),
+    gh.factory<_i552.DeleteTodoUseCase>(
+      () => _i552.DeleteTodoUseCase(gh<_i158.TodoRepository>()),
     );
-    gh.factory<_i397.DeleteGoalRemoteUseCase>(
-      () => _i397.DeleteGoalRemoteUseCase(gh<_i559.GoalRepository>()),
-    );
-    gh.factory<_i368.GetCompletedGoalsUseCase>(
-      () => _i368.GetCompletedGoalsUseCase(gh<_i559.GoalRepository>()),
+    gh.factory<_i182.UpdateTodoDatesUseCase>(
+      () => _i182.UpdateTodoDatesUseCase(gh<_i158.TodoRepository>()),
     );
     gh.factory<_i292.GetGivenUpGoalsUseCase>(
       () => _i292.GetGivenUpGoalsUseCase(gh<_i559.GoalRepository>()),
     );
-    gh.factory<_i477.GetGoalsLocalUseCase>(
-      () => _i477.GetGoalsLocalUseCase(gh<_i559.GoalRepository>()),
-    );
-    gh.factory<_i371.GetGoalsRemoteUseCase>(
-      () => _i371.GetGoalsRemoteUseCase(gh<_i559.GoalRepository>()),
-    );
-    gh.factory<_i901.GetGoalByIdFromLocalUseCase>(
-      () => _i901.GetGoalByIdFromLocalUseCase(gh<_i559.GoalRepository>()),
-    );
-    gh.factory<_i243.GetInProgressGoalsUseCase>(
-      () => _i243.GetInProgressGoalsUseCase(gh<_i559.GoalRepository>()),
-    );
-    gh.factory<_i881.SaveGoalLocalUseCase>(
-      () => _i881.SaveGoalLocalUseCase(gh<_i559.GoalRepository>()),
+    gh.factory<_i397.DeleteGoalRemoteUseCase>(
+      () => _i397.DeleteGoalRemoteUseCase(gh<_i559.GoalRepository>()),
     );
     gh.factory<_i1031.UpdateGoalLocalUseCase>(
       () => _i1031.UpdateGoalLocalUseCase(gh<_i559.GoalRepository>()),
     );
-    gh.factory<_i739.UpdateGoalProgressUseCase>(
-      () => _i739.UpdateGoalProgressUseCase(gh<_i559.GoalRepository>()),
+    gh.factory<_i371.GetGoalsRemoteUseCase>(
+      () => _i371.GetGoalsRemoteUseCase(gh<_i559.GoalRepository>()),
+    );
+    gh.factory<_i243.GetInProgressGoalsUseCase>(
+      () => _i243.GetInProgressGoalsUseCase(gh<_i559.GoalRepository>()),
+    );
+    gh.factory<_i563.DeleteGoalLocalUseCase>(
+      () => _i563.DeleteGoalLocalUseCase(gh<_i559.GoalRepository>()),
+    );
+    gh.factory<_i881.SaveGoalLocalUseCase>(
+      () => _i881.SaveGoalLocalUseCase(gh<_i559.GoalRepository>()),
+    );
+    gh.factory<_i477.GetGoalsLocalUseCase>(
+      () => _i477.GetGoalsLocalUseCase(gh<_i559.GoalRepository>()),
     );
     gh.factory<_i200.UpdateGoalRemoteUseCase>(
       () => _i200.UpdateGoalRemoteUseCase(gh<_i559.GoalRepository>()),
     );
+    gh.factory<_i343.CreateGoalRemoteUseCase>(
+      () => _i343.CreateGoalRemoteUseCase(gh<_i559.GoalRepository>()),
+    );
+    gh.factory<_i368.GetCompletedGoalsUseCase>(
+      () => _i368.GetCompletedGoalsUseCase(gh<_i559.GoalRepository>()),
+    );
     gh.factory<_i856.UpdateGoalStatusUseCase>(
       () => _i856.UpdateGoalStatusUseCase(gh<_i559.GoalRepository>()),
+    );
+    gh.factory<_i901.GetGoalByIdFromLocalUseCase>(
+      () => _i901.GetGoalByIdFromLocalUseCase(gh<_i559.GoalRepository>()),
+    );
+    gh.factory<_i739.UpdateGoalProgressUseCase>(
+      () => _i739.UpdateGoalProgressUseCase(gh<_i559.GoalRepository>()),
+    );
+    gh.factory<_i910.UpdateNickNameUseCase>(
+      () => _i910.UpdateNickNameUseCase(gh<_i988.UserRepository>()),
     );
     gh.factory<_i991.GetUserUseCase>(
       () => _i991.GetUserUseCase(gh<_i988.UserRepository>()),
     );
     gh.factory<_i849.GetUserNicknameUseCase>(
       () => _i849.GetUserNicknameUseCase(gh<_i988.UserRepository>()),
-    );
-    gh.factory<_i910.UpdateNickNameUseCase>(
-      () => _i910.UpdateNickNameUseCase(gh<_i988.UserRepository>()),
     );
     gh.factory<_i610.SlimeOnGestureUseCase>(
       () => _i610.SlimeOnGestureUseCase(gh<_i657.SlimeRepository>()),
