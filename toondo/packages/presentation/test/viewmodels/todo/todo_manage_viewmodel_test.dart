@@ -45,7 +45,7 @@ void main() {
     testTodos = TestData.createTestTodos();
     testGoals = TestData.createTestGoals();
 
-    when(mockGetAllTodosUseCase.call()).thenReturn(testTodos);
+    when(mockGetAllTodosUseCase.call()).thenAnswer((_) async => testTodos);
     when(mockGetGoalsLocalUseCase.call()).thenAnswer((_) async => testGoals);
 
     viewModel = TodoManageViewModel(

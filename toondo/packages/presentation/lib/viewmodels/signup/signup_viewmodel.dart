@@ -1,4 +1,5 @@
 import 'package:domain/usecases/auth/login.dart';
+import 'package:data/constants.dart'; // for test bypass constants
 import 'package:flutter/material.dart';
 import 'package:domain/entities/user.dart';
 import 'package:domain/usecases/auth/register.dart';
@@ -85,6 +86,9 @@ class SignupViewModel extends ChangeNotifier {
 
   Future<bool> validateLoginId() async {
     try {
+  // TODO(loading-state): 버튼 클릭 시 로딩 표시/중복 클릭 방지를 위해 isLoading 체크 & 설정 필요
+  // if (isLoading) return false; // 중복 호출 방지 예시
+  // isLoading = true; notifyListeners();
       // 기본 검증
       if (loginId.isEmpty) {
         loginIdError = AuthConstraints.loginIdEmptyError;
@@ -102,6 +106,8 @@ class SignupViewModel extends ChangeNotifier {
         return false;
       }
 
+      // TODO(timeout): 네트워크 지연 무한 대기 방지를 위해 timeout 적용 고려
+      // bool exists = await checkLoginIdExists().timeout(const Duration(seconds: 8));
       bool exists = await checkLoginIdExists();
       if (exists) {
         loginIdError = '이미 가입된 아이디입니다. 로그인을 시도해보세요.';
@@ -121,9 +127,29 @@ class SignupViewModel extends ChangeNotifier {
       notifyListeners();
       return false;
     }
+    // finally {
+    //   isLoading = false; notifyListeners();
+    // }
   }
 
   Future<void> signUp() async {
+    // Local test bypass: 완전 오프라인 처리 (원격 호출 X)
+    // loginId가 비어있으면 TextController에서 복구 (UI에서 setLoginId 호출 누락 대비)
+    if (loginId.isEmpty && loginIdTextController.text.isNotEmpty) {
+      loginId = loginIdTextController.text.trim();
+      print('SignupViewModel: recovered loginId from controller -> $loginId');
+    }
+    print('SignupViewModel: signUp called with loginId=$loginId');
+    if (Constants.enableLocalTestBypass &&
+        loginId == Constants.testLoginId &&
+        password == Constants.testPassword) {
+      print('🧪[TEST SIGNUP BYPASS] local completion for testuser');
+      isSignupComplete = true;
+      currentStep = SignupStep.done;
+      notifyListeners();
+      onNavigateToOnboarding?.call();
+      return;
+    }
     try {
       User newUser = await registerUserUseCase.call(loginId, password);
       userId = newUser.id;
@@ -139,6 +165,7 @@ class SignupViewModel extends ChangeNotifier {
   }
 
   void setLoginId(String id) {
+    // print('SignupViewModel: setLoginId called with id=$id');
     loginId = id;
     loginIdTextController.text = id;
     notifyListeners();
@@ -157,6 +184,37 @@ class SignupViewModel extends ChangeNotifier {
   }
 
   Future<void> validatePassword() async {
+    // 누락된 loginId 복구 시도
+    print('SignupViewModel: validatePassword called with loginId=$loginId');
+    print(loginIdTextController.text);
+    if (loginId.isEmpty && loginIdTextController.text.isNotEmpty) {
+      loginId = loginIdTextController.text.trim();
+      print('SignupViewModel: recovered loginId in validatePassword -> $loginId');
+    }
+    // TEST ACCOUNT EXCEPTION (패턴/숫자 요구 무시, confirm 비어있으면 자동 채움)
+    if (loginId == Constants.testLoginId && password == Constants.testPassword) {
+      if (password.isEmpty) {
+        passwordError = AuthConstraints.passwordEmptyError;
+        notifyListeners();
+        return;
+      }
+      if (confirmPassword.isEmpty) {
+        // 사용자 편의: 자동 동일 값 세팅
+        confirmPassword = password;
+        confirmPasswordTextController.text = password;
+      }
+      if (password != confirmPassword) {
+        confirmPasswordError = AuthConstraints.confirmPasswordMismatchError;
+        notifyListeners();
+        return;
+      }
+      passwordError = null;
+      confirmPasswordError = null;
+      notifyListeners();
+      await signUp();
+      return;
+    }
+
     if (password.isEmpty) {
       passwordError = AuthConstraints.passwordEmptyError;
       notifyListeners();

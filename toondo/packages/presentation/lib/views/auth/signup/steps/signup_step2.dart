@@ -5,7 +5,6 @@ import 'package:presentation/views/auth/signup/steps/signup_step2_body.dart';
 import 'package:presentation/views/base_scaffold.dart';
 import 'package:presentation/views/onboarding/step1_2/onboarding_step1_2_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:get_it/get_it.dart';
 import 'package:presentation/viewmodels/signup/signup_viewmodel.dart';
 
 class SignupStep2 extends StatelessWidget {
@@ -15,8 +14,7 @@ class SignupStep2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final signupViewModel = GetIt.instance<SignupViewModel>();
-
+    final signupViewModel = context.read<SignupViewModel>();
     if (signupViewModel.loginId.isEmpty) {
       signupViewModel.setLoginId(loginId);
     }

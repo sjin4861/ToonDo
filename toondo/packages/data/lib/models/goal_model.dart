@@ -33,6 +33,9 @@ class GoalModel extends HiveObject {
   @HiveField(8)
   bool isSynced;
 
+  @HiveField(9, defaultValue: false)
+  bool showOnHome; // 메인화면 노출 여부
+
   GoalModel({
     required this.id,
     required this.name,
@@ -43,6 +46,7 @@ class GoalModel extends HiveObject {
     this.isCompleted = false,
     this.status = GoalStatusEnum.active,
     this.isSynced = false,
+    this.showOnHome = false,
   });
 
   // Entity → Model conversion
@@ -55,6 +59,7 @@ class GoalModel extends HiveObject {
       startDate: entity.startDate,
       endDate: entity.endDate,
       status: GoalStatusMapper.fromDomain(entity.status),
+      showOnHome: entity.showOnHome,
       isSynced: false,
     );
   }
@@ -68,6 +73,7 @@ class GoalModel extends HiveObject {
       progress: progress,
       startDate: startDate,
       endDate: endDate,
+      showOnHome: showOnHome,
       status: GoalStatusMapper.toDomain(status),
     );
   }
@@ -81,6 +87,7 @@ class GoalModel extends HiveObject {
       'startDate': startDate.toIso8601String().split('T')[0], // yyyy-MM-dd 형식으로 변환
       'endDate': endDate.toIso8601String().split('T')[0],
       'status': status.index,  // 열거형의 인덱스 전송
+      'showOnHome': showOnHome,
     };
   }
 
@@ -107,6 +114,7 @@ class GoalModel extends HiveObject {
       status: json['status'] != null
           ? GoalStatusEnum.values[json['status']]
           : GoalStatusEnum.active,       // null인 경우 기본값 처리
+      showOnHome: json['showOnHome'] ?? false, // 기본값 false
       isSynced: true,
     );
   }

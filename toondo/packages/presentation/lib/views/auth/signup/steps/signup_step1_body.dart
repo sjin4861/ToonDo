@@ -12,7 +12,7 @@ class SignupStep1Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<SignupViewModel>();
-
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

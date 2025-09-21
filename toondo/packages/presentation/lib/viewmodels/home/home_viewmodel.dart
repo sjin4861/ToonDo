@@ -40,8 +40,13 @@ class HomeViewModel extends ChangeNotifier {
 
   Future<void> loadTodos() async {
     try {
-      _todos = _getTodosUseCase();
-
+      _todos = await _getTodosUseCase();
+      print('📊 홈에서 로드된 Todo 개수: ${_todos.length}');
+      final showOnHomeTodos = _todos.where((todo) => todo.showOnHome).toList();
+      print('📊 showOnHome=true인 Todo 개수: ${showOnHomeTodos.length}');
+      for (final todo in showOnHomeTodos) {
+        print('📊 showOnHome Todo: ${todo.title} (${todo.showOnHome})');
+      }
       notifyListeners();
     } catch (e) {
       print('홈에서 투두 로드 실패: $e');
@@ -53,6 +58,9 @@ class HomeViewModel extends ChangeNotifier {
     final today = DateTime(now.year, now.month, now.day);
 
     final filtered = _goals.where((goal) {
+      // showOnHome이 true인 것만 필터링
+      if (!goal.showOnHome) return false;
+      
       final start = DateTime(goal.startDate.year, goal.startDate.month, goal.startDate.day);
       final end = DateTime(goal.endDate.year, goal.endDate.month, goal.endDate.day);
       return (start.isBefore(today) || start.isAtSameMomentAs(today)) &&
@@ -69,13 +77,32 @@ class HomeViewModel extends ChangeNotifier {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
+    print('🔍 todayTop3Todos 필터링 시작');
+    print('🔍 전체 Todo 개수: ${_todos.length}');
+    
     final filtered = _todos.where((todo) {
+      // showOnHome이 true인 것만 필터링
+      if (!todo.showOnHome) {
+        print('🔍 showOnHome=false로 필터링됨: ${todo.title}');
+        return false;
+      }
+      
       final start = DateTime(todo.startDate.year, todo.startDate.month, todo.startDate.day);
       final end = DateTime(todo.endDate.year, todo.endDate.month, todo.endDate.day);
-      return (start.isBefore(today) || start.isAtSameMomentAs(today)) &&
+      final isInDateRange = (start.isBefore(today) || start.isAtSameMomentAs(today)) &&
           (end.isAfter(today) || end.isAtSameMomentAs(today));
+      
+      if (!isInDateRange) {
+        print('🔍 날짜 범위로 필터링됨: ${todo.title} (${start} ~ ${end}), 오늘: ${today}');
+        return false;
+      }
+      
+      print('🔍 필터링 통과: ${todo.title} (showOnHome: ${todo.showOnHome})');
+      return true;
     }).toList();
 
+    print('🔍 필터링된 Todo 개수: ${filtered.length}');
+    
     filtered.sort((a, b) => a.status.compareTo(b.status));
 
     return filtered.take(3).toList();
@@ -99,7 +126,13 @@ class HomeViewModel extends ChangeNotifier {
 
   // ─── 초기화 / 정리 ─────────────────────────
   Future<void> _init() async {
-    await Future.wait([loadGoals(), _loadNickname()]);
+    await Future.wait([loadGoals(), loadTodos(), _loadNickname()]);
+  }
+
+  Future<void> refresh() async {
+    print('🔄 홈화면 새로고침 시작');
+    await Future.wait([loadGoals(), loadTodos()]);
+    print('🔄 홈화면 새로고침 완료');
   }
 
   @override

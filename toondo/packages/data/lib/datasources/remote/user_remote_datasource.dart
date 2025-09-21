@@ -89,6 +89,12 @@ class UserRemoteDatasource {
   /// 성공 시 저장된 닉네임 반환
   /// 실패 시 적절한 에러 메시지와 함께 예외 발생
   Future<String> changeNickName(String nickname) async {
+    // TEST BYPASS: 디자인 플로우용 test 닉네임은 서버 호출 없이 통과
+    // TODO(prod): 배포 전 제거 또는 feature flag 적용
+    if (nickname == Constants.testLoginId && Constants.enableLocalTestBypass) {
+      return Constants.testLoginId;
+    }
+
     final token = await authRepository.getToken();
     if (token == null) throw Exception('JWT 토큰이 없습니다.');
 
@@ -96,7 +102,7 @@ class UserRemoteDatasource {
     final response = await client.put(
       url,
       headers: {
-        'Authorization': 'Bearer $token',
+        'Authorization': 'Bearer $token', // TODO(custom-header): 확정되면 X-Custom-User-Id 적용
         'Content-Type': 'application/json',
       },
       body: jsonEncode({'nickname': nickname}),

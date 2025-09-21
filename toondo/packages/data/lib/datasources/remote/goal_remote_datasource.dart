@@ -15,29 +15,15 @@ class GoalRemoteDataSource {
   GoalRemoteDataSource(this.client, this.authRepository);
 
   // TODO : readGoal에 status에 따라서 달리 조회할 수 있는데 아직 이 부분 구현 x
-  // GET /api/v1/goals/list
-  // GET /api/v1/goals/list?status=0 status=0: 진행중
-  // GET /api/v1/goals/list?status=1 status=1: 완료 + 포기
+  // GET /api/v1/goals
+  // GET /api/v1/goals?status=0 진행중
+  // GET /api/v1/goals?status=1 완료+포기
   Future<List<Goal>> readGoals() async {
     final token = await authRepository.getToken();
-    if (token == null) {
-      throw Exception('JWT 토큰이 없습니다.');
-    }
+    final headers = await _buildAuthHeaders(token);
 
-    final url = Uri.parse('${Constants.baseUrl}/goals/list');
+  final url = Uri.parse('${Constants.baseUrl}/api/v1/goals');
     print('📡 요청 URL: $url');
-
-    // 토큰 형식 확인 및 수정 (Bearer 프리픽스가 중복되지 않도록)
-    String authToken = token;
-    if (!token.startsWith('Bearer ') && !token.startsWith('bearer ')) {
-      authToken = 'Bearer $token';
-    }
-
-    final headers = {
-      'Authorization': authToken,
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-
     print('🚀 요청 헤더: $headers');
 
     final response = await client.get(url, headers: headers);
@@ -78,25 +64,10 @@ class GoalRemoteDataSource {
 
   Future<Goal> createGoal(Goal goal) async {
     final token = await authRepository.getToken();
-    if (token == null) {
-      throw Exception('JWT 토큰이 없습니다.');
-    }
-    print('🪪 JWT 토큰: $token');
+    final headers = await _buildAuthHeaders(token);
 
-    final url = Uri.parse('${Constants.baseUrl}/goals/create');
-
-    // 토큰 형식 확인 및 수정 (Bearer 프리픽스가 중복되지 않도록)
-    String authToken = token;
-    if (!token.startsWith('Bearer ') && !token.startsWith('bearer ')) {
-      authToken = 'Bearer $token';
-    }
-
-    final headers = {
-      'Authorization': authToken,
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-
-    print('🚀 요청 헤더: $headers');
+  final url = Uri.parse('${Constants.baseUrl}/api/v1/goals'); // POST create
+  print('🚀 요청 헤더: $headers');
 
     final requestBody = {
       "goalName": goal.name,
@@ -130,6 +101,22 @@ class GoalRemoteDataSource {
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       final data = jsonDecode(responseBody);
+      // 백엔드가 최소 응답 { goalId, message } 만 내려주는 경우 대응
+      if (data is Map<String, dynamic> &&
+          data.containsKey('goalId') &&
+          !data.containsKey('goalName')) {
+        final newId = data['goalId'].toString();
+        print('ℹ️ Minimal goal create response detected. Building Goal locally with id=$newId');
+        return Goal(
+          id: newId,
+          name: goal.name,
+          icon: goal.icon,
+          startDate: goal.startDate,
+          endDate: goal.endDate,
+          progress: goal.progress, // 초기 0.0 가정
+          status: goal.status,      // 기본 active 가정
+        );
+      }
       final model = GoalModel.fromJson(data);
       return model.toEntity();
     } else if (response.statusCode == 403) {
@@ -150,26 +137,12 @@ class GoalRemoteDataSource {
   }
 
   Future<void> updateGoal(Goal goal) async {
-    final token = await authRepository.getToken();
-    if (token == null) {
-      throw Exception('JWT 토큰이 없습니다.');
-    }
+  final token = await authRepository.getToken();
+  final headers = await _buildAuthHeaders(token);
 
-    final url = Uri.parse('${Constants.baseUrl}/goals/update/${goal.id}');
+  final url = Uri.parse('${Constants.baseUrl}/api/v1/goals/${goal.id}'); // PUT update
     print('🔄 목표 업데이트 요청 URL: $url');
-
-    // 토큰 형식 확인 및 수정 (Bearer 프리픽스가 중복되지 않도록)
-    String authToken = token;
-    if (!token.startsWith('Bearer ') && !token.startsWith('bearer ')) {
-      authToken = 'Bearer $token';
-    }
-
-    final headers = {
-      'Authorization': authToken,
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-
-    print('🚀 요청 헤더: $headers');
+  print('🚀 요청 헤더: $headers');
 
     final requestBody = {
       "goalName": goal.name,
@@ -218,28 +191,14 @@ class GoalRemoteDataSource {
     }
   }
 
-  // TODO : URL: api/v1/goals/{goalId}인데 Delete인지 확인 필요
+  // DELETE /api/v1/goals/{goalId}
   Future<void> deleteGoal(String goalId) async {
-    final token = await authRepository.getToken();
-    if (token == null) {
-      throw Exception('JWT 토큰이 없습니다.');
-    }
+  final token = await authRepository.getToken();
+  final headers = await _buildAuthHeaders(token);
 
-    final url = Uri.parse('${Constants.baseUrl}/goals/delete/$goalId');
+  final url = Uri.parse('${Constants.baseUrl}/api/v1/goals/$goalId');
     print('🗑️ 목표 삭제 요청 URL: $url');
-
-    // 토큰 형식 확인 및 수정
-    String authToken = token;
-    if (!token.startsWith('Bearer ') && !token.startsWith('bearer ')) {
-      authToken = 'Bearer $token';
-    }
-
-    final headers = {
-      'Authorization': authToken,
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-
-    print('🚀 요청 헤더: $headers');
+  print('🚀 요청 헤더: $headers');
 
     final response = await client.delete(url, headers: headers);
 
@@ -282,28 +241,12 @@ class GoalRemoteDataSource {
   // TODO2 : Request Body에 아무것도 안 보내도 됨. 그냥 0->1 / 1->0 상태만 변경
   // TODO3 : 관련해서 status 그냥 boolean으로 변경해도 될 것 같은데 검토 필요
   Future<bool> updateGoalStatus(Goal goal, Status newStatus) async {
-    final token = await authRepository.getToken();
-    if (token == null) {
-      throw Exception('JWT 토큰이 없습니다.');
-    }
+  final token = await authRepository.getToken();
+  final headers = await _buildAuthHeaders(token);
 
-    final url = Uri.parse(
-      '${Constants.baseUrl}/goals/update/status/${goal.id}',
-    );
+  final url = Uri.parse('${Constants.baseUrl}/api/v1/goals/${goal.id}/status'); // PUT or PATCH (백엔드 스펙 기준 사용)
     print('🔄 목표 상태 업데이트 요청 URL: $url');
-
-    // 토큰 형식 확인 및 수정 (Bearer 프리픽스가 중복되지 않도록)
-    String authToken = token;
-    if (!token.startsWith('Bearer ') && !token.startsWith('bearer ')) {
-      authToken = 'Bearer $token';
-    }
-
-    final headers = {
-      'Authorization': authToken,
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-
-    print('🚀 요청 헤더: $headers');
+  print('🚀 요청 헤더: $headers');
 
     final requestBody = {
       'status': newStatus.index, // enum의 index로 상태 전달 (0, 1, 2)
@@ -357,33 +300,17 @@ class GoalRemoteDataSource {
 
   // TODO : Method PUT -> PATCH로 변경 필요
   Future<bool> updateGoalProgress(Goal goal, double newProgress) async {
-    final token = await authRepository.getToken();
-    if (token == null) {
-      throw Exception('JWT 토큰이 없습니다.');
-    }
+  final token = await authRepository.getToken();
+  final headers = await _buildAuthHeaders(token);
 
     // progress 값 검증 (선택 사항, 서버에서 검증하지만 클라이언트에서도 한번 더)
     if (newProgress < 0 || newProgress > 100) {
       throw Exception('progress 값은 0~100 사이여야 합니다.');
     }
 
-    final url = Uri.parse(
-      '${Constants.baseUrl}/goals/update/progress/${goal.id}',
-    );
+  final url = Uri.parse('${Constants.baseUrl}/api/v1/goals/${goal.id}/progress');
     print('📊 목표 진행률 업데이트 요청 URL: $url');
-
-    // 토큰 형식 확인 및 수정 (Bearer 프리픽스가 중복되지 않도록)
-    String authToken = token;
-    if (!token.startsWith('Bearer ') && !token.startsWith('bearer ')) {
-      authToken = 'Bearer $token';
-    }
-
-    final headers = {
-      'Authorization': authToken,
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-
-    print('🚀 요청 헤더: $headers');
+  print('🚀 요청 헤더: $headers');
 
     final requestBody = {
       'progress': newProgress.toInt(), // 서버는 정수 기대할 수도 있으니 int 변환
@@ -434,4 +361,29 @@ class GoalRemoteDataSource {
       throw Exception('목표 진행률 업데이트 실패 (${response.statusCode}): $responseBody');
     }
   }
+  // --- Auth Header Builder ---
+  Future<Map<String, String>> _buildAuthHeaders(String? token) async {
+    // 1) 정상 JWT 사용
+    if (token != null) {
+      String authToken = token;
+      if (!token.startsWith('Bearer ') && !token.startsWith('bearer ')) {
+        authToken = 'Bearer $token';
+      }
+      return {
+        'Authorization': authToken,
+        'Content-Type': 'application/json; charset=UTF-8',
+      };
+    }
+    // 2) 토큰 없고 Custom User Header 허용 시
+    if (Constants.useCustomUserIdHeader) {
+      return {
+        Constants.customUserIdHeader: Constants.testUserNumericId.toString(),
+        'Content-Type': 'application/json; charset=UTF-8',
+      };
+    }
+    // 3) 둘 다 불가 → 예외
+    throw Exception('인증 수단이 없습니다. (JWT/CustomUserHeader 모두 미사용)');
+  }
 }
+
+// TODO: 필요 시 endDate 정규화 로직(무기한 -> 특수값) 재도입 고려

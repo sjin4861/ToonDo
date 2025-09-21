@@ -31,6 +31,9 @@ class TodoModel extends HiveObject {
   @HiveField(8)
   bool isSynced; // 로컬 데이터 동기화 여부
 
+  @HiveField(9, defaultValue: false)
+  bool showOnHome; // 메인화면 노출 여부
+
   TodoModel({
     required this.id,
     required this.title,
@@ -41,6 +44,7 @@ class TodoModel extends HiveObject {
     this.comment = '',
     this.eisenhower = 0,
     this.isSynced = false,
+    this.showOnHome = false,
   });
 
   // New getter and setter for isSynced
@@ -61,6 +65,7 @@ class TodoModel extends HiveObject {
       startDate: entity.startDate,
       endDate: entity.endDate,
       eisenhower: entity.eisenhower,
+      showOnHome: entity.showOnHome,
       isSynced: false,
     );
   }
@@ -76,6 +81,7 @@ class TodoModel extends HiveObject {
       startDate: startDate,
       endDate: endDate,
       eisenhower: eisenhower,
+      showOnHome: showOnHome,
     );
   }
 
@@ -90,6 +96,7 @@ class TodoModel extends HiveObject {
       'startDate': startDate.toIso8601String(),
       'endDate': endDate.toIso8601String(),
       'eisenhower': eisenhower,
+      'showOnHome': showOnHome,
     };
   }
 
@@ -103,6 +110,7 @@ class TodoModel extends HiveObject {
       startDate: DateTime.parse(json['startDate']),
       endDate: DateTime.parse(json['endDate']),
       eisenhower: (json['eisenhower'] as num).toInt(),
+      showOnHome: json['showOnHome'] ?? false, // 기본값 false로 설정
       isSynced: true,
     );
   }

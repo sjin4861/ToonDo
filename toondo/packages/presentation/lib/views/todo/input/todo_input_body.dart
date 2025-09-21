@@ -6,6 +6,7 @@ import 'package:presentation/designsystem/components/inputs/app_input_field.dart
 import 'package:presentation/designsystem/components/select_priority/app_eiwenhower_selector.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/designsystem/typography/app_typography.dart';
+import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 import 'package:presentation/viewmodels/todo/todo_input_viewmodel.dart';
 import 'package:presentation/designsystem/components/inputs/app_tip_text.dart';
 import 'package:presentation/views/todo/widget/goal_selection_section.dart';
@@ -50,6 +51,8 @@ class TodoInputBody extends StatelessWidget {
             if (!viewModel.isDailyTodo)
               _buildDateSection(viewModel, context),
             SizedBox(height: AppSpacing.v24),
+            _buildOptions(viewModel),
+            SizedBox(height: AppSpacing.v24),
             Text(
               '아이젠하워',
               style: AppTypography.caption1Regular.copyWith(
@@ -92,6 +95,59 @@ class TodoInputBody extends StatelessWidget {
           onTap: () => viewModel.selectDate(context, isStartDate: false),
         ),
       ],
+    );
+  }
+
+  Widget _buildOptions(TodoInputViewModel viewModel) {
+    return _buildCustomCheckbox(
+      label: '메인화면 노출',
+      value: viewModel.showOnHome,
+      onChanged: (v) => viewModel.toggleShowOnHome(v),
+    );
+  }
+
+  Widget _buildCustomCheckbox({
+    required String label,
+    required bool value,
+    required ValueChanged<bool> onChanged,
+  }) {
+    return InkWell(
+      onTap: () => onChanged(!value),
+      borderRadius: BorderRadius.circular(2),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              width: AppDimensions.iconSize12,
+              height: AppDimensions.iconSize12,
+              decoration: BoxDecoration(
+                color: value ? AppColors.green500 : const Color(0xFFD9D9D9),
+                borderRadius: BorderRadius.circular(2),
+              ),
+              child: value
+                  ? const Icon(
+                Icons.check,
+                size: 10,
+                color: Colors.white,
+              )
+                  : null,
+            ),
+            SizedBox(width: AppSpacing.h12),
+            Baseline(
+              baseline: 9,
+              baselineType: TextBaseline.alphabetic,
+              child: Text(
+                label,
+                style: AppTypography.caption1Regular.copyWith(
+                  color: AppColors.status100,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
