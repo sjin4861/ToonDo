@@ -158,8 +158,9 @@ void main() {
         // Assert
         expect(emptyGoal.startDate.isAfter(beforeCall.subtract(Duration(seconds: 1))), isTrue);
         expect(emptyGoal.startDate.isBefore(afterCall.add(Duration(seconds: 1))), isTrue);
-        expect(emptyGoal.endDate.isAfter(beforeCall.subtract(Duration(seconds: 1))), isTrue);
-        expect(emptyGoal.endDate.isBefore(afterCall.add(Duration(seconds: 1))), isTrue);
+        // TODO: '마감일 없이 할래요' 기능 - Goal.empty()의 endDate가 null이 될 수 있으므로 테스트 수정
+        expect(emptyGoal.endDate?.isAfter(beforeCall.subtract(Duration(seconds: 1))) ?? false, isTrue);
+        expect(emptyGoal.endDate?.isBefore(afterCall.add(Duration(seconds: 1))) ?? false, isTrue);
       });
     });
 
