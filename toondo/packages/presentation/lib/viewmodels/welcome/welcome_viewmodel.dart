@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:domain/usecases/auth/get_token.dart';
 import 'package:injectable/injectable.dart';
+import 'package:presentation/designsystem/components/dialogs/comong_soon_dialog.dart';
 import 'package:presentation/views/auth/signup/signup_screen.dart';
 import 'package:presentation/views/home/home_screen.dart';
 import 'package:presentation/views/onboarding/step1_2/onboarding_step1_2_screen.dart';
@@ -20,12 +21,8 @@ class WelcomeViewModel extends ChangeNotifier {
   }
 
   void continueWithGoogle(BuildContext context) {
-    // Todo: 구글 로그인 구현
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const HomeScreen()),
-          (route) => false,
-    );
+    // Todo: 구글 로그인 구현 현재 임시로 다이얼로그
+    ComingSoonDialog.show(context);
   }
 
   void continueWithKakao(BuildContext context) {

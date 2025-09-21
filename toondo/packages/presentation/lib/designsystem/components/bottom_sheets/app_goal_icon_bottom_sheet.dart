@@ -58,7 +58,7 @@ class AppGoalIconBottomSheet extends StatelessWidget {
                         ),
                         SizedBox(height: AppSpacing.v8),
                         Wrap(
-                          spacing: AppSpacing.h16,
+                          spacing: AppSpacing.h14,
                           runSpacing: AppSpacing.v16,
                           children: entry.value.map((iconPath) {
                             return GestureDetector(
