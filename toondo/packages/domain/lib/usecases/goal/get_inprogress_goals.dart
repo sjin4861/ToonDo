@@ -11,7 +11,11 @@ class GetInProgressGoalsUseCase {
   Future<List<Goal>> call() async {
     final goals = repository.getGoalsLocal();
     final now = DateTime.now();
-    // 진행 중: 아직 종료일이 지나지 않고 포기하지 않은 목표
-    return goals.where((goal) => goal.endDate.isAfter(now) && goal.status == Status.active).toList();
+    // TODO: '마감일 없이 할래요' 기능 - endDate가 null인 목표도 진행 중으로 포함
+    // 진행 중: 아직 종료일이 지나지 않고 포기하지 않은 목표 (마감일이 없는 목표도 포함)
+    return goals.where((goal) => 
+        (goal.endDate == null || goal.endDate!.isAfter(now)) && 
+        goal.status == Status.active
+    ).toList();
   }
 }
