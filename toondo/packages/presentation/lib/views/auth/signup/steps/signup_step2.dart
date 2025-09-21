@@ -15,20 +15,30 @@ class SignupStep2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final signupViewModel = context.read<SignupViewModel>();
-    if (signupViewModel.loginId.isEmpty) {
-      signupViewModel.setLoginId(loginId);
-    }
+    
+    // TODO: setState() during build 에러 수정 완료 - build 중 notifyListeners() 호출 문제 해결
+    // TODO: 해결책: WidgetsBinding.instance.addPostFrameCallback() 사용하여 빌드 완료 후 호출
+    // TODO: 이전 문제: build() 메서드에서 setLoginId() 직접 호출 → notifyListeners() 트리거 → 빌드 중 재빌드 요청
+    // TODO: 현재 해결: 빌드 완료 후 상태 변경으로 무한 빌드 루프 방지
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (signupViewModel.loginId.isEmpty) {
+        signupViewModel.setLoginId(loginId);
+      }
+    });
 
     return Consumer<SignupViewModel>(
       builder: (context, viewModel, _) {
-        if (viewModel.onNavigateToOnboarding == null) {
-          viewModel.setNavigateToOnboarding(() {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => OnboardingStep1To2Screen()),
-            );
-          });
-        }
+        // onNavigateToOnboarding 설정도 동일하게 수정
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (viewModel.onNavigateToOnboarding == null) {
+            viewModel.setNavigateToOnboarding(() {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => OnboardingStep1To2Screen()),
+              );
+            });
+          }
+        });
 
         return BaseScaffold(
           title: '회원정보 확인',
