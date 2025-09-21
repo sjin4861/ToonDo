@@ -95,10 +95,10 @@ extension GetItInjectableX on _i174.GetIt {
       preResolve: true,
     );
     gh.lazySingleton<_i657.SlimeRepository>(() => _i366.SlimeRepositoryImpl());
-    gh.lazySingleton<_i116.AuthLocalDataSource>(
-        () => _i116.AuthLocalDataSource(gh<_i979.Box<_i245.UserModel>>()));
     gh.lazySingleton<_i1024.UserLocalDatasource>(
         () => _i1024.UserLocalDatasource(gh<_i979.Box<_i245.UserModel>>()));
+    gh.lazySingleton<_i116.AuthLocalDataSource>(
+        () => _i116.AuthLocalDataSource(gh<_i979.Box<_i245.UserModel>>()));
     gh.lazySingleton<_i578.ThemeRepository>(
         () => _i525.ThemeRepositoryImpl(gh<_i460.SharedPreferences>()));
     gh.lazySingleton<_i361.SecureLocalDataSource>(
@@ -116,13 +116,13 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i116.AuthLocalDataSource>(),
           gh<_i361.SecureLocalDataSource>(),
         ));
-    gh.lazySingleton<_i417.GoalRemoteDataSource>(
-        () => _i417.GoalRemoteDataSource(
+    gh.lazySingleton<_i627.TodoRemoteDataSource>(
+        () => _i627.TodoRemoteDataSource(
               gh<_i519.Client>(),
               gh<_i427.AuthRepository>(),
             ));
-    gh.lazySingleton<_i627.TodoRemoteDataSource>(
-        () => _i627.TodoRemoteDataSource(
+    gh.lazySingleton<_i417.GoalRemoteDataSource>(
+        () => _i417.GoalRemoteDataSource(
               gh<_i519.Client>(),
               gh<_i427.AuthRepository>(),
             ));
