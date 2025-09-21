@@ -93,10 +93,10 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
+    gh.factory<_i941.HelpGuideViewModel>(() => _i941.HelpGuideViewModel());
     gh.factory<_i81.DisplaySettingViewModel>(
       () => _i81.DisplaySettingViewModel(),
     );
-    gh.factory<_i941.HelpGuideViewModel>(() => _i941.HelpGuideViewModel());
     gh.lazySingleton<_i968.DeleteAccountViewModel>(
       () => _i968.DeleteAccountViewModel(
         deleteAccountUseCase: gh<_i728.DeleteAccountUseCase>(),

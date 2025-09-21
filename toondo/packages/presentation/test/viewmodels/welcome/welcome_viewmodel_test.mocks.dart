@@ -742,18 +742,14 @@ class MockNavigatorState extends _i1.Mock implements _i6.NavigatorState {
   );
 
   @override
-  void removeRoute<T extends Object?>(_i6.Route<T>? route, [T? result]) =>
-      super.noSuchMethod(
-        Invocation.method(#removeRoute, [route, result]),
-        returnValueForMissingStub: null,
-      );
+  void removeRoute(_i6.Route<dynamic>? route) => super.noSuchMethod(
+    Invocation.method(#removeRoute, [route]),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  void removeRouteBelow<T extends Object?>(
-    _i6.Route<T>? anchorRoute, [
-    T? result,
-  ]) => super.noSuchMethod(
-    Invocation.method(#removeRouteBelow, [anchorRoute, result]),
+  void removeRouteBelow(_i6.Route<dynamic>? anchorRoute) => super.noSuchMethod(
+    Invocation.method(#removeRouteBelow, [anchorRoute]),
     returnValueForMissingStub: null,
   );
 
