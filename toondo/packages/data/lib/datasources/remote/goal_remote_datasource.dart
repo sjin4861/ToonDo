@@ -69,10 +69,14 @@ class GoalRemoteDataSource {
   final url = Uri.parse('${Constants.baseUrl}/api/v1/goals'); // POST create
   print('🚀 요청 헤더: $headers');
 
+    // '마감일 없이 할래요' 기능 - 서버 API에서 endDate null을 허용하지 않으므로 
+    // null인 경우 먼 미래 날짜(2099-12-31)로 대체하여 전송
+    final endDateToSend = goal.endDate ?? DateTime(2099, 12, 31);
+    
     final requestBody = {
       "goalName": goal.name,
       "startDate": goal.startDate.toIso8601String().split('T')[0],
-      "endDate": goal.endDate.toIso8601String().split('T')[0],
+      "endDate": endDateToSend.toIso8601String().split('T')[0], // null인 경우 2099-12-31 전송
       "icon": goal.icon ?? "",
     };
 
@@ -107,7 +111,8 @@ class GoalRemoteDataSource {
           !data.containsKey('goalName')) {
         final newId = data['goalId'].toString();
         print('ℹ️ Minimal goal create response detected. Building Goal locally with id=$newId');
-        return Goal(
+        print('🔍 원본 goal.showOnHome 값: ${goal.showOnHome}');
+        final rebuiltGoal = Goal(
           id: newId,
           name: goal.name,
           icon: goal.icon,
@@ -115,7 +120,10 @@ class GoalRemoteDataSource {
           endDate: goal.endDate,
           progress: goal.progress, // 초기 0.0 가정
           status: goal.status,      // 기본 active 가정
+          showOnHome: goal.showOnHome, // showOnHome 값 누락 수정
         );
+        print('🔍 재구성된 goal.showOnHome 값: ${rebuiltGoal.showOnHome}');
+        return rebuiltGoal;
       }
       final model = GoalModel.fromJson(data);
       return model.toEntity();
@@ -144,10 +152,14 @@ class GoalRemoteDataSource {
     print('🔄 목표 업데이트 요청 URL: $url');
   print('🚀 요청 헤더: $headers');
 
+    // '마감일 없이 할래요' 기능 - 서버 API에서 endDate null을 허용하지 않으므로 
+    // null인 경우 먼 미래 날짜(2099-12-31)로 대체하여 전송
+    final endDateToSend = goal.endDate ?? DateTime(2099, 12, 31);
+    
     final requestBody = {
       "goalName": goal.name,
       "startDate": goal.startDate.toIso8601String().split('T')[0],
-      "endDate": goal.endDate.toIso8601String().split('T')[0],
+      "endDate": endDateToSend.toIso8601String().split('T')[0], // null인 경우 2099-12-31 전송
       "icon": goal.icon ?? "",
     };
 
