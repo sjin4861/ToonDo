@@ -64,6 +64,7 @@ class GoalInputBody extends StatelessWidget {
           date: viewModel.endDate,
           showError: viewModel.dateError != null,
           onTap: () => viewModel.selectDate(context, isStartDate: false),
+          enabled: !viewModel.withoutDeadline,
         ),
       ],
     );

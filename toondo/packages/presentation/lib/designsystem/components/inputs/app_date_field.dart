@@ -12,6 +12,7 @@ class AppDateField extends StatelessWidget {
   final DateTime? date;
   final bool showError;
   final VoidCallback onTap;
+  final bool enabled;
 
   const AppDateField({
     super.key,
@@ -19,33 +20,49 @@ class AppDateField extends StatelessWidget {
     required this.date,
     required this.onTap,
     this.showError = false,
+    this.enabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    final double errorTextFontSize = AppTypography.caption1Regular.fontSize ?? 12;
+    final double errorSlotHeight =
+        AppDimensions.paddingDateFieldErrorTop + errorTextFontSize;
     final hasValue = date != null;
-    final borderColor = hasValue ? AppColors.green500 : AppColors.borderUnselected;
-    final iconColor = hasValue ? AppColors.status100 : AppColors.borderUnselected;
-    final textColor = hasValue ? AppColors.status100 : AppColors.status100.withOpacity(0.25);
+    final disabledFill = AppColors.status100.withOpacity(0.08);
+    final borderColor =
+        hasValue ? AppColors.green500 : AppColors.borderUnselected;
+    final iconColor =
+        hasValue ? AppColors.status100 : AppColors.borderUnselected;
+    final textColor =
+        hasValue ? AppColors.status100 : AppColors.status100.withOpacity(0.25);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: AppTypography.caption1Regular.copyWith(color: AppColors.status100),
+          style: AppTypography.caption1Regular.copyWith(
+            color: AppColors.status100,
+          ),
         ),
         SizedBox(height: AppSpacing.v8),
         GestureDetector(
-          onTap: onTap,
+          onTap: enabled ? onTap : null,
           child: Container(
             height: AppDimensions.dateFieldHeight,
             width: AppDimensions.dateFieldWidth,
             padding: EdgeInsets.symmetric(horizontal: AppSpacing.h12),
             decoration: BoxDecoration(
+              color: enabled ? Colors.transparent : disabledFill,
               border: Border.all(color: borderColor, width: 1.w),
               borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
             ),
+            foregroundDecoration: !enabled
+                ? BoxDecoration(
+              color: Colors.transparent,
+            )
+                : null,
             child: Row(
               children: [
                 Assets.icons.icCalendar.svg(
@@ -55,22 +72,30 @@ class AppDateField extends StatelessWidget {
                 ),
                 SizedBox(width: AppSpacing.h8),
                 Text(
-                    hasValue ? DateFormat('yyyy년 M월 d일').format(date!) : '$label을 선택하세요',
-                    style: AppTypography.caption1Regular.copyWith(color: textColor),
-                    overflow: TextOverflow.ellipsis,
+                  hasValue
+                      ? DateFormat('yyyy년 M월 d일').format(date!)
+                      : '$label을 선택하세요',
+                  style: AppTypography.caption1Regular.copyWith(
+                    color: textColor,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
           ),
         ),
-        if (showError)
-          Padding(
+        SizedBox(
+          height: errorSlotHeight,
+          child: (showError && enabled)
+              ? Padding(
             padding: EdgeInsets.only(top: AppDimensions.paddingDateFieldErrorTop),
             child: Text(
               '$label을 선택해주세요',
               style: AppTypography.caption1Regular.copyWith(color: AppColors.red500),
             ),
           )
+              : const SizedBox.shrink(),
+        ),
       ],
     );
   }
