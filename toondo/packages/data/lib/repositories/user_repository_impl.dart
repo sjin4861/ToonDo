@@ -26,7 +26,8 @@ class UserRepositoryImpl implements UserRepository {
       final updatedUser = User(
         id: currentUser.id,
         nickname: updatedNickname,
-        loginId: currentUser.loginId
+        loginId: currentUser.loginId,
+        createdAt: currentUser.createdAt,
       );
       // 로컬에도 변경된 정보 저장
       await localDatasource.saveUser(updatedUser);
