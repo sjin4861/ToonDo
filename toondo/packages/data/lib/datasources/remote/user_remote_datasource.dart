@@ -30,6 +30,7 @@ class UserRemoteDatasource {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       if (data['message'] == '내 정보 조회 성공') {
+        // API 응답에 createdAt이 포함되어 있다면 UserModel.fromJson에서 처리됩니다.
         return UserModel.fromJson(data).toEntity();
       }
       throw Exception('응답 형식이 올바르지 않습니다.');
