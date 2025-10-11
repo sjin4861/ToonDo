@@ -31,7 +31,7 @@ class HomeBody extends StatelessWidget {
             child: Column(
               children: [
                 AppSelectableMenuBar(
-                  labels: ['투두', '목표'],
+                  labels: ['오늘의 투두', '목표'],
                   selectedIndex: homeVM.selectedTabIndex,
                   onChanged: homeVM.changeTab,
                 ),
