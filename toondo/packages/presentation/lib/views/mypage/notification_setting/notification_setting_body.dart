@@ -22,11 +22,11 @@ class NotificationSettingBody extends StatelessWidget {
           value: vm.settings.sound,
           onChanged: (_) => vm.toggleSound(),
         ),
-        NotificationToggleTile(
-          title: '전체알림',
-          value: vm.settings.all,
-          onChanged: (_) => vm.toggleAll(),
-        ),
+        // NotificationToggleTile(
+        //   title: '전체알림',
+        //   value: vm.settings.all,
+        //   onChanged: (_) => vm.toggleAll(),
+        // ),
         NotificationToggleTile(
           title: '리마인드 알림',
           value: vm.settings.reminder,
