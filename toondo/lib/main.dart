@@ -22,6 +22,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:rive_common/rive_audio.dart';
 import 'package:common/audio/audio_gate.dart';
+import 'package:common/notification/reminder_notification_service.dart';
 
 final ValueNotifier<bool> soundEnabled = ValueNotifier<bool>(true);
 late AudioGate audioGate;
@@ -52,6 +53,7 @@ Future<void> main() async {
   await themeVM.load();
 
   // 알림 공통 관리
+  GetIt.I.registerLazySingleton<ReminderNotificationService>(() => ReminderNotificationService());
   final notificationVM = GetIt.instance<AppNotificationViewModel>();
   await notificationVM.load();
 
@@ -100,7 +102,24 @@ class MyAppState extends State<MyApp> {
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Permission.notification.status;
+      var perm = await Permission.notification.status;
+      if (!perm.isGranted) {
+        perm = await Permission.notification.request();
+      }
+
+      if (perm.isGranted) {
+        final vm = GetIt.I<AppNotificationViewModel>();
+        final reminder = GetIt.I<ReminderNotificationService>();
+        final s = vm.settings;
+        await reminder.sync(
+          enabledAll:      s.all,
+          enabledReminder: s.reminder,
+          soundOn:         s.sound,
+          timeHHmm:        s.time,
+        );
+      } else {
+        debugPrint('[Reminder] Notification permission not granted');
+      }
     });
   }
 
