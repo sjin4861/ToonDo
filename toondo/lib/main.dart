@@ -20,6 +20,11 @@ import 'package:toondo/injection/di.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:rive_common/rive_audio.dart';
+import 'package:common/audio/audio_gate.dart';
+
+final ValueNotifier<bool> soundEnabled = ValueNotifier<bool>(true);
+late AudioGate audioGate;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,6 +54,14 @@ Future<void> main() async {
   // 알림 공통 관리
   final notificationVM = GetIt.instance<AppNotificationViewModel>();
   await notificationVM.load();
+
+  // 오디오 초기화
+  final rawEngine = AudioEngine.init(2, AudioEngine.playbackSampleRate)!;
+  audioGate = AudioGate(inner: rawEngine, enabled: soundEnabled);
+  final enabledNow = notificationVM.settings.all && notificationVM.settings.sound;
+  soundEnabled.value = enabledNow;
+  GetIt.I.registerSingleton<AudioGate>(audioGate);
+
 
   // 세로모드만 허용
   await SystemChrome.setPreferredOrientations([
@@ -81,6 +94,8 @@ class MyAppState extends State<MyApp> {
     });
 
     widget.notificationVM.addListener(() {
+      final on = widget.notificationVM.settings.all && widget.notificationVM.settings.sound;
+      soundEnabled.value = on;
       setState(() {});
     });
 
@@ -92,57 +107,74 @@ class MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-        designSize: const Size(375, 812),
-        minTextAdapt: true,
-        splitScreenMode: true,
-        builder: (context, child) {
-          return MultiProvider(
-            providers: [
-              ChangeNotifierProvider(create: (_) => widget.themeVM),
-              ChangeNotifierProvider(create: (_) => widget.notificationVM),
-              ChangeNotifierProvider(
-                  create: (_) => GetIt.instance<SignupViewModel>()),
-              ChangeNotifierProvider(
-                  create: (_) => GetIt.instance<GoalManagementViewModel>()),
-              ChangeNotifierProvider(
-                  create: (_) => GetIt.instance<HomeViewModel>()),
-              ChangeNotifierProvider(
-                  create: (_) => GetIt.instance<OnboardingViewModel>()),
-            ],
-            child: Consumer<AppThemeViewModel>(
-              builder: (context, vm, _) {
-                return MaterialApp(
-                  locale: const Locale('ko', 'KR'),
-                  supportedLocales: const [
-                    Locale('ko', 'KR'),
-                    Locale('en', 'US'),
-                  ],
-                  localizationsDelegates: [
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                  ],
-                  builder: (context, child) {
-                    final mq = MediaQuery.of(context);
-                    return MediaQuery(
-                      data: mq.copyWith(textScaler: TextScaler.noScaling),
-                      child: child!,
-                    );
-                  },
-                  themeMode: vm.mode.toFlutterMode(),
-                  theme: ThemeData.light().copyWith(
-                    scaffoldBackgroundColor: const Color(
-                        0xFFFDFDFD), // 라이트 모드 배경색
-                  ),
-                  navigatorKey: navigatorKey,
-                  initialRoute: '/',
-                  onGenerateRoute: AppRouter.generateRoute,
-                  darkTheme: ThemeData.dark(),
-                );
-              },
-            ),
-          );
-        },
+      designSize: const Size(375, 812),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => widget.themeVM),
+            ChangeNotifierProvider(create: (_) => widget.notificationVM),
+            ChangeNotifierProvider(
+                create: (_) => GetIt.instance<SignupViewModel>()),
+            ChangeNotifierProvider(
+                create: (_) => GetIt.instance<GoalManagementViewModel>()),
+            ChangeNotifierProvider(
+                create: (_) => GetIt.instance<HomeViewModel>()),
+            ChangeNotifierProvider(
+                create: (_) => GetIt.instance<OnboardingViewModel>()),
+          ],
+          child: Consumer<AppThemeViewModel>(
+            builder: (context, vm, _) {
+              final feedbackOn = soundEnabled.value;
+              final btnStyle = ButtonStyle(enableFeedback: feedbackOn);
+
+              final light = ThemeData.light().copyWith(
+                scaffoldBackgroundColor: const Color(0xFFFDFDFD),
+                iconButtonTheme: IconButtonThemeData(style: btnStyle),
+                textButtonTheme: TextButtonThemeData(style: btnStyle),
+                elevatedButtonTheme: ElevatedButtonThemeData(style: btnStyle),
+                outlinedButtonTheme: OutlinedButtonThemeData(style: btnStyle),
+                listTileTheme: ListTileThemeData(enableFeedback: feedbackOn),
+              );
+
+              final dark = ThemeData.dark().copyWith(
+                iconButtonTheme: IconButtonThemeData(style: btnStyle),
+                textButtonTheme: TextButtonThemeData(style: btnStyle),
+                elevatedButtonTheme: ElevatedButtonThemeData(style: btnStyle),
+                outlinedButtonTheme: OutlinedButtonThemeData(style: btnStyle),
+                listTileTheme: ListTileThemeData(enableFeedback: feedbackOn),
+              );
+
+              return MaterialApp(
+                locale: const Locale('ko', 'KR'),
+                supportedLocales: const [
+                  Locale('ko', 'KR'),
+                  Locale('en', 'US'),
+                ],
+                localizationsDelegates: [
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                builder: (context, child) {
+                  final mq = MediaQuery.of(context);
+                  return MediaQuery(
+                    data: mq.copyWith(textScaler: TextScaler.noScaling),
+                    child: child!,
+                  );
+                },
+                themeMode: vm.mode.toFlutterMode(),
+                theme: light,
+                darkTheme: dark,
+                navigatorKey: navigatorKey,
+                initialRoute: '/',
+                onGenerateRoute: AppRouter.generateRoute,
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }

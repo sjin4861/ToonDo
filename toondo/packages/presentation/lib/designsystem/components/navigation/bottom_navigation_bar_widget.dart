@@ -6,16 +6,21 @@ import 'package:presentation/designsystem/colors/app_colors.dart';
 import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/designsystem/typography/app_typography.dart';
+import 'package:presentation/viewmodels/global/app_notification_viewmodel.dart';
 import 'package:presentation/views/goal/manage/goal_manage_screen.dart';
 import 'package:presentation/views/mypage/my_page_screen.dart';
 import 'package:presentation/views/todo/input/todo_input_screen.dart';
 import 'package:presentation/views/todo/manage/todo_manage_screen.dart';
+import 'package:provider/provider.dart';
 
 class BottomNavigationBarWidget extends StatelessWidget {
   const BottomNavigationBarWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final feedbackOn = context.select<AppNotificationViewModel, bool>(
+          (vm) => vm.settings.all && vm.settings.sound,
+    );
     return  BottomAppBar(
         height: AppDimensions.bottomNavBarHeight,
         color: AppColors.status0,
@@ -26,6 +31,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
             // (1) 투두 리스트
             _buildNavButton(
               context,
+              feedbackOn: feedbackOn,
               label: '투두리스트',
               iconPath: Assets.icons.icBottomTodo.path,
               onTap: () {
@@ -39,6 +45,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
             // (2) 목표 관리
             _buildNavButton(
               context,
+              feedbackOn: feedbackOn,
               label: '목표관리',
               iconPath: Assets.icons.icBottomGoal.path,
               onTap: () {
@@ -52,6 +59,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
             // (3) 투두 추가
             _buildNavButton(
               context,
+              feedbackOn: feedbackOn,
               label: '투두추가',
               iconPath: Assets.icons.icBottomAdd.path,
               onTap: () {
@@ -65,6 +73,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
             // (4) 마이페이지
             _buildNavButton(
               context,
+              feedbackOn: feedbackOn,
               label: '마이페이지',
               iconPath: Assets.icons.icBottomUser.path,
               onTap: () {
@@ -84,8 +93,10 @@ class BottomNavigationBarWidget extends StatelessWidget {
         required String iconPath,
         String? label,
         required VoidCallback onTap,
+        required bool feedbackOn,
       }) {
     return InkWell(
+      enableFeedback: feedbackOn,
       onTap: onTap,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
