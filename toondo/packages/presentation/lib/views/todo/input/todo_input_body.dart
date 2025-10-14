@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
+import 'package:presentation/designsystem/components/app_ink_well.dart';
 import 'package:presentation/designsystem/components/chips/app_daily_chip.dart';
 import 'package:presentation/designsystem/components/inputs/app_date_field.dart';
 import 'package:presentation/designsystem/components/inputs/app_input_field.dart';
@@ -111,9 +112,8 @@ class TodoInputBody extends StatelessWidget {
     required bool value,
     required ValueChanged<bool> onChanged,
   }) {
-    return InkWell(
+    return AppInkWell(
       onTap: () => onChanged(!value),
-      borderRadius: BorderRadius.circular(2),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 0),
         child: Row(
@@ -127,11 +127,7 @@ class TodoInputBody extends StatelessWidget {
                 borderRadius: BorderRadius.circular(2),
               ),
               child: value
-                  ? const Icon(
-                Icons.check,
-                size: 10,
-                color: Colors.white,
-              )
+                  ? const Icon(Icons.check, size: 10, color: Colors.white)
                   : null,
             ),
             SizedBox(width: AppSpacing.h12),
@@ -150,6 +146,7 @@ class TodoInputBody extends StatelessWidget {
       ),
     );
   }
+
 
   Widget _buildOnboardingHeader() {
     return Column(

@@ -19,9 +19,9 @@ class NotificationSettingRepositoryImpl implements NotificationSettingRepository
   Future<NotificationSettings> getSettings() async {
     return NotificationSettings(
       sound: prefs.getBool(_sound) ?? true,
-      all: prefs.getBool(_all) ?? true,
-      report: prefs.getBool(_report) ?? true,
-      reminder: prefs.getBool(_reminder) ?? true,
+      all: prefs.getBool(_all) ?? false,
+      report: prefs.getBool(_report) ?? false,
+      reminder: prefs.getBool(_reminder) ?? false,
       time: prefs.getString(_time) ?? '03:00',
     );
   }

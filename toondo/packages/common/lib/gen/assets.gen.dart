@@ -650,15 +650,16 @@ class $AssetsImagesGen {
 class $AssetsRivesGen {
   const $AssetsRivesGen();
 
-  /// File path: assets/rives/gif_slime.riv
-  RiveGenImage get gifSlime => const RiveGenImage('assets/rives/gif_slime.riv');
-
   /// File path: assets/rives/gif_yellow_slime.riv
   RiveGenImage get gifYellowSlime =>
       const RiveGenImage('assets/rives/gif_yellow_slime.riv');
 
+  /// File path: assets/rives/gif_yellow_slime_ex.riv
+  RiveGenImage get gifYellowSlimeEx =>
+      const RiveGenImage('assets/rives/gif_yellow_slime_ex.riv');
+
   /// List of all assets
-  List<RiveGenImage> get values => [gifSlime, gifYellowSlime];
+  List<RiveGenImage> get values => [gifYellowSlime, gifYellowSlimeEx];
 }
 
 class Assets {

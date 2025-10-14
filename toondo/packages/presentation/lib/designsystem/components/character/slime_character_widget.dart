@@ -6,6 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 import 'package:presentation/viewmodels/character/slime_character_vm.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:get_it/get_it.dart';
+import 'package:rive_common/rive_audio.dart';
+import 'package:common/audio/audio_gate.dart';
 
 class SlimeCharacterWidget extends StatefulWidget {
   final bool enableGestures;
@@ -29,10 +32,19 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> {
   RiveAnimationController? _currentController;
   String _currentAnimationKey = 'id';
 
+  // 점프 효과음 소스
+  StreamingAudioSource? _jumpSfx;
+
   @override
   void initState() {
     super.initState();
     _debugPrintAnimationNames();
+    _loadJumpSfx();
+  }
+
+  Future<void> _loadJumpSfx() async {
+    final data = await rootBundle.load('assets/audios/sound_beep.mp3');
+    _jumpSfx = AudioGate.loadSource(data.buffer.asUint8List());
   }
 
   @override
@@ -71,6 +83,11 @@ class _SlimeCharacterWidgetState extends State<SlimeCharacterWidget> {
             if (animKey == 'id') {
               _currentController = SimpleAnimation('id', autoplay: true);
             } else {
+              // 점프 애니메이션이면 효과음 재생 (전역 토글 OFF면 게이트가 자동 무시)
+              if (animKey == 'jump' && _jumpSfx != null) {
+                GetIt.I<AudioGate>().play(_jumpSfx!, 0, 0, 0);
+              }
+
               _currentController = OneShotAnimation(
                 animKey,
                 autoplay: true,

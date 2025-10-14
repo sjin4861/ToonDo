@@ -3,6 +3,7 @@ import 'package:presentation/designsystem/colors/app_colors.dart';
 import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/designsystem/typography/app_typography.dart';
+import 'package:presentation/designsystem/components/app_ink_well.dart';
 
 class AccountSettingTile extends StatelessWidget {
   final String label;
@@ -13,7 +14,7 @@ class AccountSettingTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return AppInkWell(
       onTap: onTap,
       child: Container(
         height: 52,
@@ -25,7 +26,7 @@ class AccountSettingTile extends StatelessWidget {
             Text(
               label,
               style: AppTypography.h3Regular.copyWith(
-                color: AppColors.status100
+                color: AppColors.status100,
               ),
             ),
             Row(
@@ -34,7 +35,7 @@ class AccountSettingTile extends StatelessWidget {
                   Text(
                     value!,
                     style: AppTypography.h3Regular.copyWith(
-                      color: Color(0xFF858584),
+                      color: const Color(0xFF858584),
                     ),
                   ),
                 SizedBox(width: AppSpacing.h24),
