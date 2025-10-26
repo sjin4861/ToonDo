@@ -25,6 +25,7 @@ class UserLocalDatasource {
         id: 1,
         nickname: '사용자',
         loginId: 'default_user',
+        createdAt: DateTime.now(),
       );
       await saveUser(defaultUser);
       return defaultUser;
@@ -42,6 +43,7 @@ class UserLocalDatasource {
         id: 1,
         nickname: newNickName,
         loginId: 'default_user',
+        createdAt: DateTime.now(),
       );
       await saveUser(newUser);
     }
