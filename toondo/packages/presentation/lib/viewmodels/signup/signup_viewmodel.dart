@@ -112,9 +112,8 @@ class SignupViewModel extends ChangeNotifier {
       if (exists) {
         loginIdError = '이미 가입된 아이디입니다. 로그인을 시도해보세요.';
         notifyListeners();
-        Future.delayed(const Duration(seconds: 2), () {
-          onNavigateToLogin?.call();
-        });
+        // 지연 없이 즉시 로그인 화면으로 이동
+        onNavigateToLogin?.call();
         return false;
       } else {
         loginIdError = null;
@@ -160,6 +159,19 @@ class SignupViewModel extends ChangeNotifier {
       onNavigateToOnboarding?.call();
     } catch (e) {
       print("회원가입 오류: $e");
+      // 이미 존재하는 아이디(전화번호)라면 회원가입 실패 대신 로그인 화면으로 유도
+      final msg = e.toString();
+      if (msg.contains('이미 존재하는 아이디') || msg.contains('이미 가입')) {
+        loginIdError = '이미 가입된 아이디입니다. 로그인을 시도해보세요.';
+        // 현재 단계가 비밀번호 단계일 수 있으므로 초기 단계로 되돌려 재입력 혼란 방지
+        currentStep = SignupStep.loginId;
+        // 가입 완료 상태는 유지하지 않음
+        isSignupComplete = false;
+        notifyListeners();
+        // 즉시 이동 (지연 없이) - UX 필요 시 지연 적용 가능
+        onNavigateToLogin?.call();
+        return; // 예외 재던지지 않음
+      }
       throw Exception('회원가입에 실패했습니다: ${e.toString()}');
     }
   }
