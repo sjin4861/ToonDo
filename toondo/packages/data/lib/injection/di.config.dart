@@ -32,6 +32,7 @@ import 'package:data/repositories/theme_repository_impl.dart' as _i525;
 import 'package:data/repositories/todo_repository_impl.dart' as _i366;
 import 'package:data/repositories/user_repository_impl.dart' as _i537;
 import 'package:data/utils/gesture_mapper.dart' as _i587;
+import 'package:dio/dio.dart' as _i361;
 import 'package:domain/repositories/auth_repository.dart' as _i427;
 import 'package:domain/repositories/goal_repository.dart' as _i559;
 import 'package:domain/repositories/notification_repository.dart' as _i267;
@@ -77,6 +78,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i938.AnimationLocalDataSource>(
         () => _i938.AnimationLocalDataSource());
     gh.lazySingleton<_i519.Client>(() => registerModule.httpClient);
+    gh.lazySingleton<_i361.Dio>(() => registerModule.dio);
     gh.lazySingleton<_i558.FlutterSecureStorage>(
         () => registerModule.secureStorage);
     gh.lazySingleton<_i587.GestureMapper>(() => registerModule.gestureMapper);
@@ -85,8 +87,6 @@ extension GetItInjectableX on _i174.GetIt {
       instanceName: 'deletedTodoBox',
       preResolve: true,
     );
-    gh.lazySingleton<_i954.AuthRemoteDataSource>(
-        () => _i954.AuthRemoteDataSource(gh<_i519.Client>()));
     gh.lazySingleton<_i267.NotificationSettingRepository>(() =>
         _i15.NotificationSettingRepositoryImpl(gh<_i460.SharedPreferences>()));
     await gh.factoryAsync<_i979.Box<_i923.TodoModel>>(
@@ -95,6 +95,8 @@ extension GetItInjectableX on _i174.GetIt {
       preResolve: true,
     );
     gh.lazySingleton<_i657.SlimeRepository>(() => _i366.SlimeRepositoryImpl());
+    gh.lazySingleton<_i954.AuthRemoteDataSource>(
+        () => _i954.AuthRemoteDataSource(gh<_i361.Dio>()));
     gh.lazySingleton<_i1024.UserLocalDatasource>(
         () => _i1024.UserLocalDatasource(gh<_i979.Box<_i245.UserModel>>()));
     gh.lazySingleton<_i116.AuthLocalDataSource>(
@@ -118,19 +120,23 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.lazySingleton<_i627.TodoRemoteDataSource>(
         () => _i627.TodoRemoteDataSource(
-              gh<_i519.Client>(),
+              gh<_i361.Dio>(),
               gh<_i427.AuthRepository>(),
             ));
     gh.lazySingleton<_i417.GoalRemoteDataSource>(
         () => _i417.GoalRemoteDataSource(
-              gh<_i519.Client>(),
+              gh<_i361.Dio>(),
               gh<_i427.AuthRepository>(),
             ));
     gh.lazySingleton<_i813.UserRemoteDatasource>(
         () => _i813.UserRemoteDatasource(
-              gh<_i519.Client>(),
+              gh<_i361.Dio>(),
               gh<_i427.AuthRepository>(),
             ));
+    gh.lazySingleton<_i559.GoalRepository>(() => _i527.GoalRepositoryImpl(
+          localDatasource: gh<_i34.GoalLocalDatasource>(),
+          remoteDatasource: gh<_i417.GoalRemoteDataSource>(),
+        ));
     gh.lazySingleton<_i158.TodoRepository>(() => _i366.TodoRepositoryImpl(
           remoteDatasource: gh<_i627.TodoRemoteDataSource>(),
           localDatasource: gh<_i91.TodoLocalDatasource>(),
@@ -138,10 +144,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i988.UserRepository>(() => _i537.UserRepositoryImpl(
           remoteDatasource: gh<_i813.UserRemoteDatasource>(),
           localDatasource: gh<_i1024.UserLocalDatasource>(),
-        ));
-    gh.lazySingleton<_i559.GoalRepository>(() => _i527.GoalRepositoryImpl(
-          localDatasource: gh<_i34.GoalLocalDatasource>(),
-          remoteDatasource: gh<_i417.GoalRemoteDataSource>(),
         ));
     return this;
   }
