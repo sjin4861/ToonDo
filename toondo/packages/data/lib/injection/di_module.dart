@@ -7,12 +7,18 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:injectable/injectable.dart';
 import 'package:http/http.dart';
+import 'package:dio/dio.dart';
+import 'package:data/network/dio_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 @module
 abstract class RegisterModule {
   @lazySingleton
   Client get httpClient => Client();
+
+    // 최소 Dio 클라이언트 (쿠키/401 재발급 인터셉터 포함)
+    @lazySingleton
+    Dio get dio => DioClient.create().dio;
 
   @preResolve
   Future<Box<UserModel>> get userBox => Hive.openBox<UserModel>('users');
