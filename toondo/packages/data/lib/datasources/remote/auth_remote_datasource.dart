@@ -1,14 +1,19 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import 'package:data/constants.dart';
 import 'package:injectable/injectable.dart';
 
+// Dio 기반 최소 구현 버전
+// - 쿠키는 글로벌 Dio 인스턴스 (CookieManager 인터셉터 부착) 에 의해 자동 저장/전송
+// - 기존 http.Client 로직을 단순화하여 핵심 엔드포인트만 동작하도록 함
+// TODO(auth-migrate): 회원가입 phoneNumber/nickname 필드 추가 후 관련 계층 확장
+// TODO(auth-refresh): 401 TOKEN_EXPIRED 케이스는 dio_client.dart 인터셉터에서 처리됨 (여기서는 별도 처리 불필요)
+
 @LazySingleton()
 class AuthRemoteDataSource{
-  final http.Client httpClient;
-  AuthRemoteDataSource(this.httpClient);
+  final Dio dio;
+  AuthRemoteDataSource(this.dio);
 
-  static const String baseUrl = Constants.baseUrl;
+  static const String baseUrl = Constants.baseUrl; // TODO(auth): 포트 변경 반영됨(8083). 경로 prefix '/api/v1' 적용 필요 여부 백엔드 스펙 재확인
 
   /// 사용자를 회원가입시키는 함수.
   ///
@@ -40,57 +45,70 @@ class AuthRemoteDataSource{
     String loginId,
     String password,
   ) async {
+    // TODO(payload): 최신 회원가입 요청 스펙에 phoneNumber, nickname 필드 추가 필요
+    // 현재 서버 엔드포인트는 /api/v1/users/signup 기대: {loginId,password,phoneNumber,nickname}
+    // ViewModel/UseCase 계층과 모델 확장 필요
     // 1) Local explicit bypass (only if flag enabled)
-  if (Constants.enableLocalTestBypass &&
-    loginId == Constants.testLoginId &&
-    password == Constants.testPassword) {
-      // 디자인 플로우 빠른 확인용
-      return Constants.testAccessToken;
+    if (Constants.enableLocalTestBypass &&
+        loginId == Constants.testLoginId &&
+        password == Constants.testPassword) {
+      return Constants.testAccessToken; // 디자인 플로우 빠른 확인용
     }
 
-    final url = Uri.parse('$baseUrl/users/signup');
-    http.Response response;
+    // 기존 및 신규 엔드포인트 병행 테스트 대비: signupUrl만 사용 (중복 제거)
+    // TODO(endpoint): 최종 확정 후 필요시 레거시 경로 제거
+    final signupUrl = Uri.parse('$baseUrl/api/v1/users/signup');
+    Response response;
     try {
-      response = await httpClient.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
+      response = await dio.post(
+        signupUrl.toString(),
+        data: {
           'loginId': loginId,
           'password': password,
-        }),
+          // 'phoneNumber': phoneNumber, // TODO(payload)
+          // 'nickname': nickname,       // TODO(payload)
+        },
+        options: Options(headers: {'Content-Type': 'application/json'}),
       );
     } catch (e) {
-      // 네트워크 오류 시 테스트 계정이면 로컬 토큰으로 흐름 계속
-  if (loginId == Constants.testLoginId && password == Constants.testPassword) {
-        return Constants.testAccessToken; // fallback
+      if (loginId == Constants.testLoginId && password == Constants.testPassword) {
+        return Constants.testAccessToken; // 네트워크 오류 fallback
       }
       rethrow;
     }
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      final responseData = jsonDecode(response.body);
-      return responseData['accessToken'];
+      // 백엔드가 쿠키만 반환하고 body에 토큰을 포함하지 않을 수 있음 -> accessToken 키 없으면 빈 문자열 반환
+      final dynamic data = response.data;
+      if (data is Map && data.containsKey('accessToken')) {
+        return data['accessToken'] as String? ?? '';
+      }
+      // TODO(token): 쿠키 기반 세션만 있는 경우 프론트에서 굳이 accessToken 보관 불필요. 상위 계층 정리 필요
+      return '';
     }
 
     if (response.statusCode == 400) {
       // 이미 존재하는 로그인 ID 등 중복 상황 처리
       String? error;
-      try {
-        error = jsonDecode(response.body)['error'];
-      } catch (_) {}
+      if (response.data is Map) {
+        try { error = (response.data as Map)['error'] as String?; } catch (_) {}
+      }
 
       // 2) testuser 중복 시도면: 자동으로 로그인 시도하여 토큰 반환 (idempotent UX)
   if (loginId == Constants.testLoginId && password == Constants.testPassword) {
         try {
           final loginUrl = Uri.parse('$baseUrl/users/login');
-          final loginResp = await httpClient.post(
-            loginUrl,
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode({'loginId': loginId, 'password': password}),
+          final loginResp = await dio.post(
+            loginUrl.toString(),
+            data: {'loginId': loginId, 'password': password},
+            options: Options(headers: {'Content-Type': 'application/json'}),
           );
           if (loginResp.statusCode == 200) {
-            final data = jsonDecode(loginResp.body);
-            return data['accessToken'];
+            final lrData = loginResp.data;
+            if (lrData is Map && lrData.containsKey('accessToken')) {
+              return lrData['accessToken'] as String? ?? '';
+            }
+            return '';
           }
           // 로그인도 실패하면 최종 fallback 로컬 토큰 (디자인 진행)
           return Constants.testAccessToken;
@@ -103,18 +121,18 @@ class AuthRemoteDataSource{
 
     if (response.statusCode == 500) {
       // 서버 오류지만 테스트 계정이면 fallback 허용
-  if (loginId == Constants.testLoginId && password == Constants.testPassword) {
+      if (loginId == Constants.testLoginId && password == Constants.testPassword) {
         return Constants.testAccessToken;
       }
       throw Exception('서버 내부 오류가 발생했습니다.');
     }
 
     // 기타 예외 상태 처리
-  if (loginId == Constants.testLoginId && password == Constants.testPassword) {
+    if (loginId == Constants.testLoginId && password == Constants.testPassword) {
       // 예측 밖 상태도 테스트 계정은 흐름 계속
       return Constants.testAccessToken;
     }
-    throw Exception('회원가입 실패: ${response.body}');
+    throw Exception('회원가입 실패: ${response.data}');
   }
 
   Future<String> login(
@@ -128,72 +146,124 @@ class AuthRemoteDataSource{
       await Future.delayed(const Duration(milliseconds: 300)); // mimic latency
       return Constants.testAccessToken;
     }
-    final url = Uri.parse('$baseUrl/users/login');
-    final response = await httpClient.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'loginId': loginId,
-        'password': password,
-      }),
-    );
+    // legacy 경로 변수 제거 (중복 및 미사용 경고 방지)
+    // TODO(endpoint): 최신 로그인 엔드포인트 '/login' (루트) 제공 여부 확인.
+    // 서버 공유 내용: POST /login (id,password) vs 기존 '/users/login'. 테스트 후 하나로 확정 필요.
+    // 임시로 신규 스펙 우선 시도 후 실패 시 fallback.
+    final primaryUrl = Uri.parse('$baseUrl/login');
+    final legacyUrl = Uri.parse('$baseUrl/users/login'); // fallback
+    Response response;
+    try {
+      response = await dio.post(
+        primaryUrl.toString(),
+        data: {
+          'id': loginId, // TODO(mapping): 서버는 'id' 키 사용. 기존 'loginId' -> 통일 필요
+          'password': password,
+        },
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      );
+      if (response.statusCode == 404) {
+        // fallback to legacy path
+        response = await dio.post(
+          legacyUrl.toString(),
+          data: {
+            'loginId': loginId,
+            'password': password,
+          },
+          options: Options(headers: {'Content-Type': 'application/json'}),
+        );
+      }
+    } catch (e) {
+      rethrow; // TODO(net): 네트워크 예외 세분화 후 사용자 메시지 매핑
+    }
 
     if (response.statusCode == 200) {
-      final responseData = jsonDecode(response.body);
-      return responseData['accessToken'];
+      final respData = response.data;
+      if (respData is Map && respData.containsKey('accessToken')) {
+        return respData['accessToken'] as String? ?? '';
+      }
+      return '';
     } else if (response.statusCode == 400) {
-      final error = jsonDecode(response.body)['error'];
+      String? error;
+      final body = response.data;
+      if (body is Map) {
+        try { error = body['error'] as String?; } catch (_) {}
+      }
       throw Exception(error ?? '로그인 정보가 올바르지 않습니다.');
     } else if (response.statusCode == 500) {
       throw Exception('서버 내부 오류가 발생했습니다.');
     } else {
-      throw Exception('로그인 실패: ${response.body}');
+      throw Exception('로그인 실패: ${response.data}');
     }
+    // 모든 분기에서 return/throw 처리되므로 도달 불가. 분석기 경고 방지용
+    // ignore: dead_code
+    throw Exception('UNREACHABLE');
   }
 
   Future<bool> isLoginIdRegistered(String loginId) async {
-  final url = Uri.parse('$baseUrl/users/check-loginid?loginid=$loginId');
-  // TODO(timeout): 현재 timeout 미적용 - 서버 무응답/네트워크 이슈 시 Future가 오래 걸릴 수 있음
-  // final response = await httpClient.get(url).timeout(const Duration(seconds: 8));
+    // 우선순위: camelCase 쿼리 키(loginId) → 소문자(loginid) → 비-prefix 경로
+    final candidates = <Uri>[
+      Uri.parse('$baseUrl/api/v1/users/check-loginid?loginId=$loginId'),
+      Uri.parse('$baseUrl/api/v1/users/check-loginid?loginid=$loginId'),
+      Uri.parse('$baseUrl/users/check-loginid?loginId=$loginId'),
+    ];
+
     // Local test bypass: 디자인 플로우 확인용으로 test 계정은 항상 "미등록" 처리
     if (Constants.enableLocalTestBypass && loginId == Constants.testLoginId) {
       return false; // 사용 가능
     }
 
-    try {
-      final response = await httpClient
-          .get(url)
-          .timeout(const Duration(seconds: 6)); // 간단 timeout 추가
-      // TODO(error-body): 200 외 응답 구조(에러 body 형식) 백엔드 스펙 문서화 필요
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return data['exists'] == true;
+  // 마지막 예외(디버깅용 변수) - 현재 미사용이므로 제거하여 경고 방지
+    Response? lastResponse;
+
+    for (final uri in candidates) {
+      try {
+        final response = await dio.get(
+          uri.toString(),
+          options: Options(receiveTimeout: const Duration(seconds: 6)),
+        );
+        // 정상 응답 처리
+        if (response.statusCode == 200) {
+          final data = response.data;
+          if (data is Map && data.containsKey('exists')) {
+            return data['exists'] == true;
+          }
+          if (data is bool) return data;
+          // 형식이 예상과 다르면 다음 후보 시도
+          lastResponse = response;
+          continue;
+        }
+
+        // 404/500 등은 다음 후보를 시도, 모두 실패 시 예외 처리
+        lastResponse = response;
+        continue;
+      } on DioException catch (_) {
+        // TODO(log): DioException 세부 정보 로깅 필요 시 Logger 주입 후 활용
+        continue; // 다음 후보 URL 시도
+      } catch (_) {
+        // 알 수 없는 예외도 다음 후보 시도
+        continue;
       }
-      // 404 등 비정상 응답 시 UI 흐름 막지 않도록 '미등록'으로 간주 (디자인 확인 단계)
-      // TODO(prod): 프로덕션에서는 여기서 예외 던지고 상위에서 처리하도록 되돌릴 것
-      return false;
-    } catch (e) {
-      // 네트워크 오류/timeout 시에도 디자인 흐름 진행을 위해 사용 가능 처리
-      // TODO(prod): 네트워크 오류 시 사용자에게 재시도 안내
-      return false;
     }
-    // TODO(retry): 필요시 재시도/backoff 전략 적용 고려
+
+    // 모든 후보 실패: 명시적으로 예외 던져 상위(UI)에서 에러 메시지 표시되도록
+    final code = lastResponse?.statusCode;
+    // lastError?.message 등을 조합 가능하나 사용자 메시지 단순화
+    throw Exception('아이디 확인 요청 실패${code != null ? ' (HTTP $code)' : ''}');
   }
 
   Future<void> deleteAccount() async {
+    // TODO(endpoint): 실제 탈퇴 엔드포인트 '/api/v1/users/delete-account' (추정) 확인 필요
+    // TODO(auth): 쿠키 기반 인증이므로 추가 헤더보다 기본 쿠키 전송으로 인증 처리
     // TODO: 개발 중에는 목 응답 사용, 실제 서버 연결 시 아래 주석 해제
     // 임시로 성공 응답 시뮬레이션
     await Future.delayed(Duration(milliseconds: 1000)); // 네트워크 지연 시뮬레이션
     
-    /* 실제 서버 연결 코드
+    /* 실제 서버 연결 코드 (확정 시 교체)
     final url = Uri.parse('$baseUrl/users/delete-account');
-    final response = await httpClient.delete(
-      url,
-      headers: {'Content-Type': 'application/json'},
-    );
-
+    final response = await dio.delete(url.toString());
     if (response.statusCode != 200) {
-      throw Exception('계정 탈퇴 실패: ${response.body}');
+      throw Exception('계정 탈퇴 실패: ${response.data}');
     }
     */
   }
