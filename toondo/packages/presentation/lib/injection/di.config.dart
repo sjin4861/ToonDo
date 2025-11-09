@@ -9,6 +9,8 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:common/notification/reminder_notification_service.dart'
+    as _i983;
 import 'package:domain/entities/goal.dart' as _i876;
 import 'package:domain/entities/todo.dart' as _i429;
 import 'package:domain/usecases/auth/check_login_id_exists.dart' as _i138;
@@ -143,12 +145,6 @@ extension GetItInjectableX on _i174.GetIt {
         loginUseCase: gh<_i1068.LoginUseCase>(),
       ),
     );
-    gh.lazySingleton<_i370.AppNotificationViewModel>(
-      () => _i370.AppNotificationViewModel(
-        gh<_i22.GetNotificationSettingsUseCase>(),
-        gh<_i930.SetNotificationSettingsUseCase>(),
-      ),
-    );
     gh.factory<_i393.TimePickerViewModel>(
       () => _i393.TimePickerViewModel(gh<_i236.SetReminderTime>()),
     );
@@ -170,9 +166,11 @@ extension GetItInjectableX on _i174.GetIt {
         logoutUseCase: gh<_i969.LogoutUseCase>(),
       ),
     );
-    gh.factory<_i942.NotificationSettingViewModel>(
-      () => _i942.NotificationSettingViewModel(
-        gh<_i370.AppNotificationViewModel>(),
+    gh.lazySingleton<_i370.AppNotificationViewModel>(
+      () => _i370.AppNotificationViewModel(
+        gh<_i22.GetNotificationSettingsUseCase>(),
+        gh<_i930.SetNotificationSettingsUseCase>(),
+        gh<_i983.ReminderNotificationService>(),
       ),
     );
     gh.factory<_i88.SlimeCharacterViewModel>(
@@ -212,6 +210,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i657.OnboardingViewModel>(
       () => _i657.OnboardingViewModel(
         updateNickNameUseCase: gh<_i910.UpdateNickNameUseCase>(),
+      ),
+    );
+    gh.factory<_i942.NotificationSettingViewModel>(
+      () => _i942.NotificationSettingViewModel(
+        gh<_i370.AppNotificationViewModel>(),
       ),
     );
     return this;
