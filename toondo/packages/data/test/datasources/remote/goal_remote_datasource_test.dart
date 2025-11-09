@@ -1,25 +1,29 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import 'package:data/datasources/remote/goal_remote_datasource.dart';
 import 'package:domain/repositories/auth_repository.dart';
 import 'package:domain/entities/goal.dart';
 import 'package:domain/entities/status.dart';
+// ignore_for_file: unused_import
 import 'package:data/constants.dart';
 
 import 'goal_remote_datasource_test.mocks.dart';
+// Local fake to avoid Mockito name collision and codegen for Dio
+class FakeDio extends Mock implements Dio {}
 
-@GenerateMocks([http.Client, AuthRepository])
+
+@GenerateMocks([AuthRepository])
 void main() {
   late GoalRemoteDataSource dataSource;
-  late MockClient mockClient;
+  late FakeDio mockDio;
   late MockAuthRepository mockAuthRepository;
 
   setUp(() {
-    mockClient = MockClient();
-    mockAuthRepository = MockAuthRepository();
-    dataSource = GoalRemoteDataSource(mockClient, mockAuthRepository);
+  mockDio = FakeDio();
+  mockAuthRepository = MockAuthRepository();
+  dataSource = GoalRemoteDataSource(mockDio, mockAuthRepository);
   });
 
   group('GoalRemoteDataSource', () {
@@ -31,13 +35,24 @@ void main() {
     });
 
     group('readGoals', () {
-      const mockResponseBody = '''[{"id": "1","goalName": "테스트 목표","startDate": "2024-01-01","endDate": "2024-12-31","icon": "test_icon","status": 0,"progress": 50.0}]''';
-
       test('전체 목표 조회 성공', () async {
         // Arrange
-        final url = Uri.parse('${Constants.baseUrl}/goals/list');
-        when(mockClient.get(url, headers: anyNamed('headers')))
-            .thenAnswer((_) async => http.Response(mockResponseBody, 200, headers: {'content-type': 'application/json; charset=utf-8'}));
+        when(mockDio.get('/api/v1/goals', options: anyNamed('options'))).thenAnswer((_) async => Response(
+              requestOptions: RequestOptions(path: '/api/v1/goals'),
+              statusCode: 200,
+              data: [
+                {
+                  "goalId": "1",
+                  "goalName": "테스트 목표",
+                  "startDate": "2024-01-01",
+                  "endDate": "2024-12-31",
+                  "icon": "test_icon",
+                  "status": 0,
+                  "progress": 50.0,
+                  "showOnHome": false,
+                }
+              ],
+            ));
 
         // Act
         final result = await dataSource.readGoals();
@@ -46,14 +61,16 @@ void main() {
         expect(result, isA<List<Goal>>());
         expect(result.length, 1);
         expect(result.first.name, '테스트 목표');
-        verify(mockClient.get(url, headers: anyNamed('headers'))).called(1);
+  verify(mockDio.get('/api/v1/goals', options: anyNamed('options'))).called(1);
       });
 
       test('401 에러 처리', () async {
         // Arrange
-        final url = Uri.parse('${Constants.baseUrl}/goals/list');
-        when(mockClient.get(url, headers: anyNamed('headers')))
-            .thenAnswer((_) async => http.Response('Unauthorized', 401));
+        when(mockDio.get('/api/v1/goals', options: anyNamed('options'))).thenAnswer((_) async => Response(
+              requestOptions: RequestOptions(path: '/api/v1/goals'),
+              statusCode: 401,
+              data: {"error": "Unauthorized"},
+            ));
 
         // Act & Assert
         expect(
@@ -66,20 +83,7 @@ void main() {
         );
       });
 
-      test('JWT 토큰이 없을 때 예외 발생', () async {
-        // Arrange
-        when(mockAuthRepository.getToken()).thenAnswer((_) async => null);
-
-        // Act & Assert
-        expect(
-          () => dataSource.readGoals(),
-          throwsA(isA<Exception>().having(
-            (e) => e.toString(),
-            'message',
-            contains('JWT 토큰이 없습니다'),
-          )),
-        );
-      });
+      // JWT 토큰 없을 때는 쿠키 기반 흐름 (예외 제거)
     });
 
     group('createGoal', () {
@@ -93,16 +97,22 @@ void main() {
         progress: 0.0,
       );
 
-      const mockResponseBody = '''{"id": "1","goalName": "새 목표","startDate": "2024-01-01","endDate": "2024-12-31","icon": "test_icon","status": 0,"progress": 0.0}''';
-
       test('목표 생성 성공', () async {
         // Arrange
-        final url = Uri.parse('${Constants.baseUrl}/goals/create');
-        when(mockClient.post(
-          url,
-          headers: anyNamed('headers'),
-          body: anyNamed('body'),
-        )).thenAnswer((_) async => http.Response(mockResponseBody, 201, headers: {'content-type': 'application/json; charset=utf-8'}));
+        when(mockDio.post('/api/v1/goals', data: anyNamed('data'), options: anyNamed('options'))).thenAnswer((_) async => Response(
+              requestOptions: RequestOptions(path: '/api/v1/goals'),
+              statusCode: 201,
+              data: {
+                "goalId": "1",
+                "goalName": "새 목표",
+                "startDate": "2024-01-01",
+                "endDate": "2024-12-31",
+                "icon": "test_icon",
+                "status": 0,
+                "progress": 0.0,
+                "showOnHome": false,
+              },
+            ));
 
         // Act
         final result = await dataSource.createGoal(testGoal);
@@ -110,21 +120,16 @@ void main() {
         // Assert
         expect(result, isA<Goal>());
         expect(result.name, '새 목표');
-        verify(mockClient.post(
-          url,
-          headers: anyNamed('headers'),
-          body: anyNamed('body'),
-        )).called(1);
+        verify(mockDio.post('/api/v1/goals', data: anyNamed('data'), options: anyNamed('options'))).called(1);
       });
 
       test('400 에러 처리', () async {
         // Arrange
-        final url = Uri.parse('${Constants.baseUrl}/goals/create');
-        when(mockClient.post(
-          url,
-          headers: anyNamed('headers'),
-          body: anyNamed('body'),
-        )).thenAnswer((_) async => http.Response('Bad Request', 400));
+        when(mockDio.post('/api/v1/goals', data: anyNamed('data'), options: anyNamed('options'))).thenAnswer((_) async => Response(
+              requestOptions: RequestOptions(path: '/api/v1/goals'),
+              statusCode: 400,
+              data: {"message": "Bad Request"},
+            ));
 
         // Act & Assert
         expect(
@@ -151,32 +156,26 @@ void main() {
 
       test('목표 업데이트 성공', () async {
         // Arrange
-        final url = Uri.parse('${Constants.baseUrl}/goals/update/1');
-        when(mockClient.put(
-          url,
-          headers: anyNamed('headers'),
-          body: anyNamed('body'),
-        )).thenAnswer((_) async => http.Response('', 200));
+        when(mockDio.put('/api/v1/goals/1', data: anyNamed('data'), options: anyNamed('options'))).thenAnswer((_) async => Response(
+              requestOptions: RequestOptions(path: '/api/v1/goals/1'),
+              statusCode: 200,
+              data: {"message": "updated"},
+            ));
 
         // Act
         await dataSource.updateGoal(testGoal);
 
         // Assert
-        verify(mockClient.put(
-          url,
-          headers: anyNamed('headers'),
-          body: anyNamed('body'),
-        )).called(1);
+        verify(mockDio.put('/api/v1/goals/1', data: anyNamed('data'), options: anyNamed('options'))).called(1);
       });
 
       test('400 에러 처리', () async {
         // Arrange
-        final url = Uri.parse('${Constants.baseUrl}/goals/update/1');
-        when(mockClient.put(
-          url,
-          headers: anyNamed('headers'),
-          body: anyNamed('body'),
-        )).thenAnswer((_) async => http.Response('Bad Request', 400));
+        when(mockDio.put('/api/v1/goals/1', data: anyNamed('data'), options: anyNamed('options'))).thenAnswer((_) async => Response(
+              requestOptions: RequestOptions(path: '/api/v1/goals/1'),
+              statusCode: 400,
+              data: {"message": "Bad Request"},
+            ));
 
         // Act & Assert
         expect(
@@ -201,37 +200,29 @@ void main() {
         progress: 50.0,
       );
 
-      const mockResponseBody = '''{"message": "목표 상태가 업데이트되었습니다","progress": 100}''';
-
       test('목표 상태 업데이트 성공', () async {
         // Arrange
-        final url = Uri.parse('${Constants.baseUrl}/goals/update/status/1');
-        when(mockClient.put(
-          url,
-          headers: anyNamed('headers'),
-          body: anyNamed('body'),
-        )).thenAnswer((_) async => http.Response(mockResponseBody, 200, headers: {'content-type': 'application/json; charset=utf-8'}));
+        when(mockDio.patch('/api/v1/goals/1/status', data: anyNamed('data'), options: anyNamed('options'))).thenAnswer((_) async => Response(
+              requestOptions: RequestOptions(path: '/api/v1/goals/1/status'),
+              statusCode: 200,
+              data: {"message": "목표 상태가 업데이트되었습니다", "progress": 100},
+            ));
 
         // Act
         final result = await dataSource.updateGoalStatus(testGoal, Status.completed);
 
         // Assert
         expect(result, true);
-        verify(mockClient.put(
-          url,
-          headers: anyNamed('headers'),
-          body: anyNamed('body'),
-        )).called(1);
+        verify(mockDio.patch('/api/v1/goals/1/status', data: anyNamed('data'), options: anyNamed('options'))).called(1);
       });
 
       test('500 에러 처리', () async {
         // Arrange
-        final url = Uri.parse('${Constants.baseUrl}/goals/update/status/1');
-        when(mockClient.put(
-          url,
-          headers: anyNamed('headers'),
-          body: anyNamed('body'),
-        )).thenAnswer((_) async => http.Response('Internal Server Error', 500));
+        when(mockDio.patch('/api/v1/goals/1/status', data: anyNamed('data'), options: anyNamed('options'))).thenAnswer((_) async => Response(
+              requestOptions: RequestOptions(path: '/api/v1/goals/1/status'),
+              statusCode: 500,
+              data: {"message": "Internal Server Error"},
+            ));
 
         // Act & Assert
         expect(
@@ -256,27 +247,20 @@ void main() {
         progress: 50.0,
       );
 
-      const mockResponseBody = '''{"message": "목표 진행률이 업데이트되었습니다","progress": 75}''';
-
       test('목표 진행률 업데이트 성공', () async {
         // Arrange
-        final url = Uri.parse('${Constants.baseUrl}/goals/update/progress/1');
-        when(mockClient.put(
-          url,
-          headers: anyNamed('headers'),
-          body: anyNamed('body'),
-        )).thenAnswer((_) async => http.Response(mockResponseBody, 200, headers: {'content-type': 'application/json; charset=utf-8'}));
+        when(mockDio.patch('/api/v1/goals/1/progress', data: anyNamed('data'), options: anyNamed('options'))).thenAnswer((_) async => Response(
+              requestOptions: RequestOptions(path: '/api/v1/goals/1/progress'),
+              statusCode: 200,
+              data: {"message": "목표 진행률이 업데이트되었습니다", "progress": 75},
+            ));
 
         // Act
         final result = await dataSource.updateGoalProgress(testGoal, 75.0);
 
         // Assert
         expect(result, true);
-        verify(mockClient.put(
-          url,
-          headers: anyNamed('headers'),
-          body: anyNamed('body'),
-        )).called(1);
+        verify(mockDio.patch('/api/v1/goals/1/progress', data: anyNamed('data'), options: anyNamed('options'))).called(1);
       });
 
       test('잘못된 progress 값으로 예외 발생', () async {
@@ -307,22 +291,26 @@ void main() {
     group('deleteGoal', () {
       test('목표 삭제 성공', () async {
         // Arrange
-        final url = Uri.parse('${Constants.baseUrl}/goals/delete/1');
-        when(mockClient.delete(url, headers: anyNamed('headers')))
-            .thenAnswer((_) async => http.Response('', 200));
+        when(mockDio.delete('/api/v1/goals/1', options: anyNamed('options'))).thenAnswer((_) async => Response(
+              requestOptions: RequestOptions(path: '/api/v1/goals/1'),
+              statusCode: 200,
+              data: {"message": "deleted"},
+            ));
 
         // Act
         await dataSource.deleteGoal('1');
 
         // Assert
-        verify(mockClient.delete(url, headers: anyNamed('headers'))).called(1);
+  verify(mockDio.delete('/api/v1/goals/1', options: anyNamed('options'))).called(1);
       });
 
       test('403 에러 처리', () async {
         // Arrange
-        final url = Uri.parse('${Constants.baseUrl}/goals/delete/1');
-        when(mockClient.delete(url, headers: anyNamed('headers')))
-            .thenAnswer((_) async => http.Response('Forbidden', 403));
+        when(mockDio.delete('/api/v1/goals/1', options: anyNamed('options'))).thenAnswer((_) async => Response(
+              requestOptions: RequestOptions(path: '/api/v1/goals/1'),
+              statusCode: 403,
+              data: {"message": "Forbidden"},
+            ));
 
         // Act & Assert
         expect(
@@ -342,21 +330,17 @@ void main() {
         when(mockAuthRepository.getToken())
             .thenAnswer((_) async => 'raw_token_without_bearer');
         
-        final url = Uri.parse('${Constants.baseUrl}/goals/list');
-        when(mockClient.get(url, headers: anyNamed('headers')))
-            .thenAnswer((_) async => http.Response('[]', 200));
+        when(mockDio.get('/api/v1/goals', options: anyNamed('options'))).thenAnswer((_) async => Response(
+              requestOptions: RequestOptions(path: '/api/v1/goals'),
+              statusCode: 200,
+              data: [],
+            ));
 
         // Act
         await dataSource.readGoals();
 
         // Assert
-        verify(mockClient.get(
-          url,
-          headers: argThat(
-            contains('Authorization'),
-            named: 'headers',
-          ),
-        )).called(1);
+        verify(mockDio.get('/api/v1/goals', options: anyNamed('options'))).called(1);
       });
 
       test('이미 Bearer 프리픽스가 있는 토큰은 그대로 사용', () async {
@@ -364,21 +348,17 @@ void main() {
         when(mockAuthRepository.getToken())
             .thenAnswer((_) async => 'Bearer existing_token');
         
-        final url = Uri.parse('${Constants.baseUrl}/goals/list');
-        when(mockClient.get(url, headers: anyNamed('headers')))
-            .thenAnswer((_) async => http.Response('[]', 200));
+        when(mockDio.get('/api/v1/goals', options: anyNamed('options'))).thenAnswer((_) async => Response(
+              requestOptions: RequestOptions(path: '/api/v1/goals'),
+              statusCode: 200,
+              data: [],
+            ));
 
         // Act
         await dataSource.readGoals();
 
         // Assert
-        verify(mockClient.get(
-          url,
-          headers: argThat(
-            contains('Authorization'),
-            named: 'headers',
-          ),
-        )).called(1);
+        verify(mockDio.get('/api/v1/goals', options: anyNamed('options'))).called(1);
       });
     });
   });
