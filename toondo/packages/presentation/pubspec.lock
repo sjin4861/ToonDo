@@ -17,6 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.3.0"
+  android_intent_plus:
+    dependency: transitive
+    description:
+      name: android_intent_plus
+      sha256: "14a9f94c5825a528e8c38ee89a33dbeba947efbbf76f066c174f4f3ae4f48feb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.0"
   args:
     dependency: transitive
     description:
@@ -453,6 +461,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_timezone:
+    dependency: transitive
+    description:
+      name: flutter_timezone
+      sha256: ccad42fbb5d01d51d3eb281cc4428fca556cc4063c52bd9fa40f80cd93b8e649
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.0"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
