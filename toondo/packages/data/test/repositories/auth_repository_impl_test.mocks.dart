@@ -9,9 +9,9 @@ import 'package:data/datasources/local/auth_local_datasource.dart' as _i8;
 import 'package:data/datasources/local/secure_local_datasource.dart' as _i10;
 import 'package:data/datasources/remote/auth_remote_datasource.dart' as _i5;
 import 'package:data/models/user_model.dart' as _i9;
+import 'package:dio/dio.dart' as _i2;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i4;
 import 'package:hive/hive.dart' as _i3;
-import 'package:http/http.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i7;
 
@@ -28,8 +28,8 @@ import 'package:mockito/src/dummies.dart' as _i7;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeClient_0 extends _i1.SmartFake implements _i2.Client {
-  _FakeClient_0(
+class _FakeDio_0 extends _i1.SmartFake implements _i2.Dio {
+  _FakeDio_0(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -69,13 +69,13 @@ class MockAuthRemoteDataSource extends _i1.Mock
   }
 
   @override
-  _i2.Client get httpClient => (super.noSuchMethod(
-        Invocation.getter(#httpClient),
-        returnValue: _FakeClient_0(
+  _i2.Dio get dio => (super.noSuchMethod(
+        Invocation.getter(#dio),
+        returnValue: _FakeDio_0(
           this,
-          Invocation.getter(#httpClient),
+          Invocation.getter(#dio),
         ),
-      ) as _i2.Client);
+      ) as _i2.Dio);
 
   @override
   _i6.Future<String> registerUser(

@@ -8,10 +8,10 @@ import 'dart:async' as _i8;
 import 'package:data/datasources/local/user_local_datasource.dart' as _i6;
 import 'package:data/datasources/remote/user_remote_datasource.dart' as _i9;
 import 'package:data/models/user_model.dart' as _i7;
+import 'package:dio/dio.dart' as _i4;
 import 'package:domain/entities/user.dart' as _i3;
 import 'package:domain/repositories/auth_repository.dart' as _i5;
 import 'package:hive/hive.dart' as _i2;
-import 'package:http/http.dart' as _i4;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i10;
 
@@ -48,8 +48,8 @@ class _FakeUser_1 extends _i1.SmartFake implements _i3.User {
         );
 }
 
-class _FakeClient_2 extends _i1.SmartFake implements _i4.Client {
-  _FakeClient_2(
+class _FakeDio_2 extends _i1.SmartFake implements _i4.Dio {
+  _FakeDio_2(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -161,22 +161,13 @@ class MockUserRemoteDatasource extends _i1.Mock
   }
 
   @override
-  _i4.Client get client => (super.noSuchMethod(
-        Invocation.getter(#client),
-        returnValue: _FakeClient_2(
+  _i4.Dio get dio => (super.noSuchMethod(
+        Invocation.getter(#dio),
+        returnValue: _FakeDio_2(
           this,
-          Invocation.getter(#client),
+          Invocation.getter(#dio),
         ),
-      ) as _i4.Client);
-
-  @override
-  set client(_i4.Client? _client) => super.noSuchMethod(
-        Invocation.setter(
-          #client,
-          _client,
-        ),
-        returnValueForMissingStub: null,
-      );
+      ) as _i4.Dio);
 
   @override
   _i5.AuthRepository get authRepository => (super.noSuchMethod(
