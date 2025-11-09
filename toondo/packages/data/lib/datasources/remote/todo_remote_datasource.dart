@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'package:domain/repositories/auth_repository.dart';
-import 'package:http/http.dart' as http;
-import 'package:data/constants.dart';
+import 'package:dio/dio.dart';
 import 'package:domain/entities/todo.dart';
 import 'package:injectable/injectable.dart';
 
@@ -14,10 +12,10 @@ import 'package:injectable/injectable.dart';
 
 @LazySingleton()
 class TodoRemoteDataSource {
-  http.Client client;
+  final Dio dio;
   final AuthRepository authRepository;
 
-  TodoRemoteDataSource(this.client, this.authRepository);
+  TodoRemoteDataSource(this.dio, this.authRepository);
 
   Future<String> createTodo({
     required String title,
@@ -27,8 +25,7 @@ class TodoRemoteDataSource {
     required String eisenhower,
     bool showOnHome = false,
   }) async {
-    final token = await authRepository.getToken();
-    final headers = await _buildAuthHeaders(token);
+  final options = await _authOptions();
 
     final requestBody = {
       "title": title,
@@ -39,246 +36,132 @@ class TodoRemoteDataSource {
       "showOnHome": showOnHome,
     };
 
-    final url = Uri.parse('${Constants.baseUrl}/api/v1/todos');
-    print('📝 투두 생성 요청 URL: $url');
-    print('🚀 요청 헤더: $headers');
-    print('🚀 요청 바디: $requestBody');
-
-    try {
-      final response = await client.post(
-        url,
-        headers: headers,
-        body: jsonEncode(requestBody),
-      );
-
-      print('📥 응답 코드: ${response.statusCode}');
-
-      // UTF-8 디코딩 처리
-      String responseBody = '';
-      try {
-        responseBody = utf8.decode(response.bodyBytes);
-        print('📥 응답 바디: $responseBody');
-      } catch (e) {
-        print('📥 응답 바디 디코딩 오류: $e');
-        responseBody = response.body;
-        print('📥 원본 응답 바디: $responseBody');
+    final resp = await dio.post('/api/v1/todos', data: requestBody, options: options);
+    final status = resp.statusCode ?? 0;
+    if (status == 200 || status == 201) {
+      final body = resp.data;
+      if (body is Map && body.containsKey('todoId')) {
+        return body['todoId'].toString();
       }
-
-      if (response.statusCode == 200) {
-        final decoded = jsonDecode(responseBody);
-        print('✅ 투두 생성 성공');
-        return decoded['todoId'].toString();
-      } else if (response.statusCode == 400) {
-        final decoded = jsonDecode(responseBody);
-        final errMsg = decoded['message'] ?? 'Bad Request';
-        throw Exception('서버 응답 400: $errMsg');
-      } else if (response.statusCode == 404) {
-        final decoded = jsonDecode(responseBody);
-        final errMsg = decoded['message'] ?? 'Not Found';
-        throw Exception('서버 응답 404: $errMsg');
-      } else if (response.statusCode == 500) {
-        final decoded = jsonDecode(responseBody);
-        final errMsg = decoded['message'] ?? 'Internal Server Error';
-        throw Exception('서버 응답 500: $errMsg');
-      } else {
-        throw Exception('Failed to create todo: ${response.statusCode}');
-      }
-    } catch (e) {
-      rethrow;
+      throw Exception('투두 생성 응답 형식 오류: ${resp.data}');
+    } else if (status == 400) {
+      final msg = (resp.data is Map) ? (resp.data['message'] ?? 'Bad Request') : 'Bad Request';
+      throw Exception('서버 응답 400: $msg');
+    } else if (status == 404) {
+      final msg = (resp.data is Map) ? (resp.data['message'] ?? 'Not Found') : 'Not Found';
+      throw Exception('서버 응답 404: $msg');
+    } else if (status == 500) {
+      final msg = (resp.data is Map) ? (resp.data['message'] ?? 'Internal Server Error') : 'Internal Server Error';
+      throw Exception('서버 응답 500: $msg');
     }
+    throw Exception('Failed to create todo: $status');
   }
 
   Future<Map<String, List<Todo>>> fetchTodosByDate(DateTime date) async {
-    final token = await authRepository.getToken();
-    final headers = await _buildAuthHeaders(token);
+    final options = await _authOptions();
 
     final dateString = date.toIso8601String().split('T')[0]; // YYYY-MM-DD 형식
-    final url = Uri.parse(
-      '${Constants.baseUrl}/api/v1/by-date?date=$dateString',
-    );
-    print('📋 날짜별 투두 조회 요청 URL: $url');
-    print('🚀 요청 헤더: $headers');
-
-    try {
-      final response = await client.get(url, headers: headers);
-
-      print('📥 응답 코드: ${response.statusCode}');
-
-      // UTF-8 디코딩 처리
-      String responseBody = '';
-      try {
-        responseBody = utf8.decode(response.bodyBytes);
-        print('📥 응답 바디: $responseBody');
-      } catch (e) {
-        print('📥 응답 바디 디코딩 오류: $e');
-        responseBody = response.body;
-        print('📥 원본 응답 바디: $responseBody');
-      }
-
-      if (response.statusCode == 200) {
-        final decoded = jsonDecode(responseBody);
-        print('✅ 날짜별 투두 조회 성공');
-
-        // dday 투두 목록 파싱
+    final resp = await dio.get('/api/v1/by-date', queryParameters: {'date': dateString}, options: options);
+    final status = resp.statusCode ?? 0;
+    if (status == 200) {
+      final decoded = resp.data;
+      if (decoded is Map) {
         final List<dynamic> ddayJson = decoded['dday'] ?? [];
-        final List<Todo> ddayTodos =
-            ddayJson.map((json) {
-              final todoId = json['todoId'].toString();
-              final dynamic goalId = json['goalId'];
-              return Todo(
-                id: todoId,
-                goalId: goalId?.toString(),
-                title: json['title'],
-                status: (json['status'] as num).toDouble(),
-                startDate: DateTime.parse(json['startDate']),
-                endDate: DateTime.parse(json['endDate']),
-                eisenhower: json['eisenhower'] as int,
-                comment: '', // API 응답에 comment 필드가 없으므로 빈 문자열
-                showOnHome: json['showOnHome'] as bool? ?? false,
-              );
-            }).toList();
-
-        // daily 투두 목록 파싱
+        final List<Todo> ddayTodos = ddayJson.map((json) {
+          final todoId = json['todoId'].toString();
+          final dynamic goalId = json['goalId'];
+          return Todo(
+            id: todoId,
+            goalId: goalId?.toString(),
+            title: json['title'],
+            status: (json['status'] as num).toDouble(),
+            startDate: DateTime.parse(json['startDate']),
+            endDate: DateTime.parse(json['endDate']),
+            eisenhower: json['eisenhower'] as int,
+            comment: '',
+            showOnHome: json['showOnHome'] as bool? ?? false,
+          );
+        }).toList();
         final List<dynamic> dailyJson = decoded['daily'] ?? [];
-        final List<Todo> dailyTodos =
-            dailyJson.map((json) {
-              final todoId = json['todoId'].toString();
-              final dynamic goalId = json['goalId'];
-              return Todo(
-                id: todoId,
-                goalId: goalId?.toString(),
-                title: json['title'],
-                status: (json['status'] as num).toDouble(),
-                startDate: DateTime.parse(json['startDate']),
-                endDate: DateTime.parse(json['endDate']),
-                eisenhower: json['eisenhower'] as int,
-                comment: '', // API 응답에 comment 필드가 없으므로 빈 문자열
-                showOnHome: json['showOnHome'] as bool? ?? false,
-              );
-            }).toList();
-
+        final List<Todo> dailyTodos = dailyJson.map((json) {
+          final todoId = json['todoId'].toString();
+          final dynamic goalId = json['goalId'];
+          return Todo(
+            id: todoId,
+            goalId: goalId?.toString(),
+            title: json['title'],
+            status: (json['status'] as num).toDouble(),
+            startDate: DateTime.parse(json['startDate']),
+            endDate: DateTime.parse(json['endDate']),
+            eisenhower: json['eisenhower'] as int,
+            comment: '',
+            showOnHome: json['showOnHome'] as bool? ?? false,
+          );
+        }).toList();
         return {'dday': ddayTodos, 'daily': dailyTodos};
-      } else if (response.statusCode == 400) {
-        final decoded = jsonDecode(responseBody);
-        final errMsg = decoded['message'] ?? 'Bad Request';
-        throw Exception('서버 응답 400: $errMsg');
-      } else if (response.statusCode == 404) {
-        final decoded = jsonDecode(responseBody);
-        final errMsg = decoded['message'] ?? 'Not Found';
-        throw Exception('서버 응답 404: $errMsg');
-      } else if (response.statusCode == 500) {
-        final decoded = jsonDecode(responseBody);
-        final errMsg = decoded['message'] ?? 'Internal Server Error';
-        throw Exception('서버 응답 500: $errMsg');
-      } else {
-        throw Exception(
-          'Failed to fetch todos by date: ${response.statusCode}',
-        );
       }
-    } catch (e) {
-      rethrow;
+      throw Exception('날짜별 투두 응답 형식 오류: ${resp.data}');
+    } else if (status == 400) {
+      final msg = (resp.data is Map) ? (resp.data['message'] ?? 'Bad Request') : 'Bad Request';
+      throw Exception('서버 응답 400: $msg');
+    } else if (status == 404) {
+      final msg = (resp.data is Map) ? (resp.data['message'] ?? 'Not Found') : 'Not Found';
+      throw Exception('서버 응답 404: $msg');
+    } else if (status == 500) {
+      final msg = (resp.data is Map) ? (resp.data['message'] ?? 'Internal Server Error') : 'Internal Server Error';
+      throw Exception('서버 응답 500: $msg');
     }
+    throw Exception('Failed to fetch todos by date: $status');
   }
 
   Future<List<Todo>> fetchTodosByGoal(int goalId) async {
-    final token = await authRepository.getToken();
-    final headers = await _buildAuthHeaders(token);
+    final options = await _authOptions();
 
-    final url = Uri.parse('${Constants.baseUrl}/api/v1/todos/by-goal/$goalId');
-    print('📋 목표별 투두 조회 요청 URL: $url');
-    print('🚀 요청 헤더: $headers');
-
-    try {
-      final response = await client.get(url, headers: headers);
-
-      print('📥 응답 코드: ${response.statusCode}');
-
-      // UTF-8 디코딩 처리
-      String responseBody = '';
-      try {
-        responseBody = utf8.decode(response.bodyBytes);
-        print('📥 응답 바디: $responseBody');
-      } catch (e) {
-        print('📥 응답 바디 디코딩 오류: $e');
-        responseBody = response.body;
-        print('📥 원본 응답 바디: $responseBody');
-      }
-
-      if (response.statusCode == 200) {
-        final decoded = jsonDecode(responseBody);
-        print('✅ 목표별 투두 조회 성공');
-
-        // data 배열에서 투두 목록 파싱
+    final resp = await dio.get('/api/v1/todos/by-goal/$goalId', options: options);
+    final status = resp.statusCode ?? 0;
+    if (status == 200) {
+      final decoded = resp.data;
+      if (decoded is Map) {
         final List<dynamic> dataJson = decoded['data'] ?? [];
-        final List<Todo> todos =
-            dataJson.map((json) {
-              final todoId = json['todoId'].toString();
-              final dynamic goalId = json['goalId'];
-              return Todo(
-                id: todoId,
-                goalId: goalId?.toString(),
-                title: json['title'],
-                status: (json['status'] as num).toDouble(),
-                startDate: DateTime.parse(json['startDate']),
-                endDate: DateTime.parse(json['endDate']),
-                eisenhower: _parseEisenhower(json['eisenhower']),
-                comment: '', // API 응답에 comment 필드가 없으므로 빈 문자열
-                showOnHome: json['showOnHome'] as bool? ?? false,
-              );
-            }).toList();
-
+        final List<Todo> todos = dataJson.map((json) {
+          final todoId = json['todoId'].toString();
+          final dynamic goalId = json['goalId'];
+          return Todo(
+            id: todoId,
+            goalId: goalId?.toString(),
+            title: json['title'],
+            status: (json['status'] as num).toDouble(),
+            startDate: DateTime.parse(json['startDate']),
+            endDate: DateTime.parse(json['endDate']),
+            eisenhower: _parseEisenhower(json['eisenhower']),
+            comment: '',
+            showOnHome: json['showOnHome'] as bool? ?? false,
+          );
+        }).toList();
         return todos;
-      } else if (response.statusCode == 404) {
-        final decoded = jsonDecode(responseBody);
-        final errMsg = decoded['message'] ?? 'Not Found';
-        throw Exception('서버 응답 404: $errMsg');
-      } else if (response.statusCode == 500) {
-        final decoded = jsonDecode(responseBody);
-        final errMsg = decoded['message'] ?? 'Internal Server Error';
-        throw Exception('서버 응답 500: $errMsg');
-      } else {
-        throw Exception(
-          'Failed to fetch todos by goal: ${response.statusCode}',
-        );
       }
-    } catch (e) {
-      rethrow;
+      throw Exception('목표별 투두 응답 형식 오류: ${resp.data}');
+    } else if (status == 404) {
+      final msg = (resp.data is Map) ? (resp.data['message'] ?? 'Not Found') : 'Not Found';
+      throw Exception('서버 응답 404: $msg');
+    } else if (status == 500) {
+      final msg = (resp.data is Map) ? (resp.data['message'] ?? 'Internal Server Error') : 'Internal Server Error';
+      throw Exception('서버 응답 500: $msg');
     }
+    throw Exception('Failed to fetch todos by goal: $status');
   }
 
   Future<Todo> fetchTodoById(int todoId) async {
-    final token = await authRepository.getToken();
-    final headers = await _buildAuthHeaders(token);
+    final options = await _authOptions();
 
-    final url = Uri.parse('${Constants.baseUrl}/api/v1/todos/$todoId');
-    print('📋 투두 ID별 조회 요청 URL: $url');
-    print('🚀 요청 헤더: $headers');
-
-    try {
-      final response = await client.get(url, headers: headers);
-
-      print('📥 응답 코드: ${response.statusCode}');
-
-      // UTF-8 디코딩 처리
-      String responseBody = '';
-      try {
-        responseBody = utf8.decode(response.bodyBytes);
-        print('📥 응답 바디: $responseBody');
-      } catch (e) {
-        print('📥 응답 바디 디코딩 오류: $e');
-        responseBody = response.body;
-        print('📥 원본 응답 바디: $responseBody');
-      }
-
-      if (response.statusCode == 200) {
-        final decoded = jsonDecode(responseBody);
-        print('✅ 투두 ID별 조회 성공');
-
-        // data 객체에서 투두 정보 파싱
+    final resp = await dio.get('/api/v1/todos/$todoId', options: options);
+    final status = resp.statusCode ?? 0;
+    if (status == 200) {
+      final decoded = resp.data;
+      if (decoded is Map) {
         final json = decoded['data'];
         final todoIdStr = json['todoId'].toString();
         final dynamic goalId = json['goalId'];
-
         return Todo(
           id: todoIdStr,
           goalId: goalId?.toString(),
@@ -287,23 +170,19 @@ class TodoRemoteDataSource {
           startDate: DateTime.parse(json['startDate']),
           endDate: DateTime.parse(json['endDate']),
           eisenhower: _parseEisenhower(json['eisenhower']),
-          comment: '', // API 응답에 comment 필드가 없으므로 빈 문자열
+          comment: '',
           showOnHome: json['showOnHome'] as bool? ?? false,
         );
-      } else if (response.statusCode == 404) {
-        final decoded = jsonDecode(responseBody);
-        final errMsg = decoded['message'] ?? 'Not Found';
-        throw Exception('서버 응답 404: $errMsg');
-      } else if (response.statusCode == 500) {
-        final decoded = jsonDecode(responseBody);
-        final errMsg = decoded['message'] ?? 'Internal Server Error';
-        throw Exception('서버 응답 500: $errMsg');
-      } else {
-        throw Exception('Failed to fetch todo by id: ${response.statusCode}');
       }
-    } catch (e) {
-      rethrow;
+      throw Exception('투두 ID별 조회 응답 형식 오류: ${resp.data}');
+    } else if (status == 404) {
+      final msg = (resp.data is Map) ? (resp.data['message'] ?? 'Not Found') : 'Not Found';
+      throw Exception('서버 응답 404: $msg');
+    } else if (status == 500) {
+      final msg = (resp.data is Map) ? (resp.data['message'] ?? 'Internal Server Error') : 'Internal Server Error';
+      throw Exception('서버 응답 500: $msg');
     }
+    throw Exception('Failed to fetch todo by id: $status');
   }
 
   Future<String> updateTodo({
@@ -315,8 +194,7 @@ class TodoRemoteDataSource {
     required String eisenhower,
     bool showOnHome = false,
   }) async {
-    final token = await authRepository.getToken();
-    final headers = await _buildAuthHeaders(token);
+  final options = await _authOptions();
 
     final requestBody = {
       "title": title,
@@ -327,140 +205,64 @@ class TodoRemoteDataSource {
       "showOnHome": showOnHome,
     };
 
-    final url = Uri.parse('${Constants.baseUrl}/api/v1/todos/$todoId');
-    print('🔄 투두 업데이트 요청 URL: $url');
-    print('🚀 요청 헤더: $headers');
-    print('🚀 요청 바디: $requestBody');
-
-    try {
-      final response = await client.put(
-        url,
-        headers: headers,
-        body: jsonEncode(requestBody),
-      );
-
-      print('📥 응답 코드: ${response.statusCode}');
-
-      // UTF-8 디코딩 처리
-      String responseBody = '';
-      try {
-        responseBody = utf8.decode(response.bodyBytes);
-        print('📥 응답 바디: $responseBody');
-      } catch (e) {
-        print('📥 응답 바디 디코딩 오류: $e');
-        responseBody = response.body;
-        print('📥 원본 응답 바디: $responseBody');
+    final resp = await dio.put('/api/v1/todos/$todoId', data: requestBody, options: options);
+    final status = resp.statusCode ?? 0;
+    if (status == 200) {
+      final body = resp.data;
+      if (body is Map && body.containsKey('todoId')) {
+        return body['todoId'].toString();
       }
-
-      if (response.statusCode == 200) {
-        final decoded = jsonDecode(responseBody);
-        print('✅ 투두 업데이트 성공');
-        return decoded['todoId'].toString();
-      } else if (response.statusCode == 400) {
-        final decoded = jsonDecode(responseBody);
-        final errMsg = decoded['message'] ?? 'Bad Request';
-        throw Exception('서버 응답 400: $errMsg');
-      } else if (response.statusCode == 404) {
-        final decoded = jsonDecode(responseBody);
-        final errMsg = decoded['message'] ?? 'Not Found';
-        throw Exception('서버 응답 404: $errMsg');
-      } else if (response.statusCode == 500) {
-        final decoded = jsonDecode(responseBody);
-        final errMsg = decoded['message'] ?? 'Internal Server Error';
-        throw Exception('서버 응답 500: $errMsg');
-      } else {
-        throw Exception('Failed to update todo: ${response.statusCode}');
-      }
-    } catch (e) {
-      rethrow;
+      throw Exception('투두 업데이트 응답 형식 오류: ${resp.data}');
+    } else if (status == 400) {
+      final msg = (resp.data is Map) ? (resp.data['message'] ?? 'Bad Request') : 'Bad Request';
+      throw Exception('서버 응답 400: $msg');
+    } else if (status == 404) {
+      final msg = (resp.data is Map) ? (resp.data['message'] ?? 'Not Found') : 'Not Found';
+      throw Exception('서버 응답 404: $msg');
+    } else if (status == 500) {
+      final msg = (resp.data is Map) ? (resp.data['message'] ?? 'Internal Server Error') : 'Internal Server Error';
+      throw Exception('서버 응답 500: $msg');
     }
+    throw Exception('Failed to update todo: $status');
   }
 
   Future<Map<String, dynamic>> toggleTodoStatus(int todoId) async {
-    final token = await authRepository.getToken();
-    final headers = await _buildAuthHeaders(token);
+    final options = await _authOptions();
 
-    final url = Uri.parse('${Constants.baseUrl}/api/v1/todos/$todoId/status');
-    print('🔄 투두 상태 토글 요청 URL: $url');
-    print('🚀 요청 헤더: $headers');
-
-    try {
-      final response = await client.patch(url, headers: headers);
-
-      print('📥 응답 코드: ${response.statusCode}');
-
-      // UTF-8 디코딩 처리
-      String responseBody = '';
-      try {
-        responseBody = utf8.decode(response.bodyBytes);
-        print('📥 응답 바디: $responseBody');
-      } catch (e) {
-        print('📥 응답 바디 디코딩 오류: $e');
-        responseBody = response.body;
-        print('📥 원본 응답 바디: $responseBody');
-      }
-
-      if (response.statusCode == 200) {
-        final decoded = jsonDecode(responseBody);
-        print('✅ 투두 상태 토글 성공');
+    final resp = await dio.patch('/api/v1/todos/$todoId/status', options: options);
+    final status = resp.statusCode ?? 0;
+    if (status == 200) {
+      final decoded = resp.data;
+      if (decoded is Map) {
         return {
           'todoId': decoded['todoId'],
           'status': decoded['status'],
           'completedAt': decoded['completedAt'],
         };
-      } else if (response.statusCode == 404) {
-        final decoded = jsonDecode(responseBody);
-        final errMsg = decoded['message'] ?? 'Not Found';
-        throw Exception('서버 응답 404: $errMsg');
-      } else if (response.statusCode == 500) {
-        final decoded = jsonDecode(responseBody);
-        final errMsg = decoded['message'] ?? 'Internal Server Error';
-        throw Exception('서버 응답 500: $errMsg');
-      } else {
-        throw Exception('Failed to toggle todo status: ${response.statusCode}');
       }
-    } catch (e) {
-      rethrow;
+      throw Exception('투두 상태 토글 응답 형식 오류: ${resp.data}');
+    } else if (status == 404) {
+      final msg = (resp.data is Map) ? (resp.data['message'] ?? 'Not Found') : 'Not Found';
+      throw Exception('서버 응답 404: $msg');
+    } else if (status == 500) {
+      final msg = (resp.data is Map) ? (resp.data['message'] ?? 'Internal Server Error') : 'Internal Server Error';
+      throw Exception('서버 응답 500: $msg');
     }
+    throw Exception('Failed to toggle todo status: $status');
   }
 
   Future<bool> deleteTodo(int todoId) async {
-    final token = await authRepository.getToken();
-    final headers = await _buildAuthHeaders(token);
+    final options = await _authOptions();
 
-    final url = Uri.parse('${Constants.baseUrl}/api/v1/todos/$todoId');
-    print('🗑️ 투두 삭제 요청 URL: $url');
-    print('🚀 요청 헤더: $headers');
-
-    try {
-      final response = await client.delete(url, headers: headers);
-
-      print('📥 응답 코드: ${response.statusCode}');
-
-      // UTF-8 디코딩 처리
-      String responseBody = '';
-      try {
-        responseBody = utf8.decode(response.bodyBytes);
-        print('📥 응답 바디: $responseBody');
-      } catch (e) {
-        print('📥 응답 바디 디코딩 오류: $e');
-        responseBody = response.body;
-        print('📥 원본 응답 바디: $responseBody');
-      }
-
-      if (response.statusCode == 200) {
-        print('✅ 투두 삭제 성공');
-        return true;
-      } else if (response.statusCode == 404) {
-        final decoded = jsonDecode(responseBody);
-        final errMsg = decoded['message'] ?? 'Not Found';
-        throw Exception('서버 응답 404: $errMsg');
-      } else {
-        throw Exception('Failed to delete todo: ${response.statusCode}');
-      }
-    } catch (e) {
-      rethrow;
+    final resp = await dio.delete('/api/v1/todos/$todoId', options: options);
+    final status = resp.statusCode ?? 0;
+    if (status == 200) {
+      return true;
+    } else if (status == 404) {
+      final msg = (resp.data is Map) ? (resp.data['message'] ?? 'Not Found') : 'Not Found';
+      throw Exception('서버 응답 404: $msg');
     }
+    throw Exception('Failed to delete todo: $status');
   }
 
   // eisenhower 값을 정수로 변환하는 헬퍼 메서드
@@ -500,26 +302,14 @@ class TodoRemoteDataSource {
     throw UnimplementedError('백엔드와 API 스펙 논의 필요');
   }
   // --- Auth Header Builder ---
-  Future<Map<String, String>> _buildAuthHeaders(String? token) async {
-    // 1) 정상 JWT 사용
-    if (token != null) {
-      String authToken = token;
-      if (!token.startsWith('Bearer ') && !token.startsWith('bearer ')) {
-        authToken = 'Bearer $token';
-      }
-      return {
-        'Authorization': authToken,
-        'Content-Type': 'application/json; charset=UTF-8',
-      };
+  Future<Options> _authOptions() async {
+    final token = await authRepository.getToken();
+    final headers = <String, String>{'Content-Type': 'application/json; charset=UTF-8'};
+    if (token != null && _looksLikeJwt(token)) {
+      headers['Authorization'] = token.startsWith('Bearer') ? token : 'Bearer $token';
     }
-    // 2) 토큰 없고 Custom User Header 허용 시
-    if (Constants.useCustomUserIdHeader) {
-      return {
-        Constants.customUserIdHeader: Constants.testUserNumericId.toString(),
-        'Content-Type': 'application/json; charset=UTF-8',
-      };
-    }
-    // 3) 둘 다 불가 → 예외
-    throw Exception('인증 수단이 없습니다. (JWT/CustomUserHeader 모두 미사용)');
+    return Options(headers: headers);
   }
+
+  bool _looksLikeJwt(String token) => RegExp(r'^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$').hasMatch(token.replaceFirst('Bearer ', ''));
 }
