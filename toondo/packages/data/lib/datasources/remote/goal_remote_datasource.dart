@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:data/models/goal_model.dart';
 import 'package:domain/entities/goal.dart';
 import 'package:injectable/injectable.dart';
+import 'package:data/constants.dart';
 
 @LazySingleton()
 class GoalRemoteDataSource {
@@ -100,36 +101,68 @@ class GoalRemoteDataSource {
   Future<void> updateGoal(Goal goal) async {
     final options = await _authOptions();
 
-    // '마감일 없이 할래요' 기능 - 서버 API에서 endDate null을 허용하지 않으므로 
-    // null인 경우 먼 미래 날짜(2099-12-31)로 대체하여 전송
-    final endDateToSend = goal.endDate ?? DateTime(2099, 12, 31);
-    
-    final requestBody = {
+    // 서버 스펙: endDate 가 null 허용 가능성 → null 그대로 전송, 값이 있으면 yyyy-MM-dd
+    final endDateStr = goal.endDate?.toIso8601String().split('T')[0];
+    final requestBody = <String, dynamic>{
       "goalName": goal.name,
       "startDate": goal.startDate.toIso8601String().split('T')[0],
-      "endDate": endDateToSend.toIso8601String().split('T')[0], // null인 경우 2099-12-31 전송
-      "icon": goal.icon ?? "",
+      "endDate": endDateStr, // null 허용
+      "icon": goal.icon,     // null 허용
     };
 
-    final resp = await dio.put('/api/v1/goals/${goal.id}', data: requestBody, options: options);
-    final status = resp.statusCode ?? 0;
-    if (status != 200) {
-      if (status == 403) {
-        throw Exception(
-          '권한 오류 (403 Forbidden): 서버가 요청을 거부했습니다. 토큰 형식이나 권한을 확인하세요. 응답: ${resp.data}',
-        );
-      } else if (status == 400) {
-        throw Exception(
-          '잘못된 요청 (400 Bad Request): 요청 형식이 잘못되었습니다. 응답: ${resp.data}',
-        );
-      } else if (status == 401) {
-        throw Exception(
-          '인증 오류 (401 Unauthorized): 토큰이 유효하지 않거나 만료되었습니다. 응답: ${resp.data}',
-        );
-      } else {
-        throw Exception('목표 업데이트 실패 ($status): ${resp.data}');
+    // 경로 후보: 우선 '/api/v1/goals/update/{id}' → 실패 시 기존 '/api/v1/goals/{id}'
+    final paths = <String>[
+      '/api/v1/goals/update/${goal.id}',
+      '/api/v1/goals/${goal.id}',
+    ];
+
+    Response resp;
+    int status = 0;
+    DioException? lastErr;
+    for (final path in paths) {
+      try {
+        // 디버그용 경로/바디 로깅
+        print('🛣️ Goal update try: $path body=$requestBody');
+        resp = await dio.put(path, data: requestBody, options: options);
+        status = resp.statusCode ?? 0;
+        print('🛣️ Goal update resp: $status path=$path');
+        if (status == 404) {
+          // 다른 후보 경로를 계속 시도
+          continue;
+        }
+        if (status != 200) {
+          if (status == 403) {
+            throw Exception(
+              '권한 오류 (403 Forbidden): 서버가 요청을 거부했습니다. 토큰 형식이나 권한을 확인하세요. 응답: ${resp.data}',
+            );
+          } else if (status == 400) {
+            // 요구사항 반영: 시작일/종료일 검증 실패 등
+            throw Exception(
+              '잘못된 요청 (400 Bad Request): ${resp.data}',
+            );
+          } else if (status == 401) {
+            throw Exception(
+              '인증 오류 (401 Unauthorized): 토큰이 유효하지 않거나 만료되었습니다. 응답: ${resp.data}',
+            );
+          } else if (status == 404) {
+            throw Exception('리소스를 찾을 수 없습니다. (404): ${resp.data}');
+          } else {
+            throw Exception('목표 업데이트 실패 ($status): ${resp.data}');
+          }
+        }
+        // 200 성공이면 탈출
+        return;
+      } on DioException catch (e) {
+        lastErr = e;
+        // 다음 후보 시도
+        continue;
       }
     }
+    // 모든 후보 실패
+    if (lastErr != null) {
+      throw Exception('목표 업데이트 실패: ${lastErr.message}');
+    }
+    throw Exception('목표 업데이트 실패: 알 수 없는 오류');
   }
 
   // DELETE /api/v1/goals/{goalId}
@@ -244,8 +277,12 @@ class GoalRemoteDataSource {
     // 단, 로컬 bypass용 토큰은 JWT 형식이 아니므로 헤더 전송을 생략해야 한다.
     final token = await authRepository.getToken();
     final headers = <String, String>{'Content-Type': 'application/json; charset=UTF-8'};
-    if (token != null && _looksLikeJwt(token)) {
+    if (!Constants.disableAuthHeaderAttach && token != null && _looksLikeJwt(token)) {
       headers['Authorization'] = token.startsWith('Bearer') ? token : 'Bearer $token';
+    }
+    // 옵션: 사용자 숫자 ID 헤더 부착 (테스트/임시)
+    if (Constants.useCustomUserIdHeader == true) {
+      headers[Constants.customUserIdHeader] = Constants.testUserNumericId.toString();
     }
     return Options(headers: headers);
   }

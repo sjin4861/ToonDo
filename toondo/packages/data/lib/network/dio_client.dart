@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
@@ -244,9 +245,33 @@ class _AccessTokenAttachInterceptor extends Interceptor {
   _AccessTokenAttachInterceptor(this._cookieJar);
 
   static final _jwtRegex = RegExp(r'^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$');
+  bool _printedClaims = false;
+
+  Map<String, dynamic>? _decodeJwtClaims(String token) {
+    try {
+      final parts = token.split('.');
+      if (parts.length != 3) return null;
+      String normalized = parts[1].replaceAll('-', '+').replaceAll('_', '/');
+      while (normalized.length % 4 != 0) {
+        normalized += '=';
+      }
+      final payload = String.fromCharCodes(base64.decode(normalized));
+      return jsonDecode(payload) as Map<String, dynamic>;
+    } catch (_) {
+      return null;
+    }
+  }
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+    // 전역 플래그로 Authorization 자동 부착을 임시 비활성화할 수 있음 (쿠키만 사용하여 문제 원인 격리)
+    // ignore: avoid_print
+    print('[AccessTokenAttach] flags: disableAuthHeaderAttach=' +
+        '${Constants.disableAuthHeaderAttach} useCustomUserIdHeader=${Constants.useCustomUserIdHeader} path=${options.path}');
+    if (Constants.disableAuthHeaderAttach == true) {
+      handler.next(options);
+      return;
+    }
     // refresh 토큰 엔드포인트는 Authorization 헤더를 붙이지 않는다 (쿠키 기반 갱신 전용)
     if (options.path.contains('/auth/refreshToken') || options.extra['__skipAuthAttach'] == true) {
       handler.next(options);
@@ -261,6 +286,14 @@ class _AccessTokenAttachInterceptor extends Interceptor {
           (c) => c.name == 'accessToken',
           orElse: () => Cookie('accessToken', ''),
         );
+        if (!_printedClaims && access.value.isNotEmpty && _jwtRegex.hasMatch(access.value)) {
+          final claims = _decodeJwtClaims(access.value);
+          if (claims != null) {
+            // ignore: avoid_print
+            print('[AccessTokenAttach] accessToken claims: ' + claims.toString());
+          }
+          _printedClaims = true;
+        }
         if (access.value.isNotEmpty && _jwtRegex.hasMatch(access.value)) {
           options.headers['Authorization'] = 'Bearer ${access.value}';
           // ignore: avoid_print
@@ -269,6 +302,12 @@ class _AccessTokenAttachInterceptor extends Interceptor {
       } catch (_) {
         // ignore silently
       }
+    }
+    // 실험용 사용자 숫자 ID 헤더 부착 (옵션)
+    if (Constants.useCustomUserIdHeader == true) {
+      options.headers[Constants.customUserIdHeader] = Constants.testUserNumericId.toString();
+      // ignore: avoid_print
+      print('[AccessTokenAttach] added custom user header ${Constants.customUserIdHeader}=${Constants.testUserNumericId}');
     }
     handler.next(options);
   }
