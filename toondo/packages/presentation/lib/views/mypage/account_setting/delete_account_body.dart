@@ -9,9 +9,7 @@ class DeleteAccountBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = context.watch<DeleteAccountViewModel>();
 
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Column(
+    return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 32),
@@ -101,7 +99,6 @@ class DeleteAccountBody extends StatelessWidget {
           ],
           const Spacer(),
         ],
-      ),
     );
   }
 
