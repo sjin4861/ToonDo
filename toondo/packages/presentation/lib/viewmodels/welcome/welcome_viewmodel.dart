@@ -26,12 +26,8 @@ class WelcomeViewModel extends ChangeNotifier {
   }
 
   void continueWithKakao(BuildContext context) {
-    // Todo: 카카오 로그인 구현. 임시로 홈 화면으로 이동
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const HomeScreen()),
-          (route) => false,
-    );
+    // Todo: 카카오 로그인 구현. 현재 임시로 다이얼로그
+    ComingSoonDialog.show(context);
   }
 
   void continueWithPhoneNumber(BuildContext context) {
