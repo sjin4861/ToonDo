@@ -161,11 +161,18 @@ class _AuthInterceptor extends Interceptor {
 
   Future<void> _attemptRefresh() async {
     // 이미 refreshing flag는 외부에서 설정됨
-    final candidates = <String>[
-      '/api/v1/auth/refreshToken',
-      '/api/v1/auth/refresh-token',
-      '/auth/refreshToken',
-      '/auth/refresh-token',
+    final candidates = <({String path, String method})>[
+      // POST 메서드 우선
+      (path: '/api/v1/auth/refreshToken', method: 'POST'),
+      (path: '/api/v1/auth/refresh-token', method: 'POST'),
+      (path: '/api/v1/auth/refresh', method: 'POST'),
+      (path: '/auth/refreshToken', method: 'POST'),
+      (path: '/auth/refresh-token', method: 'POST'),
+      (path: '/auth/refresh', method: 'POST'),
+      // GET 메서드 시도 (일부 서버는 GET으로 refresh 처리)
+      (path: '/api/v1/auth/refreshToken', method: 'GET'),
+      (path: '/api/v1/auth/refresh', method: 'GET'),
+      (path: '/auth/refresh', method: 'GET'),
     ];
 
     // 현재 쿠키 상태 출력
@@ -179,29 +186,32 @@ class _AuthInterceptor extends Interceptor {
 
     Response? successResp;
     DioException? lastError;
-    for (final path in candidates) {
+    for (final candidate in candidates) {
       try {
-        final resp = await _dio.post(
-          path,
-          options: Options(extra: {'__skipAuthAttach': true}),
-        );
+        // ignore: avoid_print
+        print('[AuthInterceptor] Trying refresh: ${candidate.method} ${candidate.path}');
+        
+        final resp = candidate.method == 'GET'
+            ? await _dio.get(candidate.path, options: Options(extra: {'__skipAuthAttach': true}))
+            : await _dio.post(candidate.path, options: Options(extra: {'__skipAuthAttach': true}));
+        
         if (resp.statusCode == 200) {
           successResp = resp;
+          // ignore: avoid_print
+          print('[AuthInterceptor] ✅ Refresh success: ${candidate.method} ${candidate.path}');
           break;
         } else {
           // ignore: avoid_print
-          print('[AuthInterceptor] Refresh candidate $path failed code=${resp.statusCode}');
+          print('[AuthInterceptor] ❌ Refresh failed: ${candidate.method} ${candidate.path} code=${resp.statusCode} body=${resp.data}');
         }
       } on DioException catch (e) {
         lastError = e;
         // ignore: avoid_print
-        print('[AuthInterceptor] Refresh candidate error $path: ${e.response?.statusCode}');
+        print('[AuthInterceptor] ❌ Refresh error: ${candidate.method} ${candidate.path} code=${e.response?.statusCode} msg=${e.message}');
       }
     }
 
     if (successResp != null) {
-      // ignore: avoid_print
-      print('[AuthInterceptor] Refresh success path=${successResp.requestOptions.path}');
       try {
         final baseUri = Uri.parse(Constants.baseUrl);
         final afterCookies = await _cookieJar.loadForRequest(baseUri);
@@ -211,6 +221,8 @@ class _AuthInterceptor extends Interceptor {
       } catch (_) {}
       _refreshCompleter?.complete();
     } else {
+      // ignore: avoid_print
+      print('[AuthInterceptor] 🚨 All refresh attempts failed. Clearing cookies.');
       await _cookieJar.deleteAll();
       _refreshCompleter?.completeError(Exception('All refresh candidates failed${lastError != null ? ': ${lastError.message}' : ''}'));
     }
