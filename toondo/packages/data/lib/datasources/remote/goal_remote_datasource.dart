@@ -99,70 +99,56 @@ class GoalRemoteDataSource {
   }
 
   Future<void> updateGoal(Goal goal) async {
-    final options = await _authOptions();
-
-    // 서버 스펙: endDate 가 null 허용 가능성 → null 그대로 전송, 값이 있으면 yyyy-MM-dd
-    final endDateStr = goal.endDate?.toIso8601String().split('T')[0];
+    // 서버 스펙: null 허용
     final requestBody = <String, dynamic>{
       "goalName": goal.name,
       "startDate": goal.startDate.toIso8601String().split('T')[0],
-      "endDate": endDateStr, // null 허용
-      "icon": goal.icon,     // null 허용
+      "endDate": goal.endDate?.toIso8601String().split('T')[0], // null 가능
+      "icon": goal.icon, // null 가능
     };
 
-    // 경로 후보: 우선 '/api/v1/goals/update/{id}' → 실패 시 기존 '/api/v1/goals/{id}'
-    final paths = <String>[
-      '/api/v1/goals/update/${goal.id}',
-      '/api/v1/goals/${goal.id}',
-    ];
-
-    Response resp;
-    int status = 0;
-    DioException? lastErr;
-    for (final path in paths) {
-      try {
-        // 디버그용 경로/바디 로깅
-        print('🛣️ Goal update try: $path body=$requestBody');
-        resp = await dio.put(path, data: requestBody, options: options);
-        status = resp.statusCode ?? 0;
-        print('🛣️ Goal update resp: $status path=$path');
-        if (status == 404) {
-          // 다른 후보 경로를 계속 시도
-          continue;
-        }
-        if (status != 200) {
-          if (status == 403) {
-            throw Exception(
-              '권한 오류 (403 Forbidden): 서버가 요청을 거부했습니다. 토큰 형식이나 권한을 확인하세요. 응답: ${resp.data}',
-            );
-          } else if (status == 400) {
-            // 요구사항 반영: 시작일/종료일 검증 실패 등
-            throw Exception(
-              '잘못된 요청 (400 Bad Request): ${resp.data}',
-            );
-          } else if (status == 401) {
-            throw Exception(
-              '인증 오류 (401 Unauthorized): 토큰이 유효하지 않거나 만료되었습니다. 응답: ${resp.data}',
-            );
-          } else if (status == 404) {
-            throw Exception('리소스를 찾을 수 없습니다. (404): ${resp.data}');
-          } else {
-            throw Exception('목표 업데이트 실패 ($status): ${resp.data}');
-          }
-        }
-        // 200 성공이면 탈출
+    try {
+      // API 문서: PUT /api/v1/goals/{goalId}
+      // Authorization 헤더는 _AccessTokenAttachInterceptor가 쿠키에서 자동 추출하여 부착
+      final path = '/api/v1/goals/${goal.id}';
+      print('🛣️ Goal update: $path body=$requestBody');
+      
+      final resp = await dio.put(
+        path,
+        data: requestBody,
+      );
+      
+      final status = resp.statusCode ?? 0;
+      print('🛣️ Goal update response: $status');
+      
+      if (status == 200) {
+        // 성공
+        print('✅ 목표가 성공적으로 수정되었습니다.');
         return;
-      } on DioException catch (e) {
-        lastErr = e;
-        // 다음 후보 시도
-        continue;
+      } else if (status == 400) {
+        // 시작일이 종료일 이후거나 동일한 경우
+        final message = (resp.data is Map) ? resp.data['message'] : '시작일은 종료일보다 앞서야 합니다.';
+        throw Exception(message);
+      } else if (status == 404) {
+        // 사용자 없음 또는 목표 없음
+        final message = (resp.data is Map) ? resp.data['message'] : '사용자 또는 목표를 찾을 수 없습니다.';
+        throw Exception(message);
+      } else {
+        throw Exception('목표 업데이트 실패 ($status): ${resp.data}');
       }
+    } on DioException catch (e) {
+      final status = e.response?.statusCode;
+      if (status == 400) {
+        final message = (e.response?.data is Map) ? e.response?.data['message'] : '시작일은 종료일보다 앞서야 합니다.';
+        throw Exception(message);
+      } else if (status == 404) {
+        final message = (e.response?.data is Map) ? e.response?.data['message'] : '사용자 또는 목표를 찾을 수 없습니다.';
+        throw Exception(message);
+      } else if (status == 401) {
+        throw Exception('인증 오류: 토큰이 유효하지 않거나 만료되었습니다.');
+      }
+      throw Exception('목표 업데이트 실패: ${e.message}');
     }
-    // 모든 후보 실패
-    if (lastErr != null) {
-      throw Exception('목표 업데이트 실패: ${lastErr.message}');
-    }
-    throw Exception('목표 업데이트 실패: 알 수 없는 오류');
   }
 
   // DELETE /api/v1/goals/{goalId}
