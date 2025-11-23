@@ -31,7 +31,15 @@ final goalIconCategories = {
     Assets.icons.icFilm.path,
     Assets.icons.icLayout.path,
     Assets.icons.icVideo.path,
-    Assets.icons.icHeadphones.path,
+    Assets.icons.icStar.path,
+  ],
+  '운동': [
+    Assets.icons.icShoes.path,
+    Assets.icons.icWeight.path,
+    Assets.icons.icSwim.path,
+    Assets.icons.icBaseball.path,
+    Assets.icons.icVolleyball.path,
+    Assets.icons.icBasketball.path,
   ],
   '기타': [
     Assets.icons.icGithub.path,

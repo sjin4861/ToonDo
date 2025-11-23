@@ -52,7 +52,7 @@ dev_dependencies:
   hive_test: ^1.0.1
   change_app_package_name: ^1.4.0 
   injectable_generator: ^2.6.2
-  flutter_gen_runner:
+  flutter_gen_runner: ^5.9.0
 flutter:
   uses-material-design: true
   assets:
@@ -80,3 +80,6 @@ flutter_gen:
     flutter_svg: true
     rive: true
     lottie: true
+
+dependency_overrides:
+  dart_style: 2.3.7
