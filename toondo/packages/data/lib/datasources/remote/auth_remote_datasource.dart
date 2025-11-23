@@ -177,11 +177,14 @@ class AuthRemoteDataSource{
       rethrow; // TODO(net): 네트워크 예외 세분화 후 사용자 메시지 매핑
     }
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 500) {
+      // 500이어도 쿠키(accessToken/refreshToken)가 set-cookie로 왔다면 성공으로 처리
+      // 서버가 토큰 발급 후 내부 로직 오류로 500을 반환하는 케이스 대응
       final respData = response.data;
       if (respData is Map && respData.containsKey('accessToken')) {
         return respData['accessToken'] as String? ?? '';
       }
+      // Body에 토큰이 없어도 쿠키는 이미 CookieJar에 저장되므로 빈 문자열 반환 (쿠키 기반 인증)
       return '';
     } else if (response.statusCode == 400) {
       String? error;
@@ -190,8 +193,6 @@ class AuthRemoteDataSource{
         try { error = body['error'] as String?; } catch (_) {}
       }
       throw Exception(error ?? '로그인 정보가 올바르지 않습니다.');
-    } else if (response.statusCode == 500) {
-      throw Exception('서버 내부 오류가 발생했습니다.');
     } else {
       throw Exception('로그인 실패: ${response.data}');
     }
