@@ -89,7 +89,6 @@ class AppGoalDropdown extends StatelessWidget {
         ),
 
         // ▼ Dropdown
-        // ▼ Dropdown
         if (isExpanded)
           Container(
             margin: EdgeInsets.only(top: AppSpacing.v8),

@@ -26,6 +26,10 @@ class $AssetsAudiosGen {
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
+  /// File path: assets/icons/ic_ volleyball.svg
+  SvgGenImage get icVolleyball =>
+      const SvgGenImage('assets/icons/ic_ volleyball.svg');
+
   /// File path: assets/icons/ic_100point.svg
   SvgGenImage get ic100point =>
       const SvgGenImage('assets/icons/ic_100point.svg');
@@ -57,6 +61,14 @@ class $AssetsIconsGen {
 
   /// File path: assets/icons/ic_award.svg
   SvgGenImage get icAward => const SvgGenImage('assets/icons/ic_award.svg');
+
+  /// File path: assets/icons/ic_baseball.svg
+  SvgGenImage get icBaseball =>
+      const SvgGenImage('assets/icons/ic_baseball.svg');
+
+  /// File path: assets/icons/ic_basketball.svg
+  SvgGenImage get icBasketball =>
+      const SvgGenImage('assets/icons/ic_basketball.svg');
 
   /// File path: assets/icons/ic_bomb.svg
   SvgGenImage get icBomb => const SvgGenImage('assets/icons/ic_bomb.svg');
@@ -324,6 +336,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_share.svg
   SvgGenImage get icShare => const SvgGenImage('assets/icons/ic_share.svg');
 
+  /// File path: assets/icons/ic_shoes.svg
+  SvgGenImage get icShoes => const SvgGenImage('assets/icons/ic_shoes.svg');
+
   /// File path: assets/icons/ic_shopping-cart.svg
   SvgGenImage get icShoppingCart =>
       const SvgGenImage('assets/icons/ic_shopping-cart.svg');
@@ -345,6 +360,9 @@ class $AssetsIconsGen {
 
   /// File path: assets/icons/ic_store.svg
   SvgGenImage get icStore => const SvgGenImage('assets/icons/ic_store.svg');
+
+  /// File path: assets/icons/ic_swim.svg
+  SvgGenImage get icSwim => const SvgGenImage('assets/icons/ic_swim.svg');
 
   /// File path: assets/icons/ic_sync.svg
   SvgGenImage get icSync => const SvgGenImage('assets/icons/ic_sync.svg');
@@ -395,6 +413,9 @@ class $AssetsIconsGen {
   SvgGenImage get icVolume2 =>
       const SvgGenImage('assets/icons/ic_volume-2.svg');
 
+  /// File path: assets/icons/ic_weight.svg
+  SvgGenImage get icWeight => const SvgGenImage('assets/icons/ic_weight.svg');
+
   /// File path: assets/icons/ic_wifi-off.svg
   SvgGenImage get icWifiOff =>
       const SvgGenImage('assets/icons/ic_wifi-off.svg');
@@ -417,6 +438,7 @@ class $AssetsIconsGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
+        icVolleyball,
         ic100point,
         icAccount,
         icActivity,
@@ -426,6 +448,8 @@ class $AssetsIconsGen {
         icAlertTriangle,
         icAlien,
         icAward,
+        icBaseball,
+        icBasketball,
         icBomb,
         icBookOpen,
         icBook,
@@ -504,6 +528,7 @@ class $AssetsIconsGen {
         icSettings,
         icShare2,
         icShare,
+        icShoes,
         icShoppingCart,
         icSkull,
         icSmile,
@@ -511,6 +536,7 @@ class $AssetsIconsGen {
         icStar,
         icStats,
         icStore,
+        icSwim,
         icSync,
         icTable,
         icTag,
@@ -526,6 +552,7 @@ class $AssetsIconsGen {
         icUser,
         icVideo,
         icVolume2,
+        icWeight,
         icWifiOff,
         icWifi,
         icXCircle,
