@@ -97,6 +97,10 @@ class WelcomeBody extends StatelessWidget {
           // SizedBox(height: AppSpacing.v16),
 
           SizedBox(height: AppSpacing.v82), // 소셜 로그인 사용 시 주석 처리
+
+          AppPhoneLoginButton(
+            onPressed: () => viewModel.continueWithPhoneNumber(context),
+          ),
         ],
     );
   }
