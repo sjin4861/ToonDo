@@ -25,9 +25,6 @@ class AppDateField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double errorTextFontSize = AppTypography.caption1Regular.fontSize ?? 12;
-    final double errorSlotHeight =
-        AppDimensions.paddingDateFieldErrorTop + errorTextFontSize;
     final hasValue = date != null;
     final disabledFill = AppColors.status100.withOpacity(0.08);
     final borderColor =
@@ -36,6 +33,13 @@ class AppDateField extends StatelessWidget {
         hasValue ? AppColors.status100 : AppColors.borderUnselected;
     final textColor =
         hasValue ? AppColors.status100 : AppColors.status100.withOpacity(0.25);
+    final baseStyle = AppTypography.caption1Regular;
+    final errorStyle = baseStyle.copyWith(color: AppColors.red500);
+
+    final fontSize = errorStyle.fontSize ?? 12;
+    final lineHeight = (errorStyle.height ?? 1.2) * fontSize;
+    final errorSlotHeight =
+        AppDimensions.paddingDateFieldErrorTop + lineHeight;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
