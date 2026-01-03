@@ -21,10 +21,11 @@ class WelcomeBody extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(height: AppSpacing.v184),
+          SizedBox(height: AppSpacing.v32), // 소셜 로그인 사용 시 해당 라인 삭제
           _buildCharacterSection(),
           SizedBox(height: AppSpacing.v28),
           _buildWelcomeText(),
-          SizedBox(height: AppSpacing.v52),
+          // SizedBox(height: AppSpacing.v52), // 소셜 로그인 사용 시 주석 해제
           _buildButtons(context),
           Spacer(),
           _buildTermsText(),
@@ -84,19 +85,18 @@ class WelcomeBody extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          AppGoogleLoginButton(
-            onPressed: () => viewModel.continueWithGoogle(context),
-          ),
-          SizedBox(height: AppSpacing.v16),
+          // 소셜 로그인 사용 시 주석 해제
+          // AppGoogleLoginButton(
+          //   onPressed: () => viewModel.continueWithGoogle(context),
+          // ),
+          // SizedBox(height: AppSpacing.v16),
+          //
+          // AppKakaoLoginButton(
+          //   onPressed: () => viewModel.continueWithKakao(context),
+          // ),
+          // SizedBox(height: AppSpacing.v16),
 
-          AppKakaoLoginButton(
-            onPressed: () => viewModel.continueWithKakao(context),
-          ),
-          SizedBox(height: AppSpacing.v16),
-
-          AppPhoneLoginButton(
-            onPressed: () => viewModel.continueWithPhoneNumber(context),
-          ),
+          SizedBox(height: AppSpacing.v82), // 소셜 로그인 사용 시 주석 처리
         ],
     );
   }
