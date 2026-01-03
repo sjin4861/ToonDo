@@ -17,6 +17,7 @@ class OnboardingStep3Screen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<OnboardingViewModel>();
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (viewModel.step == 4) {
@@ -44,13 +45,12 @@ class OnboardingStep3Screen extends StatelessWidget {
           }
         },
       ),
-      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          const OnboardingBackground(step: 3), // 1. 캐릭터 배경 (맨 아래)
+          const OnboardingBackground(step: 3),
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.all(24),
+              padding: EdgeInsets.fromLTRB(24, 0, 24, bottomInset + 24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -77,8 +77,6 @@ class OnboardingStep3Screen extends StatelessWidget {
                     onChanged: viewModel.setNickname,
                   ),
                   const Spacer(),
-
-                  // 버튼
                   DoubleActionButtons(
                     backText: '뒤로',
                     nextText: '다음으로',

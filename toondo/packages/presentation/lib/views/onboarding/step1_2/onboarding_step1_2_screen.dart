@@ -26,11 +26,13 @@ class OnboardingStep1To2Screen extends StatelessWidget {
 
           return Scaffold(
             backgroundColor: AppColors.backgroundNormal,
-            body: Stack(
-              children: [
-                OnboardingBackground(step: viewModel.step),
-                const OnboardingStep1To2Body(),
-              ],
+            body: SafeArea(
+              child: Stack(
+                children: [
+                  OnboardingBackground(step: viewModel.step),
+                  const OnboardingStep1To2Body(),
+                ],
+              ),
             ),
           );
         },

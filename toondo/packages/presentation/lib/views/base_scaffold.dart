@@ -20,27 +20,35 @@ class BaseScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Widget content = extendBody
+        ? body
+        : Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSpacing.screenHorizontalPadding,
+            ),
+            child: body,
+          );
+
     return Scaffold(
-      appBar:
-          customAppBar ??
+      appBar: customAppBar ??
           (title != null
               ? AppNavBar(
-                title: title!,
-                onBack: () {
-                  Navigator.pop(context);
-                },
-              )
+                  title: title!,
+                  onBack: () {
+                    Navigator.pop(context);
+                  },
+                )
               : null),
-      body:
-          extendBody
-              ? body
-              : Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: AppSpacing.screenHorizontalPadding,
-                ),
-                child: body,
-              ),
-      bottomNavigationBar: bottomWidget,
+      body: SafeArea(
+        bottom: true,
+        child: content,
+      ),
+      bottomNavigationBar: bottomWidget == null
+          ? null
+          : SafeArea(
+              top: false,
+              child: bottomWidget!,
+            ),
     );
   }
 }
