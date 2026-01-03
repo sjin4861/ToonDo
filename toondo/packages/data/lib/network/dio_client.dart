@@ -4,6 +4,7 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:data/constants.dart';
+import 'package:data/network/mock_api_interceptor.dart';
 
 class DioClient {
   final Dio dio;
@@ -27,6 +28,12 @@ class DioClient {
     );
 
     final cookieJar = CookieJar();
+    
+    // Mock 인터셉터는 가장 먼저 추가 (다른 인터셉터보다 우선 실행)
+    if (Constants.useMockApi) {
+      dio.interceptors.add(MockApiInterceptor());
+    }
+    
     dio.interceptors.add(CookieManager(cookieJar));
     dio.interceptors.add(_AccessTokenAttachInterceptor(cookieJar));
     dio.interceptors.add(_AuthInterceptor(dio, cookieJar));
