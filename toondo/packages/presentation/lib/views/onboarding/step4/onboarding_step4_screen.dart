@@ -16,44 +16,49 @@ class OnboardingStep4Screen extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = context.watch<OnboardingViewModel>();
 
-
     return Scaffold(
       backgroundColor: AppColors.backgroundNormal,
-      body: Stack(
-        children: [
-          OnboardingBackground(step: viewModel.step),
-          SafeArea(
-            child: Column(
+      body: SafeArea(
+        child: Stack(
+          children: [
+            OnboardingBackground(step: viewModel.step),
+            Column(
               children: [
                 const OnboardingStep4Body(),
                 const Spacer(),
                 Padding(
-                  padding: EdgeInsets.all(AppSpacing.a24),
+                  padding: EdgeInsets.only(
+                    left: AppSpacing.a24,
+                    right: AppSpacing.a24,
+                    bottom: AppSpacing.a24 + MediaQuery.of(context).padding.bottom,
+                  ),
                   child: DoubleActionButtons(
-                        backText: '괜찮아',
-                        nextText: '좋아!',
-                        onBack: () {
-                          viewModel.nickname = '';
-                          viewModel.step = 3;
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (_) => OnboardingStep3Screen()),
-                          );
-                        },
-                        onNext: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const GoalInputScreen(isFromOnboarding: true),
-                            ),
-                          );
-                        },
-                      ),
+                    backText: '괜찮아',
+                    nextText: '좋아!',
+                    onBack: () {
+                      viewModel.nickname = '';
+                      viewModel.step = 3;
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => OnboardingStep3Screen(),
+                        ),
+                      );
+                    },
+                    onNext: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const GoalInputScreen(isFromOnboarding: true),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

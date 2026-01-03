@@ -45,11 +45,11 @@ class OnboardingStep3Screen extends StatelessWidget {
         },
       ),
       resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          const OnboardingBackground(step: 3), // 1. 캐릭터 배경 (맨 아래)
-          SafeArea(
-            child: Padding(
+      body: SafeArea(
+        child: Stack(
+          children: [
+            const OnboardingBackground(step: 3),
+            Padding(
               padding: const EdgeInsets.all(24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,32 +77,35 @@ class OnboardingStep3Screen extends StatelessWidget {
                     onChanged: viewModel.setNickname,
                   ),
                   const Spacer(),
-
-                  // 버튼
-                  DoubleActionButtons(
-                    backText: '뒤로',
-                    nextText: '다음으로',
-                    onBack: () {
-                      viewModel.step = 2;
-                    },
-                    onNext: () {
-                      viewModel.validateNickname(
-                        onSuccess: () {
-                          viewModel.step = 4;
-                        },
-                        onError: (message) {
-                          ScaffoldMessenger.of(
-                            context,
-                          ).showSnackBar(SnackBar(content: Text(message)));
-                        },
-                      );
-                    },
+                  Padding(
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).padding.bottom,
+                    ),
+                    child: DoubleActionButtons(
+                      backText: '뒤로',
+                      nextText: '다음으로',
+                      onBack: () {
+                        viewModel.step = 2;
+                      },
+                      onNext: () {
+                        viewModel.validateNickname(
+                          onSuccess: () {
+                            viewModel.step = 4;
+                          },
+                          onError: (message) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(message)),
+                            );
+                          },
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
