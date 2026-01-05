@@ -23,27 +23,28 @@ class MyPageSettingSection extends StatelessWidget {
           style: AppTypography.h2SemiBold.copyWith(color: AppColors.status100),
         ),
         SizedBox(height: AppSpacing.v16),
-        MyPageSettingTile(
-          title: '동기화',
-          leadingIcon: Assets.icons.icSync.svg(
-            width: AppDimensions.iconSize16,
-            height: AppDimensions.iconSize16,
-          ),
-            onTap: () {
-              final viewModel = context.read<MyPageViewModel>();
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                builder: (_) {
-                  return ChangeNotifierProvider.value(
-                    value: viewModel,
-                    child: const SyncBottomSheet(),
-                  );
-                },
-              );
-            }
-        ),
+        // 동기화 기능 주석처리
+        // MyPageSettingTile(
+        //   title: '동기화',
+        //   leadingIcon: Assets.icons.icSync.svg(
+        //     width: AppDimensions.iconSize16,
+        //     height: AppDimensions.iconSize16,
+        //   ),
+        //     onTap: () {
+        //       final viewModel = context.read<MyPageViewModel>();
+        //       showModalBottomSheet(
+        //         context: context,
+        //         isScrollControlled: true,
+        //         backgroundColor: Colors.transparent,
+        //         builder: (_) {
+        //           return ChangeNotifierProvider.value(
+        //             value: viewModel,
+        //             child: const SyncBottomSheet(),
+        //           );
+        //         },
+        //       );
+        //     }
+        // ),
         MyPageSettingTile(
           title: '화면',
           leadingIcon: Assets.icons.icDisplay.svg(

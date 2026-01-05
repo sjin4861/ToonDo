@@ -8,6 +8,7 @@ class BaseScaffold extends StatelessWidget {
   final Widget body;
   final Widget? bottomWidget;
   final bool extendBody;
+  final bool showBackButton;
 
   const BaseScaffold({
     super.key,
@@ -16,31 +17,41 @@ class BaseScaffold extends StatelessWidget {
     required this.body,
     this.bottomWidget,
     this.extendBody = false,
+    this.showBackButton = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    final Widget content = extendBody
+        ? body
+        : Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSpacing.screenHorizontalPadding,
+            ),
+            child: body,
+          );
+
     return Scaffold(
-      appBar:
-          customAppBar ??
+      appBar: customAppBar ??
           (title != null
               ? AppNavBar(
-                title: title!,
-                onBack: () {
-                  Navigator.pop(context);
-                },
-              )
+                  title: title!,
+                  showBackButton: showBackButton,
+                  onBack: () {
+                    Navigator.pop(context);
+                  },
+                )
               : null),
-      body:
-          extendBody
-              ? body
-              : Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: AppSpacing.screenHorizontalPadding,
-                ),
-                child: body,
-              ),
-      bottomNavigationBar: bottomWidget,
+      body: SafeArea(
+        bottom: true,
+        child: content,
+      ),
+      bottomNavigationBar: bottomWidget == null
+          ? null
+          : SafeArea(
+              top: false,
+              child: bottomWidget!,
+            ),
     );
   }
 }

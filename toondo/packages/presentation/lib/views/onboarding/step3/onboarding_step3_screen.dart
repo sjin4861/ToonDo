@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
-import 'package:presentation/designsystem/components/buttons/double_action_buttons.dart';
+import 'package:presentation/designsystem/components/buttons/app_button.dart';
 import 'package:presentation/designsystem/components/inputs/app_input_field.dart';
 import 'package:presentation/designsystem/components/navbars/app_nav_bar.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
@@ -17,6 +17,7 @@ class OnboardingStep3Screen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<OnboardingViewModel>();
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (viewModel.step == 4) {
@@ -38,19 +39,14 @@ class OnboardingStep3Screen extends StatelessWidget {
     return Scaffold(
       appBar: AppNavBar(
         title: '시작하기',
-        onBack: () {
-          if (Navigator.canPop(context)) {
-            Navigator.pop(context);
-          }
-        },
+        showBackButton: false,
       ),
-      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          const OnboardingBackground(step: 3), // 1. 캐릭터 배경 (맨 아래)
+          const OnboardingBackground(step: 3),
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.all(24),
+              padding: EdgeInsets.fromLTRB(24, 0, 24, bottomInset + 24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -77,15 +73,10 @@ class OnboardingStep3Screen extends StatelessWidget {
                     onChanged: viewModel.setNickname,
                   ),
                   const Spacer(),
-
-                  // 버튼
-                  DoubleActionButtons(
-                    backText: '뒤로',
-                    nextText: '다음으로',
-                    onBack: () {
-                      viewModel.step = 2;
-                    },
-                    onNext: () {
+                  AppButton(
+                    label: '다음으로',
+                    isFullWidth: true,
+                    onPressed: () {
                       viewModel.validateNickname(
                         onSuccess: () {
                           viewModel.step = 4;

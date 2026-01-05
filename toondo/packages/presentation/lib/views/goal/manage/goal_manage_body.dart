@@ -56,7 +56,7 @@ class _HeaderSection extends StatelessWidget {
         SizedBox(height: AppSpacing.v16),
         if (viewModel.filterType == GoalFilterType.completed)
           AppGoalCategoryToggle(
-            labels: const ['성공리스트', '실패리스트', '포기리스트'],
+            labels: const ['성공리스트', '실패리스트'], // '포기리스트' 주석처리. 필요시추가할것
             selectedIndex: _completionFilterToIndex(viewModel.completionFilter),
             onChanged: (index) {
               viewModel.setCompletionFilter(_indexToCompletionFilter(index));
@@ -107,9 +107,9 @@ int _completionFilterToIndex(GoalCompletionFilter filter) {
     case GoalCompletionFilter.failed:
       return 1;
     case GoalCompletionFilter.givenUp:
-      return 2;
+      return 1; // '포기리스트' 주석처리 - UI에서 제거되었으므로 실패리스트와 동일한 인덱스로 처리
     case GoalCompletionFilter.all:
-      return 3;
+      return 2; // all은 더 이상 UI에 없으므로 잘못된 인덱스로 처리
   }
 }
 
@@ -119,8 +119,8 @@ GoalCompletionFilter _indexToCompletionFilter(int index) {
       return GoalCompletionFilter.succeeded;
     case 1:
       return GoalCompletionFilter.failed;
-    case 2:
-      return GoalCompletionFilter.givenUp;
+    // case 2:
+    //   return GoalCompletionFilter.givenUp; // '포기리스트' 주석처리
     default:
       return GoalCompletionFilter.all;
   }

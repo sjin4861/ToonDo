@@ -39,6 +39,7 @@ class TodoInputScreen extends StatelessWidget {
       child: BaseScaffold(
         body: TodoInputBody(),
         title: isOnboarding ? '시작하기' : (todo != null ? '투두 수정' : '투두 작성'),
+        showBackButton: !isOnboarding,
         bottomWidget: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(

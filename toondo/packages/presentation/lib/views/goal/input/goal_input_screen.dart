@@ -44,6 +44,7 @@ class GoalInputScreen extends StatelessWidget {
 
           return BaseScaffold(
             title: title,
+            showBackButton: !isFromOnboarding,
             body: const GoalInputBody(),
             bottomWidget: SafeArea(
               child: Padding(

@@ -29,7 +29,9 @@ class OnboardingStep1To2Screen extends StatelessWidget {
             body: Stack(
               children: [
                 OnboardingBackground(step: viewModel.step),
-                const OnboardingStep1To2Body(),
+                SafeArea(
+                  child: const OnboardingStep1To2Body(),
+                ),
               ],
             ),
           );
