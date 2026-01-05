@@ -301,7 +301,7 @@ class MockApiInterceptor extends Interceptor {
       'startDate': data?['startDate'] as String? ?? now.toIso8601String().split('T')[0],
       'endDate': data?['endDate'] as String? ?? now.add(const Duration(days: 30)).toIso8601String().split('T')[0],
       'status': 0, // active
-      'showOnHome': false,
+      'showOnHome': data?['showOnHome'] as bool? ?? false, // 요청 데이터에서 받아옴
     };
 
     _mockGoals[goalId.toString()] = goal;
@@ -325,6 +325,7 @@ class MockApiInterceptor extends Interceptor {
       existingGoal['icon'] = data?['icon'] ?? existingGoal['icon'];
       existingGoal['startDate'] = data?['startDate'] ?? existingGoal['startDate'];
       existingGoal['endDate'] = data?['endDate'] ?? existingGoal['endDate'];
+      existingGoal['showOnHome'] = data?['showOnHome'] ?? existingGoal['showOnHome']; // showOnHome 업데이트 추가
       _mockGoals[goalId] = existingGoal;
     }
 
