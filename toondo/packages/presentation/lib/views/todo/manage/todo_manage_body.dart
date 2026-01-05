@@ -75,8 +75,11 @@ class TodoManageBody extends StatelessWidget {
             viewModel.updateSelectedFilter(index.toFilter());
           },
         ),
-        SizedBox(height: AppSpacing.v16),
-        _buildGoalToggle(viewModel),
+        // "목표" 필터일 때만 목표 리스트 표시
+        if (viewModel.selectedFilter == TodoFilterOption.goal) ...[
+          SizedBox(height: AppSpacing.v16),
+          _buildGoalToggle(viewModel),
+        ],
       ],
     );
   }
