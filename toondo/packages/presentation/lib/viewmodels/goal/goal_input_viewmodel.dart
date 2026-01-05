@@ -208,7 +208,13 @@ class GoalInputViewModel extends ChangeNotifier {
       context: context,
       isScrollControlled: true,
       backgroundColor: const Color(0x00000000),
-      builder: (context) => SelectDateBottomSheet(initialDate: initialDate),
+      builder: (context) => SelectDateBottomSheet(
+        initialDate: initialDate,
+        // 시작일 선택 시: rangeStart에 현재 시작일, rangeEnd는 null
+        // 마감일 선택 시: rangeStart에 시작일, rangeEnd에 현재 마감일 (범위 표시)
+        rangeStart: isStartDate ? startDate : startDate,
+        rangeEnd: isStartDate ? null : endDate,
+      ),
     );
     if (pickedDate != null) {
       if (isStartDate) {
