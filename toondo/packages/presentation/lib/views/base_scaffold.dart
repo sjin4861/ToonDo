@@ -8,6 +8,7 @@ class BaseScaffold extends StatelessWidget {
   final Widget body;
   final Widget? bottomWidget;
   final bool extendBody;
+  final bool showBackButton;
 
   const BaseScaffold({
     super.key,
@@ -16,6 +17,7 @@ class BaseScaffold extends StatelessWidget {
     required this.body,
     this.bottomWidget,
     this.extendBody = false,
+    this.showBackButton = true,
   });
 
   @override
@@ -34,6 +36,7 @@ class BaseScaffold extends StatelessWidget {
           (title != null
               ? AppNavBar(
                   title: title!,
+                  showBackButton: showBackButton,
                   onBack: () {
                     Navigator.pop(context);
                   },

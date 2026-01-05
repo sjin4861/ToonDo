@@ -8,11 +8,13 @@ import 'package:presentation/designsystem/typography/app_typography.dart';
 class AppNavBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final VoidCallback? onBack;
+  final bool showBackButton;
 
   const AppNavBar({
     super.key,
     required this.title,
     this.onBack,
+    this.showBackButton = true,
   });
 
   @override
@@ -20,17 +22,20 @@ class AppNavBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: AppColors.status0,
       elevation: 0,
-      leading: IconButton(
-        padding: EdgeInsets.only(left: AppSpacing.h20),
-        icon: Icon(
-          Icons.arrow_back_ios,
-          size: AppDimensions.iconSize16,
-          color: AppColors.status100,
-        ),
-        onPressed: onBack ?? () => Navigator.of(context).maybePop(),
-      ),
+      automaticallyImplyLeading: false,
+      leading: showBackButton
+          ? IconButton(
+              padding: EdgeInsets.only(left: AppSpacing.h20),
+              icon: Icon(
+                Icons.arrow_back_ios,
+                size: AppDimensions.iconSize16,
+                color: AppColors.status100,
+              ),
+              onPressed: onBack ?? () => Navigator.of(context).maybePop(),
+            )
+          : null,
       centerTitle: false,
-      titleSpacing: 0,
+      titleSpacing: showBackButton ? 0 : AppSpacing.h24,
       title: Text(
         title,
         style: AppTypography.h2Regular.copyWith(
