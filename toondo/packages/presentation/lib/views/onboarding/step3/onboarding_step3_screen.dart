@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
-import 'package:presentation/designsystem/components/buttons/double_action_buttons.dart';
+import 'package:presentation/designsystem/components/buttons/app_button.dart';
 import 'package:presentation/designsystem/components/inputs/app_input_field.dart';
 import 'package:presentation/designsystem/components/navbars/app_nav_bar.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
@@ -39,11 +39,7 @@ class OnboardingStep3Screen extends StatelessWidget {
     return Scaffold(
       appBar: AppNavBar(
         title: '시작하기',
-        onBack: () {
-          if (Navigator.canPop(context)) {
-            Navigator.pop(context);
-          }
-        },
+        showBackButton: false,
       ),
       body: Stack(
         children: [
@@ -77,13 +73,10 @@ class OnboardingStep3Screen extends StatelessWidget {
                     onChanged: viewModel.setNickname,
                   ),
                   const Spacer(),
-                  DoubleActionButtons(
-                    backText: '뒤로',
-                    nextText: '다음으로',
-                    onBack: () {
-                      viewModel.step = 2;
-                    },
-                    onNext: () {
+                  AppButton(
+                    label: '다음으로',
+                    isFullWidth: true,
+                    onPressed: () {
                       viewModel.validateNickname(
                         onSuccess: () {
                           viewModel.step = 4;

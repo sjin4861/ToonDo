@@ -4,8 +4,8 @@ import 'package:presentation/designsystem/components/buttons/double_action_butto
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/views/goal/input/goal_input_screen.dart';
 import 'package:presentation/views/onboarding/onboarding_background.dart';
-import 'package:presentation/views/onboarding/step3/onboarding_step3_screen.dart';
 import 'package:presentation/views/onboarding/step4/onboarding_step4_body.dart';
+import 'package:presentation/views/home/home_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:presentation/viewmodels/onboarding/onboarding_viewmodel.dart';
 
@@ -32,11 +32,11 @@ class OnboardingStep4Screen extends StatelessWidget {
                     backText: '괜찮아',
                     nextText: '좋아!',
                     onBack: () {
-                      viewModel.nickname = '';
-                      viewModel.step = 3;
-                      Navigator.pushReplacement(
+                      // 온보딩을 건너뛰고 메인 화면으로 이동
+                      Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (_) => OnboardingStep3Screen()),
+                        MaterialPageRoute(builder: (_) => const HomeScreen()),
+                        (route) => false, // 모든 이전 라우트 제거
                       );
                     },
                     onNext: () {
