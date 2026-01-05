@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
+import 'package:presentation/designsystem/components/app_ink_well.dart';
 import 'package:presentation/designsystem/components/inputs/app_date_field.dart';
 import 'package:presentation/designsystem/components/inputs/app_tip_text.dart';
 import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
@@ -120,9 +121,8 @@ class GoalInputBody extends StatelessWidget {
     required bool value,
     required ValueChanged<bool> onChanged,
   }) {
-    return InkWell(
+    return AppInkWell(
       onTap: () => onChanged(!value),
-      borderRadius: BorderRadius.circular(2),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 0),
         child: Row(

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
 import 'package:presentation/designsystem/components/bottom_sheets/app_goal_icon_bottom_sheet.dart';
@@ -44,15 +45,19 @@ class _GoalNameInputFieldState extends State<GoalNameInputField> {
                   (context, viewModel, child) => GestureDetector(
                     onTap: () async {
                       // 아이콘 선택 BottomSheet 열기
+                      final bottomSheetContext = context;
                       String? selectedIcon = await showModalBottomSheet<String>(
                         context: context,
                         isScrollControlled: true,
-                          builder: (context) => AppGoalIconBottomSheet(
-                            iconCategories: goalIconCategories,
-                            onIconSelected: (selectedIcon) {
-                              Navigator.pop(context, selectedIcon);
-                            },
-                          ),
+                        builder: (bottomSheetBuilderContext) => AppGoalIconBottomSheet(
+                          iconCategories: goalIconCategories,
+                          onIconSelected: (selectedIcon) {
+                            // 바텀시트만 닫기 (상위 화면은 유지)
+                            if (bottomSheetBuilderContext.mounted) {
+                              Navigator.of(bottomSheetBuilderContext).pop(selectedIcon);
+                            }
+                          },
+                        ),
                       );
 
                       if (selectedIcon != null) {
@@ -73,17 +78,10 @@ class _GoalNameInputFieldState extends State<GoalNameInputField> {
                         ),
                         color: Colors.white,
                       ),
+                      clipBehavior: Clip.antiAlias,
                       child:
                           viewModel.selectedIcon != null
-                              ? Padding(
-                                padding: EdgeInsets.all(AppSpacing.a8),
-                                child: SvgPicture.asset(
-                                  viewModel.selectedIcon!,
-                                  width: AppDimensions.iconSize24,
-                                  height: AppDimensions.iconSize24,
-                                  fit: BoxFit.contain,
-                                ),
-                              )
+                              ? _buildIconWidget(viewModel.selectedIcon!)
                               : Icon(
                                 Icons.add,
                                 color: AppColors.green500,
@@ -150,6 +148,51 @@ class _GoalNameInputFieldState extends State<GoalNameInputField> {
           ),
         ],
       ],
+    );
+  }
+
+  /// 아이콘 경로에 따라 적절한 위젯 반환
+  Widget _buildIconWidget(String iconPath) {
+    // 아이콘 크기는 정수 픽셀로 고정 (반픽셀 문제 방지)
+    const double iconContainerSize = 40.0; // 정수 픽셀
+    const double iconPadding = 8.0; // 정수 픽셀
+    const double svgIconSize = 24.0; // 정수 픽셀
+
+    // 커스텀 아이콘인지 확인 (파일 시스템 경로)
+    if (iconPath.startsWith('/')) {
+      return SizedBox(
+        width: iconContainerSize,
+        height: iconContainerSize,
+        child: ClipOval(
+          child: SizedBox.expand(
+            child: Image.file(
+              File(iconPath),
+              fit: BoxFit.cover,
+              alignment: Alignment.center,
+              filterQuality: FilterQuality.high,
+              errorBuilder: (context, error, stackTrace) {
+                return Icon(
+                  Icons.help_outline_rounded,
+                  size: svgIconSize,
+                  color: AppColors.status100,
+                );
+              },
+            ),
+          ),
+        ),
+      );
+    }
+    // SVG 아이콘
+    return Container(
+      width: iconContainerSize,
+      height: iconContainerSize,
+      padding: EdgeInsets.all(iconPadding),
+      child: SvgPicture.asset(
+        iconPath,
+        width: svgIconSize,
+        height: svgIconSize,
+        fit: BoxFit.contain,
+      ),
     );
   }
 }

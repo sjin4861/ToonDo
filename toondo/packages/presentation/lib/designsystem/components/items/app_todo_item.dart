@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -188,21 +189,37 @@ class _AppTodoItemState extends State<AppTodoItem> {
     final backgroundColor =
         widget.isChecked ? AppColors.itemCompletedBorder : widget.levelColor;
 
+    final String? iconPath = widget.iconPath ?? Assets.icons.icHelpCircle.path;
+    final bool isCustomIcon = iconPath != null && iconPath.startsWith('/');
+
+    // 아이콘 크기는 정수 픽셀로 고정 (반픽셀 문제 방지)
+    const double iconSize = 24.0; // 정수 픽셀 (radius * 2)
+    const double iconRadius = 12.0; // 정수 픽셀
+    const double innerPadding = 4.0; // 정수 픽셀
+
     return CircleAvatar(
-      radius: AppDimensions.goalIconRadius,
+      radius: iconRadius, // 정수 픽셀
       backgroundColor: backgroundColor,
-      child: Padding(
-        padding: EdgeInsets.all(AppDimensions.goalIconInnerPadding),
-        child: SvgPicture.asset(
-          widget.iconPath ?? Assets.icons.icHelpCircle.path,
-          width: AppDimensions.goalIconSize,
-          height: AppDimensions.goalIconSize,
-          colorFilter: ColorFilter.mode(
-            widget.isChecked ? AppColors.status100_50 : AppColors.status100,
-            BlendMode.srcIn,
-          ),
-        ),
-      ),
+      backgroundImage: isCustomIcon ? FileImage(File(iconPath!)) : null,
+      onBackgroundImageError: isCustomIcon
+          ? (exception, stackTrace) {
+              // 에러는 child에서 처리
+            }
+          : null,
+      child: isCustomIcon
+          ? null // backgroundImage 사용 시 child 불필요
+          : Padding(
+              padding: EdgeInsets.all(innerPadding),
+              child: SvgPicture.asset(
+                iconPath!,
+                width: iconSize - innerPadding * 2,
+                height: iconSize - innerPadding * 2,
+                colorFilter: ColorFilter.mode(
+                  widget.isChecked ? AppColors.status100_50 : AppColors.status100,
+                  BlendMode.srcIn,
+                ),
+              ),
+            ),
     );
   }
 

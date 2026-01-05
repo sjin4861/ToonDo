@@ -13,6 +13,7 @@ import 'package:common/notification/reminder_notification_service.dart'
     as _i983;
 import 'package:domain/entities/goal.dart' as _i876;
 import 'package:domain/entities/todo.dart' as _i429;
+import 'package:domain/repositories/custom_icon_repository.dart' as _i447;
 import 'package:domain/usecases/auth/check_login_id_exists.dart' as _i138;
 import 'package:domain/usecases/auth/delete_account.dart' as _i728;
 import 'package:domain/usecases/auth/get_token.dart' as _i415;
@@ -59,6 +60,8 @@ import 'package:presentation/viewmodels/global/app_notification_viewmodel.dart'
     as _i370;
 import 'package:presentation/viewmodels/global/app_theme_viewmodel.dart'
     as _i1040;
+import 'package:presentation/viewmodels/goal/goal_icon_bottom_sheet_viewmodel.dart'
+    as _i225;
 import 'package:presentation/viewmodels/goal/goal_input_viewmodel.dart'
     as _i742;
 import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart'
@@ -103,6 +106,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i968.DeleteAccountViewModel(
         deleteAccountUseCase: gh<_i728.DeleteAccountUseCase>(),
       ),
+    );
+    gh.factory<_i225.GoalIconBottomSheetViewModel>(
+      () =>
+          _i225.GoalIconBottomSheetViewModel(gh<_i447.CustomIconRepository>()),
     );
     gh.factory<_i197.WelcomeViewModel>(
       () => _i197.WelcomeViewModel(

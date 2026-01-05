@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -180,30 +181,56 @@ class _AppGoalItemState extends State<AppGoalItem> {
 
   Widget _buildIcon() {
     final Color borderColor = widget.isChecked
-        ? AppColors.itemCompletedBorder.withOpacity(0.5)
+        ? AppColors.itemCompletedBorder.withAlpha(127) // withOpacity(0.5)
         : AppColors.green300;
 
+    final String? iconPath = widget.iconPath ?? Assets.icons.icHelpCircle.path;
+    final bool isCustomIcon = iconPath != null && iconPath.startsWith('/');
+
+    // 아이콘 크기는 정수 픽셀로 고정 (반픽셀 문제 방지)
+    const double iconSize = 24.0; // 정수 픽셀
+    const double innerPadding = 4.0; // 정수 픽셀
+
     return Container(
-      width: AppDimensions.goalIconSize.w,
-      height: AppDimensions.goalIconSize.h,
+      width: iconSize,
+      height: iconSize,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: AppColors.backgroundNormal,
         border: Border.all(
           color: borderColor,
-          width: AppDimensions.goalItemBorderWidth.w,
+          width: 1.0, // 정수 픽셀
         ),
       ),
-      padding: EdgeInsets.all(AppDimensions.goalIconInnerPadding.r),
-      child: SvgPicture.asset(
-        widget.iconPath ?? Assets.icons.icHelpCircle.path,
-        width: AppDimensions.goalIconSize.w,
-        height: AppDimensions.goalIconSize.h,
-        colorFilter: ColorFilter.mode(
-          widget.isChecked ? AppColors.status100_50 : AppColors.status100,
-          BlendMode.srcIn,
-        ),
-      ),
+      clipBehavior: Clip.antiAlias,
+      padding: isCustomIcon ? EdgeInsets.zero : EdgeInsets.all(innerPadding),
+      child: isCustomIcon
+          ? ClipOval(
+              child: SizedBox.expand(
+                child: Image.file(
+                  File(iconPath!),
+                  fit: BoxFit.cover,
+                  alignment: Alignment.center,
+                  filterQuality: FilterQuality.high,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Icon(
+                      Icons.help_outline_rounded,
+                      size: iconSize,
+                      color: widget.isChecked ? AppColors.status100_50 : AppColors.status100,
+                    );
+                  },
+                ),
+              ),
+            )
+          : SvgPicture.asset(
+              iconPath!,
+              width: iconSize - innerPadding * 2,
+              height: iconSize - innerPadding * 2,
+              colorFilter: ColorFilter.mode(
+                widget.isChecked ? AppColors.status100_50 : AppColors.status100,
+                BlendMode.srcIn,
+              ),
+            ),
     );
   }
 
