@@ -16,6 +16,7 @@ import 'package:data/models/todo_model.dart';
 import 'package:data/models/user_model.dart';
 import 'package:data/models/goal_model.dart';
 import 'package:data/models/goal_status_enum.dart';
+import 'package:data/models/custom_icon_model.dart';
 import 'package:toondo/injection/di.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -36,12 +37,14 @@ Future<void> main() async {
   Hive.registerAdapter(GoalModelAdapter());
   Hive.registerAdapter(UserModelAdapter());
   Hive.registerAdapter(GoalStatusEnumAdapter());
+  Hive.registerAdapter(CustomIconModelAdapter());
 
   // Hive 박스 열기
   await Hive.openBox<TodoModel>('todos');
   await Hive.openBox<TodoModel>('deleted_todos');
   await Hive.openBox<GoalModel>('goals');
   await Hive.openBox<UserModel>('user');
+  await Hive.openBox<CustomIconModel>('custom_icons');
 
 
   // 의존성 주입
