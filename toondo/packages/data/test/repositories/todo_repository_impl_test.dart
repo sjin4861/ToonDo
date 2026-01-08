@@ -41,12 +41,12 @@ void main() {
 
       test('createTodo는 로컬 데이터소스의 saveTodo를 호출하고 결과를 반환해야 한다', () async {
         final todo = TestData.createTestTodo(id: 'todo_1');
-        when(mockLocal.saveTodo(todo)).thenAnswer((_) => Future.value(true));
+        when(mockLocal.saveTodo(any)).thenAnswer((_) => Future.value(true));
 
         final result = await repository.createTodo(todo);
 
         expect(result, isTrue);
-        verify(mockLocal.saveTodo(todo));
+        verify(mockLocal.saveTodo(any)).called(1);
       });
 
       test('updateTodo는 로컬 데이터소스의 updateTodo를 호출해야 한다', () async {

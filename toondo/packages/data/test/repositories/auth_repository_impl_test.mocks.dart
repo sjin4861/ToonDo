@@ -3,17 +3,17 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i6;
+import 'dart:async' as _i7;
 
 import 'package:data/datasources/local/auth_local_datasource.dart' as _i8;
 import 'package:data/datasources/local/secure_local_datasource.dart' as _i10;
-import 'package:data/datasources/remote/auth_remote_datasource.dart' as _i5;
+import 'package:data/datasources/remote/auth_remote_datasource.dart' as _i6;
+import 'package:data/models/auth_tokens.dart' as _i3;
 import 'package:data/models/user_model.dart' as _i9;
 import 'package:dio/dio.dart' as _i2;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i4;
-import 'package:hive/hive.dart' as _i3;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i5;
+import 'package:hive/hive.dart' as _i4;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i7;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -38,8 +38,8 @@ class _FakeDio_0 extends _i1.SmartFake implements _i2.Dio {
         );
 }
 
-class _FakeBox_1<E> extends _i1.SmartFake implements _i3.Box<E> {
-  _FakeBox_1(
+class _FakeAuthTokens_1 extends _i1.SmartFake implements _i3.AuthTokens {
+  _FakeAuthTokens_1(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -48,9 +48,19 @@ class _FakeBox_1<E> extends _i1.SmartFake implements _i3.Box<E> {
         );
 }
 
-class _FakeFlutterSecureStorage_2 extends _i1.SmartFake
-    implements _i4.FlutterSecureStorage {
-  _FakeFlutterSecureStorage_2(
+class _FakeBox_2<E> extends _i1.SmartFake implements _i4.Box<E> {
+  _FakeBox_2(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeFlutterSecureStorage_3 extends _i1.SmartFake
+    implements _i5.FlutterSecureStorage {
+  _FakeFlutterSecureStorage_3(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -63,7 +73,7 @@ class _FakeFlutterSecureStorage_2 extends _i1.SmartFake
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockAuthRemoteDataSource extends _i1.Mock
-    implements _i5.AuthRemoteDataSource {
+    implements _i6.AuthRemoteDataSource {
   MockAuthRemoteDataSource() {
     _i1.throwOnMissingStub(this);
   }
@@ -78,7 +88,7 @@ class MockAuthRemoteDataSource extends _i1.Mock
       ) as _i2.Dio);
 
   @override
-  _i6.Future<String> registerUser(
+  _i7.Future<_i3.AuthTokens> registerUser(
     String? loginId,
     String? password,
   ) =>
@@ -90,7 +100,7 @@ class MockAuthRemoteDataSource extends _i1.Mock
             password,
           ],
         ),
-        returnValue: _i6.Future<String>.value(_i7.dummyValue<String>(
+        returnValue: _i7.Future<_i3.AuthTokens>.value(_FakeAuthTokens_1(
           this,
           Invocation.method(
             #registerUser,
@@ -100,10 +110,10 @@ class MockAuthRemoteDataSource extends _i1.Mock
             ],
           ),
         )),
-      ) as _i6.Future<String>);
+      ) as _i7.Future<_i3.AuthTokens>);
 
   @override
-  _i6.Future<String> login(
+  _i7.Future<_i3.AuthTokens> login(
     String? loginId,
     String? password,
   ) =>
@@ -115,7 +125,7 @@ class MockAuthRemoteDataSource extends _i1.Mock
             password,
           ],
         ),
-        returnValue: _i6.Future<String>.value(_i7.dummyValue<String>(
+        returnValue: _i7.Future<_i3.AuthTokens>.value(_FakeAuthTokens_1(
           this,
           Invocation.method(
             #login,
@@ -125,26 +135,26 @@ class MockAuthRemoteDataSource extends _i1.Mock
             ],
           ),
         )),
-      ) as _i6.Future<String>);
+      ) as _i7.Future<_i3.AuthTokens>);
 
   @override
-  _i6.Future<bool> isLoginIdRegistered(String? loginId) => (super.noSuchMethod(
+  _i7.Future<bool> isLoginIdRegistered(String? loginId) => (super.noSuchMethod(
         Invocation.method(
           #isLoginIdRegistered,
           [loginId],
         ),
-        returnValue: _i6.Future<bool>.value(false),
-      ) as _i6.Future<bool>);
+        returnValue: _i7.Future<bool>.value(false),
+      ) as _i7.Future<bool>);
 
   @override
-  _i6.Future<void> deleteAccount() => (super.noSuchMethod(
+  _i7.Future<void> deleteAccount() => (super.noSuchMethod(
         Invocation.method(
           #deleteAccount,
           [],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i7.Future<void>.value(),
+        returnValueForMissingStub: _i7.Future<void>.value(),
+      ) as _i7.Future<void>);
 }
 
 /// A class which mocks [AuthLocalDataSource].
@@ -157,33 +167,33 @@ class MockAuthLocalDataSource extends _i1.Mock
   }
 
   @override
-  _i3.Box<_i9.UserModel> get userBox => (super.noSuchMethod(
+  _i4.Box<_i9.UserModel> get userBox => (super.noSuchMethod(
         Invocation.getter(#userBox),
-        returnValue: _FakeBox_1<_i9.UserModel>(
+        returnValue: _FakeBox_2<_i9.UserModel>(
           this,
           Invocation.getter(#userBox),
         ),
-      ) as _i3.Box<_i9.UserModel>);
+      ) as _i4.Box<_i9.UserModel>);
 
   @override
-  _i6.Future<void> cacheUser(_i9.UserModel? user) => (super.noSuchMethod(
+  _i7.Future<void> cacheUser(_i9.UserModel? user) => (super.noSuchMethod(
         Invocation.method(
           #cacheUser,
           [user],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i7.Future<void>.value(),
+        returnValueForMissingStub: _i7.Future<void>.value(),
+      ) as _i7.Future<void>);
 
   @override
-  _i6.Future<void> clearUser() => (super.noSuchMethod(
+  _i7.Future<void> clearUser() => (super.noSuchMethod(
         Invocation.method(
           #clearUser,
           [],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i7.Future<void>.value(),
+        returnValueForMissingStub: _i7.Future<void>.value(),
+      ) as _i7.Future<void>);
 }
 
 /// A class which mocks [SecureLocalDataSource].
@@ -196,69 +206,137 @@ class MockSecureLocalDataSource extends _i1.Mock
   }
 
   @override
-  _i4.FlutterSecureStorage get secureStorage => (super.noSuchMethod(
+  _i5.FlutterSecureStorage get secureStorage => (super.noSuchMethod(
         Invocation.getter(#secureStorage),
-        returnValue: _FakeFlutterSecureStorage_2(
+        returnValue: _FakeFlutterSecureStorage_3(
           this,
           Invocation.getter(#secureStorage),
         ),
-      ) as _i4.FlutterSecureStorage);
+      ) as _i5.FlutterSecureStorage);
 
   @override
-  _i6.Future<void> saveToken(String? token) => (super.noSuchMethod(
+  _i7.Future<void> saveToken(String? token) => (super.noSuchMethod(
         Invocation.method(
           #saveToken,
           [token],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i7.Future<void>.value(),
+        returnValueForMissingStub: _i7.Future<void>.value(),
+      ) as _i7.Future<void>);
 
   @override
-  _i6.Future<String?> getToken() => (super.noSuchMethod(
+  _i7.Future<String?> getToken() => (super.noSuchMethod(
         Invocation.method(
           #getToken,
           [],
         ),
-        returnValue: _i6.Future<String?>.value(),
-      ) as _i6.Future<String?>);
+        returnValue: _i7.Future<String?>.value(),
+      ) as _i7.Future<String?>);
 
   @override
-  _i6.Future<void> deleteToken() => (super.noSuchMethod(
+  _i7.Future<void> deleteToken() => (super.noSuchMethod(
         Invocation.method(
           #deleteToken,
           [],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i7.Future<void>.value(),
+        returnValueForMissingStub: _i7.Future<void>.value(),
+      ) as _i7.Future<void>);
 
   @override
-  _i6.Future<void> saveUserNumericId(int? id) => (super.noSuchMethod(
+  _i7.Future<void> saveAccessToken(String? token) => (super.noSuchMethod(
+        Invocation.method(
+          #saveAccessToken,
+          [token],
+        ),
+        returnValue: _i7.Future<void>.value(),
+        returnValueForMissingStub: _i7.Future<void>.value(),
+      ) as _i7.Future<void>);
+
+  @override
+  _i7.Future<String?> getAccessToken() => (super.noSuchMethod(
+        Invocation.method(
+          #getAccessToken,
+          [],
+        ),
+        returnValue: _i7.Future<String?>.value(),
+      ) as _i7.Future<String?>);
+
+  @override
+  _i7.Future<void> deleteAccessToken() => (super.noSuchMethod(
+        Invocation.method(
+          #deleteAccessToken,
+          [],
+        ),
+        returnValue: _i7.Future<void>.value(),
+        returnValueForMissingStub: _i7.Future<void>.value(),
+      ) as _i7.Future<void>);
+
+  @override
+  _i7.Future<void> saveRefreshToken(String? token) => (super.noSuchMethod(
+        Invocation.method(
+          #saveRefreshToken,
+          [token],
+        ),
+        returnValue: _i7.Future<void>.value(),
+        returnValueForMissingStub: _i7.Future<void>.value(),
+      ) as _i7.Future<void>);
+
+  @override
+  _i7.Future<String?> getRefreshToken() => (super.noSuchMethod(
+        Invocation.method(
+          #getRefreshToken,
+          [],
+        ),
+        returnValue: _i7.Future<String?>.value(),
+      ) as _i7.Future<String?>);
+
+  @override
+  _i7.Future<void> deleteRefreshToken() => (super.noSuchMethod(
+        Invocation.method(
+          #deleteRefreshToken,
+          [],
+        ),
+        returnValue: _i7.Future<void>.value(),
+        returnValueForMissingStub: _i7.Future<void>.value(),
+      ) as _i7.Future<void>);
+
+  @override
+  _i7.Future<void> clearAuthTokens() => (super.noSuchMethod(
+        Invocation.method(
+          #clearAuthTokens,
+          [],
+        ),
+        returnValue: _i7.Future<void>.value(),
+        returnValueForMissingStub: _i7.Future<void>.value(),
+      ) as _i7.Future<void>);
+
+  @override
+  _i7.Future<void> saveUserNumericId(int? id) => (super.noSuchMethod(
         Invocation.method(
           #saveUserNumericId,
           [id],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i7.Future<void>.value(),
+        returnValueForMissingStub: _i7.Future<void>.value(),
+      ) as _i7.Future<void>);
 
   @override
-  _i6.Future<int?> getUserNumericId() => (super.noSuchMethod(
+  _i7.Future<int?> getUserNumericId() => (super.noSuchMethod(
         Invocation.method(
           #getUserNumericId,
           [],
         ),
-        returnValue: _i6.Future<int?>.value(),
-      ) as _i6.Future<int?>);
+        returnValue: _i7.Future<int?>.value(),
+      ) as _i7.Future<int?>);
 
   @override
-  _i6.Future<void> deleteUserNumericId() => (super.noSuchMethod(
+  _i7.Future<void> deleteUserNumericId() => (super.noSuchMethod(
         Invocation.method(
           #deleteUserNumericId,
           [],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i7.Future<void>.value(),
+        returnValueForMissingStub: _i7.Future<void>.value(),
+      ) as _i7.Future<void>);
 }

@@ -10,21 +10,16 @@ import 'package:data/constants.dart';
 
 import 'todo_remote_datasource_test.mocks.dart';
 
-// Local fake to avoid Mockito name collision and codegen for Dio
-class FakeDio extends Mock implements Dio {}
-
-// Local mock for Dio without codegen dependency
-
-@GenerateMocks([AuthRepository])
+@GenerateMocks([Dio, AuthRepository])
 void main() {
   late TodoRemoteDataSource dataSource;
-  late FakeDio mockDio;
+  late MockDio mockDio;
   late MockAuthRepository mockAuthRepository;
 
   setUp(() {
-  mockDio = FakeDio();
-  mockAuthRepository = MockAuthRepository();
-  dataSource = TodoRemoteDataSource(mockDio, mockAuthRepository);
+    mockDio = MockDio();
+    mockAuthRepository = MockAuthRepository();
+    dataSource = TodoRemoteDataSource(mockDio, mockAuthRepository);
   });
 
   group('TodoRemoteDataSource', () {
@@ -55,7 +50,7 @@ void main() {
           startDate: DateTime(2024, 1, 1),
           endDate: DateTime(2024, 1, 31),
           goalId: 1,
-          eisenhower: 'IMPORTANT_URGENT',
+          eisenhower: 0,
         );
 
         // Assert
@@ -85,7 +80,7 @@ void main() {
             title: '새로운 투두',
             startDate: DateTime(2024, 1, 1),
             endDate: DateTime(2024, 1, 31),
-            eisenhower: 'IMPORTANT_URGENT',
+            eisenhower: 0,
           ),
           throwsA(isA<Exception>().having(
             (e) => e.toString(),
@@ -104,11 +99,11 @@ void main() {
         // Arrange
         final testDate = DateTime(2024, 1, 1);
         when(mockDio.get(
-          '/api/v1/by-date',
+          '/api/v1/todos/by-date',
           queryParameters: {'date': '2024-01-01'},
           options: anyNamed('options'),
         )).thenAnswer((_) async => Response(
-              requestOptions: RequestOptions(path: '/api/v1/by-date'),
+              requestOptions: RequestOptions(path: '/api/v1/todos/by-date'),
               statusCode: 200,
               data: {
                 "dday": [
@@ -148,7 +143,8 @@ void main() {
         expect(result['dday']!.first.title, 'Deadline Todo');
         expect(result['daily']!.first.title, 'Daily Todo');
         verify(mockDio.get(
-          '/api/v1/by-date',
+          '/api/v1/todos/by-date',
+          data: anyNamed('data'),
           queryParameters: anyNamed('queryParameters'),
           options: anyNamed('options'),
         )).called(1);
@@ -158,11 +154,12 @@ void main() {
         // Arrange
         final testDate = DateTime(2024, 1, 1);
         when(mockDio.get(
-          '/api/v1/by-date',
+          '/api/v1/todos/by-date',
+          data: anyNamed('data'),
           queryParameters: {'date': '2024-01-01'},
           options: anyNamed('options'),
         )).thenAnswer((_) async => Response(
-              requestOptions: RequestOptions(path: '/api/v1/by-date'),
+              requestOptions: RequestOptions(path: '/api/v1/todos/by-date'),
               statusCode: 404,
               data: {"message": "Not Found"},
             ));
@@ -287,7 +284,7 @@ void main() {
           startDate: DateTime(2024, 1, 1),
           endDate: DateTime(2024, 1, 31),
           goalId: 1,
-          eisenhower: 'NOT_IMPORTANT_URGENT',
+          eisenhower: 3, // NOT_IMPORTANT_URGENT
         );
 
         // Assert
@@ -318,7 +315,7 @@ void main() {
             title: '업데이트된 투두',
             startDate: DateTime(2024, 1, 1),
             endDate: DateTime(2024, 1, 31),
-            eisenhower: 'NOT_IMPORTANT_URGENT',
+            eisenhower: 3, // NOT_IMPORTANT_URGENT
           ),
           throwsA(isA<Exception>().having(
             (e) => e.toString(),
@@ -348,7 +345,7 @@ void main() {
         // Assert
         expect(result, isA<Map<String, dynamic>>());
         expect(result['todoId'], '1');
-        expect(result['status'], 1);
+        expect(result['status'], 1.0);
         expect(result['completedAt'], '2024-01-01T10:00:00Z');
   verify(mockDio.patch('/api/v1/todos/1/status', options: anyNamed('options'))).called(1);
       });

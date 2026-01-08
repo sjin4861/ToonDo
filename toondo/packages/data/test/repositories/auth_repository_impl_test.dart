@@ -6,6 +6,7 @@ import 'package:domain/repositories/auth_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:data/models/auth_tokens.dart';
 import 'auth_repository_impl_test.mocks.dart';
 
 @GenerateMocks([
@@ -39,11 +40,13 @@ void main() {
         const password = 'TestPass123!';
         
         // 토큰 설정
-        const testToken = 'test_token';
+        const tokens = AuthTokens(accessToken: 'test_token', refreshToken: 'refresh_token');
         
         when(mockRemote.registerUser(loginId, password))
-            .thenAnswer((_) async => testToken);
-        when(mockSecureLocal.saveToken(testToken))
+          .thenAnswer((_) async => tokens);
+        when(mockSecureLocal.saveAccessToken(tokens.accessToken))
+          .thenAnswer((_) async {});
+        when(mockSecureLocal.saveRefreshToken(tokens.refreshToken))
             .thenAnswer((_) async {});
         
         // Act
@@ -51,7 +54,8 @@ void main() {
         
         // Assert
         verify(mockRemote.registerUser(loginId, password));
-        verify(mockSecureLocal.saveToken('test_token'));
+        verify(mockSecureLocal.saveAccessToken('test_token'));
+        verify(mockSecureLocal.saveRefreshToken('refresh_token'));
       });
     });
 
@@ -62,11 +66,13 @@ void main() {
         const password = 'TestPass123!';
         
         // 토큰 설정
-        const testToken = 'test_token';
+        const tokens = AuthTokens(accessToken: 'test_token', refreshToken: 'refresh_token');
         
         when(mockRemote.login(loginId, password))
-            .thenAnswer((_) async => testToken);
-        when(mockSecureLocal.saveToken(testToken))
+          .thenAnswer((_) async => tokens);
+        when(mockSecureLocal.saveAccessToken(tokens.accessToken))
+          .thenAnswer((_) async {});
+        when(mockSecureLocal.saveRefreshToken(tokens.refreshToken))
             .thenAnswer((_) async {});
         
         // Act
@@ -74,21 +80,22 @@ void main() {
         
         // Assert
         verify(mockRemote.login(loginId, password));
-        verify(mockSecureLocal.saveToken('test_token'));
+        verify(mockSecureLocal.saveAccessToken('test_token'));
+        verify(mockSecureLocal.saveRefreshToken('refresh_token'));
       });
     });
 
     group('로그아웃 테스트', () {
       test('logout은 보안 저장소에서 토큰을 삭제해야 한다', () async {
         // Arrange
-        when(mockSecureLocal.deleteToken())
+        when(mockSecureLocal.clearAuthTokens())
             .thenAnswer((_) async {});
         
         // Act
         await repository.logout();
         
         // Assert
-        verify(mockSecureLocal.deleteToken());
+        verify(mockSecureLocal.clearAuthTokens());
       });
     });
 
@@ -135,7 +142,8 @@ void main() {
         // Act & Assert
         expect(() => repository.login(loginId, password), throwsException);
         verify(mockRemote.login(loginId, password));
-        verifyNever(mockSecureLocal.saveToken(any));
+        verifyNever(mockSecureLocal.saveAccessToken(any));
+        verifyNever(mockSecureLocal.saveRefreshToken(any));
         verifyNever(mockLocal.cacheUser(any));
       });
     });

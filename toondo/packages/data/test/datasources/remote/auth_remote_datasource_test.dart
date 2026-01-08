@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:dio/dio.dart';
 import 'package:data/datasources/remote/auth_remote_datasource.dart';
 import 'package:data/constants.dart';
+import 'package:data/models/auth_tokens.dart';
 
 /// 간단 라우트 매칭 정보
 // 테스트 내부에서만 사용하는 단순 라우트 구조체
@@ -18,17 +19,20 @@ class MockRoute {
 Dio createMockDio(List<MockRoute> routes) {
   final dio = Dio(BaseOptions(baseUrl: Constants.baseUrl));
   dio.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) {
+    final requestPath = options.uri.hasQuery
+        ? '${options.uri.path}?${options.uri.query}'
+        : options.uri.path;
     final match = routes.firstWhere(
       (r) =>
           r.method.toUpperCase() == options.method.toUpperCase() &&
-          r.path == options.path,
+          r.path == requestPath,
       orElse: () => MockRoute('NONE', 'NONE', 599, {'error': 'NOT_MATCHED'}),
     );
     if (match.statusCode == 599) {
       return handler.resolve(Response(
         requestOptions: options,
         statusCode: 404,
-        data: {'error': 'Route not found: ${options.path}'},
+        data: {'error': 'Route not found: ${options.uri}'},
       ));
     }
     return handler.resolve(Response(
@@ -46,12 +50,15 @@ void main() {
       test('회원가입 성공 시 토큰 반환', () async {
         final dio = createMockDio([
           MockRoute('POST', '/api/v1/users/signup', 201, {
-            'accessToken': 'test_token_123'
+            'accessToken': 'test_token_123',
+            'refreshToken': 'test_refresh_123',
           }),
         ]);
         final dataSource = AuthRemoteDataSource(dio);
         final result = await dataSource.registerUser('testuser', 'testpass');
-        expect(result, 'test_token_123');
+        expect(result, isA<AuthTokens>());
+        expect(result.accessToken, 'test_token_123');
+        expect(result.refreshToken, 'test_refresh_123');
       });
 
       test('이미 존재하는 ID로 회원가입 시 예외 발생', () async {
@@ -95,21 +102,22 @@ void main() {
     });
 
     group('login', () {
-      test('신규 경로 404 후 레거시 경로 성공 시 토큰 반환', () async {
+      test('로그인 성공 시 토큰 반환', () async {
         final dio = createMockDio([
-          MockRoute('POST', '/login', 404, {'error': 'Not Found'}),
-          MockRoute('POST', '/users/login', 200, {
-            'accessToken': 'login_token_456'
+          MockRoute('POST', '/api/v1/users/login', 200, {
+            'accessToken': 'login_token_456',
+            'refreshToken': 'login_refresh_456',
           }),
         ]);
         final dataSource = AuthRemoteDataSource(dio);
         final result = await dataSource.login('testuser', 'testpass');
-        expect(result, 'login_token_456');
+        expect(result.accessToken, 'login_token_456');
+        expect(result.refreshToken, 'login_refresh_456');
       });
 
       test('잘못된 로그인 정보 시 예외 발생', () async {
         final dio = createMockDio([
-          MockRoute('POST', '/login', 400, {'error': 'Invalid credentials'}),
+          MockRoute('POST', '/api/v1/users/login', 400, {'error': 'Invalid credentials'}),
         ]);
         final dataSource = AuthRemoteDataSource(dio);
         expect(
@@ -121,13 +129,12 @@ void main() {
 
       test('로그인 서버 오류 시 예외 발생', () async {
         final dio = createMockDio([
-          MockRoute('POST', '/login', 500, 'Internal Server Error'),
+          MockRoute('POST', '/api/v1/users/login', 500, 'Internal Server Error'),
         ]);
         final dataSource = AuthRemoteDataSource(dio);
         expect(
           () => dataSource.login('testuser', 'testpass'),
-          throwsA(predicate((e) =>
-              e is Exception && e.toString().contains('서버 내부 오류가 발생했습니다'))),
+          throwsA(predicate((e) => e is Exception && e.toString().contains('로그인 실패'))),
         );
       });
     });

@@ -236,8 +236,8 @@ class MockTodoRemoteDataSource extends _i1.Mock
     required DateTime? startDate,
     required DateTime? endDate,
     int? goalId,
-    required String? eisenhower,
-    bool? showOnHome = false,
+    required int? eisenhower,
+    String? comment,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -249,7 +249,7 @@ class MockTodoRemoteDataSource extends _i1.Mock
             #endDate: endDate,
             #goalId: goalId,
             #eisenhower: eisenhower,
-            #showOnHome: showOnHome,
+            #comment: comment,
           },
         ),
         returnValue: _i8.Future<String>.value(_i10.dummyValue<String>(
@@ -263,7 +263,7 @@ class MockTodoRemoteDataSource extends _i1.Mock
               #endDate: endDate,
               #goalId: goalId,
               #eisenhower: eisenhower,
-              #showOnHome: showOnHome,
+              #comment: comment,
             },
           ),
         )),
@@ -312,8 +312,8 @@ class MockTodoRemoteDataSource extends _i1.Mock
     required DateTime? startDate,
     required DateTime? endDate,
     int? goalId,
-    required String? eisenhower,
-    bool? showOnHome = false,
+    required int? eisenhower,
+    String? comment,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -326,7 +326,7 @@ class MockTodoRemoteDataSource extends _i1.Mock
             #endDate: endDate,
             #goalId: goalId,
             #eisenhower: eisenhower,
-            #showOnHome: showOnHome,
+            #comment: comment,
           },
         ),
         returnValue: _i8.Future<String>.value(_i10.dummyValue<String>(
@@ -341,7 +341,7 @@ class MockTodoRemoteDataSource extends _i1.Mock
               #endDate: endDate,
               #goalId: goalId,
               #eisenhower: eisenhower,
-              #showOnHome: showOnHome,
+              #comment: comment,
             },
           ),
         )),
