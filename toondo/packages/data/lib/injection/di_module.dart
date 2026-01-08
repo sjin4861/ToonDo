@@ -11,6 +11,7 @@ import 'package:http/http.dart';
 import 'package:dio/dio.dart';
 import 'package:data/network/dio_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:data/datasources/local/secure_local_datasource.dart';
 
 @module
 abstract class RegisterModule {
@@ -19,7 +20,9 @@ abstract class RegisterModule {
 
     // 최소 Dio 클라이언트 (쿠키/401 재발급 인터셉터 포함)
     @lazySingleton
-    Dio get dio => DioClient.create().dio;
+        Dio get dio => DioClient.create(
+                    secureLocalDataSource: SecureLocalDataSource(secureStorage),
+                ).dio;
 
   @preResolve
   Future<Box<UserModel>> get userBox => Hive.openBox<UserModel>('users');
