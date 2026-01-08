@@ -22,8 +22,14 @@ class GoalRemoteDataSource {
     final resp = await dio.get('/api/v1/goals', options: options);
     final status = resp.statusCode ?? 0;
     if (status == 200) {
-      final data = resp.data as List<dynamic>;
-      final models = data.map((item) => GoalModel.fromJson(Map<String, dynamic>.from(item))).toList();
+      final body = resp.data;
+      if (body is! Map) {
+        throw Exception('목표 목록 응답 형식 오류: ${resp.data}');
+      }
+      final list = (body['data'] as List?) ?? const <dynamic>[];
+      final models = list
+          .map((item) => GoalModel.fromJson(Map<String, dynamic>.from(item as Map)))
+          .toList();
       return models.map((m) => m.toEntity()).toList();
     } else if (status == 403) {
       throw Exception(
@@ -53,8 +59,7 @@ class GoalRemoteDataSource {
       "goalName": goal.name,
       "startDate": goal.startDate.toIso8601String().split('T')[0],
       "endDate": endDateToSend.toIso8601String().split('T')[0], // null인 경우 2099-12-31 전송
-      "icon": goal.icon ?? "",
-      "showOnHome": goal.showOnHome,
+      "icon": goal.icon,
     };
 
     final resp = await dio.post('/api/v1/goals', data: requestBody, options: options);
@@ -107,7 +112,6 @@ class GoalRemoteDataSource {
       "startDate": goal.startDate.toIso8601String().split('T')[0],
       "endDate": goal.endDate?.toIso8601String().split('T')[0], // null 가능
       "icon": goal.icon, // null 가능
-      "showOnHome": goal.showOnHome,
     };
 
     try {
@@ -187,18 +191,14 @@ class GoalRemoteDataSource {
   Future<bool> updateGoalStatus(Goal goal, Status newStatus) async {
     final options = await _authOptions();
 
-    final requestBody = {
-      'status': newStatus.index, // enum의 index로 상태 전달 (0, 1, 2)
-    };
-
-    final resp = await dio.put('/api/v1/goals/${goal.id}/status', data: requestBody, options: options);
+    // API 명세: PATCH /api/v1/goals/{goalId}/status (body 없음)
+    final resp = await dio.patch('/api/v1/goals/${goal.id}/status', options: options);
     final status = resp.statusCode ?? 0;
     if (status == 200) {
       final data = resp.data;
       print('✅ 목표 상태 업데이트 성공');
       if (data is Map) {
         print('message: ${data['message']}');
-        print('progress: ${data['progress']}');
       }
       return true;
     } else if (status == 403) {
@@ -230,16 +230,16 @@ class GoalRemoteDataSource {
     }
 
     final requestBody = {
-      'progress': newProgress.toInt(), // 서버는 정수 기대할 수도 있으니 int 변환
+      'progress': newProgress,
     };
-    final resp = await dio.put('/api/v1/goals/${goal.id}/progress', data: requestBody, options: options);
+    // API 명세: PATCH /api/v1/goals/{goalId}/progress
+    final resp = await dio.patch('/api/v1/goals/${goal.id}/progress', data: requestBody, options: options);
     final status = resp.statusCode ?? 0;
     if (status == 200) {
       final data = resp.data;
       print('✅ 목표 진행률 업데이트 성공');
       if (data is Map) {
         print('message: ${data['message']}');
-        print('progress: ${data['progress']}');
       }
       return true;
     } else if (status == 403) {
