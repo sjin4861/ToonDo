@@ -8,6 +8,7 @@ import 'package:presentation/views/mypage/account_setting/nickname_change_screen
 import 'package:presentation/views/mypage/account_setting/password_change_screen.dart';
 import 'package:presentation/views/mypage/account_setting/delete_account_screen.dart';
 import 'package:presentation/views/mypage/widget/account_setting/account_setting_tile.dart';
+import 'package:presentation/navigation/route_paths.dart';
 import 'package:provider/provider.dart';
 
 class AccountSettingBody extends StatelessWidget {
@@ -68,6 +69,18 @@ class AccountSettingBody extends StatelessWidget {
                   MaterialPageRoute(
                     builder: (_) => const DeleteAccountScreen(),
                   ),
+                );
+              },
+            ),
+            AccountSettingTile(
+              label: '로그아웃',
+              onTap: () async {
+                await viewModel.logout();
+                if (!context.mounted) return;
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  RoutePaths.root,
+                  (route) => false,
                 );
               },
             ),
