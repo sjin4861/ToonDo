@@ -15,7 +15,10 @@ class MockApiInterceptor extends Interceptor {
   static String? _mockNickname;
 
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+  void onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
     // Mock 모드가 비활성화되어 있으면 실제 요청 진행
     if (!Constants.useMockApi) {
       handler.next(options);
@@ -27,7 +30,7 @@ class MockApiInterceptor extends Interceptor {
 
     // 경로 추출: 전체 URL이면 경로만 추출, 상대 경로면 그대로 사용
     String path = options.path;
-    
+
     // 전체 URL인 경우 경로만 추출
     if (path.startsWith('http://') || path.startsWith('https://')) {
       try {
@@ -41,7 +44,7 @@ class MockApiInterceptor extends Interceptor {
       // 상대 경로인 경우 options.uri.path 사용 (더 정확)
       path = options.uri.path;
     }
-    
+
     final method = options.method.toUpperCase();
 
     // 🔍 디버깅 로그 추가
@@ -72,12 +75,20 @@ class MockApiInterceptor extends Interceptor {
     handler.next(options);
   }
 
-  Response? _getMockResponse(String path, String method, RequestOptions options) {
+  Response? _getMockResponse(
+    String path,
+    String method,
+    RequestOptions options,
+  ) {
     // Auth APIs
-    if ((path.contains('/users/signup') || path == '/api/v1/users/signup') && method == 'POST') {
+    if ((path.contains('/users/signup') || path == '/api/v1/users/signup') &&
+        method == 'POST') {
       return _mockSignup(options);
     }
-    if ((path == '/login' || path == '/users/login') && method == 'POST') {
+    if ((path == '/login' ||
+            path == '/users/login' ||
+            path == '/api/v1/users/login') &&
+        method == 'POST') {
       return _mockLogin(options);
     }
     if (path.contains('/logout') && method == 'POST') {
@@ -89,18 +100,22 @@ class MockApiInterceptor extends Interceptor {
     if (path.contains('/auth/refreshToken') || path.contains('/auth/refresh')) {
       return _mockRefreshToken(options);
     }
-    if ((path.contains('/delete-account') || path.contains('/users/delete')) && method == 'DELETE') {
+    if ((path.contains('/delete-account') || path.contains('/users/delete')) &&
+        method == 'DELETE') {
       return _mockDeleteAccount(options);
     }
 
     // User APIs
-    if ((path == '/users/me' || path.contains('/users/me')) && method == 'GET') {
+    if ((path == '/users/me' || path.contains('/users/me')) &&
+        method == 'GET') {
       return _mockGetUserMe(options);
     }
-    if ((path.contains('/users/me/password') || path.contains('/password')) && (method == 'PUT' || method == 'PATCH')) {
+    if ((path.contains('/users/me/password') || path.contains('/password')) &&
+        (method == 'PUT' || method == 'PATCH')) {
       return _mockUpdatePassword(options);
     }
-    if (path.contains('/save-nickname') && (method == 'PUT' || method == 'PATCH')) {
+    if (path.contains('/save-nickname') &&
+        (method == 'PUT' || method == 'PATCH')) {
       return _mockChangeNickname(options);
     }
 
@@ -111,16 +126,23 @@ class MockApiInterceptor extends Interceptor {
     if (path == '/api/v1/goals' && method == 'POST') {
       return _mockCreateGoal(options);
     }
-    if (path.startsWith('/api/v1/goals/') && method == 'PUT' && !path.contains('/status') && !path.contains('/progress')) {
+    if (path.startsWith('/api/v1/goals/') &&
+        method == 'PUT' &&
+        !path.contains('/status') &&
+        !path.contains('/progress')) {
       return _mockUpdateGoal(options);
     }
     if (path.startsWith('/api/v1/goals/') && method == 'DELETE') {
       return _mockDeleteGoal(options);
     }
-    if (path.contains('/goals/') && path.contains('/status') && method == 'PUT') {
+    if (path.contains('/goals/') &&
+        path.contains('/status') &&
+        method == 'PUT') {
       return _mockUpdateGoalStatus(options);
     }
-    if (path.contains('/goals/') && path.contains('/progress') && method == 'PUT') {
+    if (path.contains('/goals/') &&
+        path.contains('/progress') &&
+        method == 'PUT') {
       return _mockUpdateGoalProgress(options);
     }
 
@@ -134,13 +156,17 @@ class MockApiInterceptor extends Interceptor {
     if (path.startsWith('/api/v1/todos/by-goal/') && method == 'GET') {
       return _mockFetchTodosByGoal(options);
     }
-    if (path.startsWith('/api/v1/todos/') && method == 'GET' && !path.contains('/status')) {
+    if (path.startsWith('/api/v1/todos/') &&
+        method == 'GET' &&
+        !path.contains('/status')) {
       return _mockFetchTodoById(options);
     }
     if (path.startsWith('/api/v1/todos/') && method == 'PUT') {
       return _mockUpdateTodo(options);
     }
-    if (path.contains('/todos/') && path.contains('/status') && method == 'PATCH') {
+    if (path.contains('/todos/') &&
+        path.contains('/status') &&
+        method == 'PATCH') {
       return _mockToggleTodoStatus(options);
     }
     if (path.startsWith('/api/v1/todos/') && method == 'DELETE') {
@@ -156,16 +182,14 @@ class MockApiInterceptor extends Interceptor {
     final data = options.data as Map<String, dynamic>?;
     final loginId = data?['loginId'] as String? ?? '';
 
-    _mockAccessToken = 'mock_access_token_${DateTime.now().millisecondsSinceEpoch}';
+    _mockAccessToken =
+        'mock_access_token_${DateTime.now().millisecondsSinceEpoch}';
     _mockLoginId = loginId;
 
     return Response(
       requestOptions: options,
       statusCode: 200,
-      data: {
-        'accessToken': _mockAccessToken,
-        'message': '회원가입 성공',
-      },
+      data: {'accessToken': _mockAccessToken, 'message': '회원가입 성공'},
     );
   }
 
@@ -173,16 +197,14 @@ class MockApiInterceptor extends Interceptor {
     final data = options.data as Map<String, dynamic>?;
     final loginId = data?['id'] as String? ?? data?['loginId'] as String? ?? '';
 
-    _mockAccessToken = 'mock_access_token_${DateTime.now().millisecondsSinceEpoch}';
+    _mockAccessToken =
+        'mock_access_token_${DateTime.now().millisecondsSinceEpoch}';
     _mockLoginId = loginId;
 
     return Response(
       requestOptions: options,
       statusCode: 200,
-      data: {
-        'accessToken': _mockAccessToken,
-        'message': '로그인 성공',
-      },
+      data: {'accessToken': _mockAccessToken, 'message': '로그인 성공'},
     );
   }
 
@@ -198,10 +220,16 @@ class MockApiInterceptor extends Interceptor {
 
   Response _mockCheckLoginId(RequestOptions options) {
     final queryParams = options.queryParameters;
-    final loginId = queryParams['loginId'] as String? ?? queryParams['loginid'] as String? ?? '';
+    final loginId =
+        queryParams['loginId'] as String? ??
+        queryParams['loginid'] as String? ??
+        '';
 
     // testuser는 항상 사용 가능 (false = 사용 가능)
-    final exists = loginId.isNotEmpty && loginId != 'testuser' && loginId != Constants.testLoginId;
+    final exists =
+        loginId.isNotEmpty &&
+        loginId != 'testuser' &&
+        loginId != Constants.testLoginId;
 
     return Response(
       requestOptions: options,
@@ -211,15 +239,13 @@ class MockApiInterceptor extends Interceptor {
   }
 
   Response _mockRefreshToken(RequestOptions options) {
-    _mockAccessToken = 'mock_refreshed_token_${DateTime.now().millisecondsSinceEpoch}';
+    _mockAccessToken =
+        'mock_refreshed_token_${DateTime.now().millisecondsSinceEpoch}';
 
     return Response(
       requestOptions: options,
       statusCode: 200,
-      data: {
-        'accessToken': _mockAccessToken,
-        'message': '토큰 갱신 성공',
-      },
+      data: {'accessToken': _mockAccessToken, 'message': '토큰 갱신 성공'},
     );
   }
 
@@ -269,10 +295,7 @@ class MockApiInterceptor extends Interceptor {
     return Response(
       requestOptions: options,
       statusCode: 200,
-      data: {
-        'message': '닉네임 최초 저장 및 수정 완료',
-        'nickname': nickname,
-      },
+      data: {'message': '닉네임 최초 저장 및 수정 완료', 'nickname': nickname},
     );
   }
 
@@ -298,19 +321,18 @@ class MockApiInterceptor extends Interceptor {
       'goalName': data?['goalName'] as String? ?? '새 목표',
       'icon': data?['icon'] as String? ?? '',
       'progress': 0.0,
-      'startDate': data?['startDate'] as String? ?? now.toIso8601String().split('T')[0],
-      'endDate': data?['endDate'] as String? ?? now.add(const Duration(days: 30)).toIso8601String().split('T')[0],
+      'startDate':
+          data?['startDate'] as String? ?? now.toIso8601String().split('T')[0],
+      'endDate':
+          data?['endDate'] as String? ??
+          now.add(const Duration(days: 30)).toIso8601String().split('T')[0],
       'status': 0, // active
       'showOnHome': data?['showOnHome'] as bool? ?? false, // 요청 데이터에서 받아옴
     };
 
     _mockGoals[goalId.toString()] = goal;
 
-    return Response(
-      requestOptions: options,
-      statusCode: 201,
-      data: goal,
-    );
+    return Response(requestOptions: options, statusCode: 201, data: goal);
   }
 
   Response _mockUpdateGoal(RequestOptions options) {
@@ -323,9 +345,12 @@ class MockApiInterceptor extends Interceptor {
       final existingGoal = Map<String, dynamic>.from(_mockGoals[goalId] as Map);
       existingGoal['goalName'] = data?['goalName'] ?? existingGoal['goalName'];
       existingGoal['icon'] = data?['icon'] ?? existingGoal['icon'];
-      existingGoal['startDate'] = data?['startDate'] ?? existingGoal['startDate'];
+      existingGoal['startDate'] =
+          data?['startDate'] ?? existingGoal['startDate'];
       existingGoal['endDate'] = data?['endDate'] ?? existingGoal['endDate'];
-      existingGoal['showOnHome'] = data?['showOnHome'] ?? existingGoal['showOnHome']; // showOnHome 업데이트 추가
+      existingGoal['showOnHome'] =
+          data?['showOnHome'] ??
+          existingGoal['showOnHome']; // showOnHome 업데이트 추가
       _mockGoals[goalId] = existingGoal;
     }
 
@@ -343,7 +368,9 @@ class MockApiInterceptor extends Interceptor {
     _mockGoals.remove(goalId);
 
     // 해당 goalId를 가진 todos도 삭제
-    _mockTodos.removeWhere((key, value) => value['goalId']?.toString() == goalId);
+    _mockTodos.removeWhere(
+      (key, value) => value['goalId']?.toString() == goalId,
+    );
 
     return Response(
       requestOptions: options,
@@ -372,13 +399,15 @@ class MockApiInterceptor extends Interceptor {
       statusCode: 200,
       data: {
         'message': '목표 상태 업데이트 성공',
-        'progress': newStatus == 1 ? 100.0 : (_mockGoals[goalId]?['progress'] ?? 0.0),
+        'progress':
+            newStatus == 1 ? 100.0 : (_mockGoals[goalId]?['progress'] ?? 0.0),
       },
     );
   }
 
   Response _mockUpdateGoalProgress(RequestOptions options) {
-    final goalId = options.path.split('/')[3]; // /api/v1/goals/{goalId}/progress
+    final goalId =
+        options.path.split('/')[3]; // /api/v1/goals/{goalId}/progress
     final data = options.data as Map<String, dynamic>?;
     final newProgress = (data?['progress'] as num?)?.toDouble() ?? 0.0;
 
@@ -391,10 +420,7 @@ class MockApiInterceptor extends Interceptor {
     return Response(
       requestOptions: options,
       statusCode: 200,
-      data: {
-        'message': '목표 진행률 업데이트 성공',
-        'progress': newProgress,
-      },
+      data: {'message': '목표 진행률 업데이트 성공', 'progress': newProgress},
     );
   }
 
@@ -410,8 +436,11 @@ class MockApiInterceptor extends Interceptor {
       'title': data?['title'] as String? ?? '새 할 일',
       'goalId': data?['goalId'] as int?,
       'status': 0.0,
-      'startDate': data?['startDate'] as String? ?? now.toIso8601String().split('T')[0],
-      'endDate': data?['endDate'] as String? ?? now.add(const Duration(days: 1)).toIso8601String().split('T')[0],
+      'startDate':
+          data?['startDate'] as String? ?? now.toIso8601String().split('T')[0],
+      'endDate':
+          data?['endDate'] as String? ??
+          now.add(const Duration(days: 1)).toIso8601String().split('T')[0],
       'eisenhower': data?['eisenhower'] as int? ?? 1,
       'showOnHome': data?['showOnHome'] as bool? ?? false,
     };
@@ -427,16 +456,19 @@ class MockApiInterceptor extends Interceptor {
 
   Response _mockFetchTodosByDate(RequestOptions options) {
     final queryParams = options.queryParameters;
-    final dateStr = queryParams['date'] as String? ?? DateTime.now().toIso8601String().split('T')[0];
+    final dateStr =
+        queryParams['date'] as String? ??
+        DateTime.now().toIso8601String().split('T')[0];
 
-    final todos = _mockTodos.values
-        .where((todo) {
+    final todos =
+        _mockTodos.values.where((todo) {
           final startDate = todo['startDate'] as String? ?? '';
           final endDate = todo['endDate'] as String? ?? '';
-          return startDate == dateStr || endDate == dateStr ||
-              (startDate.compareTo(dateStr) <= 0 && endDate.compareTo(dateStr) >= 0);
-        })
-        .toList();
+          return startDate == dateStr ||
+              endDate == dateStr ||
+              (startDate.compareTo(dateStr) <= 0 &&
+                  endDate.compareTo(dateStr) >= 0);
+        }).toList();
 
     // dday와 daily 구분 (간단히 모든 todo를 daily로 분류)
     return Response(
@@ -454,9 +486,10 @@ class MockApiInterceptor extends Interceptor {
     final parts = options.path.split('/');
     final goalId = parts.isNotEmpty ? parts.last : '';
 
-    final todos = _mockTodos.values
-        .where((todo) => todo['goalId']?.toString() == goalId)
-        .toList();
+    final todos =
+        _mockTodos.values
+            .where((todo) => todo['goalId']?.toString() == goalId)
+            .toList();
 
     return Response(
       requestOptions: options,
@@ -495,10 +528,13 @@ class MockApiInterceptor extends Interceptor {
       final existingTodo = Map<String, dynamic>.from(_mockTodos[todoId] as Map);
       existingTodo['title'] = data?['title'] ?? existingTodo['title'];
       existingTodo['goalId'] = data?['goalId'] ?? existingTodo['goalId'];
-      existingTodo['startDate'] = data?['startDate'] ?? existingTodo['startDate'];
+      existingTodo['startDate'] =
+          data?['startDate'] ?? existingTodo['startDate'];
       existingTodo['endDate'] = data?['endDate'] ?? existingTodo['endDate'];
-      existingTodo['eisenhower'] = data?['eisenhower'] ?? existingTodo['eisenhower'];
-      existingTodo['showOnHome'] = data?['showOnHome'] ?? existingTodo['showOnHome'];
+      existingTodo['eisenhower'] =
+          data?['eisenhower'] ?? existingTodo['eisenhower'];
+      existingTodo['showOnHome'] =
+          data?['showOnHome'] ?? existingTodo['showOnHome'];
       _mockTodos[todoId] = existingTodo;
     }
 
@@ -519,7 +555,8 @@ class MockApiInterceptor extends Interceptor {
       final currentStatus = (todo['status'] as num?)?.toDouble() ?? 0.0;
       final newStatus = currentStatus == 0.0 ? 1.0 : 0.0;
       todo['status'] = newStatus;
-      todo['completedAt'] = newStatus == 1.0 ? DateTime.now().toIso8601String() : null;
+      todo['completedAt'] =
+          newStatus == 1.0 ? DateTime.now().toIso8601String() : null;
       _mockTodos[todoId] = todo;
 
       return Response(
@@ -553,4 +590,3 @@ class MockApiInterceptor extends Interceptor {
     );
   }
 }
-
