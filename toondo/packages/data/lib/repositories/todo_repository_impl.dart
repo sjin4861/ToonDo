@@ -56,8 +56,8 @@ class TodoRepositoryImpl implements TodoRepository {
         startDate: todo.startDate,
         endDate: todo.endDate,
         goalId: numericGoalId,
-        eisenhower: todo.eisenhower.toString(),
-        showOnHome: todo.showOnHome,
+        eisenhower: todo.eisenhower,
+        comment: todo.comment,
       );
       final updatedTodo = Todo(
         id: todoId,
@@ -109,8 +109,8 @@ class TodoRepositoryImpl implements TodoRepository {
         startDate: todo.startDate,
         endDate: todo.endDate,
         goalId: numericGoalId,
-        eisenhower: todo.eisenhower.toString(),
-        showOnHome: todo.showOnHome,
+        eisenhower: todo.eisenhower,
+        comment: todo.comment,
       );
       await localDatasource.updateTodo(todo);
     } catch (_) {
@@ -194,7 +194,8 @@ class TodoRepositoryImpl implements TodoRepository {
         startDate: updated.startDate,
         endDate: updated.endDate,
         goalId: numericGoalId,
-        eisenhower: updated.eisenhower.toString(),
+        eisenhower: updated.eisenhower,
+        comment: updated.comment,
       );
       await localDatasource.updateTodo(updated);
     } catch (_) {
