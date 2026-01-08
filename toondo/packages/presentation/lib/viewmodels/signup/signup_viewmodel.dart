@@ -26,7 +26,8 @@ class SignupViewModel extends ChangeNotifier {
 
   final TextEditingController loginIdTextController = TextEditingController();
   final TextEditingController passwordTextController = TextEditingController();
-  final TextEditingController confirmPasswordTextController = TextEditingController();
+  final TextEditingController confirmPasswordTextController =
+      TextEditingController();
 
   final RegisterUseCase registerUserUseCase;
   final CheckLoginIdExistsUseCase checkLoginIdExistsUseCase;
@@ -56,7 +57,7 @@ class SignupViewModel extends ChangeNotifier {
     confirmPasswordTextController.clear();
 
     onNavigateToLogin = null;
-    
+
     notifyListeners();
   }
 
@@ -86,16 +87,17 @@ class SignupViewModel extends ChangeNotifier {
 
   Future<bool> validateLoginId() async {
     try {
-  // TODO(loading-state): 버튼 클릭 시 로딩 표시/중복 클릭 방지를 위해 isLoading 체크 & 설정 필요
-  // if (isLoading) return false; // 중복 호출 방지 예시
-  // isLoading = true; notifyListeners();
+      // TODO(loading-state): 버튼 클릭 시 로딩 표시/중복 클릭 방지를 위해 isLoading 체크 & 설정 필요
+      // if (isLoading) return false; // 중복 호출 방지 예시
+      // isLoading = true; notifyListeners();
       // 기본 검증
       if (loginId.isEmpty) {
         loginIdError = AuthConstraints.loginIdEmptyError;
         notifyListeners();
         return false;
       }
-      if (loginId.length < AuthConstraints.loginIdMinLength || loginId.length > AuthConstraints.loginIdMaxLength) {
+      if (loginId.length < AuthConstraints.loginIdMinLength ||
+          loginId.length > AuthConstraints.loginIdMaxLength) {
         loginIdError = AuthConstraints.loginIdLengthError;
         notifyListeners();
         return false;
@@ -172,13 +174,18 @@ class SignupViewModel extends ChangeNotifier {
         onNavigateToLogin?.call();
         return; // 예외 재던지지 않음
       }
-      throw Exception('회원가입에 실패했습니다: ${e.toString()}');
+      // 그 외 에러는 화면에서 표시 가능한 형태로 변환하고, 크래시를 막는다.
+      isSignupComplete = false;
+      // 비밀번호 단계에서 발생하는 경우가 많아 passwordError에 메시지를 노출
+      passwordError = '회원가입에 실패했습니다.';
+      notifyListeners();
+      return;
     }
   }
 
   void setLoginId(String id) {
     // print('SignupViewModel: setLoginId called with id=$id');
-    
+
     // TODO: setState() during build 에러 해결 - notifyListeners() 호출 최적화
     // TODO: 문제: build() 메서드에서 이 메서드가 호출되어 notifyListeners()가 빌드 중 재빌드를 요청
     // TODO: 해결 방안 1: 값이 실제로 변경될 때만 notifyListeners() 호출
@@ -186,7 +193,7 @@ class SignupViewModel extends ChangeNotifier {
     // TODO: 해결 방안 3: didUpdateWidget이나 initState에서만 호출되도록 호출 지점 수정
     // TODO: 임시 해결: 값이 동일하면 notifyListeners() 생략
     if (loginId == id) return; // 동일한 값이면 업데이트 생략
-    
+
     loginId = id;
     loginIdTextController.text = id;
     notifyListeners();
@@ -210,10 +217,13 @@ class SignupViewModel extends ChangeNotifier {
     print(loginIdTextController.text);
     if (loginId.isEmpty && loginIdTextController.text.isNotEmpty) {
       loginId = loginIdTextController.text.trim();
-      print('SignupViewModel: recovered loginId in validatePassword -> $loginId');
+      print(
+        'SignupViewModel: recovered loginId in validatePassword -> $loginId',
+      );
     }
     // TEST ACCOUNT EXCEPTION (패턴/숫자 요구 무시, confirm 비어있으면 자동 채움)
-    if (loginId == Constants.testLoginId && password == Constants.testPassword) {
+    if (loginId == Constants.testLoginId &&
+        password == Constants.testPassword) {
       if (password.isEmpty) {
         passwordError = AuthConstraints.passwordEmptyError;
         notifyListeners();
@@ -241,7 +251,8 @@ class SignupViewModel extends ChangeNotifier {
       notifyListeners();
       return;
     }
-    if (password.length < AuthConstraints.passwordMinLength || password.length > AuthConstraints.passwordMaxLength) {
+    if (password.length < AuthConstraints.passwordMinLength ||
+        password.length > AuthConstraints.passwordMaxLength) {
       passwordError = AuthConstraints.passwordLengthError;
       notifyListeners();
       return;
@@ -261,7 +272,7 @@ class SignupViewModel extends ChangeNotifier {
       notifyListeners();
       return;
     }
-    
+
     passwordError = null;
     confirmPasswordError = null;
     notifyListeners();
