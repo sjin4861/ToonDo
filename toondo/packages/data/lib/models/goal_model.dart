@@ -100,10 +100,13 @@ class GoalModel extends HiveObject {
     final rawIcon = json['icon'] as String?;
     String? normalizedIcon;
     if (rawIcon != null) {
-      if (rawIcon.startsWith('assets/')) {
+      // 커스텀 아이콘 경로 (파일 시스템 경로)는 그대로 유지
+      if (rawIcon.startsWith('/')) {
+        normalizedIcon = rawIcon;
+      } else if (rawIcon.startsWith('assets/')) {
         normalizedIcon = rawIcon;
       } else {
-        // ensure 'ic_' prefix and asset path
+        // 일반 아이콘 이름만 있는 경우 asset 경로로 변환
         final fileName = rawIcon.startsWith('ic_') ? rawIcon : 'ic_$rawIcon';
         normalizedIcon = 'assets/icons/$fileName';
       }

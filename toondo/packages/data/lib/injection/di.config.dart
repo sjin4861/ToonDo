@@ -11,6 +11,8 @@
 import 'package:data/datasources/local/animation_local_datasource.dart'
     as _i938;
 import 'package:data/datasources/local/auth_local_datasource.dart' as _i116;
+import 'package:data/datasources/local/custom_icon_local_datasource.dart'
+    as _i547;
 import 'package:data/datasources/local/goal_local_datasource.dart' as _i34;
 import 'package:data/datasources/local/secure_local_datasource.dart' as _i361;
 import 'package:data/datasources/local/todo_local_datasource.dart' as _i91;
@@ -20,11 +22,13 @@ import 'package:data/datasources/remote/goal_remote_datasource.dart' as _i417;
 import 'package:data/datasources/remote/todo_remote_datasource.dart' as _i627;
 import 'package:data/datasources/remote/user_remote_datasource.dart' as _i813;
 import 'package:data/injection/di_module.dart' as _i1048;
+import 'package:data/models/custom_icon_model.dart' as _i27;
 import 'package:data/models/goal_model.dart' as _i798;
 import 'package:data/models/goal_status_enum.dart' as _i934;
 import 'package:data/models/todo_model.dart' as _i923;
 import 'package:data/models/user_model.dart' as _i245;
 import 'package:data/repositories/auth_repository_impl.dart' as _i819;
+import 'package:data/repositories/custom_icon_repository_impl.dart' as _i658;
 import 'package:data/repositories/goal_repository_impl.dart' as _i527;
 import 'package:data/repositories/notification_repository_impl.dart' as _i15;
 import 'package:data/repositories/slime_repository_impl.dart' as _i366;
@@ -34,6 +38,7 @@ import 'package:data/repositories/user_repository_impl.dart' as _i537;
 import 'package:data/utils/gesture_mapper.dart' as _i587;
 import 'package:dio/dio.dart' as _i361;
 import 'package:domain/repositories/auth_repository.dart' as _i427;
+import 'package:domain/repositories/custom_icon_repository.dart' as _i447;
 import 'package:domain/repositories/goal_repository.dart' as _i559;
 import 'package:domain/repositories/notification_repository.dart' as _i267;
 import 'package:domain/repositories/slime_repository.dart' as _i657;
@@ -69,6 +74,10 @@ extension GetItInjectableX on _i174.GetIt {
     );
     await gh.factoryAsync<_i979.Box<_i934.GoalStatusEnum>>(
       () => registerModule.goalStatusBox,
+      preResolve: true,
+    );
+    await gh.factoryAsync<_i979.Box<_i27.CustomIconModel>>(
+      () => registerModule.customIconBox,
       preResolve: true,
     );
     await gh.factoryAsync<_i460.SharedPreferences>(
@@ -113,6 +122,10 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i979.Box<_i798.GoalModel>>(),
           gh<_i979.Box<_i934.GoalStatusEnum>>(),
         ));
+    gh.lazySingleton<_i547.CustomIconLocalDatasource>(() =>
+        _i547.CustomIconLocalDatasource(gh<_i979.Box<_i27.CustomIconModel>>()));
+    gh.lazySingleton<_i447.CustomIconRepository>(() =>
+        _i658.CustomIconRepositoryImpl(gh<_i547.CustomIconLocalDatasource>()));
     gh.lazySingleton<_i427.AuthRepository>(() => _i819.AuthRepositoryImpl(
           gh<_i954.AuthRemoteDataSource>(),
           gh<_i116.AuthLocalDataSource>(),

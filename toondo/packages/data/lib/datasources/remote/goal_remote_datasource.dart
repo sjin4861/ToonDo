@@ -54,6 +54,7 @@ class GoalRemoteDataSource {
       "startDate": goal.startDate.toIso8601String().split('T')[0],
       "endDate": endDateToSend.toIso8601String().split('T')[0], // null인 경우 2099-12-31 전송
       "icon": goal.icon ?? "",
+      "showOnHome": goal.showOnHome,
     };
 
     final resp = await dio.post('/api/v1/goals', data: requestBody, options: options);
@@ -70,7 +71,7 @@ class GoalRemoteDataSource {
         final rebuiltGoal = Goal(
           id: newId,
           name: goal.name,
-          icon: goal.icon,
+          icon: goal.icon, // 커스텀 아이콘 경로 유지
           startDate: goal.startDate,
           endDate: goal.endDate,
           progress: goal.progress, // 초기 0.0 가정
@@ -78,6 +79,7 @@ class GoalRemoteDataSource {
           showOnHome: goal.showOnHome, // showOnHome 값 누락 수정
         );
         print('🔍 재구성된 goal.showOnHome 값: ${rebuiltGoal.showOnHome}');
+        print('🔍 재구성된 goal.icon 값: ${rebuiltGoal.icon}');
         return rebuiltGoal;
       }
       final model = GoalModel.fromJson(Map<String, dynamic>.from(data));
@@ -105,6 +107,7 @@ class GoalRemoteDataSource {
       "startDate": goal.startDate.toIso8601String().split('T')[0],
       "endDate": goal.endDate?.toIso8601String().split('T')[0], // null 가능
       "icon": goal.icon, // null 가능
+      "showOnHome": goal.showOnHome,
     };
 
     try {

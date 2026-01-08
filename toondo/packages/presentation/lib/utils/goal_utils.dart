@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:common/gen/assets.gen.dart';
 import 'package:domain/entities/goal.dart';
 import 'package:flutter/material.dart';
@@ -78,8 +79,11 @@ Widget buildGoalIconWithCircle(
     }) {
   final resolvedSize = size ?? AppDimensions.goalIconSize;
   final resolvedBorderWidth = borderWidth ?? AppDimensions.goalItemBorderWidth;
-  final resolvedInnerPadding = innerPadding ?? AppDimensions.goalIconInnerPadding;
   final resolvedBorderColor = borderColor ?? AppColors.green500;
+
+  // 커스텀 아이콘인 경우 패딩 없이 꽉 채움
+  final bool isCustomIcon = icon is String && _isCustomIconPath(icon);
+  final resolvedInnerPadding = isCustomIcon ? 0.0 : (innerPadding ?? AppDimensions.goalIconInnerPadding);
 
   return Container(
     width: resolvedSize,
@@ -93,10 +97,18 @@ Widget buildGoalIconWithCircle(
       ),
     ),
     padding: EdgeInsets.all(resolvedInnerPadding),
-    child: _buildGoalIcon(
-      icon,
-      size: resolvedSize - 2 * resolvedInnerPadding,
-    ),
+    clipBehavior: Clip.antiAlias,
+    child: isCustomIcon
+        ? ClipOval(
+            child: _buildGoalIcon(
+              icon,
+              size: resolvedSize,
+            ),
+          )
+        : _buildGoalIcon(
+            icon,
+            size: resolvedSize - 2 * resolvedInnerPadding,
+          ),
   );
 }
 
@@ -111,7 +123,10 @@ Widget buildTodoIconWithCircle(
     }) {
   final resolvedSize = size ?? AppDimensions.goalIconSize;
   final resolvedBorderWidth = borderWidth ?? AppDimensions.goalItemBorderWidth;
-  final resolvedInnerPadding = innerPadding ?? AppDimensions.goalIconInnerPadding;
+  
+  // 커스텀 아이콘인 경우 패딩 없이 꽉 채움
+  final bool isCustomIcon = icon is String && _isCustomIconPath(icon);
+  final resolvedInnerPadding = isCustomIcon ? 0.0 : (innerPadding ?? AppDimensions.goalIconInnerPadding);
 
   return Container(
     width: resolvedSize,
@@ -125,10 +140,18 @@ Widget buildTodoIconWithCircle(
       ),
     ),
     padding: EdgeInsets.all(resolvedInnerPadding),
-    child: _buildGoalIcon(
-      icon,
-      size: resolvedSize - 2 * resolvedInnerPadding,
-    ),
+    clipBehavior: Clip.antiAlias,
+    child: isCustomIcon
+        ? ClipOval(
+            child: _buildGoalIcon(
+              icon,
+              size: resolvedSize,
+            ),
+          )
+        : _buildGoalIcon(
+            icon,
+            size: resolvedSize - 2 * resolvedInnerPadding,
+          ),
   );
 }
 
@@ -146,12 +169,61 @@ Widget _buildGoalIcon(
   if (icon is AssetGenImage) {
     return icon.image(width: size, height: size, fit: fit);
   }
-  if (icon is String && icon.endsWith('.svg')) {
-    return SvgPicture.asset(icon, width: size, height: size, fit: fit);
+  if (icon is! String) {
+    return _buildFallbackIcon(size);
   }
-  if (icon is String) {
-    return Image.asset(icon, width: size, height: size, fit: fit);
+
+  // 커스텀 아이콘 (파일 시스템 경로) - SVG 체크보다 먼저 확인
+  if (_isCustomIconPath(icon)) {
+    return _buildCustomIcon(icon, size, fit);
   }
-  return Icon(Icons.help_outline_rounded, size: size);
+
+  // SVG Asset 경로
+  if (icon.endsWith('.svg')) {
+    return SvgPicture.asset(
+      icon,
+      width: size,
+      height: size,
+      fit: fit,
+    );
+  }
+
+  // 일반 Asset 경로
+  return Image.asset(
+    icon,
+    width: size,
+    height: size,
+    fit: fit,
+  );
+}
+
+/// 커스텀 아이콘 경로인지 확인 (파일 시스템 경로)
+bool _isCustomIconPath(String path) {
+  return path.startsWith('/');
+}
+
+/// 커스텀 아이콘 위젯 생성
+/// 정수 픽셀을 사용하여 반픽셀 문제 방지
+Widget _buildCustomIcon(String filePath, double size, BoxFit fit) {
+  final iconSize = size.roundToDouble(); // 정수 픽셀로 변환
+  return ClipOval(
+    child: SizedBox.expand(
+      child: Image.file(
+        File(filePath),
+        fit: BoxFit.cover, // 커스텀 아이콘은 항상 cover로 꽉 채움
+        alignment: Alignment.center,
+        filterQuality: FilterQuality.high,
+        errorBuilder: (context, error, stackTrace) => _buildFallbackIcon(iconSize),
+      ),
+    ),
+  );
+}
+
+/// 폴백 아이콘 생성
+Widget _buildFallbackIcon(double size) {
+  return Icon(
+    Icons.help_outline_rounded,
+    size: size,
+  );
 }
 

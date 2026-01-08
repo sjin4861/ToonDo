@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:common/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -147,6 +148,9 @@ class HomeListItem extends StatelessWidget {
         : (goalToUse != null ? Colors.transparent : AppColors.borderLight);
     final Color? borderColor = !isTodo && goalToUse != null ? AppColors.green300 : null;
 
+    final dynamic icon = goalToUse?.icon ?? goal?.icon;
+    final bool isCustomIcon = icon is String && icon.startsWith('/');
+    
     return Container(
       width: AppDimensions.iconSize24,
       height: AppDimensions.iconSize24,
@@ -155,13 +159,16 @@ class HomeListItem extends StatelessWidget {
         color: backgroundColor,
         border: borderColor != null ? Border.all(color: borderColor, width: 1) : null,
       ),
-      child: Padding(
-        padding: EdgeInsets.all(AppSpacing.a4),
-        child: FittedBox(
-          fit: BoxFit.contain,
-          child: _buildIconFromPath(goalToUse?.icon ?? goal?.icon),
-        ),
-      ),
+      clipBehavior: Clip.antiAlias,
+      child: isCustomIcon
+          ? _buildIconFromPath(icon)
+          : Padding(
+              padding: EdgeInsets.all(AppSpacing.a4),
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: _buildIconFromPath(icon),
+              ),
+            ),
     );
   }
 
@@ -172,6 +179,20 @@ class HomeListItem extends StatelessWidget {
       return SvgPicture.asset(icon, width: 24, height: 24, fit: BoxFit.contain);
     }
     if (icon is String) {
+      // 커스텀 아이콘인지 확인 (파일 경로인 경우)
+      if (icon.startsWith('/')) {
+        return ClipOval(
+          child: Image.file(
+            File(icon),
+            width: AppDimensions.iconSize24,
+            height: AppDimensions.iconSize24,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return const Icon(Icons.help_outline_rounded, size: 20);
+            },
+          ),
+        );
+      }
       return Image.asset(icon, width: 24, height: 24, fit: BoxFit.contain);
     }
     return const Icon(Icons.help_outline_rounded, size: 20);

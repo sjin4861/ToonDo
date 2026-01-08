@@ -13,6 +13,7 @@ class AppButton extends StatelessWidget {
   final AppButtonSize size;
   final AppButtonType type;
   final bool isEnabled;
+  final bool isFullWidth;
 
   const AppButton({
     super.key,
@@ -21,6 +22,7 @@ class AppButton extends StatelessWidget {
     this.size = AppButtonSize.medium,
     this.type = AppButtonType.filled,
     this.isEnabled = true,
+    this.isFullWidth = false,
   });
 
   double _heightBySize() {
@@ -75,22 +77,29 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton(
-        onPressed: isEnabled ? onPressed : null,
-        style: OutlinedButton.styleFrom(
-          fixedSize: Size(_widthBySize(), _heightBySize()),
-          backgroundColor: _backgroundColor(),
-          side: _borderSide(),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
-          ),
-          padding: EdgeInsets.symmetric(horizontal: AppSpacing.h16),
+    final button = OutlinedButton(
+      onPressed: isEnabled ? onPressed : null,
+      style: OutlinedButton.styleFrom(
+        fixedSize: isFullWidth ? null : Size(_widthBySize(), _heightBySize()),
+        minimumSize: isFullWidth ? Size(double.infinity, _heightBySize()) : null,
+        backgroundColor: _backgroundColor(),
+        side: _borderSide(),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
         ),
-
-        child: Text(
-          label,
-          style: _textStyleBySize().copyWith(color: _textColor()),
-        ),
+        padding: EdgeInsets.symmetric(horizontal: AppSpacing.h16),
+      ),
+      child: Text(
+        label,
+        style: _textStyleBySize().copyWith(color: _textColor()),
+      ),
     );
+
+    return isFullWidth
+        ? SizedBox(
+            width: double.infinity,
+            child: button,
+          )
+        : button;
   }
 }

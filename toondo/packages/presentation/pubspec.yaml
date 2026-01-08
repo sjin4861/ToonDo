@@ -40,6 +40,8 @@ dependencies:
   rxdart: ^0.28.0
   package_info_plus: ^8.3.0
   flutter_screenutil: ^5.9.3
+  image_picker: ^1.0.7
+  native_image_cropper: ^0.6.0
   flutter_localizations:
     sdk: flutter
 

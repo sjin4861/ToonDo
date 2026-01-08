@@ -77,6 +77,7 @@ class GoalInputViewModel extends ChangeNotifier {
     
     // TODO: 메인화면 노출 문제 디버깅 - 목표 생성 시 showOnHome 값 로깅
     print('🔍 목표 생성 시 showOnHome 값: $showOnHome');
+    print('🔍 선택된 아이콘 경로: $selectedIcon');
     
     final newGoal = Goal(
       id: targetGoal?.id ?? const Uuid().v4(),
@@ -89,7 +90,7 @@ class GoalInputViewModel extends ChangeNotifier {
       showOnHome: showOnHome,
     );
 
-    print('🔍 생성된 목표 정보: ${newGoal.name}, showOnHome: ${newGoal.showOnHome}');
+    print('🔍 생성된 목표 정보: ${newGoal.name}, icon: ${newGoal.icon}, showOnHome: ${newGoal.showOnHome}');
 
     try {
       if (targetGoal == null) {
