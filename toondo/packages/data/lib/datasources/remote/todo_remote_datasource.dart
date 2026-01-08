@@ -22,18 +22,18 @@ class TodoRemoteDataSource {
     required DateTime startDate,
     required DateTime endDate,
     int? goalId,
-    required String eisenhower,
-    bool showOnHome = false,
+    required int eisenhower,
+    String? comment,
   }) async {
   final options = await _authOptions();
 
     final requestBody = {
+      "goalId": goalId,
       "title": title,
+      "eisenhower": eisenhower,
+      "comment": comment,
       "startDate": startDate.toIso8601String().split('T')[0],
       "endDate": endDate.toIso8601String().split('T')[0],
-      "goalId": goalId,
-      "eisenhower": eisenhower,
-      "showOnHome": showOnHome,
     };
 
     final resp = await dio.post('/api/v1/todos', data: requestBody, options: options);
@@ -61,7 +61,7 @@ class TodoRemoteDataSource {
     final options = await _authOptions();
 
     final dateString = date.toIso8601String().split('T')[0]; // YYYY-MM-DD 형식
-    final resp = await dio.get('/api/v1/by-date', queryParameters: {'date': dateString}, options: options);
+    final resp = await dio.get('/api/v1/todos/by-date', queryParameters: {'date': dateString}, options: options);
     final status = resp.statusCode ?? 0;
     if (status == 200) {
       final decoded = resp.data;
@@ -70,32 +70,34 @@ class TodoRemoteDataSource {
         final List<Todo> ddayTodos = ddayJson.map((json) {
           final todoId = json['todoId'].toString();
           final dynamic goalId = json['goalId'];
+          final dynamic serverStatus = json['status'];
+          final bool isDone = serverStatus == true;
           return Todo(
             id: todoId,
             goalId: goalId?.toString(),
             title: json['title'],
-            status: (json['status'] as num).toDouble(),
+            status: isDone ? 1.0 : 0.0,
             startDate: DateTime.parse(json['startDate']),
             endDate: DateTime.parse(json['endDate']),
             eisenhower: json['eisenhower'] as int,
-            comment: '',
-            showOnHome: json['showOnHome'] as bool? ?? false,
+            comment: (json['comment'] as String?) ?? '',
           );
         }).toList();
         final List<dynamic> dailyJson = decoded['daily'] ?? [];
         final List<Todo> dailyTodos = dailyJson.map((json) {
           final todoId = json['todoId'].toString();
           final dynamic goalId = json['goalId'];
+          final dynamic serverStatus = json['status'];
+          final bool isDone = serverStatus == true;
           return Todo(
             id: todoId,
             goalId: goalId?.toString(),
             title: json['title'],
-            status: (json['status'] as num).toDouble(),
+            status: isDone ? 1.0 : 0.0,
             startDate: DateTime.parse(json['startDate']),
             endDate: DateTime.parse(json['endDate']),
             eisenhower: json['eisenhower'] as int,
-            comment: '',
-            showOnHome: json['showOnHome'] as bool? ?? false,
+            comment: (json['comment'] as String?) ?? '',
           );
         }).toList();
         return {'dday': ddayTodos, 'daily': dailyTodos};
@@ -126,16 +128,17 @@ class TodoRemoteDataSource {
         final List<Todo> todos = dataJson.map((json) {
           final todoId = json['todoId'].toString();
           final dynamic goalId = json['goalId'];
+          final dynamic serverStatus = json['status'];
+          final bool isDone = serverStatus == true;
           return Todo(
             id: todoId,
             goalId: goalId?.toString(),
             title: json['title'],
-            status: (json['status'] as num).toDouble(),
+            status: isDone ? 1.0 : 0.0,
             startDate: DateTime.parse(json['startDate']),
             endDate: DateTime.parse(json['endDate']),
             eisenhower: _parseEisenhower(json['eisenhower']),
-            comment: '',
-            showOnHome: json['showOnHome'] as bool? ?? false,
+            comment: (json['comment'] as String?) ?? '',
           );
         }).toList();
         return todos;
@@ -162,16 +165,17 @@ class TodoRemoteDataSource {
         final json = decoded['data'];
         final todoIdStr = json['todoId'].toString();
         final dynamic goalId = json['goalId'];
+        final dynamic serverStatus = json['status'];
+        final bool isDone = serverStatus == true;
         return Todo(
           id: todoIdStr,
           goalId: goalId?.toString(),
           title: json['title'],
-          status: (json['status'] as num).toDouble(),
+          status: isDone ? 1.0 : 0.0,
           startDate: DateTime.parse(json['startDate']),
           endDate: DateTime.parse(json['endDate']),
           eisenhower: _parseEisenhower(json['eisenhower']),
-          comment: '',
-          showOnHome: json['showOnHome'] as bool? ?? false,
+          comment: (json['comment'] as String?) ?? '',
         );
       }
       throw Exception('투두 ID별 조회 응답 형식 오류: ${resp.data}');
@@ -191,18 +195,18 @@ class TodoRemoteDataSource {
     required DateTime startDate,
     required DateTime endDate,
     int? goalId,
-    required String eisenhower,
-    bool showOnHome = false,
+    required int eisenhower,
+    String? comment,
   }) async {
   final options = await _authOptions();
 
     final requestBody = {
+      "goalId": goalId,
       "title": title,
+      "eisenhower": eisenhower,
+      "comment": comment,
       "startDate": startDate.toIso8601String().split('T')[0],
       "endDate": endDate.toIso8601String().split('T')[0],
-      "goalId": goalId,
-      "eisenhower": eisenhower,
-      "showOnHome": showOnHome,
     };
 
     final resp = await dio.put('/api/v1/todos/$todoId', data: requestBody, options: options);
@@ -234,9 +238,17 @@ class TodoRemoteDataSource {
     if (status == 200) {
       final decoded = resp.data;
       if (decoded is Map) {
+        final dynamic rawStatus = decoded.containsKey('newStatus') ? decoded['newStatus'] : decoded['status'];
+        final bool newStatus = switch (rawStatus) {
+          bool v => v,
+          int v => v != 0,
+          double v => v != 0,
+          String v => v.toLowerCase() == 'true' || v == '1',
+          _ => false,
+        };
         return {
           'todoId': decoded['todoId'],
-          'status': decoded['status'],
+          'status': newStatus ? 1.0 : 0.0,
           'completedAt': decoded['completedAt'],
         };
       }
