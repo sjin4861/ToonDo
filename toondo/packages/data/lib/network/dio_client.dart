@@ -4,6 +4,7 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:data/constants.dart';
+import 'package:data/datasources/local/secure_local_datasource.dart';
 import 'package:data/network/mock_api_interceptor.dart';
 
 class DioClient {
@@ -12,7 +13,7 @@ class DioClient {
 
   DioClient._(this.dio, this.cookieJar);
 
-  factory DioClient.create() {
+  factory DioClient.create({required SecureLocalDataSource secureLocalDataSource}) {
     final dio = Dio(
       BaseOptions(
         baseUrl: Constants.baseUrl,
@@ -22,7 +23,7 @@ class DioClient {
         headers: {
           'Content-Type': 'application/json',
         },
-        // Important for cookie-based JWT on web/desktop
+        // We still allow non-2xx through to interceptors (refresh handling)
         validateStatus: (code) => code != null && code >= 200 && code < 600,
       ),
     );
@@ -35,8 +36,8 @@ class DioClient {
     }
     
     dio.interceptors.add(CookieManager(cookieJar));
-    dio.interceptors.add(_AccessTokenAttachInterceptor(cookieJar));
-    dio.interceptors.add(_AuthInterceptor(dio, cookieJar));
+    dio.interceptors.add(_AccessTokenAttachInterceptor(secureLocalDataSource));
+    dio.interceptors.add(_AuthInterceptor(dio, secureLocalDataSource));
     dio.interceptors.add(LogInterceptor(
       request: false, responseBody: false, requestBody: false,
     ));
@@ -47,23 +48,20 @@ class DioClient {
 
 class _AuthInterceptor extends Interceptor {
   final Dio _dio;
-  final CookieJar _cookieJar;
+  final SecureLocalDataSource _secure;
   Completer<void>? _refreshCompleter;
 
-  _AuthInterceptor(this._dio, this._cookieJar);
+  _AuthInterceptor(this._dio, this._secure);
 
-  bool _isRefreshEndpoint(String path) => path.contains('/auth/refreshToken');
+  static const _refreshPath = '/api/v1/auth/refreshToken';
+
+  bool _isRefreshEndpoint(String path) => path == _refreshPath;
 
   bool _shouldAttemptRefresh(Response? res, RequestOptions req) {
     if (res?.statusCode != 401) return false;
     if (_isRefreshEndpoint(req.path)) return false; // refresh 자기 자신은 재시도 X
     if (req.extra['__refreshAttempted'] == true) return false; // 이미 한 번 시도
-    // errorCode == TOKEN_EXPIRED 이거나, body에 TOKEN_EXPIRED 문자열 포함, 혹은 errorCode 누락된 401 모두 시도 (쿠키 기반이므로 무해)
-    final data = res?.data;
-    if (data is Map && data['errorCode'] == 'TOKEN_EXPIRED') return true;
-    final bodyStr = data?.toString() ?? '';
-    if (bodyStr.contains('TOKEN_EXPIRED')) return true;
-    // 마지막: accessToken/refreshToken 쿠키 둘 다 있으면 한 번 갱신 시도해볼 가치 있음
+    // Spec-based: any 401 can attempt refresh once.
     return true;
   }
 
@@ -167,71 +165,45 @@ class _AuthInterceptor extends Interceptor {
   }
 
   Future<void> _attemptRefresh() async {
-    // 이미 refreshing flag는 외부에서 설정됨
-    final candidates = <({String path, String method})>[
-      // POST 메서드 우선
-      (path: '/api/v1/auth/refreshToken', method: 'POST'),
-      (path: '/api/v1/auth/refresh-token', method: 'POST'),
-      (path: '/api/v1/auth/refresh', method: 'POST'),
-      (path: '/auth/refreshToken', method: 'POST'),
-      (path: '/auth/refresh-token', method: 'POST'),
-      (path: '/auth/refresh', method: 'POST'),
-      // GET 메서드 시도 (일부 서버는 GET으로 refresh 처리)
-      (path: '/api/v1/auth/refreshToken', method: 'GET'),
-      (path: '/api/v1/auth/refresh', method: 'GET'),
-      (path: '/auth/refresh', method: 'GET'),
-    ];
-
-    // 현재 쿠키 상태 출력
-    try {
-      final baseUri = Uri.parse(Constants.baseUrl);
-      final currentCookies = await _cookieJar.loadForRequest(baseUri);
-      // ignore: avoid_print
-      print('[AuthInterceptor] Cookies before refresh: ' +
-          currentCookies.map((c) => '${c.name}=${c.value.substring(0, c.value.length > 12 ? 12 : c.value.length)}...').join(', '));
-    } catch (_) {}
-
-    Response? successResp;
-    DioException? lastError;
-    for (final candidate in candidates) {
-      try {
-        // ignore: avoid_print
-        print('[AuthInterceptor] Trying refresh: ${candidate.method} ${candidate.path}');
-        
-        final resp = candidate.method == 'GET'
-            ? await _dio.get(candidate.path, options: Options(extra: {'__skipAuthAttach': true}))
-            : await _dio.post(candidate.path, options: Options(extra: {'__skipAuthAttach': true}));
-        
-        if (resp.statusCode == 200) {
-          successResp = resp;
-          // ignore: avoid_print
-          print('[AuthInterceptor] ✅ Refresh success: ${candidate.method} ${candidate.path}');
-          break;
-        } else {
-          // ignore: avoid_print
-          print('[AuthInterceptor] ❌ Refresh failed: ${candidate.method} ${candidate.path} code=${resp.statusCode} body=${resp.data}');
-        }
-      } on DioException catch (e) {
-        lastError = e;
-        // ignore: avoid_print
-        print('[AuthInterceptor] ❌ Refresh error: ${candidate.method} ${candidate.path} code=${e.response?.statusCode} msg=${e.message}');
-      }
+    final refreshToken = await _secure.getRefreshToken();
+    if (refreshToken == null || refreshToken.isEmpty) {
+      await _secure.clearAuthTokens();
+      _refreshCompleter?.completeError(Exception('No refresh token'));
+      return;
     }
 
-    if (successResp != null) {
-      try {
-        final baseUri = Uri.parse(Constants.baseUrl);
-        final afterCookies = await _cookieJar.loadForRequest(baseUri);
-        // ignore: avoid_print
-        print('[AuthInterceptor] Cookies after refresh: ' +
-            afterCookies.map((c) => '${c.name}=${c.value.substring(0, c.value.length > 12 ? 12 : c.value.length)}...').join(', '));
-      } catch (_) {}
-      _refreshCompleter?.complete();
-    } else {
-      // ignore: avoid_print
-      print('[AuthInterceptor] 🚨 All refresh attempts failed. Clearing cookies.');
-      await _cookieJar.deleteAll();
-      _refreshCompleter?.completeError(Exception('All refresh candidates failed${lastError != null ? ': ${lastError.message}' : ''}'));
+    try {
+      // Spec: GET /api/v1/auth/refreshToken with Authorization: Bearer {refreshToken}
+      final resp = await _dio.get(
+        _refreshPath,
+        options: Options(
+          extra: {'__skipAuthAttach': true},
+          headers: {
+            'Authorization': 'Bearer $refreshToken',
+          },
+        ),
+      );
+
+      if (resp.statusCode == 200 && resp.data is Map) {
+        final map = Map<String, dynamic>.from(resp.data as Map);
+        final newAccess = map['accessToken'] as String?;
+        final newRefresh = map['refreshToken'] as String?;
+        if (newAccess == null || newAccess.isEmpty || newRefresh == null || newRefresh.isEmpty) {
+          await _secure.clearAuthTokens();
+          _refreshCompleter?.completeError(Exception('Refresh response missing tokens'));
+          return;
+        }
+        await _secure.saveAccessToken(newAccess);
+        await _secure.saveRefreshToken(newRefresh);
+        _refreshCompleter?.complete();
+        return;
+      }
+
+      await _secure.clearAuthTokens();
+      _refreshCompleter?.completeError(Exception('Refresh failed (HTTP ${resp.statusCode})'));
+    } on DioException catch (e) {
+      await _secure.clearAuthTokens();
+      _refreshCompleter?.completeError(Exception('Refresh error: ${e.response?.statusCode ?? ''} ${e.message}'));
     }
   }
 
@@ -260,8 +232,8 @@ class _AuthInterceptor extends Interceptor {
 }
 
 class _AccessTokenAttachInterceptor extends Interceptor {
-  final CookieJar _cookieJar;
-  _AccessTokenAttachInterceptor(this._cookieJar);
+  final SecureLocalDataSource _secure;
+  _AccessTokenAttachInterceptor(this._secure);
 
   static final _jwtRegex = RegExp(r'^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$');
   bool _printedClaims = false;
@@ -291,32 +263,25 @@ class _AccessTokenAttachInterceptor extends Interceptor {
       handler.next(options);
       return;
     }
-    // refresh 토큰 엔드포인트는 Authorization 헤더를 붙이지 않는다 (쿠키 기반 갱신 전용)
-    if (options.path.contains('/auth/refreshToken') || options.extra['__skipAuthAttach'] == true) {
+    // refresh 요청 또는 명시적 skip
+    if (options.path == _AuthInterceptor._refreshPath || options.extra['__skipAuthAttach'] == true) {
       handler.next(options);
       return;
     }
     // 이미 Authorization 있으면 패스
     if (!options.headers.containsKey('Authorization')) {
       try {
-        final uri = options.uri;
-        final cookies = await _cookieJar.loadForRequest(uri);
-        final access = cookies.firstWhere(
-          (c) => c.name == 'accessToken',
-          orElse: () => Cookie('accessToken', ''),
-        );
-        if (!_printedClaims && access.value.isNotEmpty && _jwtRegex.hasMatch(access.value)) {
-          final claims = _decodeJwtClaims(access.value);
+        final accessToken = await _secure.getAccessToken();
+        if (accessToken != null && accessToken.isNotEmpty && _jwtRegex.hasMatch(accessToken)) {
+          if (!_printedClaims) {
+            final claims = _decodeJwtClaims(accessToken);
           if (claims != null) {
             // ignore: avoid_print
             print('[AccessTokenAttach] accessToken claims: ' + claims.toString());
           }
           _printedClaims = true;
-        }
-        if (access.value.isNotEmpty && _jwtRegex.hasMatch(access.value)) {
-          options.headers['Authorization'] = 'Bearer ${access.value}';
-          // ignore: avoid_print
-          print('[AccessTokenAttach] Authorization 헤더 자동 부착');
+          }
+          options.headers['Authorization'] = 'Bearer $accessToken';
         }
       } catch (_) {
         // ignore silently
