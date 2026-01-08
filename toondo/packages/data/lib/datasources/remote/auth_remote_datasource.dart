@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:data/constants.dart';
+import 'package:data/models/auth_tokens.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:injectable/injectable.dart';
 
 // Dio 기반 최소 구현 버전
@@ -9,11 +11,13 @@ import 'package:injectable/injectable.dart';
 // TODO(auth-refresh): 401 TOKEN_EXPIRED 케이스는 dio_client.dart 인터셉터에서 처리됨 (여기서는 별도 처리 불필요)
 
 @LazySingleton()
-class AuthRemoteDataSource{
+class AuthRemoteDataSource {
   final Dio dio;
   AuthRemoteDataSource(this.dio);
 
-  static const String baseUrl = Constants.baseUrl; // TODO(auth): 포트 변경 반영됨(8083). 경로 prefix '/api/v1' 적용 필요 여부 백엔드 스펙 재확인
+  static const String baseUrl =
+      Constants
+          .baseUrl; // TODO(auth): 포트 변경 반영됨(8083). 경로 prefix '/api/v1' 적용 필요 여부 백엔드 스펙 재확인
 
   /// 사용자를 회원가입시키는 함수.
   ///
@@ -41,18 +45,15 @@ class AuthRemoteDataSource{
   ///   print('회원가입 실패: $e');
   /// }
   /// ```
-  Future<String> registerUser(
-    String loginId,
-    String password,
-  ) async {
-    // TODO(payload): 최신 회원가입 요청 스펙에 phoneNumber, nickname 필드 추가 필요
-    // 현재 서버 엔드포인트는 /api/v1/users/signup 기대: {loginId,password,phoneNumber,nickname}
-    // ViewModel/UseCase 계층과 모델 확장 필요
+  Future<AuthTokens> registerUser(String loginId, String password) async {
     // 1) Local explicit bypass (only if flag enabled)
     if (Constants.enableLocalTestBypass &&
         loginId == Constants.testLoginId &&
         password == Constants.testPassword) {
-      return Constants.testAccessToken; // 디자인 플로우 빠른 확인용
+      return const AuthTokens(
+        accessToken: Constants.testAccessToken,
+        refreshToken: Constants.testRefreshToken,
+      );
     }
 
     // 기존 및 신규 엔드포인트 병행 테스트 대비: signupUrl만 사용 (중복 제거)
@@ -62,17 +63,19 @@ class AuthRemoteDataSource{
     try {
       response = await dio.post(
         signupUrl.toString(),
-        data: {
-          'loginId': loginId,
-          'password': password,
-          // 'phoneNumber': phoneNumber, // TODO(payload)
-          // 'nickname': nickname,       // TODO(payload)
-        },
-        options: Options(headers: {'Content-Type': 'application/json'}),
+        data: {'loginId': loginId, 'password': password},
+        options: Options(
+          headers: {'Content-Type': 'application/json'},
+          extra: const {'__skipAuthAttach': true},
+        ),
       );
     } catch (e) {
-      if (loginId == Constants.testLoginId && password == Constants.testPassword) {
-        return Constants.testAccessToken; // 네트워크 오류 fallback
+      if (loginId == Constants.testLoginId &&
+          password == Constants.testPassword) {
+        return const AuthTokens(
+          accessToken: Constants.testAccessToken,
+          refreshToken: Constants.testRefreshToken,
+        );
       }
       rethrow;
     }
@@ -80,40 +83,68 @@ class AuthRemoteDataSource{
     if (response.statusCode == 200 || response.statusCode == 201) {
       // 백엔드가 쿠키만 반환하고 body에 토큰을 포함하지 않을 수 있음 -> accessToken 키 없으면 빈 문자열 반환
       final dynamic data = response.data;
-      if (data is Map && data.containsKey('accessToken')) {
-        return data['accessToken'] as String? ?? '';
+      if (data is Map) {
+        final access = data['accessToken'] as String?;
+        final refresh = data['refreshToken'] as String?;
+        if (access != null &&
+            access.isNotEmpty &&
+            refresh != null &&
+            refresh.isNotEmpty) {
+          return AuthTokens(accessToken: access, refreshToken: refresh);
+        }
       }
-      // TODO(token): 쿠키 기반 세션만 있는 경우 프론트에서 굳이 accessToken 보관 불필요. 상위 계층 정리 필요
-      return '';
+      // 일부 서버 구현은 signup(계정 생성)과 token 발급(login)을 분리한다.
+      // 이 경우 201 + 빈 body(content-length: 0)로 성공만 주므로,
+      // 여기서는 "회원가입 성공"만 반환하고 토큰 발급은 별도 login에서 처리한다.
+      return const AuthTokens(accessToken: '', refreshToken: '');
     }
 
     if (response.statusCode == 400) {
       // 이미 존재하는 로그인 ID 등 중복 상황 처리
       String? error;
       if (response.data is Map) {
-        try { error = (response.data as Map)['error'] as String?; } catch (_) {}
+        try {
+          error = (response.data as Map)['error'] as String?;
+        } catch (_) {}
       }
 
       // 2) testuser 중복 시도면: 자동으로 로그인 시도하여 토큰 반환 (idempotent UX)
-  if (loginId == Constants.testLoginId && password == Constants.testPassword) {
+      if (loginId == Constants.testLoginId &&
+          password == Constants.testPassword) {
         try {
-          final loginUrl = Uri.parse('$baseUrl/users/login');
+          final loginUrl = Uri.parse('$baseUrl/api/v1/users/login');
           final loginResp = await dio.post(
             loginUrl.toString(),
-            data: {'loginId': loginId, 'password': password},
-            options: Options(headers: {'Content-Type': 'application/json'}),
+            data: {'id': loginId, 'password': password},
+            options: Options(
+              headers: {'Content-Type': 'application/json'},
+              extra: const {'__skipAuthAttach': true},
+            ),
           );
           if (loginResp.statusCode == 200) {
             final lrData = loginResp.data;
-            if (lrData is Map && lrData.containsKey('accessToken')) {
-              return lrData['accessToken'] as String? ?? '';
+            if (lrData is Map) {
+              final access = lrData['accessToken'] as String?;
+              final refresh = lrData['refreshToken'] as String?;
+              if (access != null &&
+                  access.isNotEmpty &&
+                  refresh != null &&
+                  refresh.isNotEmpty) {
+                return AuthTokens(accessToken: access, refreshToken: refresh);
+              }
             }
-            return '';
+            throw Exception('로그인 응답에 토큰이 없습니다.');
           }
           // 로그인도 실패하면 최종 fallback 로컬 토큰 (디자인 진행)
-          return Constants.testAccessToken;
+          return const AuthTokens(
+            accessToken: Constants.testAccessToken,
+            refreshToken: Constants.testRefreshToken,
+          );
         } catch (_) {
-          return Constants.testAccessToken;
+          return const AuthTokens(
+            accessToken: Constants.testAccessToken,
+            refreshToken: Constants.testRefreshToken,
+          );
         }
       }
       throw Exception(error ?? '이미 존재하는 로그인 ID입니다.');
@@ -121,76 +152,76 @@ class AuthRemoteDataSource{
 
     if (response.statusCode == 500) {
       // 서버 오류지만 테스트 계정이면 fallback 허용
-      if (loginId == Constants.testLoginId && password == Constants.testPassword) {
-        return Constants.testAccessToken;
+      if (loginId == Constants.testLoginId &&
+          password == Constants.testPassword) {
+        return const AuthTokens(
+          accessToken: Constants.testAccessToken,
+          refreshToken: Constants.testRefreshToken,
+        );
       }
       throw Exception('서버 내부 오류가 발생했습니다.');
     }
 
     // 기타 예외 상태 처리
-    if (loginId == Constants.testLoginId && password == Constants.testPassword) {
+    if (loginId == Constants.testLoginId &&
+        password == Constants.testPassword) {
       // 예측 밖 상태도 테스트 계정은 흐름 계속
-      return Constants.testAccessToken;
+      return const AuthTokens(
+        accessToken: Constants.testAccessToken,
+        refreshToken: Constants.testRefreshToken,
+      );
     }
     throw Exception('회원가입 실패: ${response.data}');
   }
 
-  Future<String> login(
-    String loginId,
-    String password,
-  ) async {
+  Future<AuthTokens> login(String loginId, String password) async {
     // Local test bypass: if enabled and credentials match, skip network call.
     if (Constants.enableLocalTestBypass &&
         loginId == Constants.testLoginId &&
         password == Constants.testPassword) {
       await Future.delayed(const Duration(milliseconds: 300)); // mimic latency
-      return Constants.testAccessToken;
+      return const AuthTokens(
+        accessToken: Constants.testAccessToken,
+        refreshToken: Constants.testRefreshToken,
+      );
     }
-    // legacy 경로 변수 제거 (중복 및 미사용 경고 방지)
-    // TODO(endpoint): 최신 로그인 엔드포인트 '/login' (루트) 제공 여부 확인.
-    // 서버 공유 내용: POST /login (id,password) vs 기존 '/users/login'. 테스트 후 하나로 확정 필요.
-    // 임시로 신규 스펙 우선 시도 후 실패 시 fallback.
-    final primaryUrl = Uri.parse('$baseUrl/login');
-    final legacyUrl = Uri.parse('$baseUrl/users/login'); // fallback
+
+    // Spec: POST /api/v1/users/login with body {id,password}
+    final loginUrl = Uri.parse('$baseUrl/api/v1/users/login');
     Response response;
     try {
       response = await dio.post(
-        primaryUrl.toString(),
-        data: {
-          'id': loginId, // TODO(mapping): 서버는 'id' 키 사용. 기존 'loginId' -> 통일 필요
-          'password': password,
-        },
-        options: Options(headers: {'Content-Type': 'application/json'}),
+        loginUrl.toString(),
+        data: {'id': loginId, 'password': password},
+        options: Options(
+          headers: {'Content-Type': 'application/json'},
+          extra: const {'__skipAuthAttach': true},
+        ),
       );
-      if (response.statusCode == 404) {
-        // fallback to legacy path
-        response = await dio.post(
-          legacyUrl.toString(),
-          data: {
-            'loginId': loginId,
-            'password': password,
-          },
-          options: Options(headers: {'Content-Type': 'application/json'}),
-        );
-      }
     } catch (e) {
       rethrow; // TODO(net): 네트워크 예외 세분화 후 사용자 메시지 매핑
     }
 
-    if (response.statusCode == 200 || response.statusCode == 500) {
-      // 500이어도 쿠키(accessToken/refreshToken)가 set-cookie로 왔다면 성공으로 처리
-      // 서버가 토큰 발급 후 내부 로직 오류로 500을 반환하는 케이스 대응
+    if (response.statusCode == 200) {
       final respData = response.data;
-      if (respData is Map && respData.containsKey('accessToken')) {
-        return respData['accessToken'] as String? ?? '';
+      if (respData is Map) {
+        final access = respData['accessToken'] as String?;
+        final refresh = respData['refreshToken'] as String?;
+        if (access != null &&
+            access.isNotEmpty &&
+            refresh != null &&
+            refresh.isNotEmpty) {
+          return AuthTokens(accessToken: access, refreshToken: refresh);
+        }
       }
-      // Body에 토큰이 없어도 쿠키는 이미 CookieJar에 저장되므로 빈 문자열 반환 (쿠키 기반 인증)
-      return '';
+      throw Exception('로그인 응답에 토큰이 없습니다.');
     } else if (response.statusCode == 400) {
       String? error;
       final body = response.data;
       if (body is Map) {
-        try { error = body['error'] as String?; } catch (_) {}
+        try {
+          error = body['error'] as String?;
+        } catch (_) {}
       }
       throw Exception(error ?? '로그인 정보가 올바르지 않습니다.');
     } else {
@@ -214,7 +245,7 @@ class AuthRemoteDataSource{
       return false; // 사용 가능
     }
 
-  // 마지막 예외(디버깅용 변수) - 현재 미사용이므로 제거하여 경고 방지
+    // 마지막 예외(디버깅용 변수) - 현재 미사용이므로 제거하여 경고 방지
     Response? lastResponse;
 
     for (final uri in candidates) {
@@ -253,13 +284,63 @@ class AuthRemoteDataSource{
     throw Exception('아이디 확인 요청 실패${code != null ? ' (HTTP $code)' : ''}');
   }
 
+  /// 로그아웃
+  ///
+  /// API 명세: `POST /api/v1/users/logout`
+  /// - Header: `Authorization: Bearer {refreshToken}`
+  /// - Body: 없음
+  Future<void> logout(String refreshToken) async {
+    if (refreshToken.isEmpty) {
+      throw Exception('refreshToken이 없습니다.');
+    }
+
+    // Local test bypass: 테스트 플로우에서는 서버 호출 없이 통과
+    if (Constants.enableLocalTestBypass &&
+        refreshToken == Constants.testRefreshToken) {
+      return;
+    }
+
+    final url = Uri.parse('$baseUrl/api/v1/users/logout');
+    try {
+      final resp = await dio.post(
+        url.toString(),
+        options: Options(
+          // accessToken 자동 부착을 막고 refreshToken만 명시적으로 전송
+          extra: {'__skipAuthAttach': true},
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $refreshToken',
+          },
+        ),
+      );
+
+      final status = resp.statusCode ?? 0;
+      if (status == 200 || status == 204) return;
+      throw Exception('로그아웃 실패 (HTTP $status): ${resp.data}');
+    } finally {
+      // 쿠키 기반 세션이 남아있으면 “로그인 상태 유지”처럼 보일 수 있으므로 항상 삭제
+      await clearCookies();
+    }
+  }
+
+  /// CookieManager(CookieJar)가 붙어있는 경우, 로컬 쿠키를 제거합니다.
+  ///
+  /// - 서버 로그아웃 실패/미호출 상황에서도 앱 단에서는 로그아웃 상태를 만들기 위해 사용
+  Future<void> clearCookies() async {
+    for (final interceptor in dio.interceptors) {
+      if (interceptor is CookieManager) {
+        await interceptor.cookieJar.deleteAll();
+      }
+    }
+  }
+
   Future<void> deleteAccount() async {
     // TODO(endpoint): 실제 탈퇴 엔드포인트 '/api/v1/users/delete-account' (추정) 확인 필요
     // TODO(auth): 쿠키 기반 인증이므로 추가 헤더보다 기본 쿠키 전송으로 인증 처리
     // TODO: 개발 중에는 목 응답 사용, 실제 서버 연결 시 아래 주석 해제
     // 임시로 성공 응답 시뮬레이션
     await Future.delayed(Duration(milliseconds: 1000)); // 네트워크 지연 시뮬레이션
-    
+
     /* 실제 서버 연결 코드 (확정 시 교체)
     final url = Uri.parse('$baseUrl/users/delete-account');
     final response = await dio.delete(url.toString());
