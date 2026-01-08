@@ -1,5 +1,6 @@
 import 'package:common/constants/auth_constraints.dart';
 import 'package:domain/usecases/user/get_user.dart';
+import 'package:domain/usecases/user/update_password.dart';
 import 'package:domain/usecases/user/update_nickname.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
@@ -10,13 +11,19 @@ import 'package:presentation/viewmodels/my_page/my_page_viewmodel.dart';
 class AccountSettingViewModel extends ChangeNotifier {
   final GetUserUseCase getUserUseCase;
   final UpdateNickNameUseCase updateNickNameUseCase;
+  final UpdatePasswordUseCase updatePasswordUseCase;
   final MyPageViewModel myPageViewModel;
 
   AccountSettingViewModel({
     required this.getUserUseCase,
     required this.updateNickNameUseCase,
+    required this.updatePasswordUseCase,
     required this.myPageViewModel,
   });
+
+  Future<void> logout() async {
+    await myPageViewModel.logout();
+  }
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -92,7 +99,11 @@ class AccountSettingViewModel extends ChangeNotifier {
     required String newPassword,
     required String confirmPassword,
   }) async {
-    if (!validatePasswordChangeInputs(currentPassword, newPassword, confirmPassword)) {
+    if (!validatePasswordChangeInputs(
+      currentPassword,
+      newPassword,
+      confirmPassword,
+    )) {
       return false;
     }
 
@@ -100,8 +111,7 @@ class AccountSettingViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // TODO: 실제 서버 호출
-      // await updatePasswordUseCase(currentPassword, newPassword);
+      await updatePasswordUseCase(newPassword);
       return true;
     } catch (e) {
       _currentPasswordError = '비밀번호 변경에 실패했습니다.';
@@ -113,10 +123,10 @@ class AccountSettingViewModel extends ChangeNotifier {
   }
 
   bool validatePasswordChangeInputs(
-      String current,
-      String newPwd,
-      String confirmPwd,
-      ) {
+    String current,
+    String newPwd,
+    String confirmPwd,
+  ) {
     _currentPasswordError = null;
     _newPasswordError = null;
     _confirmPasswordError = null;
