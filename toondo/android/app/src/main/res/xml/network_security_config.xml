@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- 릴리즈에서 http://3.36.80.237:8083 (HTTP) 접근 허용 -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">3.36.80.237</domain>
+    </domain-config>
+</network-security-config>
