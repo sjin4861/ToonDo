@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  common:
+    path: packages/common
   data:
     path: packages/data
   domain:
@@ -32,6 +34,9 @@ dependencies:
   hive_flutter: ^1.1.0
   patrol: ^3.13.2
   rive: ^0.13.20
+  rive_common: ^0.4.15
+  path: ^1.9.0
+  path_provider: ^2.1.4
   get_it: ^8.0.3
   audioplayers: ^6.1.1
   injectable: ^2.5.0
