@@ -111,8 +111,28 @@ class ReminderNotificationService {
   }) async {
     await init();
 
+    // NOTE:
+    // 일부 릴리즈 빌드에서 R8/ProGuard로 인해 flutter_local_notifications 내부 Gson TypeToken이
+    // `TypeToken must be created with a type argument` 예외를 던질 수 있습니다.
+    // 이 경우 알림 동기화 때문에 앱 부팅이 막히지 않도록 best-effort로 실패를 흡수합니다.
+    bool _isTypeTokenShrinkerIssue(Object e) {
+      if (e is PlatformException) {
+        final msg = (e.message ?? '').toLowerCase();
+        return msg.contains('typetoken') && msg.contains('type argument');
+      }
+      return false;
+    }
+
     if (!enabledAll || !enabledReminder) {
-      await cancelReminder();
+      try {
+        await cancelReminder();
+      } catch (e) {
+        if (_isTypeTokenShrinkerIssue(e)) {
+          debugPrint('[Reminder] cancel failed due to shrinker TypeToken issue (ignored): $e');
+          return;
+        }
+        rethrow;
+      }
       return;
     }
 
@@ -157,6 +177,10 @@ class ReminderNotificationService {
       );
       debugPrint('[Reminder] scheduled EXACT @ $fireAt');
     } on PlatformException catch (e) {
+      if (_isTypeTokenShrinkerIssue(e)) {
+        debugPrint('[Reminder] schedule failed due to shrinker TypeToken issue (ignored): $e');
+        return;
+      }
       if (e.code == 'exact_alarms_not_permitted') {
         debugPrint('[Reminder] exact failed ($e) -> fallback to INEXACT');
         await _plugin.zonedSchedule(

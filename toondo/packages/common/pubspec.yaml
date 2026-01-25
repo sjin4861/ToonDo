@@ -12,6 +12,7 @@ dependencies:
     sdk: flutter
   flutter_svg: ^2.0.10+1
   rive: ^0.13.20
+  rive_common: ^0.4.15
   get_it: ^8.0.3
   injectable: ^2.5.0
   vector_graphics: any

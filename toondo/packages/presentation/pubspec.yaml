@@ -35,6 +35,7 @@ dependencies:
   hive_flutter: ^1.1.0
   patrol: ^3.13.2
   rive: ^0.13.20
+  rive_common: ^0.4.15
   audioplayers: ^6.1.1
   injectable: ^2.5.0
   rxdart: ^0.28.0

@@ -292,7 +292,7 @@ packages:
     source: hosted
     version: "0.13.20"
   rive_common:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: rive_common
       sha256: "2ba42f80d37a4efd0696fb715787c4785f8a13361e8aea9227c50f1e78cf763a"
