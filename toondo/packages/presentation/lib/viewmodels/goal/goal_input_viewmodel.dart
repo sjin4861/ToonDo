@@ -25,11 +25,8 @@ class GoalInputViewModel extends ChangeNotifier {
   String? dateError;
 
   bool withoutDeadline = false;
-  // TODO: UX 개선 - showOnHome 기본값을 true로 변경 고려
-  // TODO: 현재 false로 설정되어 있어 사용자가 명시적으로 토글을 켜야 메인화면에 표시됨
-  // TODO: true로 변경하면 모든 새 목표가 기본적으로 메인화면에 표시되어 더 직관적
-  // TODO: 단점: 메인화면이 복잡해질 수 있음, 사용자 선택권 감소
-  bool showOnHome = false; // 기본값 유지 (변경 시 true로 수정)
+  // 기본값을 true로 설정해 생성 직후 홈 반영 체감 개선
+  bool showOnHome = true;
 
   final Goal? targetGoal;
   final CreateGoalRemoteUseCase createGoalRemoteUseCase;
@@ -97,7 +94,7 @@ class GoalInputViewModel extends ChangeNotifier {
         final created = await createGoalRemoteUseCase(newGoal);
         await saveGoalLocalUseCase(created);
         
-        // 홈 뷰모델 동기화 - 목표 생성 후 홈 화면 업데이트
+        // 홈 뷰모델 동기화 - 목표 생성 후 즉시 반영
         try {
           await GetIt.instance<HomeViewModel>().loadGoals();
           print('🔄 목표 생성 후 홈 뷰모델 동기화 완료');
@@ -121,7 +118,7 @@ class GoalInputViewModel extends ChangeNotifier {
         await updateGoalRemoteUseCase(newGoal);
         await updateGoalLocalUseCase(newGoal);
         
-        // 홈 뷰모델 동기화 - 목표 수정 후 홈 화면 업데이트
+        // 홈 뷰모델 동기화 - 목표 수정 후 즉시 반영
         try {
           await GetIt.instance<HomeViewModel>().loadGoals();
           print('🔄 목표 수정 후 홈 뷰모델 동기화 완료');
