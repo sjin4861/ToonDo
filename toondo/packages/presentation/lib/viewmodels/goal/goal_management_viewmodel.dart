@@ -76,11 +76,22 @@ class GoalManagementViewModel extends ChangeNotifier {
 
   Future<void> syncGoals() async {
     final remoteGoals = await getGoalsRemoteUseCase();
-    for (final goal in remoteGoals) {
-      await updateGoalLocalUseCase(goal);
+    final localGoals = await getGoalsLocalUseCase();
+    final localById = {for (final goal in localGoals) goal.id: goal};
+
+    for (final remoteGoal in remoteGoals) {
+      final localGoal = localById[remoteGoal.id];
+      final mergedGoal = localGoal == null
+          ? remoteGoal
+          : remoteGoal.copyWith(
+              showOnHome: localGoal.showOnHome || remoteGoal.showOnHome,
+            );
+
+      await updateGoalLocalUseCase(mergedGoal);
     }
+
     _allGoals = await getGoalsLocalUseCase();
-    notifyListeners();
+    await applyFilter();
   }
 
   Future<void> setFilterType(GoalFilterType type) async {
@@ -148,36 +159,35 @@ class GoalManagementViewModel extends ChangeNotifier {
     final updated = goal.copyWith(progress: newProgress);
     await updateGoalLocalUseCase(updated);
     await loadGoals();
-    _updateHomeView();
+    await _updateHomeView();
   }
 
   Future<void> updateGoal(String goalId, Goal updated) async {
     await updateGoalRemoteUseCase(updated);
     await updateGoalLocalUseCase(updated);
     await loadGoals();
-    _updateHomeView();
+    await _updateHomeView();
   }
 
   Future<void> giveUpGoal(String goalId) async {
-    final goal = _getGoalById(goalId);
-    await updateGoalStatusUseCase(goal, Status.givenUp);
-    await loadGoals();
-    _updateHomeView();
+    await _updateGoalStatusWithSync(goalId, Status.givenUp);
   }
 
   Future<void> completeGoal(String goalId) async {
-    final goal = _getGoalById(goalId);
-    await updateGoalStatusUseCase(goal, Status.completed);
-    await loadGoals();
-    await applyFilter();
-    _updateHomeView();
+    await _updateGoalStatusWithSync(goalId, Status.completed);
   }
 
   Future<void> deleteGoal(String goalId) async {
     await deleteGoalRemoteUseCase(goalId);
     await deleteGoalLocalUseCase(goalId);
     await loadGoals();
-    _updateHomeView();
+    await _updateHomeView();
+  }
+
+  Future<void> upsertGoalAndRefresh(Goal goal) async {
+    await updateGoalLocalUseCase(goal);
+    await loadGoals();
+    await _updateHomeView();
   }
 
   Goal _getGoalById(String id) => _allGoals.firstWhere(
@@ -185,9 +195,31 @@ class GoalManagementViewModel extends ChangeNotifier {
     orElse: () => throw Exception("Goal not found"),
   );
 
-  void _updateHomeView() {
+  Future<void> _updateHomeView() async {
     try {
-      GetIt.instance<HomeViewModel>().loadGoals();
+      await GetIt.instance<HomeViewModel>().loadGoals();
     } catch (_) {}
+  }
+
+  Future<void> _updateGoalStatusWithSync(String goalId, Status newStatus) async {
+    final originalGoal = _getGoalById(goalId);
+
+    final optimisticGoal = originalGoal.copyWith(
+      status: newStatus,
+      progress: newStatus == Status.completed ? 100.0 : originalGoal.progress,
+    );
+
+    await updateGoalLocalUseCase(optimisticGoal);
+    await loadGoals();
+
+    try {
+      await updateGoalStatusUseCase(originalGoal, newStatus);
+      await syncGoals();
+    } catch (_) {
+      await updateGoalLocalUseCase(originalGoal);
+      await loadGoals();
+    }
+
+    await _updateHomeView();
   }
 }
