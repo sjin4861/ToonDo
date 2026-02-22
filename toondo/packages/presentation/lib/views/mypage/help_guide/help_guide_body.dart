@@ -4,6 +4,8 @@ import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/designsystem/typography/app_typography.dart';
 import 'package:presentation/viewmodels/my_page/help_guide/help_guide_viewmodel.dart';
+import 'package:presentation/views/mypage/help_guide/legal/legal_document_screen.dart';
+import 'package:presentation/views/mypage/help_guide/legal/legal_texts.dart';
 import 'package:presentation/views/mypage/widget/my_page_setting_tile.dart';
 import 'package:provider/provider.dart';
 
@@ -33,7 +35,17 @@ class HelpGuideBody extends StatelessWidget {
           title: '이용약관',
           // icon: Icons.arrow_forward_ios,
           trailing: trailingIcon,
-          onTap: vm.openTerms,
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const LegalDocumentScreen(
+                  title: '이용약관',
+                  content: LegalTexts.termsOfService,
+                ),
+              ),
+            );
+          },
         ),
         MyPageSettingTile(
           title: '앱 리뷰 남기기',
@@ -45,7 +57,17 @@ class HelpGuideBody extends StatelessWidget {
           title: '개인정보 처리방침',
           // icon: Icons.arrow_forward_ios,
           trailing: trailingIcon,
-          onTap: vm.openPrivacyPolicy,
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const LegalDocumentScreen(
+                  title: '개인정보 처리방침',
+                  content: LegalTexts.privacyPolicy,
+                ),
+              ),
+            );
+          },
         ),
       ],
     );
