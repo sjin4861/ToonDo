@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
@@ -26,22 +28,31 @@ class AppNotificationViewModel extends ChangeNotifier {
 
   NotificationSettings get settings => _settings;
 
+  Future<void> _syncBestEffort(NotificationSettings s) async {
+    try {
+      await _reminder
+          .sync(
+            enabledAll: s.all,
+            enabledReminder: s.reminder,
+            soundOn: s.sound,
+            timeHHmm: s.time,
+          )
+          .timeout(const Duration(seconds: 3));
+    } on PlatformException catch (e) {
+      debugPrint('[Notification] sync failed (ignored): $e');
+    } on TimeoutException catch (e) {
+      debugPrint('[Notification] sync timeout (ignored): $e');
+    } catch (e) {
+      debugPrint('[Notification] sync error (ignored): $e');
+    }
+  }
+
   Future<void> load() async {
     _settings = await _get();
     notifyListeners();
 
-    // 앱 시작 시 현재 설정으로 스케줄 동기화
-    try {
-      await _reminder.sync(
-        enabledAll: _settings.all,
-        enabledReminder: _settings.reminder,
-        soundOn: _settings.sound,
-        timeHHmm: _settings.time,
-      );
-    } on PlatformException catch (e) {
-      // 알림 동기화 실패가 앱 부팅을 막지 않도록 best-effort로 무시
-      debugPrint('[Notification] sync failed (ignored): $e');
-    }
+    // 앱 시작 시 현재 설정으로 스케줄 동기화 (부팅을 막지 않도록 best-effort)
+    unawaited(_syncBestEffort(_settings));
   }
 
   Future<void> update(NotificationSettings newSettings) async {
@@ -49,16 +60,7 @@ class AppNotificationViewModel extends ChangeNotifier {
     await _set(newSettings);
     notifyListeners();
 
-    // 설정 변경될 때마다 즉시 재스케줄
-    try {
-      await _reminder.sync(
-        enabledAll: _settings.all,
-        enabledReminder: _settings.reminder,
-        soundOn: _settings.sound,
-        timeHHmm: _settings.time,
-      );
-    } on PlatformException catch (e) {
-      debugPrint('[Notification] sync failed (ignored): $e');
-    }
+    // 설정 변경될 때마다 즉시 재스케줄 (best-effort)
+    unawaited(_syncBestEffort(_settings));
   }
 }
