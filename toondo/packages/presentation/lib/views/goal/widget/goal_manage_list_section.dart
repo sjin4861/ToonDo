@@ -42,11 +42,62 @@ class GoalManageListSection extends StatelessWidget {
   }
 }
 
-class _GoalCategory extends StatelessWidget {
+class _GoalCategory extends StatefulWidget {
   final List<Goal> goals;
   final GoalManagementViewModel viewModel;
 
   const _GoalCategory({required this.goals, required this.viewModel});
+
+  @override
+  State<_GoalCategory> createState() => _GoalCategoryState();
+}
+
+class _GoalCategoryState extends State<_GoalCategory> {
+  final Set<String> _pendingCompleteGoalIds = <String>{};
+  final Set<String> _pendingRevertGoalIds = <String>{};
+
+  Future<void> _handleCheckedChange(Goal goal, bool value) async {
+    if (value) {
+      if (_pendingCompleteGoalIds.contains(goal.id) ||
+          _pendingRevertGoalIds.contains(goal.id)) {
+        return;
+      }
+
+      setState(() {
+        _pendingCompleteGoalIds.add(goal.id);
+      });
+
+      await Future.delayed(const Duration(milliseconds: 900));
+
+      if (!mounted) return;
+      await widget.viewModel.completeGoal(goal.id);
+
+      if (!mounted) return;
+      setState(() {
+        _pendingCompleteGoalIds.remove(goal.id);
+      });
+      return;
+    }
+
+    if (_pendingCompleteGoalIds.contains(goal.id) ||
+        _pendingRevertGoalIds.contains(goal.id)) {
+      return;
+    }
+
+    setState(() {
+      _pendingRevertGoalIds.add(goal.id);
+    });
+
+    await Future.delayed(const Duration(milliseconds: 900));
+
+    if (!mounted) return;
+    await widget.viewModel.giveUpGoal(goal.id);
+
+    if (!mounted) return;
+    setState(() {
+      _pendingRevertGoalIds.remove(goal.id);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,15 +107,20 @@ class _GoalCategory extends StatelessWidget {
         ListView.separated(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: goals.length,
+          itemCount: widget.goals.length,
           separatorBuilder: (_, __) => SizedBox(height: AppSpacing.v12),
           itemBuilder: (context, index) {
-            final goal = goals[index];
+            final goal = widget.goals[index];
+            final isPendingComplete = _pendingCompleteGoalIds.contains(goal.id);
+            final isPendingRevert = _pendingRevertGoalIds.contains(goal.id);
+
             return Padding(
               padding: EdgeInsets.symmetric(horizontal: AppSpacing.h8),
               child: AppGoalItem(
                 dismissKey: ValueKey(goal.id),
-                onDelete: () { viewModel.deleteGoal(goal.id); },
+                onDelete: () {
+                  widget.viewModel.deleteGoal(goal.id);
+                },
                 onTap: () {
                   showModalBottomSheet(
                     context: context,
@@ -79,7 +135,7 @@ class _GoalCategory extends StatelessWidget {
                       },
                       onDelete: () {
                         Navigator.pop(context);
-                        viewModel.deleteGoal(goal.id);
+                        widget.viewModel.deleteGoal(goal.id);
                       },
                     ),
                   );
@@ -87,14 +143,12 @@ class _GoalCategory extends StatelessWidget {
                 title: goal.name,
                 iconPath: goal.icon,
                 subTitle: buildGoalSubtitle(goal.startDate, goal.endDate),
-                isChecked: isGoalChecked(goal.status),
-                onCheckedChanged: (value) {
-                  if (value) {
-                    viewModel.completeGoal(goal.id);
-                  } else {
-                    viewModel.giveUpGoal(goal.id);
-                  }
-                },
+                isChecked: isPendingComplete
+                    ? true
+                    : isPendingRevert
+                        ? false
+                        : isGoalChecked(goal.status),
+                onCheckedChanged: (value) => _handleCheckedChange(goal, value),
               ),
             );
           },
@@ -107,7 +161,12 @@ class _GoalCategory extends StatelessWidget {
   void _navigateToEdit(BuildContext context, Goal goal) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => GoalInputScreen(goal: goal)),
+      MaterialPageRoute(
+        builder: (_) => GoalInputScreen(
+          goal: goal,
+          goalManagementViewModel: widget.viewModel,
+        ),
+      ),
     );
   }
 }
