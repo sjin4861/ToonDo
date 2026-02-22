@@ -187,8 +187,8 @@ class _AppGoalItemState extends State<AppGoalItem> {
     final String? iconPath = widget.iconPath ?? Assets.icons.icHelpCircle.path;
     final bool isCustomIcon = iconPath != null && iconPath.startsWith('/');
 
-    // 아이콘 크기는 정수 픽셀로 고정 (반픽셀 문제 방지)
-    const double iconSize = 24.0; // 정수 픽셀
+    // 아이콘 크기는 Figma 비율(외곽 32) 기준
+    const double iconSize = 32.0;
     const double innerPadding = 4.0; // 정수 픽셀
 
     return Container(
@@ -199,7 +199,7 @@ class _AppGoalItemState extends State<AppGoalItem> {
         color: AppColors.backgroundNormal,
         border: Border.all(
           color: borderColor,
-          width: 1.0, // 정수 픽셀
+          width: 1.5,
         ),
       ),
       clipBehavior: Clip.antiAlias,
@@ -208,14 +208,14 @@ class _AppGoalItemState extends State<AppGoalItem> {
           ? ClipOval(
               child: SizedBox.expand(
                 child: Image.file(
-                  File(iconPath!),
+                  File(iconPath),
                   fit: BoxFit.cover,
                   alignment: Alignment.center,
                   filterQuality: FilterQuality.high,
                   errorBuilder: (context, error, stackTrace) {
                     return Icon(
                       Icons.help_outline_rounded,
-                      size: iconSize,
+                      size: AppDimensions.iconSize20,
                       color: widget.isChecked ? AppColors.status100_50 : AppColors.status100,
                     );
                   },
@@ -238,7 +238,7 @@ class _AppGoalItemState extends State<AppGoalItem> {
     if (widget.subTitle == null || widget.subTitle!.isEmpty) {
       return Text(
         widget.title,
-        style: AppTypography.body2Bold.copyWith(
+        style: AppTypography.h2SemiBold.copyWith(
           color: widget.isChecked
               ? AppColors.status100.withOpacity(0.3)
               : AppColors.status100,
@@ -251,18 +251,8 @@ class _AppGoalItemState extends State<AppGoalItem> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          widget.title,
-          style: AppTypography.body2Bold.copyWith(
-            color: widget.isChecked
-                ? AppColors.status100.withOpacity(0.3)
-                : AppColors.status100,
-          ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        SizedBox(height: AppSpacing.v4),
         Text(
           widget.subTitle!,
           style: AppTypography.caption3Regular.copyWith(
@@ -273,26 +263,65 @@ class _AppGoalItemState extends State<AppGoalItem> {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
+        SizedBox(height: 1),
+        Text(
+          widget.title,
+          style: AppTypography.h2SemiBold.copyWith(
+            color: widget.isChecked
+                ? AppColors.status100.withOpacity(0.3)
+                : AppColors.status100,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
       ],
     );
   }
 
   Widget _buildCheckbox() {
+    final bool isEnabled = widget.onCheckedChanged != null;
+
     return SizedBox(
-      width: AppDimensions.checkboxSize.w,
-      height: AppDimensions.checkboxSize.h,
-      child: Checkbox(
-        value: widget.isChecked,
-        onChanged: (value) {
-          if (value != null) widget.onCheckedChanged?.call(value);
-        },
-        side: BorderSide(
-          color: AppColors.borderLight,
-          width: AppDimensions.checkboxBorderWidth.w,
+      width: AppDimensions.iconSize32,
+      height: AppDimensions.iconSize32,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap:
+              isEnabled
+                  ? () => widget.onCheckedChanged!.call(!widget.isChecked)
+                  : null,
+          customBorder: const CircleBorder(),
+          child: Center(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 120),
+              width: AppDimensions.checkboxSize,
+              height: AppDimensions.checkboxSize,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color:
+                    widget.isChecked
+                        ? AppColors.green500
+                        : Colors.transparent,
+                border: Border.all(
+                  color:
+                      widget.isChecked
+                          ? AppColors.green500
+                          : AppColors.status100_25,
+                  width: AppDimensions.checkboxBorderWidth,
+                ),
+              ),
+              child:
+                  widget.isChecked
+                      ? Icon(
+                        Icons.check_rounded,
+                        size: AppDimensions.iconSize16,
+                        color: AppColors.status0,
+                      )
+                      : null,
+            ),
+          ),
         ),
-        activeColor: AppColors.itemCompletedBorder,
-        checkColor: AppColors.status0,
-        visualDensity: VisualDensity.compact,
       ),
     );
   }
