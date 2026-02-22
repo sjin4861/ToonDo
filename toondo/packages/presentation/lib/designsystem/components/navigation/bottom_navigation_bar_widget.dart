@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
 import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
-import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/designsystem/typography/app_typography.dart';
 import 'package:presentation/viewmodels/global/app_notification_viewmodel.dart';
 import 'package:presentation/views/goal/manage/goal_manage_screen.dart';
@@ -123,7 +122,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
               label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: AppTypography.caption3Regular.copyWith(
+              style: AppTypography.caption2Regular.copyWith(
                 color: AppColors.bottomIconColor,
                 height: 1.0,
               ),
