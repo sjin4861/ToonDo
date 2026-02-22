@@ -14,14 +14,20 @@ import 'package:domain/usecases/goal/save_goal_local.dart';
 import 'package:domain/usecases/goal/update_goal_remote.dart';
 import 'package:domain/usecases/goal/update_goal_local.dart';
 import 'package:presentation/viewmodels/goal/goal_input_viewmodel.dart';
-import 'package:presentation/viewmodels/home/home_viewmodel.dart';
 import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart';
+import 'package:presentation/viewmodels/home/home_viewmodel.dart';
 
 class GoalInputScreen extends StatelessWidget {
   final Goal? goal;
   final bool isFromOnboarding;
+  final GoalManagementViewModel? goalManagementViewModel;
 
-  const GoalInputScreen({super.key, this.goal, this.isFromOnboarding = false});
+  const GoalInputScreen({
+    super.key,
+    this.goal,
+    this.isFromOnboarding = false,
+    this.goalManagementViewModel,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -77,10 +83,6 @@ class GoalInputScreen extends StatelessWidget {
                                 ),
                               );
 
-                              // 이후 상태 동기화 (saveGoal에서 이미 수행하지만 안전장치)
-                              GetIt.instance<HomeViewModel>().loadGoals();
-                              GetIt.instance<GoalManagementViewModel>()
-                                  .loadGoals();
                             }
                           },
                         )
@@ -92,27 +94,34 @@ class GoalInputScreen extends StatelessWidget {
                               // context가 여전히 마운트되어 있는지 확인
                               if (!context.mounted) return;
                               
-                              // 상태 동기화를 먼저 수행
-                              GetIt.instance<HomeViewModel>().loadGoals();
-                              GetIt.instance<GoalManagementViewModel>()
-                                  .loadGoals();
-
                               // 바텀시트를 먼저 표시
-                              await showModalBottomSheet(
+                              final confirmed = await showModalBottomSheet<bool>(
                                 context: context,
                                 isScrollControlled: true,
                                 useRootNavigator: true,
                                 backgroundColor: Colors.transparent,
-                                builder: (_) => GoalCompleteBottomSheet(
+                                builder: (sheetContext) => GoalCompleteBottomSheet(
                                   goalTitle: newGoal.name,
                                   iconPath: newGoal.icon!,
                                   startDate: newGoal.startDate,
                                   endDate: newGoal.endDate,
                                   onConfirm: () {
-                                    Navigator.pop(context);
+                                    Navigator.of(sheetContext).pop(true);
                                   }
                                 ),
                               );
+
+                              if (confirmed != true) return;
+
+                              try {
+                                final vm = goalManagementViewModel;
+                                if (vm != null) {
+                                  await vm.upsertGoalAndRefresh(newGoal);
+                                } else {
+                                  await GetIt.instance<GoalManagementViewModel>().loadGoals();
+                                }
+                                await GetIt.instance<HomeViewModel>().loadGoals();
+                              } catch (_) {}
                               
                               // 바텀시트가 닫힌 후 현재 화면을 닫기
                               if (context.mounted) {
