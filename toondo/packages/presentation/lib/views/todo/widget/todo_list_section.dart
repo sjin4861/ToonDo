@@ -120,6 +120,7 @@ class TodoListSection extends StatelessWidget {
                       title: todo.title,
                       iconPath: iconPath,
                       subTitle: subtitle,
+                      isDdayTodo: isDDay,
                       isChecked: isCompleted,
                       levelColor: levelColor,
                       onDelete: () {
