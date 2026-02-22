@@ -150,10 +150,18 @@ class _AppBootstrapperState extends State<AppBootstrapper> {
           () => ReminderNotificationService());
       final themeVM = GetIt.instance<AppThemeViewModel>();
       final notificationVM = GetIt.instance<AppNotificationViewModel>();
-      await Future.wait([
-        themeVM.load().timeout(const Duration(seconds: 4)),
-        notificationVM.load().timeout(const Duration(seconds: 4)),
-      ]);
+      // 로딩이 다소 느리거나, OS/플러그인 이슈로 Future가 응답하지 않아도
+      // 앱 부팅 자체가 막히지 않도록 best-effort로 처리합니다.
+      try {
+        await themeVM.load().timeout(const Duration(seconds: 10));
+      } catch (e) {
+        debugPrint('[Init] theme load failed (ignored): $e');
+      }
+      try {
+        await notificationVM.load().timeout(const Duration(seconds: 10));
+      } catch (e) {
+        debugPrint('[Init] notification load failed (ignored): $e');
+      }
 
       // 오디오는 기본 No-op으로 먼저 등록하고, 실제 엔진 초기화는 MyApp 첫 프레임 이후에 처리
       final enabledNow =
@@ -371,7 +379,7 @@ class MyAppState extends State<MyApp> {
                 builder: (context, child) {
                   final mq = MediaQuery.of(context);
                   return MediaQuery(
-                    data: mq.copyWith(textScaler: TextScaler.noScaling),
+                    data: mq.copyWith(textScaler: TextScaler.linear(1.1)),
                     child: child!,
                   );
                 },
