@@ -19,7 +19,7 @@ class GoalSelectionSection extends StatelessWidget {
     
     final dropdownItems = activeGoals.map(
           (g) => GoalDropdownItem(
-        id: int.tryParse(g.id) ?? 0,
+        id: g.id,
         title: g.name,
         iconPath: g.icon,
       ),
@@ -40,7 +40,7 @@ class GoalSelectionSection extends StatelessWidget {
           selectedId: viewModel.selectedGoalId,
           isExpanded: viewModel.showGoalDropdown,
           onToggle: viewModel.toggleGoalDropdown,
-          onItemSelected: (id) => viewModel.selectGoal(id.toString()),
+          onItemSelected: viewModel.selectGoal,
         ),
       ],
     );

@@ -11,6 +11,7 @@ class SecureLocalDataSource {
   static const _refreshTokenKey = 'refresh_token';
   // legacy key (backward compatible)
   static const _legacyJwtTokenKey = 'jwt_token';
+  static const _passwordKeyPrefix = 'local_password_';
 
   Future<void> saveToken(String token) async {
     // Backward compatible: treat "token" as accessToken.
@@ -71,5 +72,19 @@ class SecureLocalDataSource {
 
   Future<void> deleteUserNumericId() async {
     await secureStorage.delete(key: 'user_numeric_id');
+  }
+
+  String _passwordKey(String loginId) => '$_passwordKeyPrefix$loginId';
+
+  Future<void> saveUserPassword(String loginId, String password) async {
+    await secureStorage.write(key: _passwordKey(loginId), value: password);
+  }
+
+  Future<String?> getUserPassword(String loginId) async {
+    return secureStorage.read(key: _passwordKey(loginId));
+  }
+
+  Future<void> deleteUserPassword(String loginId) async {
+    await secureStorage.delete(key: _passwordKey(loginId));
   }
 }

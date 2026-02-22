@@ -21,67 +21,95 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<User> registerUser(String loginId, String password) async {
-    print('AuthRepositoryImpl: registerUser called with loginId=$loginId');
-    final tokens = await remoteDataSource.registerUser(loginId, password);
-    // signup 응답이 201 + empty body인 경우(토큰 없음)도 "회원가입 성공"으로 처리한다.
-    // 이때 토큰 저장은 하지 않고, 이후 login에서 토큰을 발급/저장하도록 둔다.
-    if (tokens.accessToken.isNotEmpty && tokens.refreshToken.isNotEmpty) {
-      await secureLocalDataSource.saveAccessToken(tokens.accessToken);
-      await secureLocalDataSource.saveRefreshToken(tokens.refreshToken);
-      if (Constants.useCustomUserIdHeader) {
-        // 실제 등록 후 백엔드가 userId 내려주면 그 값으로 교체 필요 (현재는 test placeholder)
-        await secureLocalDataSource.saveUserNumericId(
-          Constants.testUserNumericId,
-        );
+    if (Constants.remoteApiEnabled) {
+      final tokens = await remoteDataSource.registerUser(loginId, password);
+      if (tokens.accessToken.isNotEmpty && tokens.refreshToken.isNotEmpty) {
+        await secureLocalDataSource.saveAccessToken(tokens.accessToken);
+        await secureLocalDataSource.saveRefreshToken(tokens.refreshToken);
       }
+
+      final nextId = await localDataSource.getNextUserId();
+      final remoteUser = User(id: nextId, loginId: loginId.trim(), nickname: null);
+      await localDataSource.saveRegisteredUser(UserModel.fromEntity(remoteUser));
+      await localDataSource.cacheUser(UserModel.fromEntity(remoteUser));
+      await secureLocalDataSource.saveUserPassword(loginId.trim(), password);
+      return remoteUser;
     }
 
-    // 토큰만 저장하고 빈 사용자 객체 반환
-    final emptyUser = User(id: 0, loginId: loginId, nickname: null);
-    await localDataSource.cacheUser(UserModel.fromEntity(emptyUser));
-    return emptyUser;
+    final trimmedLoginId = loginId.trim();
+    final exists = await localDataSource.hasRegisteredUser(trimmedLoginId);
+    if (exists) {
+      throw Exception('이미 가입된 아이디입니다.');
+    }
+
+    final nextId = await localDataSource.getNextUserId();
+    final user = User(id: nextId, loginId: trimmedLoginId, nickname: null);
+
+    await localDataSource.saveRegisteredUser(UserModel.fromEntity(user));
+    await localDataSource.cacheUser(UserModel.fromEntity(user));
+    await secureLocalDataSource.saveUserPassword(trimmedLoginId, password);
+    await secureLocalDataSource.saveAccessToken('LOCAL_ACCESS_$trimmedLoginId');
+    await secureLocalDataSource.saveRefreshToken(
+      'LOCAL_REFRESH_$trimmedLoginId',
+    );
+
+    return user;
   }
 
   @override
   Future<User> login(String loginId, String password) async {
-    final tokens = await remoteDataSource.login(loginId, password);
-    await secureLocalDataSource.saveAccessToken(tokens.accessToken);
-    await secureLocalDataSource.saveRefreshToken(tokens.refreshToken);
-    if (Constants.useCustomUserIdHeader) {
-      // test bypass 시 토큰 대신 사용자 번호를 헤더에 넣을 수 있도록 저장
-      await secureLocalDataSource.saveUserNumericId(
-        Constants.testUserNumericId,
-      );
+    if (Constants.remoteApiEnabled) {
+      final tokens = await remoteDataSource.login(loginId, password);
+      await secureLocalDataSource.saveAccessToken(tokens.accessToken);
+      await secureLocalDataSource.saveRefreshToken(tokens.refreshToken);
+
+      final model = await localDataSource.getRegisteredUser(loginId.trim()) ??
+          UserModel.fromEntity(
+            User(
+              id: await localDataSource.getNextUserId(),
+              loginId: loginId.trim(),
+              nickname: null,
+            ),
+          );
+      await localDataSource.saveRegisteredUser(model);
+      await localDataSource.cacheUser(model);
+      return model.toEntity();
     }
 
-    // 토큰만 저장하고 빈 사용자 객체 반환
-    final emptyUser = User(
-      id: 0,
-      loginId: loginId,
-      nickname: (loginId == Constants.testLoginId) ? '테스트계정' : null,
+    final trimmedLoginId = loginId.trim();
+    final userModel = await localDataSource.getRegisteredUser(trimmedLoginId);
+    if (userModel == null) {
+      throw Exception('로그인 실패: 존재하지 않는 아이디입니다.');
+    }
+
+    final savedPassword = await secureLocalDataSource.getUserPassword(
+      trimmedLoginId,
     );
-    await localDataSource.cacheUser(UserModel.fromEntity(emptyUser));
-    return emptyUser;
+    if (savedPassword == null || savedPassword != password) {
+      throw Exception('로그인 실패: Invalid password');
+    }
+
+    await localDataSource.cacheUser(userModel);
+    await secureLocalDataSource.saveAccessToken('LOCAL_ACCESS_$trimmedLoginId');
+    await secureLocalDataSource.saveRefreshToken(
+      'LOCAL_REFRESH_$trimmedLoginId',
+    );
+
+    return userModel.toEntity();
   }
 
   @override
   Future<void> logout() async {
-    final refreshToken = await secureLocalDataSource.getRefreshToken();
-
-    // 서버 로그아웃은 best-effort: 실패하더라도 로컬 상태는 반드시 정리
-    if (refreshToken != null && refreshToken.isNotEmpty) {
-      try {
-        await remoteDataSource.logout(refreshToken);
-      } catch (e) {
-        print('AuthRepositoryImpl: remote logout failed: $e');
+    if (Constants.remoteApiEnabled) {
+      final refreshToken = await secureLocalDataSource.getRefreshToken();
+      if (refreshToken != null && refreshToken.isNotEmpty) {
+        try {
+          await remoteDataSource.logout(refreshToken);
+        } catch (_) {}
       }
-    }
-
-    // refreshToken이 없거나 서버 호출이 실패해도 쿠키 기반 세션은 남을 수 있으므로 제거
-    try {
-      await remoteDataSource.clearCookies();
-    } catch (e) {
-      print('AuthRepositoryImpl: clearCookies failed: $e');
+      try {
+        await remoteDataSource.clearCookies();
+      } catch (_) {}
     }
 
     await secureLocalDataSource.clearAuthTokens();
@@ -96,15 +124,21 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<bool> checkLoginIdExists(String loginId) {
-    return remoteDataSource.isLoginIdRegistered(loginId);
+    if (Constants.remoteApiEnabled) {
+      return remoteDataSource.isLoginIdRegistered(loginId.trim());
+    }
+
+    return localDataSource.hasRegisteredUser(loginId.trim());
   }
 
   @override
   Future<void> deleteAccount() async {
-    // TODO: 백엔드 API 호출 (현재는 구현되지 않음)
-    // await remoteDataSource.deleteAccount();
+    final currentUser = await localDataSource.getCurrentUser();
+    if (currentUser != null) {
+      await localDataSource.deleteRegisteredUser(currentUser.loginId);
+      await secureLocalDataSource.deleteUserPassword(currentUser.loginId);
+    }
 
-    // 로컬 데이터 삭제
     await secureLocalDataSource.clearAuthTokens();
     await secureLocalDataSource.deleteUserNumericId();
     await localDataSource.clearUser();

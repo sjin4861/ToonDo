@@ -7,10 +7,9 @@ import 'package:presentation/designsystem/colors/app_colors.dart';
 import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/designsystem/typography/app_typography.dart';
-import 'package:presentation/designsystem/components/icons/app_circle_file_icon.dart';
 
 class GoalDropdownItem {
-  final int id;
+  final String id;
   final String? iconPath;
   final String title;
 
@@ -26,7 +25,7 @@ class AppGoalDropdown extends StatelessWidget {
   final String? selectedId;
   final bool isExpanded;
   final VoidCallback onToggle;
-  final ValueChanged<int> onItemSelected;
+  final ValueChanged<String> onItemSelected;
 
   const AppGoalDropdown({
     super.key,
@@ -40,9 +39,9 @@ class AppGoalDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final selectedItem = items.firstWhere(
-          (item) => item.id.toString() == selectedId,
+          (item) => item.id == selectedId,
       orElse: () => GoalDropdownItem(
-        id: -1,
+        id: '-1',
         title: '목표를 선택하세요.',
         iconPath: Assets.icons.icHelpCircle.path,
       ),
@@ -110,7 +109,7 @@ class AppGoalDropdown extends StatelessWidget {
 
                 final index = rawIndex ~/ 2;
                 final item = items[index];
-                final isSelected = item.id.toString() == selectedId;
+                final isSelected = item.id == selectedId;
 
                 final isFirst = index == 0;
                 final isLast  = index == items.length - 1;
@@ -206,7 +205,6 @@ class AppGoalDropdown extends StatelessWidget {
     
     // 아이콘 크기는 정수 픽셀로 고정 (반픽셀 문제 방지)
     const double iconContainerSize = 24.0; // 정수 픽셀
-    const double iconPadding = 4.0; // 정수 픽셀 (SVG/Asset 아이콘용)
     
     if (isCustomIcon) {
       // 커스텀 아이콘은 패딩 없이 원형 컨테이너를 꽉 채움
@@ -216,7 +214,7 @@ class AppGoalDropdown extends StatelessWidget {
           width: iconContainerSize,
           height: iconContainerSize,
           child: Image.file(
-            File(iconPath!),
+            File(iconPath),
             fit: BoxFit.cover,
             alignment: Alignment.center,
             filterQuality: FilterQuality.high,
