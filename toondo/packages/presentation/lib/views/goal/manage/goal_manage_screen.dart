@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:domain/entities/goal.dart';
 import 'package:presentation/designsystem/components/buttons/app_button.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/viewmodels/home/home_viewmodel.dart';
@@ -9,13 +10,33 @@ import 'package:provider/provider.dart';
 import 'package:get_it/get_it.dart';
 import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart';
 
-class GoalManageScreen extends StatelessWidget {
+class GoalManageScreen extends StatefulWidget {
   const GoalManageScreen({super.key});
+
+  @override
+  State<GoalManageScreen> createState() => _GoalManageScreenState();
+}
+
+class _GoalManageScreenState extends State<GoalManageScreen> {
+  late final GoalManagementViewModel _viewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _viewModel = GetIt.instance<GoalManagementViewModel>();
+    _viewModel.loadGoals();
+  }
+
+  @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<GoalManagementViewModel>.value(
-      value: GetIt.instance<GoalManagementViewModel>(),
+      value: _viewModel,
       child: BaseScaffold(
         title: '목표',
         body: Align(alignment: Alignment.topCenter, child: GoalManageBody()),
@@ -27,20 +48,23 @@ class GoalManageScreen extends StatelessWidget {
             ),
             child: AppButton(
               label: '목표 추가하기',
-              onPressed: () {
-                Navigator.push(
+              onPressed: () async {
+                final result = await Navigator.push<Goal?>(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const GoalInputScreen(),
+                    builder: (context) => GoalInputScreen(
+                      goalManagementViewModel: _viewModel,
+                    ),
                   ),
-                ).then((_) {
-                  final viewModel = Provider.of<GoalManagementViewModel>(
-                    context,
-                    listen: false,
-                  );
-                  viewModel.loadGoals();
-                  GetIt.instance<HomeViewModel>().loadGoals();
-                });
+                );
+
+                if (result != null) {
+                  await _viewModel.upsertGoalAndRefresh(result);
+                } else {
+                  await _viewModel.loadGoals();
+                }
+
+                await GetIt.instance<HomeViewModel>().loadGoals();
               },
             ),
           ),
