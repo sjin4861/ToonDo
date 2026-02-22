@@ -18,6 +18,7 @@ class AppTodoItem extends StatefulWidget {
   final ValueChanged<bool>? onCheckedChanged;
   final VoidCallback? onTap;
   final VoidCallback? onDelete;
+  final bool isDdayTodo;
 
   const AppTodoItem({
     super.key,
@@ -29,6 +30,7 @@ class AppTodoItem extends StatefulWidget {
     this.onCheckedChanged,
     this.onTap,
     this.onDelete,
+    this.isDdayTodo = false,
   });
 
   @override
@@ -192,34 +194,44 @@ class _AppTodoItemState extends State<AppTodoItem> {
     final String? iconPath = widget.iconPath ?? Assets.icons.icHelpCircle.path;
     final bool isCustomIcon = iconPath != null && iconPath.startsWith('/');
 
-    // 아이콘 크기는 정수 픽셀로 고정 (반픽셀 문제 방지)
-    const double iconSize = 24.0; // 정수 픽셀 (radius * 2)
-    const double iconRadius = 12.0; // 정수 픽셀
-    const double innerPadding = 4.0; // 정수 픽셀
-
-    return CircleAvatar(
-      radius: iconRadius, // 정수 픽셀
-      backgroundColor: backgroundColor,
-      backgroundImage: isCustomIcon ? FileImage(File(iconPath!)) : null,
-      onBackgroundImageError: isCustomIcon
-          ? (exception, stackTrace) {
-              // 에러는 child에서 처리
-            }
-          : null,
-      child: isCustomIcon
-          ? null // backgroundImage 사용 시 child 불필요
-          : Padding(
-              padding: EdgeInsets.all(innerPadding),
-              child: SvgPicture.asset(
-                iconPath!,
-                width: iconSize - innerPadding * 2,
-                height: iconSize - innerPadding * 2,
-                colorFilter: ColorFilter.mode(
-                  widget.isChecked ? AppColors.status100_50 : AppColors.status100,
-                  BlendMode.srcIn,
+    return Container(
+      width: AppDimensions.iconSize28,
+      height: AppDimensions.iconSize28,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        shape: BoxShape.circle,
+      ),
+      clipBehavior: Clip.antiAlias,
+      child:
+          isCustomIcon
+              ? Image.file(
+                File(iconPath),
+                fit: BoxFit.cover,
+                filterQuality: FilterQuality.high,
+                errorBuilder:
+                    (context, error, stackTrace) => Center(
+                      child: Icon(
+                        Icons.help_outline_rounded,
+                        size: AppDimensions.iconSize20,
+                        color:
+                            widget.isChecked
+                                ? AppColors.status100_50
+                                : AppColors.status100,
+                      ),
+                    ),
+              )
+              : Padding(
+                padding: EdgeInsets.all(AppSpacing.h4),
+                child: SvgPicture.asset(
+                  iconPath!,
+                  width: AppDimensions.iconSize20,
+                  height: AppDimensions.iconSize20,
+                  colorFilter: ColorFilter.mode(
+                    widget.isChecked ? AppColors.status100_50 : AppColors.status100,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
-            ),
     );
   }
 
@@ -227,7 +239,7 @@ class _AppTodoItemState extends State<AppTodoItem> {
     if (widget.subTitle == null || widget.subTitle!.isEmpty) {
       return Text(
         widget.title,
-        style: AppTypography.body2Bold.copyWith(
+        style: AppTypography.h2SemiBold.copyWith(
           color:
               widget.isChecked
                   ? AppColors.status100.withOpacity(0.3)
@@ -251,49 +263,103 @@ class _AppTodoItemState extends State<AppTodoItem> {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center, // 수직 중앙 정렬 추가
       children: [
-        Text(
-          widget.title,
-          style: AppTypography.body2Bold.copyWith(
-            color:
-                widget.isChecked
-                    ? AppColors.status100.withOpacity(0.3)
-                    : AppColors.status100,
+        if (widget.isDdayTodo) ...[
+          Text(
+            widget.subTitle!,
+            style: AppTypography.caption3Regular.copyWith(
+              color:
+                  widget.isChecked
+                      ? AppColors.status100.withOpacity(0.3)
+                      : AppColors.status100.withOpacity(0.6),
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        SizedBox(height: 1), // TODO: RenderFlex overflow 수정 - 2에서 1로 줄임 (0.653 pixels 절약)
-        Text(
-          widget.subTitle!,
-          style: AppTypography.caption3Regular.copyWith(
-            color:
-                widget.isChecked
-                    ? AppColors.status100.withOpacity(0.3)
-                    : AppColors.status100.withOpacity(0.6),
+          SizedBox(height: 1),
+          Text(
+            widget.title,
+            style: AppTypography.h2SemiBold.copyWith(
+              color:
+                  widget.isChecked
+                      ? AppColors.status100.withOpacity(0.3)
+                      : AppColors.status100,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
+        ] else ...[
+          Text(
+            widget.title,
+            style: AppTypography.h2SemiBold.copyWith(
+              color:
+                  widget.isChecked
+                      ? AppColors.status100.withOpacity(0.3)
+                      : AppColors.status100,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          SizedBox(height: 1),
+          Text(
+            widget.subTitle!,
+            style: AppTypography.caption3Regular.copyWith(
+              color:
+                  widget.isChecked
+                      ? AppColors.status100.withOpacity(0.3)
+                      : AppColors.status100.withOpacity(0.6),
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
       ],
     );
   }
 
   Widget _buildCheckbox() {
+    final bool isEnabled = widget.onCheckedChanged != null;
+
     return SizedBox(
-      width: AppDimensions.checkboxSize,
-      height: AppDimensions.checkboxSize,
-      child: Checkbox(
-        value: widget.isChecked,
-        onChanged: (value) {
-          if (value != null) widget.onCheckedChanged?.call(value);
-        },
-        side: BorderSide(
-          color: AppColors.borderLight,
-          width: AppDimensions.checkboxBorderWidth,
+      width: AppDimensions.iconSize32,
+      height: AppDimensions.iconSize32,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap:
+              isEnabled
+                  ? () => widget.onCheckedChanged!.call(!widget.isChecked)
+                  : null,
+          customBorder: const CircleBorder(),
+          child: Center(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 120),
+              width: AppDimensions.checkboxSize,
+              height: AppDimensions.checkboxSize,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color:
+                    widget.isChecked
+                        ? AppColors.green500
+                        : Colors.transparent,
+                border: Border.all(
+                  color:
+                      widget.isChecked
+                          ? AppColors.green500
+                          : AppColors.status100_25,
+                  width: AppDimensions.checkboxBorderWidth,
+                ),
+              ),
+              child:
+                  widget.isChecked
+                      ? Icon(
+                        Icons.check_rounded,
+                        size: AppDimensions.iconSize16,
+                        color: AppColors.status0,
+                      )
+                      : null,
+            ),
+          ),
         ),
-        activeColor: AppColors.itemCompletedBorder,
-        checkColor: AppColors.status0,
-        visualDensity: VisualDensity.compact,
       ),
     );
   }
