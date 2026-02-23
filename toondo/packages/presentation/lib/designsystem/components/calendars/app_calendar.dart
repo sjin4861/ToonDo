@@ -102,7 +102,7 @@ class _CalendarState extends State<Calendar> {
                     decoration: ShapeDecoration(
                       color: Color(0xFFE4F0D9),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppDimensions.borderRadius10),
+                        borderRadius: BorderRadius.circular(20.r),
                       ),
                     ),
                     child: Text(
@@ -142,16 +142,19 @@ class _CalendarState extends State<Calendar> {
               int todayIndex = DateTime.now().weekday % 7;
 
               return Expanded(
-                child: Center(
-                  child: Text(
-                    dayLabel,
-                    style: (index == todayIndex
-                            ? AppTypography.caption1Bold
-                            : AppTypography.caption1Regular)
-                        .copyWith(
-                          color: const Color(0xFF1C1D1B),
-                          letterSpacing: 0.15,
-                        ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 2.h),
+                  child: Center(
+                    child: Text(
+                      dayLabel,
+                      style: (index == todayIndex
+                              ? AppTypography.caption1Bold
+                              : AppTypography.caption1Regular)
+                          .copyWith(
+                            color: const Color(0xFF1C1D1B),
+                            letterSpacing: 0.15,
+                          ),
+                    ),
                   ),
                 ),
               );
@@ -173,8 +176,8 @@ class _CalendarState extends State<Calendar> {
                   child: Center(
                     // <-- 핵심: 내부 정렬은 Center로
                     child: Container(
-                      width: 32.w,
-                      height: 32.w,
+                      width: 34.w,
+                      height: 34.w,
                       decoration: BoxDecoration(
                         color:
                             isSelected
@@ -237,12 +240,15 @@ class _CalendarState extends State<Calendar> {
             children:
                 weekDays.map((label) {
                   return Expanded(
-                    child: Center(
-                      child: Text(
-                        label,
-                        style: AppTypography.caption1Regular.copyWith(
-                          color: const Color(0xFF1C1D1B),
-                          letterSpacing: 0.15,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 2.h),
+                      child: Center(
+                        child: Text(
+                          label,
+                          style: AppTypography.caption1Regular.copyWith(
+                            color: const Color(0xFF1C1D1B),
+                            letterSpacing: 0.15,
+                          ),
                         ),
                       ),
                     ),
@@ -271,8 +277,8 @@ class _CalendarState extends State<Calendar> {
                         onTap: () => widget.onDateSelected(date),
                         child: Center(
                           child: Container(
-                            width: 32.w,
-                            height: 32.w,
+                            width: 34.w,
+                            height: 34.w,
                             decoration: BoxDecoration(
                               color:
                                   isSelected

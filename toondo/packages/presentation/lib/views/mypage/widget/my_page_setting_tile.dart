@@ -25,7 +25,7 @@ class MyPageSettingTile extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Container(
-          height: AppDimensions.tileHeight,
+          constraints: BoxConstraints(minHeight: AppDimensions.tileHeight),
           width: double.infinity,
           padding: EdgeInsets.symmetric(
             vertical: AppSpacing.v14,
@@ -37,13 +37,14 @@ class MyPageSettingTile extends StatelessWidget {
                 leadingIcon!,
                 SizedBox(width: AppSpacing.h8),
               ],
-              Text(
-                title,
-                style: AppTypography.h3Regular.copyWith(
-                  color: AppColors.status100,
+              Expanded(
+                child: Text(
+                  title,
+                  style: AppTypography.h3Regular.copyWith(
+                    color: AppColors.status100,
+                  ),
                 ),
               ),
-              const Spacer(),
               if (trailing != null) trailing!,
             ],
           ),

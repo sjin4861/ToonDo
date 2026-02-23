@@ -24,7 +24,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
       // ScreenUtil(.h) 스케일링으로 특정 기기에서 지나치게 작아지면
       // 아이콘+라벨이 들어갈 공간이 부족해 RenderFlex overflow가 발생할 수 있어 최소 높이를 보장합니다.
       // (Material 내부 패딩까지 고려해 64px를 하한으로 둡니다)
-      height: math.max(AppDimensions.bottomNavBarHeight, 64.0),
+      height: math.max(AppDimensions.bottomNavBarHeight, 72.0),
       color: AppColors.status0,
       elevation: 2.0,
       child: Row(
@@ -114,9 +114,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
               BlendMode.srcIn,
             ),
           ),
-          // 일부 디바이스/스케일에서 BottomAppBar 내부 제약 높이가 작아
-          // icon(24) + spacing + label이 1~2px 오버플로우가 발생할 수 있어 간격을 최소화합니다.
-          const SizedBox(height: 2),
+          const SizedBox(height: 6),
           if (label != null)
             Text(
               label,

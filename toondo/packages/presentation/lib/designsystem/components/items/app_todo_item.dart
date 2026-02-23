@@ -239,7 +239,7 @@ class _AppTodoItemState extends State<AppTodoItem> {
     if (widget.subTitle == null || widget.subTitle!.isEmpty) {
       return Text(
         widget.title,
-        style: AppTypography.h2SemiBold.copyWith(
+        style: AppTypography.body2SemiBold.copyWith(
           color:
               widget.isChecked
                   ? AppColors.status100.withOpacity(0.3)
@@ -278,7 +278,7 @@ class _AppTodoItemState extends State<AppTodoItem> {
           SizedBox(height: 1),
           Text(
             widget.title,
-            style: AppTypography.h2SemiBold.copyWith(
+            style: AppTypography.body2SemiBold.copyWith(
               color:
                   widget.isChecked
                       ? AppColors.status100.withOpacity(0.3)
@@ -290,7 +290,7 @@ class _AppTodoItemState extends State<AppTodoItem> {
         ] else ...[
           Text(
             widget.title,
-            style: AppTypography.h2SemiBold.copyWith(
+            style: AppTypography.body2SemiBold.copyWith(
               color:
                   widget.isChecked
                       ? AppColors.status100.withOpacity(0.3)
