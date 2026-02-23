@@ -23,7 +23,7 @@ class AppNotificationViewModel extends ChangeNotifier {
     all: false,
     report: false,
     reminder: false,
-    time: '03:00',
+    time: '09:00',
   );
 
   NotificationSettings get settings => _settings;
