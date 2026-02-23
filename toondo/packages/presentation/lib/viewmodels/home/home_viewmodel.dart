@@ -161,8 +161,8 @@ class HomeViewModel extends ChangeNotifier {
         return false;
       }
       
-      // 완료된 투두 제외 (status가 100 이상이면 완료)
-      if (todo.status >= 100) {
+      // 완료된 투두 제외 (status == 1.0이면 완료)
+      if (todo.isFinished()) {
         print('🔍 완료된 투두로 필터링됨: ${todo.title}');
         return false;
       }
@@ -212,6 +212,20 @@ class HomeViewModel extends ChangeNotifier {
     }
     
     return result;
+  }
+
+  /// 오늘 홈에 노출된 투두가 있고 모두 완료된 경우 true
+  bool get isTodayTodosAllCompleted {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final todayShowOnHome = _todos.where((todo) {
+      if (!todo.showOnHome) return false;
+      final start = DateTime(todo.startDate.year, todo.startDate.month, todo.startDate.day);
+      final end = DateTime(todo.endDate.year, todo.endDate.month, todo.endDate.day);
+      return (start.isBefore(today) || start.isAtSameMomentAs(today)) &&
+          (end.isAfter(today) || end.isAtSameMomentAs(today));
+    }).toList();
+    return todayShowOnHome.isNotEmpty && todayShowOnHome.every((t) => t.isFinished());
   }
 
   List<Goal> get dDayClosestThree {
