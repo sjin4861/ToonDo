@@ -202,7 +202,7 @@ class TodoRepositoryImpl implements TodoRepository {
       } catch (_) {}
     }
 
-    final normalizedStatus = status >= 100 ? 100.0 : 0.0;
+    final normalizedStatus = status >= 1.0 ? 1.0 : 0.0;
 
     // 상태 업데이트 후 Todo 객체 생성
     final updated = Todo(

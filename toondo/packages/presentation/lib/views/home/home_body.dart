@@ -40,7 +40,8 @@ class HomeBody extends StatelessWidget {
                   child: homeVM.selectedTabIndex == 0
                       ? HomeTodoListSection(
                           todos: homeVM.todayTop3Todos,
-                          allGoals: homeVM.goals, // 투두 아이콘 표시를 위해 목표 리스트 전달
+                          allGoals: homeVM.goals,
+                          allCompleted: homeVM.isTodayTodosAllCompleted,
                         )
                       : HomeGoalListSection(goals: homeVM.todayTop3Goals),
                 ),

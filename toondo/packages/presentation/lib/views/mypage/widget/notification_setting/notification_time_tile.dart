@@ -12,11 +12,24 @@ import 'package:presentation/views/mypage/widget/notification_setting/time_picke
 class NotificationTimeTile extends StatelessWidget {
   const NotificationTimeTile({super.key});
 
+  /// 'HH:mm' 24시간 포맷을 '오전/오후 H:mm' 형식으로 변환
+  String _formatTime(String hhmm) {
+    final parts = hhmm.split(':');
+    if (parts.length != 2) return hhmm;
+    final h = int.tryParse(parts[0]);
+    final m = parts[1];
+    if (h == null) return hhmm;
+    if (h == 0) return '오전 12:$m';
+    if (h < 12) return '오전 $h:$m';
+    if (h == 12) return '오후 12:$m';
+    return '오후 ${h - 12}:$m';
+  }
+
   @override
   Widget build(BuildContext context) {
     final app = context.watch<AppNotificationViewModel>();
-    final timeText = app.settings.time;
-    final reminderEnabled = app.settings.all && app.settings.reminder;
+    final timeText = _formatTime(app.settings.time);
+    final reminderEnabled = app.settings.reminder;
 
     void _openPicker() {
       showModalBottomSheet(

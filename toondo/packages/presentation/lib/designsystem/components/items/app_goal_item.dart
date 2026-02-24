@@ -84,7 +84,7 @@ class _AppGoalItemState extends State<AppGoalItem> {
         _maxDrag = constraints.maxWidth;
 
         return SizedBox(
-          height: AppDimensions.goalItemHeight.h,
+          height: AppDimensions.goalItemHeight,
           child: Stack(
             children: [
               Positioned.fill(
@@ -99,7 +99,7 @@ class _AppGoalItemState extends State<AppGoalItem> {
                       onTap: _handleDelete,
                       child: Container(
                         width: 312.w,
-                        height: AppDimensions.goalItemHeight.h,
+                        height: AppDimensions.goalItemHeight,
                         decoration: BoxDecoration(
                           color: AppColors.green500,
                           borderRadius: BorderRadius.circular(AppDimensions.radiusPill.r),
@@ -238,7 +238,7 @@ class _AppGoalItemState extends State<AppGoalItem> {
     if (widget.subTitle == null || widget.subTitle!.isEmpty) {
       return Text(
         widget.title,
-        style: AppTypography.h2SemiBold.copyWith(
+        style: AppTypography.body1SemiBold.copyWith(
           color: widget.isChecked
               ? AppColors.status100.withOpacity(0.3)
               : AppColors.status100,
@@ -266,7 +266,7 @@ class _AppGoalItemState extends State<AppGoalItem> {
         SizedBox(height: 1),
         Text(
           widget.title,
-          style: AppTypography.h2SemiBold.copyWith(
+          style: AppTypography.body1SemiBold.copyWith(
             color: widget.isChecked
                 ? AppColors.status100.withOpacity(0.3)
                 : AppColors.status100,

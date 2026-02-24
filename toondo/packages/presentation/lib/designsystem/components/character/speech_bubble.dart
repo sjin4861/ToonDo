@@ -24,11 +24,15 @@ class SpeechBubble extends StatelessWidget {
     final double padBottom = 10.h;
     final double extraWidth = 4.w;
 
+    // MediaQuery textScaler 반영 (폰트 스케일 변경 시 말풍선 크기 정확히 측정)
+    final textScaler = MediaQuery.textScalerOf(context);
+
     // TextPainter로 실제 텍스트 폭/높이 측정
     final textSpan = TextSpan(text: text, style: textStyle);
     final textPainter = TextPainter(
       text: textSpan,
       maxLines: null,
+      textScaler: textScaler,
       textDirection: TextDirection.ltr,
     )..layout(maxWidth: maxW - (padH * 2) - extraWidth);
 

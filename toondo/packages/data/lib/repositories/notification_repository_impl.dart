@@ -22,7 +22,7 @@ class NotificationSettingRepositoryImpl implements NotificationSettingRepository
       all: prefs.getBool(_all) ?? false,
       report: prefs.getBool(_report) ?? false,
       reminder: prefs.getBool(_reminder) ?? false,
-      time: prefs.getString(_time) ?? '03:00',
+      time: prefs.getString(_time) ?? '09:00',
     );
   }
 

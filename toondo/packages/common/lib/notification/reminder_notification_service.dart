@@ -123,7 +123,7 @@ class ReminderNotificationService {
       return false;
     }
 
-    if (!enabledAll || !enabledReminder) {
+    if (!enabledReminder) {
       try {
         await cancelReminder();
       } catch (e) {

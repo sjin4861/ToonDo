@@ -144,6 +144,13 @@ class TodoManageViewModel extends ChangeNotifier {
         allTodos[idx] = updated;
       }
       _filterAndCategorizeTodos();
+
+      // 홈 뷰모델 동기화 - 투두 체크 후 홈 화면 즉시 업데이트
+      try {
+        await GetIt.instance<HomeViewModel>().loadTodos();
+      } catch (e) {
+        print('⚠️ 홈 뷰모델 동기화 실패: $e');
+      }
     } catch (e) {
       print('Error updating todo status: $e');
     }

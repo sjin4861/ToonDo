@@ -7,26 +7,30 @@ import 'package:presentation/views/home/widget/home_list_item.dart';
 
 class HomeTodoListSection extends StatelessWidget {
   final List<Todo> todos;
-  final List<Goal>? allGoals; // 아이콘 표시를 위한 목표 리스트 추가
+  final List<Goal>? allGoals;
+  final bool allCompleted;
 
   const HomeTodoListSection({
     super.key,
     required this.todos,
-    this.allGoals, // 선택사항으로 목표 리스트 받기
+    this.allGoals,
+    this.allCompleted = false,
   });
 
   @override
   Widget build(BuildContext context) {
     if (todos.isEmpty) {
+      final message = allCompleted
+          ? '오늘 투두를 모두 완료했어요! 🎉\n대단해요, 오늘 하루도 수고했어요!'
+          : '오늘 할 투두가 없습니다.\n투두를 추가하거나 우선순위를 설정해보세요!';
       return Padding(
         padding: EdgeInsets.only(top: AppSpacing.v32),
         child: Align(
           alignment: Alignment.topCenter,
           child: Text(
-            // 메인화면 투두 리스트 표시 규칙 개선 - 빈 상태 메시지 수정
-            '오늘 할 투두가 없습니다.\n투두를 추가하거나 우선순위를 설정해보세요!',
+            message,
             style: AppTypography.h3Regular.copyWith(
-              color: Colors.grey
+              color: Colors.grey,
             ),
             textAlign: TextAlign.center,
           ),

@@ -66,6 +66,7 @@ Future<void> _onToggleReminder(
   }
 
   if (!perm.isGranted) {
+    if (!context.mounted) return;
     final go = await showDialog<bool>(
       context: context,
       barrierDismissible: true,
@@ -162,6 +163,7 @@ Future<void> _onToggleReminder(
   }
 
   if (Platform.isAndroid) {
+    if (!context.mounted) return;
     final goExact = await showDialog<bool>(
       context: context,
       barrierDismissible: true,
