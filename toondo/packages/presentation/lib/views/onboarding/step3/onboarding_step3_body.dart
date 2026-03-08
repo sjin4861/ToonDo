@@ -24,12 +24,7 @@ class OnboardingStep3Body extends StatelessWidget {
           controller: viewModel.nicknameController,
           hintText: '사용할 닉네임을 입력해주세요!',
           errorText: viewModel.nicknameError,
-          onChanged: (value) {
-            if (viewModel.nicknameError != null) {
-              viewModel.nicknameError = null;
-              viewModel.notifyListeners();
-            }
-          },
+          onChanged: viewModel.setNickname,
         ),
         const Spacer(),
       ],
