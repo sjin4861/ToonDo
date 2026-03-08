@@ -5,9 +5,6 @@ import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/designsystem/typography/app_typography.dart';
 import 'package:presentation/navigation/route_paths.dart';
-import 'package:presentation/viewmodels/my_page/my_page_viewmodel.dart';
-import 'package:presentation/views/mypage/widget/sync_bottom_sheet.dart';
-import 'package:provider/provider.dart';
 import 'my_page_setting_tile.dart';
 
 class MyPageSettingSection extends StatelessWidget {
@@ -23,28 +20,6 @@ class MyPageSettingSection extends StatelessWidget {
           style: AppTypography.h2SemiBold.copyWith(color: AppColors.status100),
         ),
         SizedBox(height: AppSpacing.v16),
-        // 동기화 기능 주석처리
-        // MyPageSettingTile(
-        //   title: '동기화',
-        //   leadingIcon: Assets.icons.icSync.svg(
-        //     width: AppDimensions.iconSize16,
-        //     height: AppDimensions.iconSize16,
-        //   ),
-        //     onTap: () {
-        //       final viewModel = context.read<MyPageViewModel>();
-        //       showModalBottomSheet(
-        //         context: context,
-        //         isScrollControlled: true,
-        //         backgroundColor: Colors.transparent,
-        //         builder: (_) {
-        //           return ChangeNotifierProvider.value(
-        //             value: viewModel,
-        //             child: const SyncBottomSheet(),
-        //           );
-        //         },
-        //       );
-        //     }
-        // ),
         MyPageSettingTile(
           title: '화면',
           leadingIcon: Assets.icons.icDisplay.svg(
