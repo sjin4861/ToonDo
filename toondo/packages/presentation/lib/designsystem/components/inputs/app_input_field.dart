@@ -35,15 +35,34 @@ class AppInputField extends StatefulWidget {
 
 class _AppInputFieldState extends State<AppInputField> {
   late bool _obscure;
+  late final VoidCallback _controllerListener;
 
   @override
   void initState() {
     super.initState();
     _obscure = widget.obscureText;
 
-    widget.controller.addListener(() {
-      if (mounted) setState(() {});
-    });
+    _controllerListener = () {
+      if (mounted) {
+        setState(() {});
+      }
+    };
+    widget.controller.addListener(_controllerListener);
+  }
+
+  @override
+  void didUpdateWidget(covariant AppInputField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller.removeListener(_controllerListener);
+      widget.controller.addListener(_controllerListener);
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_controllerListener);
+    super.dispose();
   }
 
   OutlineInputBorder _getBorder(Color color) {
