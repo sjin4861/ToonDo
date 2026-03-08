@@ -34,6 +34,14 @@ class AccountSettingViewModel extends ChangeNotifier {
   String? _nicknameErrorMessage;
   String? get nicknameErrorMessage => _nicknameErrorMessage;
 
+  void clearNicknameError() {
+    if (_nicknameErrorMessage == null) {
+      return;
+    }
+    _nicknameErrorMessage = null;
+    notifyListeners();
+  }
+
   String? _currentPasswordError;
   String? _newPasswordError;
   String? _confirmPasswordError;
