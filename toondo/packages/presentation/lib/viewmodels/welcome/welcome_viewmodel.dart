@@ -55,11 +55,19 @@ class WelcomeViewModel extends ChangeNotifier {
   Future<void> _checkIfLoggedIn(BuildContext context) async {
     final token = await getTokenUseCase();
     if (token == null || token.isEmpty) return;
+    if (_isLocalOfflineToken(token)) {
+      Navigator.pushReplacementNamed(context, RoutePaths.home);
+      return;
+    }
     if (_isTokenExpired(token)) {
       await logoutUseCase();
       return;
     }
     Navigator.pushReplacementNamed(context, RoutePaths.home);
+  }
+
+  bool _isLocalOfflineToken(String token) {
+    return token.startsWith('LOCAL_ACCESS_');
   }
 
   bool _isTokenExpired(String token) {
