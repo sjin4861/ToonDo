@@ -13,7 +13,11 @@ class MyPageUserUiModel {
   });
 
   factory MyPageUserUiModel.fromDomain(User user) {
-    final displayName = user.nickname ?? user.loginId;
+    final trimmedNickname = user.nickname?.trim();
+    final displayName =
+      (trimmedNickname != null && trimmedNickname.isNotEmpty)
+        ? trimmedNickname
+        : user.loginId;
     final joinedDays = DateTime.now().difference(user.createdAt).inDays;
 
     String profileImagePath;
