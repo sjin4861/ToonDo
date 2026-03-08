@@ -378,8 +378,14 @@ class MyAppState extends State<MyApp> {
                 ],
                 builder: (context, child) {
                   final mq = MediaQuery.of(context);
+                  // Avoid forced global upscaling (1.1x) on top of .sp typography,
+                  // while still honoring user accessibility text scaling.
+                  final safeTextScaler = mq.textScaler.clamp(
+                    minScaleFactor: 1.0,
+                    maxScaleFactor: 1.2,
+                  );
                   return MediaQuery(
-                    data: mq.copyWith(textScaler: TextScaler.linear(1.1)),
+                    data: mq.copyWith(textScaler: safeTextScaler),
                     child: child!,
                   );
                 },
