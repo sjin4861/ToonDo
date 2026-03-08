@@ -47,8 +47,10 @@ class OnboardingViewModel extends ChangeNotifier {
 
   void setNickname(String nickname) {
     this.nickname = nickname;
-    nicknameController.text = nickname;
-    notifyListeners();
+    if (nicknameError != null) {
+      nicknameError = null;
+      notifyListeners();
+    }
   }
 
   Future<void> saveNickname() async {
@@ -101,6 +103,7 @@ class OnboardingViewModel extends ChangeNotifier {
   @override
   void dispose() {
     _isDisposed = true;
+    nicknameController.dispose();
     super.dispose();
   }
 }
