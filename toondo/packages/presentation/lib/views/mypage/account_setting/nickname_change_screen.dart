@@ -15,6 +15,7 @@ class NicknameChangeScreen extends StatefulWidget {
 
 class _NicknameChangeScreenState extends State<NicknameChangeScreen> {
   final TextEditingController _newNicknameController = TextEditingController();
+  String? _nicknameError;
 
   @override
   void dispose() {
@@ -25,10 +26,34 @@ class _NicknameChangeScreenState extends State<NicknameChangeScreen> {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.read<AccountSettingViewModel>();
+    final currentNickname = viewModel.userUiModel?.displayName ?? '';
 
     return BaseScaffold(
       title: '닉네임 변경',
-      body: NicknameChangeBody(controller: _newNicknameController),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+          return SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            padding: EdgeInsets.only(bottom: bottomInset + AppSpacing.v16),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: NicknameChangeBody(
+                controller: _newNicknameController,
+                currentNickname: currentNickname,
+                errorText: _nicknameError,
+                onChanged: (_) {
+                  if (_nicknameError != null) {
+                    setState(() {
+                      _nicknameError = null;
+                    });
+                  }
+                },
+              ),
+            ),
+          );
+        },
+      ),
       bottomWidget: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(
@@ -38,9 +63,18 @@ class _NicknameChangeScreenState extends State<NicknameChangeScreen> {
           child: AppButton(
             label: '변경하기',
             onPressed: () async {
-              final success = await viewModel.updateNickname(_newNicknameController.text);
+              final success = await viewModel.updateNickname(
+                _newNicknameController.text,
+              );
               if (success && mounted) {
                 Navigator.pop(context);
+                return;
+              }
+
+              if (mounted) {
+                setState(() {
+                  _nicknameError = viewModel.nicknameErrorMessage;
+                });
               }
             },
           ),
