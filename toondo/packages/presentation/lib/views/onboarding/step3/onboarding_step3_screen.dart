@@ -16,18 +16,22 @@ class OnboardingStep3Screen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<OnboardingViewModel>();
+    final viewModel = context.read<OnboardingViewModel>();
+    final step = context.select<OnboardingViewModel, int>((vm) => vm.step);
+    final nicknameError = context.select<OnboardingViewModel, String?>(
+      (vm) => vm.nicknameError,
+    );
     final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (viewModel.step == 4) {
+      if (step == 4) {
         Future.microtask(() {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (_) => OnboardingStep4Screen()),
           );
         });
       }
-      if (viewModel.step == 2) {
+      if (step == 2) {
         Future.microtask(() {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (_) => OnboardingStep1To2Screen()),
@@ -69,7 +73,7 @@ class OnboardingStep3Screen extends StatelessWidget {
                     label: '닉네임',
                     controller: viewModel.nicknameController,
                     hintText: '8자 이내의 닉네임을 입력해주세요',
-                    errorText: viewModel.nicknameError,
+                    errorText: nicknameError,
                     onChanged: viewModel.setNickname,
                   ),
                   const Spacer(),
