@@ -197,12 +197,15 @@ class _AppGoalItemState extends State<AppGoalItem> {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: AppColors.backgroundNormal,
+      ),
+      foregroundDecoration: BoxDecoration(
+        shape: BoxShape.circle,
         border: Border.all(
           color: borderColor,
           width: 1.5,
         ),
       ),
-      clipBehavior: Clip.antiAlias,
+      clipBehavior: Clip.antiAliasWithSaveLayer,
       padding: isCustomIcon ? EdgeInsets.zero : EdgeInsets.all(innerPadding),
       child: isCustomIcon
           ? ClipOval(

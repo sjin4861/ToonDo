@@ -69,6 +69,10 @@ class _GoalNameInputFieldState extends State<GoalNameInputField> {
                       height: 40,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
+                        color: Colors.white,
+                      ),
+                      foregroundDecoration: BoxDecoration(
+                        shape: BoxShape.circle,
                         border: Border.all(
                           color:
                               viewModel.selectedIcon != null
@@ -76,9 +80,8 @@ class _GoalNameInputFieldState extends State<GoalNameInputField> {
                                   : AppColors.borderUnselected,
                           width: 1,
                         ),
-                        color: Colors.white,
                       ),
-                      clipBehavior: Clip.antiAlias,
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
                       child:
                           viewModel.selectedIcon != null
                               ? _buildIconWidget(viewModel.selectedIcon!)

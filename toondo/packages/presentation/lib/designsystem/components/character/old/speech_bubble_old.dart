@@ -180,11 +180,12 @@ class _SpeechBubblePainter extends CustomPainter {
     if (showTail) {
       final tailWidth = 16.0;
       final tailHeight = 12.0;
-      final tailX = (size.width / 2) - (tailWidth / 2) + offset.dx;
+      final tailX = ((size.width - tailWidth) / 2 + offset.dx).roundToDouble();
+      final tailHalf = (tailWidth / 2).roundToDouble();
       final tailY = rect.bottom + offset.dy;
 
       path.moveTo(tailX, tailY);
-      path.lineTo(tailX + tailWidth / 2, tailY + tailHeight);
+      path.lineTo(tailX + tailHalf, tailY + tailHeight);
       path.lineTo(tailX + tailWidth, tailY);
       path.close();
     }

@@ -1,4 +1,4 @@
-package com.example.toondo
+package com.dreamers.toondo
 
 import android.os.Bundle
 import android.os.Process

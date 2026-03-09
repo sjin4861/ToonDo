@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:common/notification/exact_alarm_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -100,7 +99,7 @@ Future<void> _onToggleReminder(
               ),
               SizedBox(height: AppSpacing.v8),
               Text(
-                '정확한 리마인드 알림을 받으려면 알림 권한이 필요해요.\n설정으로 이동할까요?',
+                '리마인드 알림을 받으려면 알림 권한이 필요해요.\n설정으로 이동할까요?',
                 textAlign: TextAlign.center,
                 style: AppTypography.body2Regular.copyWith(
                   color: const Color(0xFF535353),
@@ -116,11 +115,9 @@ Future<void> _onToggleReminder(
                         foregroundColor: AppColors.status100,
                         side: const BorderSide(color: Color(0xFFD9D9D9)),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              AppDimensions.radiusPill),
+                          borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
                         ),
-                        padding:
-                        EdgeInsets.symmetric(vertical: 12.h),
+                        padding: EdgeInsets.symmetric(vertical: 12.h),
                       ),
                       onPressed: () => Navigator.of(ctx).pop(false),
                       child: Text('취소', style: AppTypography.body2SemiBold),
@@ -133,15 +130,12 @@ Future<void> _onToggleReminder(
                         backgroundColor: AppColors.green500,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              AppDimensions.radiusPill),
+                          borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
                         ),
-                        padding:
-                        EdgeInsets.symmetric(vertical: 12.h),
+                        padding: EdgeInsets.symmetric(vertical: 12.h),
                       ),
                       onPressed: () => Navigator.of(ctx).pop(true),
-                      child: Text('설정 열기',
-                          style: AppTypography.body2SemiBold),
+                      child: Text('설정 열기', style: AppTypography.body2SemiBold),
                     ),
                   ),
                 ],
@@ -152,107 +146,8 @@ Future<void> _onToggleReminder(
       ),
     ) ?? false;
 
-    if (go) {
-      if (Platform.isAndroid) {
-        await openAppNotificationSettings();
-      } else {
-        await openAppSettings(); // iOS/기타
-      }
-    }
-    return; // 권한 받을 때까지 토글 켜지지 않음
-  }
-
-  if (Platform.isAndroid) {
-    if (!context.mounted) return;
-    final goExact = await showDialog<bool>(
-      context: context,
-      barrierDismissible: true,
-      builder: (ctx) => Dialog(
-        backgroundColor: Colors.white,
-        insetPadding: EdgeInsets.symmetric(horizontal: 24.w),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppDimensions.borderRadius10),
-        ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(height: AppSpacing.v8),
-              Container(
-                width: 56.w,
-                height: 56.w,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFE4F0D9),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(Icons.alarm_on_outlined,
-                    color: const Color(0xFF78B545), size: 28.w),
-              ),
-              SizedBox(height: AppSpacing.v12),
-              Text(
-                '정확한 알람 허용',
-                textAlign: TextAlign.center,
-                style: AppTypography.h2Bold.copyWith(letterSpacing: 0.15),
-              ),
-              SizedBox(height: AppSpacing.v8),
-              Text(
-                '정확한 알람이 꺼져 있으면 알림 시간이 지연될 수 있어요.\n설정에서 "정확한 알람"을 허용하시겠어요?',
-                textAlign: TextAlign.center,
-                style: AppTypography.body2Regular.copyWith(
-                  color: const Color(0xFF535353),
-                  letterSpacing: 0.15,
-                ),
-              ),
-              SizedBox(height: AppSpacing.v16),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: AppColors.status100,
-                        side: const BorderSide(color: Color(0xFFD9D9D9)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              AppDimensions.radiusPill),
-                        ),
-                        padding:
-                        EdgeInsets.symmetric(vertical: 12.h),
-                      ),
-                      onPressed: () => Navigator.of(ctx).pop(false),
-                      child: Text('건너뛰기',
-                          style: AppTypography.body2SemiBold),
-                    ),
-                  ),
-                  SizedBox(width: AppSpacing.h12),
-                  Expanded(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.green500,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              AppDimensions.radiusPill),
-                        ),
-                        padding:
-                        EdgeInsets.symmetric(vertical: 12.h),
-                      ),
-                      onPressed: () => Navigator.of(ctx).pop(true),
-                      child: Text('설정 열기',
-                          style: AppTypography.body2SemiBold),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    ) ?? false;
-
-    if (goExact) {
-      await openExactAlarmSettings();
-    }
+    if (go) await openAppNotificationSettings();
+    return;
   }
 
   await appVM.update(settings.copyWith(all: true, reminder: true));

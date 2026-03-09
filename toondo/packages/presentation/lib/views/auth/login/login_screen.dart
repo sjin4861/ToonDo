@@ -41,20 +41,29 @@ class _LoginScreenState extends State<LoginScreen> {
         builder: (context, viewModel, child) {
           return BaseScaffold(
             title: '로그인',
-            body: LoginBody(passedLoginId: passedLoginId),
-            bottomWidget: SafeArea(
-              minimum: EdgeInsets.all(AppSpacing.a24),
-              child: DoubleActionButtons(
-                backText: '뒤로',
-                nextText: '다음으로',
-                onBack: () => Navigator.pop(context),
-                onNext: () async {
-                  final success = await viewModel.login();
-                  if (success && context.mounted) {
-                    Navigator.pushReplacementNamed(context, '/home');
-                  }
-                },
-              ),
+            body: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                    child: LoginBody(passedLoginId: passedLoginId),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: AppSpacing.a24),
+                  child: DoubleActionButtons(
+                    backText: '뒤로',
+                    nextText: '다음으로',
+                    onBack: () => Navigator.pop(context),
+                    onNext: () async {
+                      final success = await viewModel.login();
+                      if (success && context.mounted) {
+                        Navigator.pushReplacementNamed(context, '/home');
+                      }
+                    },
+                  ),
+                ),
+              ],
             ),
           );
         },

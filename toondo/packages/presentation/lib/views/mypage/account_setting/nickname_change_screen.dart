@@ -30,14 +30,11 @@ class _NicknameChangeScreenState extends State<NicknameChangeScreen> {
 
     return BaseScaffold(
       title: '닉네임 변경',
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final bottomInset = MediaQuery.of(context).viewInsets.bottom;
-          return SingleChildScrollView(
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            padding: EdgeInsets.only(bottom: bottomInset + AppSpacing.v16),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               child: NicknameChangeBody(
                 controller: _newNicknameController,
                 currentNickname: currentNickname,
@@ -51,34 +48,28 @@ class _NicknameChangeScreenState extends State<NicknameChangeScreen> {
                 },
               ),
             ),
-          );
-        },
-      ),
-      bottomWidget: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: AppSpacing.h24,
-            vertical: AppSpacing.v8,
           ),
-          child: AppButton(
-            label: '변경하기',
-            onPressed: () async {
-              final success = await viewModel.updateNickname(
-                _newNicknameController.text,
-              );
-              if (success && mounted) {
-                Navigator.pop(context);
-                return;
-              }
-
-              if (mounted) {
-                setState(() {
-                  _nicknameError = viewModel.nicknameErrorMessage;
-                });
-              }
-            },
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: AppSpacing.v16),
+            child: AppButton(
+              label: '변경하기',
+              onPressed: () async {
+                final success = await viewModel.updateNickname(
+                  _newNicknameController.text,
+                );
+                if (success && mounted) {
+                  Navigator.pop(context);
+                  return;
+                }
+                if (mounted) {
+                  setState(() {
+                    _nicknameError = viewModel.nicknameErrorMessage;
+                  });
+                }
+              },
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

@@ -38,7 +38,7 @@ class SpeechBubble extends StatelessWidget {
 
     final double bubbleW =
     (textPainter.width + (padH * 2) + extraWidth).clamp(0, maxW);
-    final double bubbleH = textPainter.height + padTop + padBottom + 6.h; // 꼬리 높이 포함
+    final double bubbleH = (textPainter.height + padTop + padBottom + 6.h).roundToDouble(); // 꼬리 높이 포함
 
     return CustomPaint(
       painter: SpeechBubblePainter(
@@ -89,16 +89,17 @@ class SpeechBubblePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final bubbleHeight = height - tailHeight;
-    final tailCenter = width / 2;
+    final tailCenter = (width / 2).roundToDouble();
+    final tailHalf = (tailWidth / 2).roundToDouble();
 
     final path = Path()
       ..moveTo(radius, 0)
       ..arcToPoint(Offset(0, radius), radius: Radius.circular(radius), clockwise: false)
       ..lineTo(0, bubbleHeight - radius)
       ..arcToPoint(Offset(radius, bubbleHeight), radius: Radius.circular(radius), clockwise: false)
-      ..lineTo(tailCenter - tailWidth / 2, bubbleHeight)
+      ..lineTo(tailCenter - tailHalf, bubbleHeight)
       ..lineTo(tailCenter, bubbleHeight + tailHeight)
-      ..lineTo(tailCenter + tailWidth / 2, bubbleHeight)
+      ..lineTo(tailCenter + tailHalf, bubbleHeight)
       ..lineTo(width - radius, bubbleHeight)
       ..arcToPoint(Offset(width, bubbleHeight - radius), radius: Radius.circular(radius), clockwise: false)
       ..lineTo(width, radius)

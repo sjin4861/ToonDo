@@ -201,7 +201,7 @@ class _SelectDateBottomSheetState extends State<SelectDateBottomSheet> {
                           '${day.day}',
                           style: AppTypography.h1Bold.copyWith(
                             color: AppColors.green500,
-                            fontWeight: FontWeight.w900,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       );
@@ -238,10 +238,10 @@ class _SelectDateBottomSheetState extends State<SelectDateBottomSheet> {
                 ),
 
                 daysOfWeekStyle: DaysOfWeekStyle(
-                  weekendStyle: AppTypography.body2SemiBold.copyWith(
+                  weekendStyle: AppTypography.caption1SemiBold.copyWith(
                     color: AppColors.status100.withOpacity(0.3),
                   ),
-                  weekdayStyle: AppTypography.body2SemiBold.copyWith(
+                  weekdayStyle: AppTypography.caption1SemiBold.copyWith(
                     color: AppColors.status100.withOpacity(0.3),
                   ),
                 ),

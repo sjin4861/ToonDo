@@ -21,4 +21,5 @@ dependencies:
   timezone:
   android_intent_plus:
   package_info_plus:
+  device_info_plus:
   permission_handler:

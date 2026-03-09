@@ -56,7 +56,6 @@ class LoginBody extends StatelessWidget {
             style: AppTypography.body2Regular.copyWith(color: AppColors.red700),
           ),
         ],
-        SizedBox(height: AppSpacing.v32),
       ],
     );
   }
