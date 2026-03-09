@@ -253,6 +253,103 @@ Future<void> _onToggleReminder(
     if (goExact) {
       await openExactAlarmSettings();
     }
+
+    // 배터리 최적화 제외 요청 (실물 기기에서 Doze 모드로 알림 차단 방지)
+    final batteryStatus = await Permission.ignoreBatteryOptimizations.status;
+    if (!batteryStatus.isGranted) {
+      await Permission.ignoreBatteryOptimizations.request();
+    }
+
+    // 삼성 갤럭시 전용: One UI 자체 배터리 제한 안내
+    if (!context.mounted) return;
+    final samsung = await isSamsungDevice();
+    if (samsung && context.mounted) {
+      final goSamsung = await showDialog<bool>(
+        context: context,
+        barrierDismissible: true,
+        builder: (ctx) => Dialog(
+          backgroundColor: Colors.white,
+          insetPadding: EdgeInsets.symmetric(horizontal: 24.w),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppDimensions.borderRadius10),
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: AppSpacing.v8),
+                Container(
+                  width: 56.w,
+                  height: 56.w,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFE4F0D9),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(Icons.battery_charging_full_outlined,
+                      color: const Color(0xFF78B545), size: 28.w),
+                ),
+                SizedBox(height: AppSpacing.v12),
+                Text(
+                  '갤럭시 배터리 설정 필요',
+                  textAlign: TextAlign.center,
+                  style: AppTypography.h2Bold.copyWith(letterSpacing: 0.15),
+                ),
+                SizedBox(height: AppSpacing.v8),
+                Text(
+                  '갤럭시 기기는 추가 설정이 필요해요.\n설정 > 앱 > ToonDo > 배터리에서\n"제한 없음"으로 변경해주세요.',
+                  textAlign: TextAlign.center,
+                  style: AppTypography.body2Regular.copyWith(
+                    color: const Color(0xFF535353),
+                    letterSpacing: 0.15,
+                  ),
+                ),
+                SizedBox(height: AppSpacing.v16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.status100,
+                          side: const BorderSide(color: Color(0xFFD9D9D9)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                AppDimensions.radiusPill),
+                          ),
+                          padding: EdgeInsets.symmetric(vertical: 12.h),
+                        ),
+                        onPressed: () => Navigator.of(ctx).pop(false),
+                        child: Text('건너뛰기', style: AppTypography.body2SemiBold),
+                      ),
+                    ),
+                    SizedBox(width: AppSpacing.h12),
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.green500,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                AppDimensions.radiusPill),
+                          ),
+                          padding: EdgeInsets.symmetric(vertical: 12.h),
+                        ),
+                        onPressed: () => Navigator.of(ctx).pop(true),
+                        child: Text('설정 열기', style: AppTypography.body2SemiBold),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ) ?? false;
+
+      if (goSamsung) {
+        await openSamsungBatterySettings();
+      }
+    }
   }
 
   await appVM.update(settings.copyWith(all: true, reminder: true));

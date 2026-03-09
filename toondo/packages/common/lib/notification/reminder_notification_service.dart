@@ -30,7 +30,6 @@ class ReminderNotificationService {
 
   Future<void> init() async {
     if (_inited) return;
-    _inited = true;
 
     tz.initializeTimeZones();
     try {
@@ -55,6 +54,8 @@ class ReminderNotificationService {
       importance: Importance.high,
       playSound: true,
     ));
+
+    _inited = true;
   }
 
   /// "오전 08:30" / "오후 07:05" / "08:30" (24시간) 모두 지원

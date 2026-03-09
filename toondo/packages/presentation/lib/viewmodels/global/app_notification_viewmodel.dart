@@ -37,7 +37,7 @@ class AppNotificationViewModel extends ChangeNotifier {
             soundOn: s.sound,
             timeHHmm: s.time,
           )
-          .timeout(const Duration(seconds: 3));
+          .timeout(const Duration(seconds: 10));
     } on PlatformException catch (e) {
       debugPrint('[Notification] sync failed (ignored): $e');
     } on TimeoutException catch (e) {
