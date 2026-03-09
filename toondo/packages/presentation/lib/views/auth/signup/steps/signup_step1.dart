@@ -16,28 +16,37 @@ class SignupStep1 extends StatelessWidget {
       builder: (context, viewModel, child) {
         return BaseScaffold(
           title: '회원가입',
-          body: SignupStep1Body(),
-          bottomWidget: SafeArea(
-            minimum: EdgeInsets.all(AppSpacing.a24),
-            child: DoubleActionButtons(
-              backText: '뒤로',
-              nextText: '아이디 중복 확인하기',
-              onBack: () {
-                Navigator.pop(context);
-              },
-              onNext: () {
-                viewModel.validateLoginId().then((isValid) {
-                  if (isValid) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SignupStep2(loginId: viewModel.loginId),
-                      ),
-                    );
-                  }
-                });
-              },
-            ),
+          body: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                  child: SignupStep1Body(),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: AppSpacing.a24),
+                child: DoubleActionButtons(
+                  backText: '뒤로',
+                  nextText: '아이디 중복 확인하기',
+                  onBack: () {
+                    Navigator.pop(context);
+                  },
+                  onNext: () {
+                    viewModel.validateLoginId().then((isValid) {
+                      if (isValid) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SignupStep2(loginId: viewModel.loginId),
+                          ),
+                        );
+                      }
+                    });
+                  },
+                ),
+              ),
+            ],
           ),
         );
       },

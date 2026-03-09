@@ -29,11 +29,11 @@ class OnboardingBackground extends StatelessWidget {
       children: [
         // 하얀 타원 배경
         Positioned(
-          left: -79.64,
-          top: 538.34,
+          left: -80,
+          top: 538,
           child: Container(
-            width: 534.28,
-            height: 483.32,
+            width: 534,
+            height: 483,
             decoration: ShapeDecoration(
               gradient: LinearGradient(
                 begin: Alignment(0.38, -0.93),

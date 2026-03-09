@@ -42,15 +42,24 @@ class SignupStep2 extends StatelessWidget {
 
         return BaseScaffold(
           title: '회원정보 확인',
-          body: SignupStep2Body(),
-          bottomWidget: SafeArea(
-            minimum: EdgeInsets.all(AppSpacing.a24),
-            child: DoubleActionButtons(
-              backText: '뒤로',
-              nextText: '다음으로',
-              onBack: () => Navigator.pop(context),
-              onNext: () => viewModel.validatePassword(),
-            ),
+          body: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                  child: SignupStep2Body(),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: AppSpacing.a24),
+                child: DoubleActionButtons(
+                  backText: '뒤로',
+                  nextText: '다음으로',
+                  onBack: () => Navigator.pop(context),
+                  onNext: () => viewModel.validatePassword(),
+                ),
+              ),
+            ],
           ),
         );
       },

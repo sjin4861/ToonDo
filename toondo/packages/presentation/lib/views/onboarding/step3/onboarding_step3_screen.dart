@@ -41,6 +41,7 @@ class OnboardingStep3Screen extends StatelessWidget {
     });
 
     return Scaffold(
+      resizeToAvoidBottomInset: false, // 배경 고정, 키보드 inset은 bottomInset으로 수동 처리
       appBar: AppNavBar(
         title: '시작하기',
         showBackButton: false,

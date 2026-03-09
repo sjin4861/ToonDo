@@ -26,7 +26,6 @@ class SignupStep1Body extends StatelessWidget {
           errorText: viewModel.loginIdError,
           onChanged: (value) => viewModel.setLoginId(value),
         ),
-        Spacer()
       ],
     );
   }
