@@ -159,14 +159,17 @@ class AppGoalIconBottomSheet extends StatelessWidget {
       child: Container(
         width: 40.0, // 정수 픽셀 (ScreenUtil 미사용)
         height: 40.0, // 정수 픽셀 (ScreenUtil 미사용)
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+        ),
+        foregroundDecoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(
             color: AppColors.borderDisabled,
             width: 1.0, // 정수 픽셀
           ),
         ),
-        clipBehavior: Clip.antiAlias,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
         child: ClipOval(
           child: SizedBox.expand(
             child: Image.file(
@@ -272,7 +275,10 @@ class AppGoalIconBottomSheet extends StatelessWidget {
                   width: 40.0, // 정수 픽셀 (ScreenUtil 미사용)
                   height: 40.0, // 정수 픽셀 (ScreenUtil 미사용)
                   padding: EdgeInsets.all(8.0), // 정수 픽셀
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  foregroundDecoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: AppColors.borderDisabled,

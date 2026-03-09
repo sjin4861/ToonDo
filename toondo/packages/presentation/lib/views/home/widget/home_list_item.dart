@@ -90,7 +90,7 @@ class HomeListItem extends StatelessWidget {
                           title,
                           style: AppTypography.body2Bold.copyWith(
                             color: AppColors.status100,
-                            height: 1.0,
+                            height: 1.2,
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -113,7 +113,7 @@ class HomeListItem extends StatelessWidget {
                           dDay != null ? '$dateRange $dDay' : dateRange,
                           style: AppTypography.caption3Regular.copyWith(
                             color: AppColors.status100_50,
-                            height: 1.0,
+                            height: 1.2,
                           ),
                         ),
                       ),
@@ -123,7 +123,7 @@ class HomeListItem extends StatelessWidget {
                           '${progress.toInt()}%',
                           style: AppTypography.caption3Bold.copyWith(
                             color: progress >= 100 ? AppColors.green300 : AppColors.status100_75,
-                            height: 1.0,
+                            height: 1.2,
                           ),
                         ),
                       ],
@@ -157,9 +157,14 @@ class HomeListItem extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: backgroundColor,
-        border: borderColor != null ? Border.all(color: borderColor, width: 1) : null,
       ),
-      clipBehavior: Clip.antiAlias,
+      foregroundDecoration: borderColor != null
+          ? BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: borderColor, width: 1),
+            )
+          : null,
+      clipBehavior: Clip.antiAliasWithSaveLayer,
       child: isCustomIcon
           ? _buildIconFromPath(icon)
           : Padding(
@@ -262,7 +267,7 @@ class HomeListItem extends StatelessWidget {
         label,
         style: AppTypography.caption3Bold.copyWith(
           color: color,
-          height: 1.0,
+          height: 1.2,
         ),
       ),
     );

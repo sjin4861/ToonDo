@@ -15,6 +15,7 @@ class AppInputField extends StatefulWidget {
   final VoidCallback? onToggleVisibility;
   final ValueChanged<String>? onChanged;
   final bool isEnabled;
+  final FocusNode? focusNode;
 
   const AppInputField({
     super.key,
@@ -27,6 +28,7 @@ class AppInputField extends StatefulWidget {
     this.onToggleVisibility,
     this.isEnabled = true,
     this.onChanged,
+    this.focusNode,
   });
 
   @override
@@ -99,6 +101,7 @@ class _AppInputFieldState extends State<AppInputField> {
           height: AppDimensions.inputFieldHeight,
           child: TextField(
             cursorColor: AppColors.green500,
+            focusNode: widget.focusNode,
             controller: widget.controller,
             enabled: widget.isEnabled,
             obscureText: _obscure,
