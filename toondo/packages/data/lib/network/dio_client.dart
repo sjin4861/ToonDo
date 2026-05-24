@@ -257,8 +257,7 @@ class _AccessTokenAttachInterceptor extends Interceptor {
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     // 전역 플래그로 Authorization 자동 부착을 임시 비활성화할 수 있음 (쿠키만 사용하여 문제 원인 격리)
     // ignore: avoid_print
-    print('[AccessTokenAttach] flags: disableAuthHeaderAttach=' +
-        '${Constants.disableAuthHeaderAttach} useCustomUserIdHeader=${Constants.useCustomUserIdHeader} path=${options.path}');
+    print('[AccessTokenAttach] flags: disableAuthHeaderAttach=' '${Constants.disableAuthHeaderAttach} useCustomUserIdHeader=${Constants.useCustomUserIdHeader} path=${options.path}');
     if (Constants.disableAuthHeaderAttach == true) {
       handler.next(options);
       return;
@@ -277,7 +276,7 @@ class _AccessTokenAttachInterceptor extends Interceptor {
             final claims = _decodeJwtClaims(accessToken);
           if (claims != null) {
             // ignore: avoid_print
-            print('[AccessTokenAttach] accessToken claims: ' + claims.toString());
+            print('[AccessTokenAttach] accessToken claims: $claims');
           }
           _printedClaims = true;
           }
