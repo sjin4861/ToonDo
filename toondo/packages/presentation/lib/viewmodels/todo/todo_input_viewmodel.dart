@@ -24,11 +24,7 @@ class TodoInputViewModel extends ChangeNotifier {
   bool isDailyTodo = false;
   bool isTitleNotEmpty = false;
   bool showGoalDropdown = false;
-  // TODO: UX 개선 - showOnHome 기본값을 true로 변경 고려  
-  // TODO: 현재 false로 설정되어 있어 사용자가 명시적으로 토글을 켜야 메인화면에 표시됨
-  // TODO: true로 변경하면 모든 새 투두가 기본적으로 메인화면에 표시되어 더 직관적
-  // TODO: 단점: 메인화면이 복잡해질 수 있음, 사용자 선택권 감소
-  bool showOnHome = false; // 기본값 유지 (변경 시 true로 수정)
+  bool showOnHome = true;
   String? titleError;
   String? _startDateError;
   String? _endDateError;
