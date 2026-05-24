@@ -28,16 +28,15 @@ class SignupStep2 extends StatelessWidget {
 
     return Consumer<SignupViewModel>(
       builder: (context, viewModel, _) {
-        // onNavigateToOnboarding 설정도 동일하게 수정
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (viewModel.onNavigateToOnboarding == null) {
-            viewModel.setNavigateToOnboarding(() {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => OnboardingStep1To2Screen()),
-              );
-            });
-          }
+        viewModel.setNavigateToOnboarding(() {
+          if (!context.mounted) return;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!context.mounted) return;
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => OnboardingStep1To2Screen()),
+            );
+          });
         });
 
         return BaseScaffold(
