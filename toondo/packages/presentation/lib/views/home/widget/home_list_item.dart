@@ -48,12 +48,16 @@ class HomeListItem extends StatelessWidget {
         ? '${DateFormat('yy.MM.dd').format(actualStart)} ~ ${DateFormat('yy.MM.dd').format(actualEnd)}'
         : '${DateFormat('yy.MM.dd').format(actualStart)} ~ 무제한';
     
-    // D-Day 계산도 실제 아이템(투두 또는 목표)의 종료일 기준으로 계산
-    final String? dDay = actualEnd != null 
+    final String? dDay = actualEnd != null
         ? () {
-            final calculatedDDay = calculateDDay(actualEnd);
-            return calculatedDDay >= 0 ? '· D-$calculatedDDay' : '· D-Day';
-          }() 
+            final now = DateTime.now();
+            final today = DateTime(now.year, now.month, now.day);
+            final end = DateTime(actualEnd.year, actualEnd.month, actualEnd.day);
+            final diff = end.difference(today).inDays;
+            if (diff > 0) return '· D-$diff';
+            if (diff == 0) return '· D-Day';
+            return '· D+${-diff}';
+          }()
         : null;
     
     // eisenhower 매트릭스 기반 우선순위 표시 기능
