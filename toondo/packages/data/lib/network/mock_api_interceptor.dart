@@ -48,7 +48,7 @@ class MockApiInterceptor extends Interceptor {
     final method = options.method.toUpperCase();
 
     // 🔍 디버깅 로그 추가
-    print('🔵 [Mock API] ${method} ${path} (original path: ${options.path})');
+    print('🔵 [Mock API] $method $path (original path: ${options.path})');
 
     try {
       final mockResponse = _getMockResponse(path, method, options);
