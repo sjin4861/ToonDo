@@ -91,7 +91,7 @@ class _GoalCategoryState extends State<_GoalCategory> {
     await Future.delayed(const Duration(milliseconds: 900));
 
     if (!mounted) return;
-    await widget.viewModel.giveUpGoal(goal.id);
+    await widget.viewModel.revertGoalToInProgress(goal.id);
 
     if (!mounted) return;
     setState(() {
