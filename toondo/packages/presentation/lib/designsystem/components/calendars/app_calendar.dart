@@ -169,6 +169,9 @@ class _CalendarState extends State<Calendar> {
                   DateFormat('yyyy-MM-dd').format(date) ==
                   DateFormat('yyyy-MM-dd').format(widget.selectedDate);
               bool isCurrentMonth = date.month == currentDate.month;
+              bool isToday =
+                  DateFormat('yyyy-MM-dd').format(date) ==
+                  DateFormat('yyyy-MM-dd').format(DateTime.now());
 
               return Expanded(
                 child: GestureDetector(
@@ -185,17 +188,22 @@ class _CalendarState extends State<Calendar> {
                                 : isCurrentMonth
                                 ? const Color(0x7FE4F0D9)
                                 : const Color(0x7FEEEEEE),
-                          borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
+                        borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
+                        border: !isSelected && isToday
+                            ? Border.all(color: const Color(0xFF78B545), width: 1.5)
+                            : null,
                       ),
                       child: Center(
                         child: Text(
                           '${date.day}',
-                          style: (isSelected
+                          style: (isSelected || isToday
                               ? AppTypography.caption1Bold
                               : AppTypography.caption1Regular)
                               .copyWith(
                             color: isSelected
                                 ? Colors.white
+                                : isToday
+                                ? const Color(0xFF4A7A2B)
                                 : isCurrentMonth
                                 ? const Color(0xFF535353)
                                 : const Color(0xBF535353),
@@ -271,7 +279,10 @@ class _CalendarState extends State<Calendar> {
                     bool isSelected =
                         DateFormat('yyyy-MM-dd').format(date) ==
                         DateFormat('yyyy-MM-dd').format(widget.selectedDate);
-      
+                    bool isToday =
+                        DateFormat('yyyy-MM-dd').format(date) ==
+                        DateFormat('yyyy-MM-dd').format(DateTime.now());
+
                     return Expanded(
                       child: GestureDetector(
                         onTap: () => widget.onDateSelected(date),
@@ -287,16 +298,21 @@ class _CalendarState extends State<Calendar> {
                                       ? const Color(0x7FE4F0D9)
                                       : const Color(0x7FEEEEEE),
                               borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
+                              border: !isSelected && isToday
+                                  ? Border.all(color: const Color(0xFF78B545), width: 1.5)
+                                  : null,
                             ),
                             child: Center(
                               child: Text(
                                 '${date.day}',
-                                style: (isSelected
+                                style: (isSelected || isToday
                                     ? AppTypography.caption1SemiBold
                                     : AppTypography.caption1Regular)
                                     .copyWith(
                                   color: isSelected
                                       ? Colors.white
+                                      : isToday
+                                      ? const Color(0xFF4A7A2B)
                                       : isCurrentMonth
                                       ? const Color(0xFF535353)
                                       : const Color(0xBF535353),
