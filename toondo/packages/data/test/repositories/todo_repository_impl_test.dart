@@ -1,7 +1,6 @@
 import 'package:data/datasources/local/todo_local_datasource.dart';
 import 'package:data/datasources/remote/todo_remote_datasource.dart';
 import 'package:data/repositories/todo_repository_impl.dart';
-import 'package:domain/entities/todo.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
