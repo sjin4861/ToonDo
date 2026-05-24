@@ -177,6 +177,10 @@ class GoalManagementViewModel extends ChangeNotifier {
     await _updateGoalStatusWithSync(goalId, Status.completed);
   }
 
+  Future<void> revertGoalToInProgress(String goalId) async {
+    await _updateGoalStatusWithSync(goalId, Status.active);
+  }
+
   Future<void> deleteGoal(String goalId) async {
     await deleteGoalRemoteUseCase(goalId);
     await deleteGoalLocalUseCase(goalId);
