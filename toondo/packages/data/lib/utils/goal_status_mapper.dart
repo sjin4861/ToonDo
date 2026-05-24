@@ -9,7 +9,7 @@ class GoalStatusMapper {
       case Status.completed:
         return GoalStatusEnum.completed;
       case Status.givenUp:
-        return GoalStatusEnum.givenUp;;
+        return GoalStatusEnum.givenUp; {}
       case Status.paused:
       case Status.failed:
       case Status.restarted:
