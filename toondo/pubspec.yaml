@@ -76,8 +76,14 @@ flutter:
          - asset: assets/fonts/PretendardVariable.ttf
 
 dependency_overrides:
-  dart_style: ^3.0.1
-  analyzer: ^7.3.0
+  dart_style: 2.3.6
+  analyzer: 6.4.1
+  build_runner: 2.4.13
+  build_resolvers: 2.4.2
+  build_runner_core: 7.3.2
+  source_gen: 1.5.0
+  flutter_gen_core: 5.7.0
+  flutter_gen_runner: 5.7.0
 
 flutter_gen:
   output: packages/common/lib/gen # Optional (default: lib/gen/)
