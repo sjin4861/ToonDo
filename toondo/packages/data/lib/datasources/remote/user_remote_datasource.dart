@@ -90,8 +90,9 @@ class UserRemoteDatasource {
     }
     final token = await authRepository.getToken();
     final headers = <String, String>{'Content-Type': 'application/json'};
-    if (token != null && token.contains('.'))
+    if (token != null && token.contains('.')) {
       headers['Authorization'] = 'Bearer $token';
+    }
 
     final resp = await dio.patch(
       '/api/v1/users/save-nickname',
@@ -123,8 +124,9 @@ class UserRemoteDatasource {
   Future<void> deleteAccount() async {
     final token = await authRepository.getToken();
     final headers = <String, String>{'Content-Type': 'application/json'};
-    if (token != null && token.contains('.'))
+    if (token != null && token.contains('.')) {
       headers['Authorization'] = 'Bearer $token'; // Bearer 통일 (유효 토큰일 때만)
+    }
     final path = '/users/delete';
     final resp = await dio.delete(path, options: Options(headers: headers));
     if ((resp.statusCode ?? 0) != 200) {
