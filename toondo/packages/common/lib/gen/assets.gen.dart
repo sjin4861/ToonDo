@@ -685,12 +685,17 @@ class $AssetsRivesGen {
   RiveGenImage get gifYellowSlimeEx =>
       const RiveGenImage('assets/rives/gif_yellow_slime_ex.riv');
 
+  /// File path: assets/rives/gif_yellow_slime_legacy.riv
+  RiveGenImage get gifYellowSlimeLegacy =>
+      const RiveGenImage('assets/rives/gif_yellow_slime_legacy.riv');
+
   /// List of all assets
-  List<RiveGenImage> get values => [gifYellowSlime, gifYellowSlimeEx];
+  List<RiveGenImage> get values =>
+      [gifYellowSlime, gifYellowSlimeEx, gifYellowSlimeLegacy];
 }
 
 class Assets {
-  const Assets._();
+  Assets._();
 
   static const $AssetsAudiosGen audios = $AssetsAudiosGen();
   static const $AssetsIconsGen icons = $AssetsIconsGen();
@@ -728,10 +733,10 @@ class AssetGenImage {
     ImageRepeat repeat = ImageRepeat.noRepeat,
     Rect? centerSlice,
     bool matchTextDirection = false,
-    bool gaplessPlayback = true,
+    bool gaplessPlayback = false,
     bool isAntiAlias = false,
     String? package,
-    FilterQuality filterQuality = FilterQuality.medium,
+    FilterQuality filterQuality = FilterQuality.low,
     int? cacheWidth,
     int? cacheHeight,
   }) {
