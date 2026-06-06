@@ -99,10 +99,14 @@ class HomeListItem extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      // TODO: 투두/목표 구분 표시 개선 완료
-                      // TODO: 우선순위 배지는 투두인 경우에만 표시 (목표는 우선순위 개념이 없음)
-                      // TODO: 투두: eisenhower 매트릭스 기반 우선순위 배지 표시
-                      // TODO: 목표: 우선순위 배지 표시하지 않음
+                      if (todo?.isRecurring == true) ...[
+                        SizedBox(width: AppSpacing.h4),
+                        const Icon(
+                          Icons.repeat,
+                          size: 14,
+                          color: AppColors.status100_50,
+                        ),
+                      ],
                       if (todo != null) ...[
                         SizedBox(width: AppSpacing.h8),
                         _buildPriorityBadge(priorityColor, priorityLabel),

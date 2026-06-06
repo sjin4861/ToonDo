@@ -12,6 +12,7 @@ import 'package:domain/usecases/todo/get_all_todos.dart';
 import 'package:domain/usecases/todo/update_todo_dates.dart';
 import 'package:domain/usecases/todo/update_todo_status.dart';
 import 'package:domain/usecases/todo/delete_todo.dart';
+import 'package:domain/usecases/todo/expand_recurring_todos_for_date.dart';
 import 'package:presentation/viewmodels/todo/todo_manage_viewmodel.dart';
 import '../../helpers/test_data.dart';
 
@@ -22,6 +23,7 @@ import '../../helpers/test_data.dart';
   UpdateTodoStatusUseCase,
   UpdateTodoDatesUseCase,
   GetGoalsLocalUseCase,
+  ExpandRecurringTodosForDateUseCase,
 ])
 void main() {
   late TodoManageViewModel viewModel;
@@ -30,6 +32,7 @@ void main() {
   late MockUpdateTodoStatusUseCase mockUpdateTodoStatusUseCase;
   late MockUpdateTodoDatesUseCase mockUpdateTodoDatesUseCase;
   late MockGetGoalsLocalUseCase mockGetGoalsLocalUseCase;
+  late MockExpandRecurringTodosForDateUseCase mockExpandRecurringTodosForDateUseCase;
 
   final testDate = DateTime(2025, 5, 5);
   late List<Todo> testTodos;
@@ -41,12 +44,16 @@ void main() {
     mockUpdateTodoStatusUseCase = MockUpdateTodoStatusUseCase();
     mockUpdateTodoDatesUseCase = MockUpdateTodoDatesUseCase();
     mockGetGoalsLocalUseCase = MockGetGoalsLocalUseCase();
+    mockExpandRecurringTodosForDateUseCase =
+        MockExpandRecurringTodosForDateUseCase();
 
     testTodos = TestData.createTestTodos();
     testGoals = TestData.createTestGoals();
 
     when(mockGetAllTodosUseCase.call()).thenAnswer((_) async => testTodos);
     when(mockGetGoalsLocalUseCase.call()).thenAnswer((_) async => testGoals);
+    when(mockExpandRecurringTodosForDateUseCase.call(any))
+        .thenAnswer((_) async => <Todo>[]);
 
     viewModel = TodoManageViewModel(
       deleteTodoUseCase: mockDeleteTodoUseCase,
@@ -54,6 +61,7 @@ void main() {
       updateTodoStatusUseCase: mockUpdateTodoStatusUseCase,
       updateTodoDatesUseCase: mockUpdateTodoDatesUseCase,
       getGoalsLocalUseCase: mockGetGoalsLocalUseCase,
+      expandRecurring: mockExpandRecurringTodosForDateUseCase,
       initialDate: testDate,
     );
   });
@@ -100,12 +108,12 @@ void main() {
         await viewModel.loadTodos();
       });
 
-      test('날짜 선택 변경 시 해당 날짜의 투두만 필터링되어야 한다', () {
+      test('날짜 선택 변경 시 해당 날짜의 투두만 필터링되어야 한다', () async {
         // Given
         final newDate = DateTime(2025, 5, 10);
 
         // When
-        viewModel.updateSelectedDate(newDate);
+        await viewModel.updateSelectedDate(newDate);
 
         // Then
         expect(viewModel.selectedDate, newDate);

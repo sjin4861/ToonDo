@@ -6,6 +6,7 @@ import 'package:domain/usecases/todo/get_all_todos.dart';
 import 'package:domain/usecases/todo/update_todo_dates.dart';
 import 'package:domain/usecases/todo/update_todo_status.dart';
 import 'package:domain/usecases/todo/delete_todo.dart';
+import 'package:domain/usecases/todo/expand_recurring_todos_for_date.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:get_it/get_it.dart';
@@ -18,11 +19,13 @@ class TodoManageViewModel extends ChangeNotifier {
   final UpdateTodoStatusUseCase _updateTodoStatusUseCase;
   final UpdateTodoDatesUseCase _updateTodoDatesUseCase;
   final GetGoalsLocalUseCase _getGoalsLocalUseCase;
+  final ExpandRecurringTodosForDateUseCase _expandRecurring;
 
   DateTime selectedDate;
   TodoFilterOption selectedFilter = TodoFilterOption.all;
   String? selectedGoalId;
   List<Todo> allTodos = [];
+  List<Todo> _expandedForSelectedDate = [];
   List<Todo> dDayTodos = [];
   List<Todo> dailyTodos = [];
   List<Goal> goals = [];
@@ -33,19 +36,24 @@ class TodoManageViewModel extends ChangeNotifier {
     required UpdateTodoStatusUseCase updateTodoStatusUseCase,
     required UpdateTodoDatesUseCase updateTodoDatesUseCase,
     required GetGoalsLocalUseCase getGoalsLocalUseCase,
+    required ExpandRecurringTodosForDateUseCase expandRecurring,
     DateTime? initialDate,
   }) : _deleteTodoUseCase = deleteTodoUseCase,
        _getTodosUseCase = getTodosUseCase,
        _updateTodoStatusUseCase = updateTodoStatusUseCase,
        _updateTodoDatesUseCase = updateTodoDatesUseCase,
        _getGoalsLocalUseCase = getGoalsLocalUseCase,
+       _expandRecurring = expandRecurring,
        selectedDate = initialDate ?? DateTime.now();
 
   Future<void> loadTodos() async {
     try {
       // NOTE 원격 서버에서 가져오는 대신 로컬 데이터베이스에서만 Todo 불러오기 (수정필)
-      allTodos = await _getTodosUseCase();
+      final raw = await _getTodosUseCase();
+      // 시리즈 템플릿은 날짜별 화면에서 제외, 실제 발생은 _expandedForSelectedDate가 담당
+      allTodos = raw.where((t) => !t.isRecurringSeries).toList();
       goals = await _getGoalsLocalUseCase();
+      await _refreshExpansion();
       _filterAndCategorizeTodos();
       notifyListeners();
     } catch (e) {
@@ -53,12 +61,17 @@ class TodoManageViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> _refreshExpansion() async {
+    _expandedForSelectedDate = await _expandRecurring(selectedDate);
+  }
+
   Future<List<Todo>> getTodos() async {
     return await _getTodosUseCase();
   }
 
-  void updateSelectedDate(DateTime date) {
+  Future<void> updateSelectedDate(DateTime date) async {
     selectedDate = date;
+    await _refreshExpansion();
     _filterAndCategorizeTodos();
     notifyListeners();
   }
@@ -82,13 +95,17 @@ class TodoManageViewModel extends ChangeNotifier {
       selectedDate.day,
     );
 
-    List<Todo> todosForSelectedDate =
-        allTodos.where((todo) {
-          return (todo.startDate.isBefore(selectedDateOnly) ||
-                  _isSameDay(todo.startDate, selectedDateOnly)) &&
-              (todo.endDate.isAfter(selectedDateOnly) ||
-                  _isSameDay(todo.endDate, selectedDateOnly));
-        }).toList();
+    final baseFiltered = allTodos.where((todo) {
+      return (todo.startDate.isBefore(selectedDateOnly) ||
+              _isSameDay(todo.startDate, selectedDateOnly)) &&
+          (todo.endDate.isAfter(selectedDateOnly) ||
+              _isSameDay(todo.endDate, selectedDateOnly));
+    });
+    final byId = <String, Todo>{for (final t in baseFiltered) t.id: t};
+    for (final occ in _expandedForSelectedDate) {
+      byId.putIfAbsent(occ.id, () => occ);
+    }
+    List<Todo> todosForSelectedDate = byId.values.toList();
 
     if (selectedFilter == TodoFilterOption.goal && selectedGoalId != null) {
       todosForSelectedDate =

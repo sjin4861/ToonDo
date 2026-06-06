@@ -204,7 +204,7 @@ class TodoRepositoryImpl implements TodoRepository {
 
     final normalizedStatus = status >= 1.0 ? 1.0 : 0.0;
 
-    // 상태 업데이트 후 Todo 객체 생성
+    // 상태 업데이트 후 Todo 객체 생성 (반복 메타데이터 보존)
     final updated = Todo(
       id: todo.id,
       title: todo.title,
@@ -215,6 +215,9 @@ class TodoRepositoryImpl implements TodoRepository {
       comment: todo.comment,
       eisenhower: todo.eisenhower,
       showOnHome: todo.showOnHome,
+      recurrence: todo.recurrence,
+      seriesId: todo.seriesId,
+      occurrenceDate: todo.occurrenceDate,
     );
     await localDatasource.updateTodo(updated);
   }

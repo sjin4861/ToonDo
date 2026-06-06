@@ -1,4 +1,5 @@
 import 'package:domain/entities/todo.dart';
+import 'package:domain/usecases/todo/expand_recurring_todos_for_date.dart';
 import 'package:domain/usecases/todo/get_all_todos.dart';
 import 'package:flutter/material.dart';
 import 'package:domain/entities/goal.dart';
@@ -13,8 +14,14 @@ class HomeViewModel extends ChangeNotifier {
   final GetInProgressGoalsUseCase _getGoals;
   final GetUserNicknameUseCase _getNick;
   final GetAllTodosUseCase _getTodosUseCase;
+  final ExpandRecurringTodosForDateUseCase _expandRecurring;
 
-  HomeViewModel(this._getGoals, this._getNick, this._getTodosUseCase) {
+  HomeViewModel(
+    this._getGoals,
+    this._getNick,
+    this._getTodosUseCase,
+    this._expandRecurring,
+  ) {
     _init();
   }
 
@@ -40,7 +47,18 @@ class HomeViewModel extends ChangeNotifier {
 
   Future<void> loadTodos() async {
     try {
-      _todos = await _getTodosUseCase();
+      final raw = await _getTodosUseCase();
+      // 시리즈 템플릿은 홈 단순 목록에서 제외 — expand 결과로 대체
+      final nonSeries =
+          raw.where((t) => !t.isRecurringSeries).toList();
+      final todayExpansion = await _expandRecurring(DateTime.now());
+      // expand가 반환한 occurrence는 이미 비-시리즈 목록에 머터리얼라이즈된
+      // 인스턴스가 있으면 그것을 포함하므로 id 기준 중복 제거
+      final byId = <String, Todo>{for (final t in nonSeries) t.id: t};
+      for (final occ in todayExpansion) {
+        byId.putIfAbsent(occ.id, () => occ);
+      }
+      _todos = byId.values.toList();
       print('📊 홈에서 로드된 Todo 개수: ${_todos.length}');
       final showOnHomeTodos = _todos.where((todo) => todo.showOnHome).toList();
       print('📊 showOnHome=true인 Todo 개수: ${showOnHomeTodos.length}');

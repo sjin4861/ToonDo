@@ -45,6 +45,8 @@ import 'package:domain/usecases/todo/commit_todos.dart' as _i412;
 import 'package:domain/usecases/todo/create_recurring_todo.dart' as _i787;
 import 'package:domain/usecases/todo/create_todo.dart' as _i834;
 import 'package:domain/usecases/todo/delete_todo.dart' as _i552;
+import 'package:domain/usecases/todo/expand_recurring_todos_for_date.dart'
+    as _i466;
 import 'package:domain/usecases/todo/fetch_todos.dart' as _i314;
 import 'package:domain/usecases/todo/get_all_todos.dart' as _i362;
 import 'package:domain/usecases/todo/update_recurring_todo.dart' as _i237;
@@ -120,6 +122,17 @@ extension GetItInjectableX on _i174.GetIt {
         logoutUseCase: gh<_i969.LogoutUseCase>(),
       ),
     );
+    gh.lazySingleton<_i506.TodoManageViewModel>(
+      () => _i506.TodoManageViewModel(
+        deleteTodoUseCase: gh<_i552.DeleteTodoUseCase>(),
+        getTodosUseCase: gh<_i362.GetAllTodosUseCase>(),
+        updateTodoStatusUseCase: gh<_i183.UpdateTodoStatusUseCase>(),
+        updateTodoDatesUseCase: gh<_i182.UpdateTodoDatesUseCase>(),
+        getGoalsLocalUseCase: gh<_i477.GetGoalsLocalUseCase>(),
+        expandRecurring: gh<_i466.ExpandRecurringTodosForDateUseCase>(),
+        initialDate: gh<DateTime>(),
+      ),
+    );
     gh.factory<_i940.GoalManagementViewModel>(
       () => _i940.GoalManagementViewModel(
         getGoalsLocalUseCase: gh<_i477.GetGoalsLocalUseCase>(),
@@ -137,16 +150,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i764.LoginViewModel>(
       () => _i764.LoginViewModel(loginUseCase: gh<_i1068.LoginUseCase>()),
-    );
-    gh.lazySingleton<_i506.TodoManageViewModel>(
-      () => _i506.TodoManageViewModel(
-        deleteTodoUseCase: gh<_i552.DeleteTodoUseCase>(),
-        getTodosUseCase: gh<_i362.GetAllTodosUseCase>(),
-        updateTodoStatusUseCase: gh<_i183.UpdateTodoStatusUseCase>(),
-        updateTodoDatesUseCase: gh<_i182.UpdateTodoDatesUseCase>(),
-        getGoalsLocalUseCase: gh<_i477.GetGoalsLocalUseCase>(),
-        initialDate: gh<DateTime>(),
-      ),
     );
     gh.factory<_i705.SignupViewModel>(
       () => _i705.SignupViewModel(
@@ -199,6 +202,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i88.SlimeCharacterViewModel>(
       () => _i88.SlimeCharacterViewModel(gh<_i610.SlimeOnGestureUseCase>()),
     );
+    gh.lazySingleton<_i370.HomeViewModel>(
+      () => _i370.HomeViewModel(
+        gh<_i243.GetInProgressGoalsUseCase>(),
+        gh<_i849.GetUserNicknameUseCase>(),
+        gh<_i362.GetAllTodosUseCase>(),
+        gh<_i466.ExpandRecurringTodosForDateUseCase>(),
+      ),
+    );
     gh.lazySingleton<_i1040.AppThemeViewModel>(
       () => _i1040.AppThemeViewModel(
         gh<_i129.GetThemeModeUseCase>(),
@@ -211,13 +222,6 @@ extension GetItInjectableX on _i174.GetIt {
         updateNickNameUseCase: gh<_i910.UpdateNickNameUseCase>(),
         updatePasswordUseCase: gh<_i544.UpdatePasswordUseCase>(),
         myPageViewModel: gh<_i272.MyPageViewModel>(),
-      ),
-    );
-    gh.lazySingleton<_i370.HomeViewModel>(
-      () => _i370.HomeViewModel(
-        gh<_i243.GetInProgressGoalsUseCase>(),
-        gh<_i849.GetUserNicknameUseCase>(),
-        gh<_i362.GetAllTodosUseCase>(),
       ),
     );
     gh.factory<_i657.OnboardingViewModel>(
