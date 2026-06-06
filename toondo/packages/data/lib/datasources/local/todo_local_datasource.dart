@@ -65,4 +65,43 @@ class TodoLocalDatasource {
       await todoBox.put(updatedModel.id, updatedModel);
     }
   }
+
+  List<Todo> getRecurringSeries() {
+    return todoBox.values
+        .where((m) => m.recurrence != null && m.seriesId == null)
+        .map((m) => m.toEntity())
+        .toList();
+  }
+
+  Todo? findOccurrence({
+    required String seriesId,
+    required DateTime occurrenceDate,
+  }) {
+    final dayOnly = DateTime(
+      occurrenceDate.year,
+      occurrenceDate.month,
+      occurrenceDate.day,
+    );
+    for (final m in todoBox.values) {
+      if (m.seriesId != seriesId) continue;
+      final occ = m.occurrenceDate;
+      if (occ == null) continue;
+      if (DateTime(occ.year, occ.month, occ.day) == dayOnly) {
+        return m.toEntity();
+      }
+    }
+    return null;
+  }
+
+  Future<void> deleteSeriesAndUnfinishedOccurrences(String seriesId) async {
+    await todoBox.delete(seriesId);
+    final unfinishedKeys = todoBox.values
+        .where((m) =>
+            m.seriesId == seriesId && (m.status < 1.0))
+        .map((m) => m.id)
+        .toList();
+    for (final id in unfinishedKeys) {
+      await todoBox.delete(id);
+    }
+  }
 }

@@ -226,12 +226,12 @@ class TodoRepositoryImpl implements TodoRepository {
 
   @override
   Future<List<Todo>> getRecurringSeries() async {
-    throw UnimplementedError('Implemented in F2 step 3');
+    return localDatasource.getRecurringSeries();
   }
 
   @override
   Future<void> deleteSeries(String seriesId) async {
-    throw UnimplementedError('Implemented in F2 step 3');
+    await localDatasource.deleteSeriesAndUnfinishedOccurrences(seriesId);
   }
 
   @override
@@ -239,11 +239,17 @@ class TodoRepositoryImpl implements TodoRepository {
     required String seriesId,
     required DateTime occurrenceDate,
   }) async {
-    throw UnimplementedError('Implemented in F2 step 3');
+    return localDatasource.findOccurrence(
+      seriesId: seriesId,
+      occurrenceDate: occurrenceDate,
+    );
   }
 
   @override
   Future<Todo> materializeOccurrence(Todo occurrence) async {
-    throw UnimplementedError('Implemented in F2 step 3');
+    assert(occurrence.seriesId != null && occurrence.occurrenceDate != null,
+        'materializeOccurrence requires seriesId and occurrenceDate');
+    await localDatasource.saveTodo(occurrence);
+    return occurrence;
   }
 }
