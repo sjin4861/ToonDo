@@ -42,10 +42,12 @@ import 'package:domain/usecases/notification/set_reminder_time.dart' as _i236;
 import 'package:domain/usecases/theme/get_theme_mode.dart' as _i129;
 import 'package:domain/usecases/theme/set_theme_mode.dart' as _i366;
 import 'package:domain/usecases/todo/commit_todos.dart' as _i412;
+import 'package:domain/usecases/todo/create_recurring_todo.dart' as _i787;
 import 'package:domain/usecases/todo/create_todo.dart' as _i834;
 import 'package:domain/usecases/todo/delete_todo.dart' as _i552;
 import 'package:domain/usecases/todo/fetch_todos.dart' as _i314;
 import 'package:domain/usecases/todo/get_all_todos.dart' as _i362;
+import 'package:domain/usecases/todo/update_recurring_todo.dart' as _i237;
 import 'package:domain/usecases/todo/update_todo.dart' as _i375;
 import 'package:domain/usecases/todo/update_todo_dates.dart' as _i182;
 import 'package:domain/usecases/todo/update_todo_status.dart' as _i183;
@@ -174,6 +176,19 @@ extension GetItInjectableX on _i174.GetIt {
         logoutUseCase: gh<_i969.LogoutUseCase>(),
       ),
     );
+    gh.lazySingleton<_i72.TodoInputViewModel>(
+      () => _i72.TodoInputViewModel(
+        todo: gh<_i429.Todo>(),
+        isDDayTodo: gh<bool>(),
+        isOnboarding: gh<bool>(),
+        createTodoUseCase: gh<_i834.CreateTodoUseCase>(),
+        updateTodoUseCase: gh<_i375.UpdateTodoUseCase>(),
+        createRecurringTodoUseCase: gh<_i787.CreateRecurringTodoUseCase>(),
+        updateRecurringTodoUseCase: gh<_i237.UpdateRecurringTodoUseCase>(),
+        getGoalsLocalUseCase: gh<_i477.GetGoalsLocalUseCase>(),
+        initialGoalId: gh<String>(),
+      ),
+    );
     gh.lazySingleton<_i370.AppNotificationViewModel>(
       () => _i370.AppNotificationViewModel(
         gh<_i22.GetNotificationSettingsUseCase>(),
@@ -183,17 +198,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i88.SlimeCharacterViewModel>(
       () => _i88.SlimeCharacterViewModel(gh<_i610.SlimeOnGestureUseCase>()),
-    );
-    gh.lazySingleton<_i72.TodoInputViewModel>(
-      () => _i72.TodoInputViewModel(
-        todo: gh<_i429.Todo>(),
-        isDDayTodo: gh<bool>(),
-        isOnboarding: gh<bool>(),
-        createTodoUseCase: gh<_i834.CreateTodoUseCase>(),
-        updateTodoUseCase: gh<_i375.UpdateTodoUseCase>(),
-        getGoalsLocalUseCase: gh<_i477.GetGoalsLocalUseCase>(),
-        initialGoalId: gh<String>(),
-      ),
     );
     gh.lazySingleton<_i1040.AppThemeViewModel>(
       () => _i1040.AppThemeViewModel(

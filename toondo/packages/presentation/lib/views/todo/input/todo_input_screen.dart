@@ -6,7 +6,9 @@ import 'package:presentation/views/home/home_screen.dart';
 import 'package:presentation/views/todo/input/todo_input_body.dart';
 import 'package:provider/provider.dart';
 import 'package:get_it/get_it.dart';
+import 'package:domain/usecases/todo/create_recurring_todo.dart';
 import 'package:domain/usecases/todo/create_todo.dart';
+import 'package:domain/usecases/todo/update_recurring_todo.dart';
 import 'package:domain/usecases/todo/update_todo.dart';
 import 'package:domain/usecases/goal/get_goals_local.dart';
 import 'package:domain/entities/todo.dart';
@@ -34,6 +36,10 @@ class TodoInputScreen extends StatelessWidget {
             isOnboarding: isOnboarding,
             createTodoUseCase: GetIt.instance<CreateTodoUseCase>(),
             updateTodoUseCase: GetIt.instance<UpdateTodoUseCase>(),
+            createRecurringTodoUseCase:
+                GetIt.instance<CreateRecurringTodoUseCase>(),
+            updateRecurringTodoUseCase:
+                GetIt.instance<UpdateRecurringTodoUseCase>(),
             getGoalsLocalUseCase: GetIt.instance<GetGoalsLocalUseCase>(),
           ),
       child: BaseScaffold(

@@ -1,13 +1,16 @@
 import 'package:domain/entities/goal.dart';
+import 'package:domain/entities/recurrence_rule.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:domain/entities/todo.dart';
+import 'package:domain/usecases/todo/create_recurring_todo.dart';
 import 'package:domain/usecases/todo/create_todo.dart';
+import 'package:domain/usecases/todo/update_recurring_todo.dart';
 import 'package:domain/usecases/todo/update_todo.dart';
 import 'package:presentation/designsystem/components/calendars/calendar_bottom_sheet.dart';
 import 'package:injectable/injectable.dart';
 import 'package:domain/usecases/goal/get_goals_local.dart';
-import 'package:presentation/models/eisenhower_model.dart'; // 여기 EisenhowerType enum이 정의됨
+import 'package:presentation/models/eisenhower_model.dart';
 import 'package:get_it/get_it.dart';
 import 'package:presentation/viewmodels/home/home_viewmodel.dart';
 
@@ -40,8 +43,11 @@ class TodoInputViewModel extends ChangeNotifier {
 
   Todo? todo;
   bool isDDayTodo;
+  RecurrenceRule? recurrence;
   final CreateTodoUseCase _createTodoUseCase;
   final UpdateTodoUseCase _updateTodoUseCase;
+  final CreateRecurringTodoUseCase _createRecurringTodoUseCase;
+  final UpdateRecurringTodoUseCase _updateRecurringTodoUseCase;
   final GetGoalsLocalUseCase _getGoalsLocalUseCase;
   final String? initialGoalId; // 새로 생성된 목표 전달용
 
@@ -51,10 +57,14 @@ class TodoInputViewModel extends ChangeNotifier {
     required this.isOnboarding,
     required CreateTodoUseCase createTodoUseCase,
     required UpdateTodoUseCase updateTodoUseCase,
+    required CreateRecurringTodoUseCase createRecurringTodoUseCase,
+    required UpdateRecurringTodoUseCase updateRecurringTodoUseCase,
     required GetGoalsLocalUseCase getGoalsLocalUseCase,
   this.initialGoalId,
   }) : _createTodoUseCase = createTodoUseCase,
        _updateTodoUseCase = updateTodoUseCase,
+       _createRecurringTodoUseCase = createRecurringTodoUseCase,
+       _updateRecurringTodoUseCase = updateRecurringTodoUseCase,
        _getGoalsLocalUseCase = getGoalsLocalUseCase {
     if (todo != null) {
       titleController.text = todo!.title;
@@ -63,6 +73,7 @@ class TodoInputViewModel extends ChangeNotifier {
       startDate = todo!.startDate;
       endDate = todo!.endDate;
       showOnHome = todo!.showOnHome;
+      recurrence = todo!.recurrence;
       // eisenhower 필드에서 EisenhowerType으로 매핑
       _selectedEisenhowerType = _mapEisenhowerToType(todo!.eisenhower);
       isDailyTodo = todo!.startDate == todo!.endDate;
@@ -123,6 +134,36 @@ class TodoInputViewModel extends ChangeNotifier {
   void setEisenhowerType(EisenhowerType type) {
     _selectedEisenhowerType = type;
     notifyListeners();
+  }
+
+  void setRecurrence(RecurrenceRule? rule) {
+    recurrence = rule;
+    notifyListeners();
+  }
+
+  String describeRecurrence() {
+    final r = recurrence;
+    if (r == null) return '안 함';
+    final intervalLabel = r.interval > 1 ? '${r.interval}' : '';
+    switch (r.frequency) {
+      case RecurrenceFrequency.daily:
+        return r.interval > 1 ? '매 ${r.interval}일' : '매일';
+      case RecurrenceFrequency.weekly:
+        const labels = ['월', '화', '수', '목', '금', '토', '일'];
+        final days = (r.byWeekdays.isEmpty
+                ? <int>[]
+                : [...r.byWeekdays]..sort())
+            .map((d) => labels[d - 1])
+            .join(', ');
+        final prefix = r.interval > 1 ? '매 $intervalLabel주' : '매주';
+        return days.isEmpty ? prefix : '$prefix $days';
+      case RecurrenceFrequency.monthly:
+        final day = r.byMonthDay;
+        final prefix = r.interval > 1 ? '매 $intervalLabel달' : '매달';
+        return day == null ? prefix : '$prefix ${day}일';
+      case RecurrenceFrequency.yearly:
+        return r.interval > 1 ? '매 $intervalLabel년' : '매년';
+    }
   }
 
   void toggleShowOnHome(bool value) {
@@ -235,6 +276,7 @@ class TodoInputViewModel extends ChangeNotifier {
       goalId: selectedGoalId,
       eisenhower: _mapTypeToEisenhower(_selectedEisenhowerType),
       showOnHome: showOnHome,
+      recurrence: recurrence,
     );
     
     print('🔍 생성된 투두 정보: ${newTodo.title}, showOnHome: ${newTodo.showOnHome}');
@@ -284,7 +326,9 @@ class TodoInputViewModel extends ChangeNotifier {
 
     try {
       final newTodo = _buildTodo();
-      final created = await _createTodoUseCase(newTodo);
+      final created = newTodo.recurrence != null
+          ? await _createRecurringTodoUseCase(newTodo)
+          : await _createTodoUseCase(newTodo);
       if (created) {
         // TODO: 투두 생성 버그 수정 - 홈 뷰모델 동기화 누락
         // TODO: 투두 생성 후 홈 화면의 todayTop3Todos가 업데이트되지 않는 문제
@@ -326,7 +370,11 @@ class TodoInputViewModel extends ChangeNotifier {
 
     try {
       final updatedTodo = _buildTodo();
-      await _updateTodoUseCase(updatedTodo);
+      if (updatedTodo.recurrence != null) {
+        await _updateRecurringTodoUseCase(updatedTodo);
+      } else {
+        await _updateTodoUseCase(updatedTodo);
+      }
       onSuccess();
     } catch (e) {
       onError('업데이트 중 오류 발생: $e');
