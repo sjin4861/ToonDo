@@ -223,4 +223,27 @@ class TodoRepositoryImpl implements TodoRepository {
     if (goalId == null) return null;
     return int.tryParse(goalId);
   }
+
+  @override
+  Future<List<Todo>> getRecurringSeries() async {
+    throw UnimplementedError('Implemented in F2 step 3');
+  }
+
+  @override
+  Future<void> deleteSeries(String seriesId) async {
+    throw UnimplementedError('Implemented in F2 step 3');
+  }
+
+  @override
+  Future<Todo?> findOccurrence({
+    required String seriesId,
+    required DateTime occurrenceDate,
+  }) async {
+    throw UnimplementedError('Implemented in F2 step 3');
+  }
+
+  @override
+  Future<Todo> materializeOccurrence(Todo occurrence) async {
+    throw UnimplementedError('Implemented in F2 step 3');
+  }
 }

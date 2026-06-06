@@ -13,4 +13,15 @@ abstract class TodoRepository {
     DateTime newEndDate,
   );
   Future<void> updateTodoStatus(Todo todo, double status);
+
+  Future<List<Todo>> getRecurringSeries();
+
+  Future<void> deleteSeries(String seriesId);
+
+  Future<Todo?> findOccurrence({
+    required String seriesId,
+    required DateTime occurrenceDate,
+  });
+
+  Future<Todo> materializeOccurrence(Todo occurrence);
 }
