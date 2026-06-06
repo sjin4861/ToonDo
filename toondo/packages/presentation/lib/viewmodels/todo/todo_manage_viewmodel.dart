@@ -5,6 +5,7 @@ import 'package:domain/usecases/goal/get_goals_local.dart';
 import 'package:domain/usecases/todo/get_all_todos.dart';
 import 'package:domain/usecases/todo/update_todo_dates.dart';
 import 'package:domain/usecases/todo/update_todo_status.dart';
+import 'package:domain/usecases/todo/delete_recurring_todo.dart';
 import 'package:domain/usecases/todo/delete_todo.dart';
 import 'package:domain/usecases/todo/expand_recurring_todos_for_date.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class TodoManageViewModel extends ChangeNotifier {
   final UpdateTodoDatesUseCase _updateTodoDatesUseCase;
   final GetGoalsLocalUseCase _getGoalsLocalUseCase;
   final ExpandRecurringTodosForDateUseCase _expandRecurring;
+  final DeleteRecurringTodoUseCase _deleteRecurring;
 
   DateTime selectedDate;
   TodoFilterOption selectedFilter = TodoFilterOption.all;
@@ -37,6 +39,7 @@ class TodoManageViewModel extends ChangeNotifier {
     required UpdateTodoDatesUseCase updateTodoDatesUseCase,
     required GetGoalsLocalUseCase getGoalsLocalUseCase,
     required ExpandRecurringTodosForDateUseCase expandRecurring,
+    required DeleteRecurringTodoUseCase deleteRecurring,
     DateTime? initialDate,
   }) : _deleteTodoUseCase = deleteTodoUseCase,
        _getTodosUseCase = getTodosUseCase,
@@ -44,6 +47,7 @@ class TodoManageViewModel extends ChangeNotifier {
        _updateTodoDatesUseCase = updateTodoDatesUseCase,
        _getGoalsLocalUseCase = getGoalsLocalUseCase,
        _expandRecurring = expandRecurring,
+       _deleteRecurring = deleteRecurring,
        selectedDate = initialDate ?? DateTime.now();
 
   Future<void> loadTodos() async {
@@ -173,9 +177,27 @@ class TodoManageViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> deleteRecurringSeries(String seriesId) async {
+    try {
+      await _deleteRecurring(seriesId);
+      await loadTodos();
+      try {
+        await GetIt.instance<HomeViewModel>().loadTodos();
+      } catch (e) {
+        print('⚠️ 홈 뷰모델 동기화 실패: $e');
+      }
+      notifyListeners();
+    } catch (e) {
+      print('Error deleting recurring series: $e');
+    }
+  }
+
   Future<void> deleteTodoById(String id) async {
     try {
-      final target = allTodos.firstWhere((t) => t.id == id);
+      final target = allTodos.firstWhere(
+        (t) => t.id == id,
+        orElse: () => _expandedForSelectedDate.firstWhere((t) => t.id == id),
+      );
       await _deleteTodoUseCase(target);
       await loadTodos();
       

@@ -44,6 +44,7 @@ import 'package:domain/usecases/theme/set_theme_mode.dart' as _i366;
 import 'package:domain/usecases/todo/commit_todos.dart' as _i412;
 import 'package:domain/usecases/todo/create_recurring_todo.dart' as _i787;
 import 'package:domain/usecases/todo/create_todo.dart' as _i834;
+import 'package:domain/usecases/todo/delete_recurring_todo.dart' as _i657;
 import 'package:domain/usecases/todo/delete_todo.dart' as _i552;
 import 'package:domain/usecases/todo/expand_recurring_todos_for_date.dart'
     as _i466;
@@ -122,17 +123,6 @@ extension GetItInjectableX on _i174.GetIt {
         logoutUseCase: gh<_i969.LogoutUseCase>(),
       ),
     );
-    gh.lazySingleton<_i506.TodoManageViewModel>(
-      () => _i506.TodoManageViewModel(
-        deleteTodoUseCase: gh<_i552.DeleteTodoUseCase>(),
-        getTodosUseCase: gh<_i362.GetAllTodosUseCase>(),
-        updateTodoStatusUseCase: gh<_i183.UpdateTodoStatusUseCase>(),
-        updateTodoDatesUseCase: gh<_i182.UpdateTodoDatesUseCase>(),
-        getGoalsLocalUseCase: gh<_i477.GetGoalsLocalUseCase>(),
-        expandRecurring: gh<_i466.ExpandRecurringTodosForDateUseCase>(),
-        initialDate: gh<DateTime>(),
-      ),
-    );
     gh.factory<_i940.GoalManagementViewModel>(
       () => _i940.GoalManagementViewModel(
         getGoalsLocalUseCase: gh<_i477.GetGoalsLocalUseCase>(),
@@ -208,6 +198,18 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i849.GetUserNicknameUseCase>(),
         gh<_i362.GetAllTodosUseCase>(),
         gh<_i466.ExpandRecurringTodosForDateUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i506.TodoManageViewModel>(
+      () => _i506.TodoManageViewModel(
+        deleteTodoUseCase: gh<_i552.DeleteTodoUseCase>(),
+        getTodosUseCase: gh<_i362.GetAllTodosUseCase>(),
+        updateTodoStatusUseCase: gh<_i183.UpdateTodoStatusUseCase>(),
+        updateTodoDatesUseCase: gh<_i182.UpdateTodoDatesUseCase>(),
+        getGoalsLocalUseCase: gh<_i477.GetGoalsLocalUseCase>(),
+        expandRecurring: gh<_i466.ExpandRecurringTodosForDateUseCase>(),
+        deleteRecurring: gh<_i657.DeleteRecurringTodoUseCase>(),
+        initialDate: gh<DateTime>(),
       ),
     );
     gh.lazySingleton<_i1040.AppThemeViewModel>(

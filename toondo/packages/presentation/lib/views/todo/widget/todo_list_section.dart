@@ -1,4 +1,5 @@
 import 'package:domain/entities/goal.dart';
+import 'package:domain/entities/todo.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
@@ -123,9 +124,8 @@ class TodoListSection extends StatelessWidget {
                       isDdayTodo: isDDay,
                       isChecked: isCompleted,
                       levelColor: levelColor,
-                      onDelete: () {
-                        viewModel.deleteTodoById(todo.id);
-                      },
+                      onDelete: () =>
+                          _handleDelete(context, todo, viewModel),
                       onTap: () async {
                         showModalBottomSheet(
                           context: context,
@@ -152,8 +152,8 @@ class TodoListSection extends StatelessWidget {
                                   viewModel.loadTodos();
                                 },
                                 onDelete: () {
-                                  viewModel.deleteTodoById(todo.id);
                                   Navigator.pop(context); // 바텀시트 닫기
+                                  _handleDelete(context, todo, viewModel);
                                 },
                                 onDelay:
                                     isDDay
@@ -184,5 +184,38 @@ class TodoListSection extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _handleDelete(
+    BuildContext context,
+    Todo todo,
+    TodoManageViewModel viewModel,
+  ) async {
+    if (!todo.isRecurring) {
+      viewModel.deleteTodoById(todo.id);
+      return;
+    }
+    final seriesId = todo.seriesId ?? todo.id;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('반복 할 일 삭제'),
+        content: const Text(
+            '이 반복 할 일과 앞으로의 일정을 모두 삭제할까요?\n이미 완료한 기록은 그대로 보존돼요.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('취소'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('삭제'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      await viewModel.deleteRecurringSeries(seriesId);
+    }
   }
 }

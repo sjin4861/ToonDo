@@ -5,6 +5,7 @@ import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 import 'package:presentation/views/base_scaffold.dart';
 import 'package:presentation/views/todo/manage/todo_manage_body.dart';
 import 'package:provider/provider.dart';
+import 'package:domain/usecases/todo/delete_recurring_todo.dart';
 import 'package:domain/usecases/todo/delete_todo.dart';
 import 'package:domain/usecases/todo/expand_recurring_todos_for_date.dart';
 import 'package:domain/usecases/todo/get_all_todos.dart';
@@ -30,6 +31,8 @@ class TodoManageScreen extends StatelessWidget {
             getGoalsLocalUseCase: GetIt.instance<GetGoalsLocalUseCase>(),
             expandRecurring:
                 GetIt.instance<ExpandRecurringTodosForDateUseCase>(),
+            deleteRecurring:
+                GetIt.instance<DeleteRecurringTodoUseCase>(),
             initialDate: selectedDate,
           )..loadTodos(),
       child: BaseScaffold(
