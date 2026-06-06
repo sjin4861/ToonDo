@@ -20,6 +20,7 @@ import 'package:data/models/todo_model.dart';
 import 'package:data/models/user_model.dart';
 import 'package:data/models/goal_model.dart';
 import 'package:data/models/goal_status_enum.dart';
+import 'package:data/models/recurrence_rule_model.dart';
 import 'package:data/models/custom_icon_model.dart';
 import 'package:toondo/injection/di.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -117,6 +118,10 @@ class _AppBootstrapperState extends State<AppBootstrapper> {
       Hive.registerAdapter(UserModelAdapter());
       Hive.registerAdapter(GoalStatusEnumAdapter());
       Hive.registerAdapter(CustomIconModelAdapter());
+      Hive.registerAdapter(RecurrenceFrequencyModelAdapter());
+      Hive.registerAdapter(RecurrenceEndKindAdapter());
+      Hive.registerAdapter(RecurrenceEndModelAdapter());
+      Hive.registerAdapter(RecurrenceRuleModelAdapter());
 
       if (mounted) {
         setState(() => _loadingStatus = '데이터 불러오는 중...');

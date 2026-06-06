@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 import 'package:domain/entities/todo.dart';
-part 'todo_model.g.dart'; // Hive 어댑터 생성
+import 'package:data/models/recurrence_rule_model.dart';
+part 'todo_model.g.dart';
 
 @HiveType(typeId: 0)
 class TodoModel extends HiveObject {
@@ -26,13 +27,22 @@ class TodoModel extends HiveObject {
   DateTime endDate;
 
   @HiveField(7)
-  int eisenhower; // 0: 중요하지않고 급하지않음, 1: 급함, 2: 중요함, 3: 중요하고 급함
+  int eisenhower;
 
   @HiveField(8)
-  bool isSynced; // 로컬 데이터 동기화 여부
+  bool isSynced;
 
   @HiveField(9, defaultValue: false)
-  bool showOnHome; // 메인화면 노출 여부
+  bool showOnHome;
+
+  @HiveField(10)
+  RecurrenceRuleModel? recurrence;
+
+  @HiveField(11)
+  String? seriesId;
+
+  @HiveField(12)
+  DateTime? occurrenceDate;
 
   TodoModel({
     required this.id,
@@ -45,16 +55,16 @@ class TodoModel extends HiveObject {
     this.eisenhower = 0,
     this.isSynced = false,
     this.showOnHome = false,
+    this.recurrence,
+    this.seriesId,
+    this.occurrenceDate,
   });
 
-  // New getter and setter for isSynced
   bool get synced => isSynced;
   set synced(bool value) {
     isSynced = value;
-    // Optionally persist change: save();
   }
 
-  // ✅ Entity → Model 변환
   factory TodoModel.fromEntity(Todo entity) {
     return TodoModel(
       id: entity.id,
@@ -67,10 +77,14 @@ class TodoModel extends HiveObject {
       eisenhower: entity.eisenhower,
       showOnHome: entity.showOnHome,
       isSynced: false,
+      recurrence: entity.recurrence == null
+          ? null
+          : RecurrenceRuleModel.fromEntity(entity.recurrence!),
+      seriesId: entity.seriesId,
+      occurrenceDate: entity.occurrenceDate,
     );
   }
 
-  // ✅ Model → Entity 변환
   Todo toEntity() {
     return Todo(
       id: id,
@@ -82,10 +96,12 @@ class TodoModel extends HiveObject {
       endDate: endDate,
       eisenhower: eisenhower,
       showOnHome: showOnHome,
+      recurrence: recurrence?.toEntity(),
+      seriesId: seriesId,
+      occurrenceDate: occurrenceDate,
     );
   }
 
-  // ✅ JSON 변환 (API 통신용)
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -110,7 +126,7 @@ class TodoModel extends HiveObject {
       startDate: DateTime.parse(json['startDate']),
       endDate: DateTime.parse(json['endDate']),
       eisenhower: (json['eisenhower'] as num).toInt(),
-      showOnHome: json['showOnHome'] ?? false, // 기본값 false로 설정
+      showOnHome: json['showOnHome'] ?? false,
       isSynced: true,
     );
   }
