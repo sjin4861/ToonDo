@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
+import 'package:presentation/designsystem/components/ads/app_ad_banner.dart';
 import 'package:presentation/designsystem/components/menu/app_selectable_menu_bar.dart';
 import 'package:presentation/designsystem/components/toggles/app_goal_category_toggle.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
@@ -8,8 +9,17 @@ import 'package:presentation/viewmodels/goal/goal_management_viewmodel.dart';
 import 'package:presentation/views/goal/widget/goal_manage_list_section.dart';
 import 'package:provider/provider.dart';
 
-class GoalManageBody extends StatelessWidget {
+class GoalManageBody extends StatefulWidget {
   const GoalManageBody({super.key});
+
+  @override
+  State<GoalManageBody> createState() => _GoalManageBodyState();
+}
+
+class _GoalManageBodyState extends State<GoalManageBody> {
+  bool _adDismissed = false;
+
+  static const _placeholderAd = AdBannerContent(appName: 'App Name');
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +30,13 @@ class GoalManageBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(height: AppSpacing.v20),
+          if (!_adDismissed)
+            AppAdBanner(
+              content: _placeholderAd,
+              onTap: () {},
+              onDismiss: () => setState(() => _adDismissed = true),
+            ),
+          if (!_adDismissed) SizedBox(height: AppSpacing.v20),
           _HeaderSection(viewModel: viewModel),
           SizedBox(height: AppSpacing.v24),
           viewModel.filteredGoals.isEmpty
