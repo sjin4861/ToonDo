@@ -45,7 +45,7 @@ class AppAdBanner extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.backgroundNormal,
         borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
-        border: Border.all(color: AppColors.borderUnselected),
+        border: Border.all(color: AppColors.green300),
       ),
       child: Row(
         children: [
@@ -78,7 +78,7 @@ class AppAdBanner extends StatelessWidget {
           ),
           SizedBox(width: AppSpacing.h8),
           _circleIconButton(
-            icon: Icons.play_arrow_rounded,
+            icon: Icons.play_arrow_outlined,
             onTap: onTap,
             semanticLabel: '광고 보기',
           ),
