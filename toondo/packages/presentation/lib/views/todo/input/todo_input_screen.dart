@@ -18,12 +18,14 @@ class TodoInputScreen extends StatelessWidget {
   final bool isDDayTodo;
   final Todo? todo;
   final bool isOnboarding;
+  final bool isRoutine;
 
   const TodoInputScreen({
     super.key,
     this.isDDayTodo = true,
     this.todo,
     this.isOnboarding = false,
+    this.isRoutine = false,
   });
 
   @override
@@ -34,6 +36,7 @@ class TodoInputScreen extends StatelessWidget {
             todo: todo,
             isDDayTodo: isDDayTodo,
             isOnboarding: isOnboarding,
+            isRoutine: isRoutine,
             createTodoUseCase: GetIt.instance<CreateTodoUseCase>(),
             updateTodoUseCase: GetIt.instance<UpdateTodoUseCase>(),
             createRecurringTodoUseCase:
@@ -44,7 +47,11 @@ class TodoInputScreen extends StatelessWidget {
           ),
       child: BaseScaffold(
         body: TodoInputBody(),
-        title: isOnboarding ? '시작하기' : (todo != null ? '투두 수정' : '투두 작성'),
+        title: isOnboarding
+            ? '시작하기'
+            : isRoutine
+                ? (todo != null ? '루틴 수정' : '루틴 작성')
+                : (todo != null ? '투두 수정' : '투두 작성'),
         showBackButton: !isOnboarding,
         bottomWidget: SafeArea(
           child: Padding(

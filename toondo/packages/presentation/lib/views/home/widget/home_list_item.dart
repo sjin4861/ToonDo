@@ -10,12 +10,13 @@ import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/designsystem/typography/app_typography.dart';
 import 'package:presentation/utils/get_todo_border_color.dart';
-import 'package:presentation/utils/goal_utils.dart';
+import 'package:presentation/utils/routine_subtitle.dart';
 
 class HomeListItem extends StatelessWidget {
   final Goal? goal;
   final Todo? todo;
   final List<Goal>? allGoals;
+  final List<Todo>? routineSeries;
   final VoidCallback? onTap;
 
   const HomeListItem({
@@ -23,6 +24,7 @@ class HomeListItem extends StatelessWidget {
     this.goal,
     this.todo,
     this.allGoals,
+    this.routineSeries,
     this.onTap,
   }) : assert(goal != null || todo != null, 'goal 또는 todo 중 하나는 반드시 있어야 합니다');
 
@@ -118,7 +120,7 @@ class HomeListItem extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          dDay != null ? '$dateRange $dDay' : dateRange,
+                          _buildSubtitle(dateRange, dDay),
                           style: AppTypography.caption3Regular.copyWith(
                             color: AppColors.status100_50,
                             height: 1.2,
@@ -144,6 +146,23 @@ class HomeListItem extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _buildSubtitle(String dateRange, String? dDay) {
+    // 루틴 occurrence는 종료 조건에 따라 ∞ / D-N / N회로 표시.
+    if (todo != null && todo!.isRecurringOccurrence) {
+      final series = routineSeries?.firstWhere(
+        (s) => s.id == todo!.seriesId,
+        orElse: () => todo!,
+      );
+      final sub = routineSubtitle(
+        occurrence: todo!,
+        selectedDate: DateTime.now(),
+        series: series,
+      );
+      if (sub != null) return sub;
+    }
+    return dDay != null ? '$dateRange $dDay' : dateRange;
   }
 
   Widget _buildIcon(Goal? goalToUse) {

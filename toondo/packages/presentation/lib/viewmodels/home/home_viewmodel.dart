@@ -39,6 +39,9 @@ class HomeViewModel extends ChangeNotifier {
   List<Todo> _todos = [];
   List<Todo> get todos => _todos;
 
+  List<Todo> _routineSeries = [];
+  List<Todo> get routineSeries => _routineSeries;
+
 
   Future<void> loadGoals() async {
     _goals = await _getGoals();
@@ -51,6 +54,7 @@ class HomeViewModel extends ChangeNotifier {
       // 시리즈 템플릿은 홈 단순 목록에서 제외 — expand 결과로 대체
       final nonSeries =
           raw.where((t) => !t.isRecurringSeries).toList();
+      _routineSeries = raw.where((t) => t.isRecurringSeries).toList();
       final todayExpansion = await _expandRecurring(DateTime.now());
       // expand가 반환한 occurrence는 이미 비-시리즈 목록에 머터리얼라이즈된
       // 인스턴스가 있으면 그것을 포함하므로 id 기준 중복 제거

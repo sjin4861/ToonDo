@@ -75,6 +75,9 @@ class TodoRepositoryImpl implements TodoRepository {
           comment: todo.comment,
           eisenhower: todo.eisenhower,
           showOnHome: todo.showOnHome,
+          recurrence: todo.recurrence,
+          seriesId: todo.seriesId,
+          occurrenceDate: todo.occurrenceDate,
         );
         return localDatasource.saveTodo(createdTodo);
       } catch (_) {
@@ -94,6 +97,9 @@ class TodoRepositoryImpl implements TodoRepository {
       comment: todo.comment,
       eisenhower: todo.eisenhower,
       showOnHome: todo.showOnHome,
+      recurrence: todo.recurrence,
+      seriesId: todo.seriesId,
+      occurrenceDate: todo.occurrenceDate,
     );
     return localDatasource.saveTodo(localTodo);
   }

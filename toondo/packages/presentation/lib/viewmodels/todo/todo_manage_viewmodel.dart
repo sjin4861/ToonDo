@@ -1,4 +1,5 @@
 import 'package:domain/entities/goal.dart';
+import 'package:domain/entities/status.dart';
 import 'package:domain/entities/todo.dart';
 import 'package:domain/entities/todo_filter_option.dart';
 import 'package:domain/usecases/goal/get_goals_local.dart';
@@ -30,6 +31,8 @@ class TodoManageViewModel extends ChangeNotifier {
   List<Todo> _expandedForSelectedDate = [];
   List<Todo> dDayTodos = [];
   List<Todo> dailyTodos = [];
+  List<Todo> routineTodos = [];
+  List<Todo> routineSeries = [];
   List<Goal> goals = [];
 
   TodoManageViewModel({
@@ -56,6 +59,8 @@ class TodoManageViewModel extends ChangeNotifier {
       final raw = await _getTodosUseCase();
       // 시리즈 템플릿은 날짜별 화면에서 제외, 실제 발생은 _expandedForSelectedDate가 담당
       allTodos = raw.where((t) => !t.isRecurringSeries).toList();
+      // 루틴 occurrence 편집 시 원본 시리즈 템플릿 조회용
+      routineSeries = raw.where((t) => t.isRecurringSeries).toList();
       goals = await _getGoalsLocalUseCase();
       await _refreshExpansion();
       _filterAndCategorizeTodos();
@@ -128,10 +133,13 @@ class TodoManageViewModel extends ChangeNotifier {
           todosForSelectedDate.where((todo) => !todo.isDDayTodo()).toList();
     }
 
-    dDayTodos =
-        todosForSelectedDate.where((todo) => todo.isDDayTodo()).toList();
-    dailyTodos =
-        todosForSelectedDate.where((todo) => !todo.isDDayTodo()).toList();
+    // 루틴(반복 발생분)은 별도 섹션으로 분리. 디데이/데일리 섹션에는 포함하지 않는다.
+    routineTodos =
+        todosForSelectedDate.where((todo) => todo.isRecurringOccurrence).toList();
+    final nonRoutine =
+        todosForSelectedDate.where((todo) => !todo.isRecurringOccurrence);
+    dDayTodos = nonRoutine.where((todo) => todo.isDDayTodo()).toList();
+    dailyTodos = nonRoutine.where((todo) => !todo.isDDayTodo()).toList();
 
     dDayTodos.sort(
       (a, b) => a.endDate
@@ -141,6 +149,7 @@ class TodoManageViewModel extends ChangeNotifier {
     );
     // eisenhower 필드로 정렬 - 중요도 순으로 정렬 (높은 값이 더 중요)
     dailyTodos.sort((a, b) => b.eisenhower.compareTo(a.eisenhower));
+    routineTodos.sort((a, b) => b.eisenhower.compareTo(a.eisenhower));
 
     notifyListeners();
   }
@@ -148,23 +157,9 @@ class TodoManageViewModel extends ChangeNotifier {
   Future<void> updateTodoStatus(Todo todo, double status) async {
     try {
       await _updateTodoStatusUseCase(todo, status);
-      final idx = allTodos.indexWhere((t) => t.id == todo.id);
-      if (idx != -1) {
-        // 상태 변경된 새 Todo 생성 후 반영 - eisenhower 필드로 변경
-        final updated = Todo(
-          id: todo.id,
-          title: todo.title,
-          startDate: todo.startDate,
-          endDate: todo.endDate,
-          goalId: todo.goalId,
-          status: status,
-          comment: todo.comment,
-          eisenhower: todo.eisenhower,
-          showOnHome: todo.showOnHome,
-        );
-        allTodos[idx] = updated;
-      }
-      _filterAndCategorizeTodos();
+      // 루틴 occurrence는 처음 완료 시 새로 materialize 되므로 전체 재로드가 필요.
+      // 일반 투두도 reload가 안전: 반복 메타데이터 보존, expansion 캐시 갱신.
+      await loadTodos();
 
       // 홈 뷰모델 동기화 - 투두 체크 후 홈 화면 즉시 업데이트
       try {
@@ -245,8 +240,12 @@ class TodoManageViewModel extends ChangeNotifier {
     }
   }
 
+  /// 완료/포기/실패된 목표는 필터링 대상에서 제외하고 진행 중인 목표만 노출한다.
+  List<Goal> get activeGoals =>
+      goals.where((g) => g.status == Status.active).toList();
+
   int get selectedGoalIndex {
-    return goals.indexWhere((g) => g.id == selectedGoalId);
+    return activeGoals.indexWhere((g) => g.id == selectedGoalId);
   }
 
   bool _isSameDay(DateTime a, DateTime b) {

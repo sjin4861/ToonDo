@@ -31,16 +31,18 @@ class TodoInputBody extends StatelessWidget {
             SizedBox(height: AppSpacing.v32),
             if (viewModel.isOnboarding)
               _buildOnboardingHeader(),
-            Align(
-              alignment: Alignment.centerRight,
-              child: AppDailyChip(
-                isLeftSelected: !viewModel.isDailyTodo,
-                onSelectedChanged: (isLeftSelected) {
-                  viewModel.setDailyTodoStatus(!isLeftSelected);
-                },
+            if (!viewModel.isRoutine) ...[
+              Align(
+                alignment: Alignment.centerRight,
+                child: AppDailyChip(
+                  isLeftSelected: !viewModel.isDailyTodo,
+                  onSelectedChanged: (isLeftSelected) {
+                    viewModel.setDailyTodoStatus(!isLeftSelected);
+                  },
+                ),
               ),
-            ),
-            SizedBox(height: AppSpacing.v16),
+              SizedBox(height: AppSpacing.v16),
+            ],
             AppInputField(
               label: '투두 이름',
               controller: viewModel.titleController,
@@ -55,7 +57,7 @@ class TodoInputBody extends StatelessWidget {
               _buildDateSection(viewModel, context),
             SizedBox(height: AppSpacing.v24),
             _buildOptions(viewModel),
-            if (viewModel.isDailyTodo) ...[
+            if (viewModel.isRoutine) ...[
               SizedBox(height: AppSpacing.v16),
               _buildRecurrenceRow(viewModel, context),
             ],
@@ -124,10 +126,12 @@ class TodoInputBody extends StatelessWidget {
           builder: (_) => RecurrenceBottomSheet(
             initial: viewModel.recurrence,
             seriesStartDate: DateTime.now(),
+            allowNone: !viewModel.isRoutine,
           ),
         );
         if (!context.mounted) return;
-        if (result != null || viewModel.recurrence != null) {
+        // 취소(result==null)로 기본 recurrence가 지워지지 않도록, 적용 시에만 갱신.
+        if (result != null) {
           viewModel.setRecurrence(result);
         }
       },

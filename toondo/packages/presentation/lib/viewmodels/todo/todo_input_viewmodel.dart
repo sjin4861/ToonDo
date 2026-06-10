@@ -43,6 +43,7 @@ class TodoInputViewModel extends ChangeNotifier {
 
   Todo? todo;
   bool isDDayTodo;
+  final bool isRoutine;
   RecurrenceRule? recurrence;
   final CreateTodoUseCase _createTodoUseCase;
   final UpdateTodoUseCase _updateTodoUseCase;
@@ -55,6 +56,7 @@ class TodoInputViewModel extends ChangeNotifier {
     this.todo,
     required this.isDDayTodo,
     required this.isOnboarding,
+    this.isRoutine = false,
     required CreateTodoUseCase createTodoUseCase,
     required UpdateTodoUseCase updateTodoUseCase,
     required CreateRecurringTodoUseCase createRecurringTodoUseCase,
@@ -78,10 +80,20 @@ class TodoInputViewModel extends ChangeNotifier {
       _selectedEisenhowerType = _mapEisenhowerToType(todo!.eisenhower);
       isDailyTodo = todo!.startDate == todo!.endDate;
     } else {
-      isDailyTodo = !isDDayTodo;
+      isDailyTodo = isRoutine ? true : !isDDayTodo;
       if (isDailyTodo) {
         startDate = null;
         endDate = null;
+      }
+      // 루틴은 기본적으로 매일/끝없이 반복
+      if (isRoutine) {
+        recurrence = const RecurrenceRule(
+          frequency: RecurrenceFrequency.daily,
+          interval: 1,
+          byWeekdays: [],
+          byMonthDay: null,
+          end: EndNever(),
+        );
       }
     }
 

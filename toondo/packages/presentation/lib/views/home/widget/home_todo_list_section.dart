@@ -8,12 +8,14 @@ import 'package:presentation/views/home/widget/home_list_item.dart';
 class HomeTodoListSection extends StatelessWidget {
   final List<Todo> todos;
   final List<Goal>? allGoals;
+  final List<Todo>? routineSeries;
   final bool allCompleted;
 
   const HomeTodoListSection({
     super.key,
     required this.todos,
     this.allGoals,
+    this.routineSeries,
     this.allCompleted = false,
   });
 
@@ -51,7 +53,8 @@ class HomeTodoListSection extends StatelessWidget {
             ),
             child: HomeListItem(
               todo: todo,
-              allGoals: allGoals, // 목표 리스트 전달하여 아이콘 표시 가능하도록 수정
+              allGoals: allGoals,
+              routineSeries: routineSeries,
             ),
           );
         }).toList(),

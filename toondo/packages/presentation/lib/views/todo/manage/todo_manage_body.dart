@@ -85,11 +85,12 @@ class TodoManageBody extends StatelessWidget {
   }
 
   Widget _buildGoalToggle(TodoManageViewModel viewModel) {
+    final activeGoals = viewModel.activeGoals;
     return AppGoalCategoryToggle(
-      labels: viewModel.goals.map((g) => g.name).toList(),
+      labels: activeGoals.map((g) => g.name).toList(),
       selectedIndex: viewModel.selectedGoalIndex,
       onChanged: (index) {
-        final goal = viewModel.goals[index];
+        final goal = activeGoals[index];
         viewModel.updateSelectedFilter(TodoFilterOption.goal, goalId: goal.id);
       },
     );
@@ -114,6 +115,14 @@ class TodoManageBody extends StatelessWidget {
               todos: viewModel.dailyTodos,
               viewModel: viewModel,
               isDDay: false,
+            ),
+            SizedBox(height: AppSpacing.v28),
+            TodoListSection(
+              title: '루틴',
+              todos: viewModel.routineTodos,
+              viewModel: viewModel,
+              isDDay: false,
+              isRoutine: true,
             ),
           ],
         ),

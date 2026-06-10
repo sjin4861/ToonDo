@@ -9,6 +9,7 @@ import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/designsystem/typography/app_typography.dart';
 import 'package:presentation/utils/get_todo_border_color.dart';
+import 'package:presentation/utils/routine_subtitle.dart';
 import 'package:presentation/viewmodels/todo/todo_manage_viewmodel.dart';
 import 'package:presentation/views/todo/input/todo_input_screen.dart';
 
@@ -17,6 +18,7 @@ class TodoListSection extends StatelessWidget {
   final List todos;
   final TodoManageViewModel viewModel;
   final bool isDDay;
+  final bool isRoutine;
 
   const TodoListSection({
     super.key,
@@ -24,6 +26,7 @@ class TodoListSection extends StatelessWidget {
     required this.todos,
     required this.viewModel,
     required this.isDDay,
+    this.isRoutine = false,
   });
 
   @override
@@ -43,7 +46,10 @@ class TodoListSection extends StatelessWidget {
                 await Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => TodoInputScreen(isDDayTodo: isDDay),
+                    builder: (_) => TodoInputScreen(
+                      isDDayTodo: isDDay,
+                      isRoutine: isRoutine,
+                    ),
                   ),
                 );
                 viewModel.loadTodos();
@@ -102,7 +108,9 @@ class TodoListSection extends StatelessWidget {
                     final levelColor = getBorderColor(todo);
 
                     String? subtitle;
-                    if (isDDay) {
+                    if (isRoutine) {
+                      subtitle = _routineSubtitle(todo, viewModel.selectedDate);
+                    } else if (isDDay) {
                       final dDay =
                           todo.endDate
                               .difference(viewModel.selectedDate)
@@ -139,13 +147,21 @@ class TodoListSection extends StatelessWidget {
                                 isDaily: !isDDay,
                                 onEdit: () async {
                                   Navigator.pop(context); // 먼저 바텀시트 닫기
+                                  // 루틴은 occurrence가 아닌 series 템플릿을 편집해야 함
+                                  final editTarget = isRoutine
+                                      ? viewModel.routineSeries.firstWhere(
+                                          (s) => s.id == todo.seriesId,
+                                          orElse: () => todo,
+                                        )
+                                      : todo;
                                   await Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder:
                                           (_) => TodoInputScreen(
-                                            todo: todo,
+                                            todo: editTarget,
                                             isDDayTodo: isDDay,
+                                            isRoutine: isRoutine,
                                           ),
                                     ),
                                   );
@@ -186,6 +202,18 @@ class TodoListSection extends StatelessWidget {
     );
   }
 
+  String? _routineSubtitle(Todo todo, DateTime selectedDate) {
+    final series = viewModel.routineSeries.firstWhere(
+      (s) => s.id == todo.seriesId,
+      orElse: () => todo,
+    );
+    return routineSubtitle(
+      occurrence: todo,
+      selectedDate: selectedDate,
+      series: series,
+    );
+  }
+
   Future<void> _handleDelete(
     BuildContext context,
     Todo todo,
@@ -196,26 +224,6 @@ class TodoListSection extends StatelessWidget {
       return;
     }
     final seriesId = todo.seriesId ?? todo.id;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('반복 할 일 삭제'),
-        content: const Text(
-            '이 반복 할 일과 앞으로의 일정을 모두 삭제할까요?\n이미 완료한 기록은 그대로 보존돼요.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('취소'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('삭제'),
-          ),
-        ],
-      ),
-    );
-    if (confirmed == true) {
-      await viewModel.deleteRecurringSeries(seriesId);
-    }
+    await viewModel.deleteRecurringSeries(seriesId);
   }
 }

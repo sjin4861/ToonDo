@@ -3,24 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
-import 'package:presentation/designsystem/components/bottom_sheets/app_bottom_sheet.dart';
+import 'package:presentation/designsystem/components/bottom_sheets/bottom_sheet_drag_indicator.dart';
 import 'package:presentation/designsystem/components/buttons/double_action_buttons.dart';
+import 'package:presentation/designsystem/components/calendars/calendar_bottom_sheet.dart';
 import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/designsystem/typography/app_typography.dart';
 
-enum _Mode { none, daily, weekly, monthly, yearly }
+enum _Mode { none, daily, weekly, monthly }
 
 enum _EndMode { never, onDate, afterCount }
 
 class RecurrenceBottomSheet extends StatefulWidget {
   final RecurrenceRule? initial;
   final DateTime? seriesStartDate;
+  /// false면 "안 함" 칩 숨김 + 초기 모드 매일 강제 (루틴 입력 시 사용)
+  final bool allowNone;
 
   const RecurrenceBottomSheet({
     super.key,
     this.initial,
     this.seriesStartDate,
+    this.allowNone = true,
   });
 
   @override
@@ -41,7 +45,7 @@ class _RecurrenceBottomSheetState extends State<RecurrenceBottomSheet> {
     super.initState();
     final r = widget.initial;
     if (r == null) {
-      _mode = _Mode.none;
+      _mode = widget.allowNone ? _Mode.none : _Mode.daily;
       final defaultDay = widget.seriesStartDate?.weekday;
       if (defaultDay != null) _weekdays.add(defaultDay);
       _monthDay = widget.seriesStartDate?.day ?? 1;
@@ -50,7 +54,7 @@ class _RecurrenceBottomSheetState extends State<RecurrenceBottomSheet> {
         RecurrenceFrequency.daily => _Mode.daily,
         RecurrenceFrequency.weekly => _Mode.weekly,
         RecurrenceFrequency.monthly => _Mode.monthly,
-        RecurrenceFrequency.yearly => _Mode.yearly,
+        RecurrenceFrequency.yearly => _Mode.monthly, // 매년 옵션 제거됨 — 매달로 폴백
       };
       _interval = r.interval;
       _weekdays.addAll(r.byWeekdays);
@@ -74,7 +78,6 @@ class _RecurrenceBottomSheetState extends State<RecurrenceBottomSheet> {
       _Mode.daily => RecurrenceFrequency.daily,
       _Mode.weekly => RecurrenceFrequency.weekly,
       _Mode.monthly => RecurrenceFrequency.monthly,
-      _Mode.yearly => RecurrenceFrequency.yearly,
       _Mode.none => RecurrenceFrequency.daily,
     };
     final end = switch (_endMode) {
@@ -95,47 +98,69 @@ class _RecurrenceBottomSheetState extends State<RecurrenceBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return AppBottomSheet(
-      initialSize: 0.7,
-      maxSize: 0.95,
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: AppSpacing.h20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('반복 설정', style: AppTypography.h2Bold),
-            SizedBox(height: AppSpacing.v20),
-            _frequencySection(),
-            if (_mode != _Mode.none) ...[
-              SizedBox(height: AppSpacing.v24),
-              _intervalSection(),
-            ],
-            if (_mode == _Mode.weekly) ...[
-              SizedBox(height: AppSpacing.v24),
-              _weekdaySection(),
-            ],
-            if (_mode == _Mode.monthly) ...[
-              SizedBox(height: AppSpacing.v24),
-              _monthDaySection(),
-            ],
-            if (_mode != _Mode.none) ...[
-              SizedBox(height: AppSpacing.v24),
-              _endSection(),
-            ],
-            SizedBox(height: AppSpacing.v32),
-            DoubleActionButtons(
-              backText: '취소',
-              nextText: '적용',
-              onBack: () => Navigator.of(context).pop<RecurrenceRule?>(null),
-              onNext: _isValid()
-                  ? () =>
-                      Navigator.of(context).pop<RecurrenceRule?>(_build())
-                  : null,
-              isNextEnabled: _isValid(),
-            ),
-            SizedBox(height: AppSpacing.v16),
-          ],
+    final screenHeight = MediaQuery.of(context).size.height;
+    return Container(
+      height: screenHeight * 0.78,
+      decoration: BoxDecoration(
+        color: const Color(0xFFFDFDFD),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppDimensions.bottomSheetTopRadius),
         ),
+      ),
+      child: Column(
+        children: [
+          SizedBox(height: AppSpacing.v22),
+          const BottomSheetDragIndicator(),
+          SizedBox(height: AppSpacing.v30),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: AppSpacing.h20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                    Text('반복 설정', style: AppTypography.h2Bold),
+                    SizedBox(height: AppSpacing.v20),
+                    _frequencySection(),
+                    if (_mode != _Mode.none) ...[
+                      SizedBox(height: AppSpacing.v24),
+                      _intervalSection(),
+                    ],
+                    if (_mode == _Mode.weekly) ...[
+                      SizedBox(height: AppSpacing.v24),
+                      _weekdaySection(),
+                    ],
+                    if (_mode == _Mode.monthly) ...[
+                      SizedBox(height: AppSpacing.v24),
+                      _monthDaySection(),
+                    ],
+                    if (_mode != _Mode.none) ...[
+                      SizedBox(height: AppSpacing.v24),
+                      _endSection(),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                AppSpacing.h20,
+                AppSpacing.v24,
+                AppSpacing.h20,
+                AppSpacing.v24,
+              ),
+              child: DoubleActionButtons(
+                backText: '취소',
+                nextText: '적용',
+                onBack: () =>
+                    Navigator.of(context).pop<RecurrenceRule?>(null),
+                onNext: _isValid()
+                    ? () =>
+                        Navigator.of(context).pop<RecurrenceRule?>(_build())
+                    : null,
+                isNextEnabled: _isValid(),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -150,23 +175,22 @@ class _RecurrenceBottomSheetState extends State<RecurrenceBottomSheet> {
     return _section(
       title: '주기',
       child: Wrap(
+        alignment: WrapAlignment.center,
         spacing: AppSpacing.h8,
         runSpacing: AppSpacing.v8,
         children: [
-          _choiceChip('안 함', _mode == _Mode.none, () {
-            setState(() => _mode = _Mode.none);
-          }),
-          _choiceChip('매일', _mode == _Mode.daily, () {
+          if (widget.allowNone)
+            _choiceChip('안 함', _mode == _Mode.none, () {
+              setState(() => _mode = _Mode.none);
+            }),
+          _choiceChip('일', _mode == _Mode.daily, () {
             setState(() => _mode = _Mode.daily);
           }),
-          _choiceChip('매주', _mode == _Mode.weekly, () {
+          _choiceChip('주', _mode == _Mode.weekly, () {
             setState(() => _mode = _Mode.weekly);
           }),
-          _choiceChip('매달', _mode == _Mode.monthly, () {
+          _choiceChip('달', _mode == _Mode.monthly, () {
             setState(() => _mode = _Mode.monthly);
-          }),
-          _choiceChip('매년', _mode == _Mode.yearly, () {
-            setState(() => _mode = _Mode.yearly);
           }),
         ],
       ),
@@ -178,12 +202,12 @@ class _RecurrenceBottomSheetState extends State<RecurrenceBottomSheet> {
       _Mode.daily => '일',
       _Mode.weekly => '주',
       _Mode.monthly => '달',
-      _Mode.yearly => '년',
       _Mode.none => '',
     };
     return _section(
       title: '간격',
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text('매', style: AppTypography.body2Regular),
           SizedBox(width: AppSpacing.h8),
@@ -200,6 +224,7 @@ class _RecurrenceBottomSheetState extends State<RecurrenceBottomSheet> {
     return _section(
       title: '요일',
       child: Wrap(
+        alignment: WrapAlignment.center,
         spacing: AppSpacing.h8,
         children: List.generate(7, (i) {
           final weekday = i + 1;
@@ -222,6 +247,7 @@ class _RecurrenceBottomSheetState extends State<RecurrenceBottomSheet> {
     return _section(
       title: '일자',
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           _stepper(_monthDay, (v) {
             if (v < 1 || v > 31) return;
@@ -238,7 +264,7 @@ class _RecurrenceBottomSheetState extends State<RecurrenceBottomSheet> {
     return _section(
       title: '종료',
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _radioRow('계속 반복', _endMode == _EndMode.never, () {
             setState(() => _endMode = _EndMode.never);
@@ -249,17 +275,23 @@ class _RecurrenceBottomSheetState extends State<RecurrenceBottomSheet> {
             _endMode == _EndMode.onDate,
             () async {
               setState(() => _endMode = _EndMode.onDate);
-              final picked = await showDatePicker(
+              final picked = await showModalBottomSheet<DateTime>(
                 context: context,
-                initialDate: _endDate,
-                firstDate: DateTime.now(),
-                lastDate: DateTime.now().add(const Duration(days: 365 * 10)),
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (_) => SelectDateBottomSheet(
+                  initialDate: _endDate,
+                  rangeStart: _endDate,
+                  rangeEnd: _endDate,
+                ),
               );
+              if (!mounted) return;
               if (picked != null) setState(() => _endDate = picked);
             },
           ),
           SizedBox(height: AppSpacing.v8),
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _radioRow('횟수 제한', _endMode == _EndMode.afterCount, () {
                 setState(() => _endMode = _EndMode.afterCount);
@@ -283,7 +315,7 @@ class _RecurrenceBottomSheetState extends State<RecurrenceBottomSheet> {
 
   Widget _section({required String title, required Widget child}) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(title,
             style: AppTypography.caption1Regular
@@ -346,6 +378,7 @@ class _RecurrenceBottomSheetState extends State<RecurrenceBottomSheet> {
     return InkWell(
       onTap: onTap,
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
             selected ? Icons.radio_button_checked : Icons.radio_button_off,
@@ -353,7 +386,7 @@ class _RecurrenceBottomSheetState extends State<RecurrenceBottomSheet> {
             size: 18,
           ),
           SizedBox(width: AppSpacing.h8),
-          Flexible(child: Text(label, style: AppTypography.body2Regular)),
+          Text(label, style: AppTypography.body2Regular),
         ],
       ),
     );
