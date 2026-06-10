@@ -46,17 +46,22 @@ import 'package:domain/usecases/theme/get_theme_mode.dart' as _i129;
 import 'package:domain/usecases/theme/set_theme_mode.dart' as _i366;
 import 'package:domain/usecases/todo/add_todo.dart' as _i133;
 import 'package:domain/usecases/todo/commit_todos.dart' as _i412;
+import 'package:domain/usecases/todo/create_recurring_todo.dart' as _i787;
 import 'package:domain/usecases/todo/create_todo.dart' as _i834;
+import 'package:domain/usecases/todo/delete_recurring_todo.dart' as _i657;
 import 'package:domain/usecases/todo/delete_todo.dart' as _i552;
+import 'package:domain/usecases/todo/expand_recurring_todos_for_date.dart'
+    as _i466;
 import 'package:domain/usecases/todo/fetch_todos.dart' as _i314;
 import 'package:domain/usecases/todo/get_all_todos.dart' as _i362;
+import 'package:domain/usecases/todo/update_recurring_todo.dart' as _i237;
 import 'package:domain/usecases/todo/update_todo.dart' as _i375;
 import 'package:domain/usecases/todo/update_todo_dates.dart' as _i182;
 import 'package:domain/usecases/todo/update_todo_status.dart' as _i183;
 import 'package:domain/usecases/user/get_user.dart' as _i991;
 import 'package:domain/usecases/user/get_user_nickname.dart' as _i849;
 import 'package:domain/usecases/user/update_nickname.dart' as _i910;
-import 'package:domain/usecases/user/update_password.dart' as _i1020;
+import 'package:domain/usecases/user/update_password.dart' as _i544;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -131,6 +136,19 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i182.UpdateTodoDatesUseCase>(
       () => _i182.UpdateTodoDatesUseCase(gh<_i158.TodoRepository>()),
     );
+    gh.factory<_i466.ExpandRecurringTodosForDateUseCase>(
+      () =>
+          _i466.ExpandRecurringTodosForDateUseCase(gh<_i158.TodoRepository>()),
+    );
+    gh.factory<_i237.UpdateRecurringTodoUseCase>(
+      () => _i237.UpdateRecurringTodoUseCase(gh<_i158.TodoRepository>()),
+    );
+    gh.factory<_i657.DeleteRecurringTodoUseCase>(
+      () => _i657.DeleteRecurringTodoUseCase(gh<_i158.TodoRepository>()),
+    );
+    gh.factory<_i787.CreateRecurringTodoUseCase>(
+      () => _i787.CreateRecurringTodoUseCase(gh<_i158.TodoRepository>()),
+    );
     gh.factory<_i292.GetGivenUpGoalsUseCase>(
       () => _i292.GetGivenUpGoalsUseCase(gh<_i559.GoalRepository>()),
     );
@@ -176,8 +194,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i910.UpdateNickNameUseCase>(
       () => _i910.UpdateNickNameUseCase(gh<_i988.UserRepository>()),
     );
-    gh.factory<_i1020.UpdatePasswordUseCase>(
-      () => _i1020.UpdatePasswordUseCase(gh<_i988.UserRepository>()),
+    gh.factory<_i544.UpdatePasswordUseCase>(
+      () => _i544.UpdatePasswordUseCase(gh<_i988.UserRepository>()),
     );
     gh.factory<_i991.GetUserUseCase>(
       () => _i991.GetUserUseCase(gh<_i988.UserRepository>()),

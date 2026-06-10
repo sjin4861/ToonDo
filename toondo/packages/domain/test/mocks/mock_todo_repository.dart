@@ -74,4 +74,44 @@ class MockTodoRepository extends Mock implements TodoRepository {
       returnValueForMissingStub: Future.value(),
     );
   }
+
+  @override
+  Future<List<Todo>> getRecurringSeries() {
+    return super.noSuchMethod(
+      Invocation.method(#getRecurringSeries, []),
+      returnValue: Future.value(<Todo>[]),
+      returnValueForMissingStub: Future.value(<Todo>[]),
+    );
+  }
+
+  @override
+  Future<void> deleteSeries(String seriesId) {
+    return super.noSuchMethod(
+      Invocation.method(#deleteSeries, [seriesId]),
+      returnValue: Future.value(),
+      returnValueForMissingStub: Future.value(),
+    );
+  }
+
+  @override
+  Future<Todo?> findOccurrence({
+    String? seriesId,
+    DateTime? occurrenceDate,
+  }) {
+    return super.noSuchMethod(
+      Invocation.method(#findOccurrence, [],
+          {#seriesId: seriesId, #occurrenceDate: occurrenceDate}),
+      returnValue: Future<Todo?>.value(null),
+      returnValueForMissingStub: Future<Todo?>.value(null),
+    );
+  }
+
+  @override
+  Future<Todo> materializeOccurrence(Todo occurrence) {
+    return super.noSuchMethod(
+      Invocation.method(#materializeOccurrence, [occurrence]),
+      returnValue: Future.value(occurrence),
+      returnValueForMissingStub: Future.value(occurrence),
+    );
+  }
 }

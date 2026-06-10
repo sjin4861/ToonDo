@@ -41,6 +41,7 @@ class HomeBody extends StatelessWidget {
                       ? HomeTodoListSection(
                           todos: homeVM.todayTop3Todos,
                           allGoals: homeVM.goals,
+                          routineSeries: homeVM.routineSeries,
                           allCompleted: homeVM.isTodayTodosAllCompleted,
                         )
                       : HomeGoalListSection(goals: homeVM.todayTop3Goals),

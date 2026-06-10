@@ -1,3 +1,4 @@
+import 'package:domain/entities/recurrence_rule.dart';
 import 'package:flutter/material.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
 import 'package:presentation/designsystem/components/app_ink_well.dart';
@@ -11,6 +12,7 @@ import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 import 'package:presentation/viewmodels/todo/todo_input_viewmodel.dart';
 import 'package:presentation/designsystem/components/inputs/app_tip_text.dart';
 import 'package:presentation/views/todo/widget/goal_selection_section.dart';
+import 'package:presentation/views/todo/widget/recurrence_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 class TodoInputBody extends StatelessWidget {
@@ -29,16 +31,18 @@ class TodoInputBody extends StatelessWidget {
             SizedBox(height: AppSpacing.v32),
             if (viewModel.isOnboarding)
               _buildOnboardingHeader(),
-            Align(
-              alignment: Alignment.centerRight,
-              child: AppDailyChip(
-                isLeftSelected: !viewModel.isDailyTodo,
-                onSelectedChanged: (isLeftSelected) {
-                  viewModel.setDailyTodoStatus(!isLeftSelected);
-                },
+            if (!viewModel.isRoutine) ...[
+              Align(
+                alignment: Alignment.centerRight,
+                child: AppDailyChip(
+                  isLeftSelected: !viewModel.isDailyTodo,
+                  onSelectedChanged: (isLeftSelected) {
+                    viewModel.setDailyTodoStatus(!isLeftSelected);
+                  },
+                ),
               ),
-            ),
-            SizedBox(height: AppSpacing.v16),
+              SizedBox(height: AppSpacing.v16),
+            ],
             AppInputField(
               label: '투두 이름',
               controller: viewModel.titleController,
@@ -53,6 +57,10 @@ class TodoInputBody extends StatelessWidget {
               _buildDateSection(viewModel, context),
             SizedBox(height: AppSpacing.v24),
             _buildOptions(viewModel),
+            if (viewModel.isRoutine) ...[
+              SizedBox(height: AppSpacing.v16),
+              _buildRecurrenceRow(viewModel, context),
+            ],
             SizedBox(height: AppSpacing.v24),
             Text(
               '아이젠하워',
@@ -104,6 +112,56 @@ class TodoInputBody extends StatelessWidget {
       label: '메인화면 노출',
       value: viewModel.showOnHome,
       onChanged: (v) => viewModel.toggleShowOnHome(v),
+    );
+  }
+
+  Widget _buildRecurrenceRow(
+      TodoInputViewModel viewModel, BuildContext context) {
+    return AppInkWell(
+      onTap: () async {
+        final result = await showModalBottomSheet<RecurrenceRule?>(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: (_) => RecurrenceBottomSheet(
+            initial: viewModel.recurrence,
+            seriesStartDate: DateTime.now(),
+            allowNone: !viewModel.isRoutine,
+          ),
+        );
+        if (!context.mounted) return;
+        // 취소(result==null)로 기본 recurrence가 지워지지 않도록, 적용 시에만 갱신.
+        if (result != null) {
+          viewModel.setRecurrence(result);
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Row(
+          children: [
+            const Icon(Icons.repeat, size: 16, color: AppColors.status100_75),
+            SizedBox(width: AppSpacing.h8),
+            Text(
+              '반복',
+              style: AppTypography.caption1Regular.copyWith(
+                color: AppColors.status100,
+              ),
+            ),
+            const Spacer(),
+            Text(
+              viewModel.describeRecurrence(),
+              style: AppTypography.caption1Medium.copyWith(
+                color: viewModel.recurrence == null
+                    ? AppColors.status100_50
+                    : AppColors.green500,
+              ),
+            ),
+            SizedBox(width: AppSpacing.h8),
+            const Icon(Icons.chevron_right,
+                size: 16, color: AppColors.status100_50),
+          ],
+        ),
+      ),
     );
   }
 

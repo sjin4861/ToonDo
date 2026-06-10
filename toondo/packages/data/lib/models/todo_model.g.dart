@@ -27,13 +27,16 @@ class TodoModelAdapter extends TypeAdapter<TodoModel> {
       eisenhower: fields[7] as int,
       isSynced: fields[8] as bool,
       showOnHome: fields[9] == null ? false : fields[9] as bool,
+      recurrence: fields[10] as RecurrenceRuleModel?,
+      seriesId: fields[11] as String?,
+      occurrenceDate: fields[12] as DateTime?,
     );
   }
 
   @override
   void write(BinaryWriter writer, TodoModel obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(13)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -53,7 +56,13 @@ class TodoModelAdapter extends TypeAdapter<TodoModel> {
       ..writeByte(8)
       ..write(obj.isSynced)
       ..writeByte(9)
-      ..write(obj.showOnHome);
+      ..write(obj.showOnHome)
+      ..writeByte(10)
+      ..write(obj.recurrence)
+      ..writeByte(11)
+      ..write(obj.seriesId)
+      ..writeByte(12)
+      ..write(obj.occurrenceDate);
   }
 
   @override

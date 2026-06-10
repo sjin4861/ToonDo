@@ -10,7 +10,10 @@ import 'package:domain/entities/todo.dart' as _i6;
 import 'package:domain/repositories/goal_repository.dart' as _i3;
 import 'package:domain/repositories/todo_repository.dart' as _i2;
 import 'package:domain/usecases/goal/get_goals_local.dart' as _i10;
+import 'package:domain/usecases/todo/delete_recurring_todo.dart' as _i13;
 import 'package:domain/usecases/todo/delete_todo.dart' as _i4;
+import 'package:domain/usecases/todo/expand_recurring_todos_for_date.dart'
+    as _i12;
 import 'package:domain/usecases/todo/get_all_todos.dart' as _i7;
 import 'package:domain/usecases/todo/update_todo_dates.dart' as _i9;
 import 'package:domain/usecases/todo/update_todo_status.dart' as _i8;
@@ -191,4 +194,63 @@ class MockGetGoalsLocalUseCase extends _i1.Mock
             returnValue: _i5.Future<List<_i11.Goal>>.value(<_i11.Goal>[]),
           )
           as _i5.Future<List<_i11.Goal>>);
+}
+
+/// A class which mocks [ExpandRecurringTodosForDateUseCase].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockExpandRecurringTodosForDateUseCase extends _i1.Mock
+    implements _i12.ExpandRecurringTodosForDateUseCase {
+  MockExpandRecurringTodosForDateUseCase() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i2.TodoRepository get repository =>
+      (super.noSuchMethod(
+            Invocation.getter(#repository),
+            returnValue: _FakeTodoRepository_0(
+              this,
+              Invocation.getter(#repository),
+            ),
+          )
+          as _i2.TodoRepository);
+
+  @override
+  _i5.Future<List<_i6.Todo>> call(DateTime? targetDate) =>
+      (super.noSuchMethod(
+            Invocation.method(#call, [targetDate]),
+            returnValue: _i5.Future<List<_i6.Todo>>.value(<_i6.Todo>[]),
+          )
+          as _i5.Future<List<_i6.Todo>>);
+}
+
+/// A class which mocks [DeleteRecurringTodoUseCase].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockDeleteRecurringTodoUseCase extends _i1.Mock
+    implements _i13.DeleteRecurringTodoUseCase {
+  MockDeleteRecurringTodoUseCase() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i2.TodoRepository get repository =>
+      (super.noSuchMethod(
+            Invocation.getter(#repository),
+            returnValue: _FakeTodoRepository_0(
+              this,
+              Invocation.getter(#repository),
+            ),
+          )
+          as _i2.TodoRepository);
+
+  @override
+  _i5.Future<void> call(String? seriesId) =>
+      (super.noSuchMethod(
+            Invocation.method(#call, [seriesId]),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
 }

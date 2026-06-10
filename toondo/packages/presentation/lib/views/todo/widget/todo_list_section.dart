@@ -1,4 +1,5 @@
 import 'package:domain/entities/goal.dart';
+import 'package:domain/entities/todo.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
@@ -8,6 +9,7 @@ import 'package:presentation/designsystem/dimensions/app_dimensions.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/designsystem/typography/app_typography.dart';
 import 'package:presentation/utils/get_todo_border_color.dart';
+import 'package:presentation/utils/routine_subtitle.dart';
 import 'package:presentation/viewmodels/todo/todo_manage_viewmodel.dart';
 import 'package:presentation/views/todo/input/todo_input_screen.dart';
 
@@ -16,6 +18,7 @@ class TodoListSection extends StatelessWidget {
   final List todos;
   final TodoManageViewModel viewModel;
   final bool isDDay;
+  final bool isRoutine;
 
   const TodoListSection({
     super.key,
@@ -23,6 +26,7 @@ class TodoListSection extends StatelessWidget {
     required this.todos,
     required this.viewModel,
     required this.isDDay,
+    this.isRoutine = false,
   });
 
   @override
@@ -42,7 +46,10 @@ class TodoListSection extends StatelessWidget {
                 await Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => TodoInputScreen(isDDayTodo: isDDay),
+                    builder: (_) => TodoInputScreen(
+                      isDDayTodo: isDDay,
+                      isRoutine: isRoutine,
+                    ),
                   ),
                 );
                 viewModel.loadTodos();
@@ -101,7 +108,9 @@ class TodoListSection extends StatelessWidget {
                     final levelColor = getBorderColor(todo);
 
                     String? subtitle;
-                    if (isDDay) {
+                    if (isRoutine) {
+                      subtitle = _routineSubtitle(todo, viewModel.selectedDate);
+                    } else if (isDDay) {
                       final dDay =
                           todo.endDate
                               .difference(viewModel.selectedDate)
@@ -123,9 +132,8 @@ class TodoListSection extends StatelessWidget {
                       isDdayTodo: isDDay,
                       isChecked: isCompleted,
                       levelColor: levelColor,
-                      onDelete: () {
-                        viewModel.deleteTodoById(todo.id);
-                      },
+                      onDelete: () =>
+                          _handleDelete(context, todo, viewModel),
                       onTap: () async {
                         showModalBottomSheet(
                           context: context,
@@ -139,21 +147,29 @@ class TodoListSection extends StatelessWidget {
                                 isDaily: !isDDay,
                                 onEdit: () async {
                                   Navigator.pop(context); // 먼저 바텀시트 닫기
+                                  // 루틴은 occurrence가 아닌 series 템플릿을 편집해야 함
+                                  final editTarget = isRoutine
+                                      ? viewModel.routineSeries.firstWhere(
+                                          (s) => s.id == todo.seriesId,
+                                          orElse: () => todo,
+                                        )
+                                      : todo;
                                   await Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder:
                                           (_) => TodoInputScreen(
-                                            todo: todo,
+                                            todo: editTarget,
                                             isDDayTodo: isDDay,
+                                            isRoutine: isRoutine,
                                           ),
                                     ),
                                   );
                                   viewModel.loadTodos();
                                 },
                                 onDelete: () {
-                                  viewModel.deleteTodoById(todo.id);
                                   Navigator.pop(context); // 바텀시트 닫기
+                                  _handleDelete(context, todo, viewModel);
                                 },
                                 onDelay:
                                     isDDay
@@ -184,5 +200,30 @@ class TodoListSection extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String? _routineSubtitle(Todo todo, DateTime selectedDate) {
+    final series = viewModel.routineSeries.firstWhere(
+      (s) => s.id == todo.seriesId,
+      orElse: () => todo,
+    );
+    return routineSubtitle(
+      occurrence: todo,
+      selectedDate: selectedDate,
+      series: series,
+    );
+  }
+
+  Future<void> _handleDelete(
+    BuildContext context,
+    Todo todo,
+    TodoManageViewModel viewModel,
+  ) async {
+    if (!todo.isRecurring) {
+      viewModel.deleteTodoById(todo.id);
+      return;
+    }
+    final seriesId = todo.seriesId ?? todo.id;
+    await viewModel.deleteRecurringSeries(seriesId);
   }
 }

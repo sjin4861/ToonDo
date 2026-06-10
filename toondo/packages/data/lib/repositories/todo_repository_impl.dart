@@ -75,6 +75,9 @@ class TodoRepositoryImpl implements TodoRepository {
           comment: todo.comment,
           eisenhower: todo.eisenhower,
           showOnHome: todo.showOnHome,
+          recurrence: todo.recurrence,
+          seriesId: todo.seriesId,
+          occurrenceDate: todo.occurrenceDate,
         );
         return localDatasource.saveTodo(createdTodo);
       } catch (_) {
@@ -94,6 +97,9 @@ class TodoRepositoryImpl implements TodoRepository {
       comment: todo.comment,
       eisenhower: todo.eisenhower,
       showOnHome: todo.showOnHome,
+      recurrence: todo.recurrence,
+      seriesId: todo.seriesId,
+      occurrenceDate: todo.occurrenceDate,
     );
     return localDatasource.saveTodo(localTodo);
   }
@@ -204,7 +210,7 @@ class TodoRepositoryImpl implements TodoRepository {
 
     final normalizedStatus = status >= 1.0 ? 1.0 : 0.0;
 
-    // 상태 업데이트 후 Todo 객체 생성
+    // 상태 업데이트 후 Todo 객체 생성 (반복 메타데이터 보존)
     final updated = Todo(
       id: todo.id,
       title: todo.title,
@@ -215,6 +221,9 @@ class TodoRepositoryImpl implements TodoRepository {
       comment: todo.comment,
       eisenhower: todo.eisenhower,
       showOnHome: todo.showOnHome,
+      recurrence: todo.recurrence,
+      seriesId: todo.seriesId,
+      occurrenceDate: todo.occurrenceDate,
     );
     await localDatasource.updateTodo(updated);
   }
@@ -222,5 +231,34 @@ class TodoRepositoryImpl implements TodoRepository {
   int? _tryParseGoalId(String? goalId) {
     if (goalId == null) return null;
     return int.tryParse(goalId);
+  }
+
+  @override
+  Future<List<Todo>> getRecurringSeries() async {
+    return localDatasource.getRecurringSeries();
+  }
+
+  @override
+  Future<void> deleteSeries(String seriesId) async {
+    await localDatasource.deleteSeriesAndUnfinishedOccurrences(seriesId);
+  }
+
+  @override
+  Future<Todo?> findOccurrence({
+    required String seriesId,
+    required DateTime occurrenceDate,
+  }) async {
+    return localDatasource.findOccurrence(
+      seriesId: seriesId,
+      occurrenceDate: occurrenceDate,
+    );
+  }
+
+  @override
+  Future<Todo> materializeOccurrence(Todo occurrence) async {
+    assert(occurrence.seriesId != null && occurrence.occurrenceDate != null,
+        'materializeOccurrence requires seriesId and occurrenceDate');
+    await localDatasource.saveTodo(occurrence);
+    return occurrence;
   }
 }
