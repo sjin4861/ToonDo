@@ -28,7 +28,10 @@
 - **슬라임 캐릭터와의 상호작용 🟢**: 목표 달성에 따른 캐릭터 피드백 및 젤리 보상 시스템.
 - **체계적인 목표 관리 & 분석 📊**: 학기/기간별 목표 설정 및 달성 패턴 데이터 분석.
 - **아이젠하워 매트릭스 투두 ✅**: 긴급도와 중요도에 따른 우선순위 관리.
+- **반복 투두(루틴) 🔁**: 매일/매주/매달 빈도와 종료 조건(무한 ∞ · 특정 날짜 D-N · 횟수 N회)을 RRULE 스타일로 설정. 홈/투두 화면에서 잔여 횟수가 자동 카운트다운.
 - **슬라임 꾸미기 🎨**: 획득한 젤리를 활용한 캐릭터 커스터마이징.
+- **광고 배너 📣**: 목표 관리 화면 상단 배너로 외부 캠페인 노출.
+- **약관 동의 흐름 📜**: Welcome 단계에서 약관 바텀시트를 통한 명시적 동의 처리.
 
 ## Tech Stack & Architecture
 
@@ -155,13 +158,16 @@ flutter test --plain-name "<test name>"     # 특정 테스트만
 
 ```mermaid
 flowchart TD
-    Start[Start] --> CheckAuth{로그인 확인}
+    Start[Start] --> Welcome[Welcome · 약관 동의]
+    Welcome --> CheckAuth{로그인 확인}
     CheckAuth -- Yes --> HomeScreen[홈 화면]
     CheckAuth -- No --> AuthScreen[로그인/회원가입]
     AuthScreen --> HomeScreen
     HomeScreen --> GoalScreen[목표 관리]
     HomeScreen --> TodoScreen[투두 관리]
     HomeScreen --> SlimeScreen[슬라임 상호작용]
+    TodoScreen --> RoutineSection[루틴 섹션]
+    RoutineSection -->|매일/주/월 반복| TodoScreen
     TodoScreen -->|완료 시| Jelly[젤리 획득]
     Jelly --> SlimeScreen
 ```
