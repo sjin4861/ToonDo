@@ -115,30 +115,35 @@ class HomeListItem extends StatelessWidget {
                       ],
                     ],
                   ),
-                  SizedBox(height: AppSpacing.v4),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          _buildSubtitle(dateRange, dDay),
-                          style: AppTypography.caption3Regular.copyWith(
-                            color: AppColors.status100_50,
-                            height: 1.2,
+                  if (_buildSubtitle(dateRange, dDay) != null ||
+                      todo != null) ...[
+                    SizedBox(height: AppSpacing.v4),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            _buildSubtitle(dateRange, dDay) ?? '',
+                            style: AppTypography.caption3Regular.copyWith(
+                              color: AppColors.status100_50,
+                              height: 1.2,
+                            ),
                           ),
                         ),
-                      ),
-                      if (todo != null) ...[
-                        SizedBox(width: AppSpacing.h8),
-                        Text(
-                          '${progress.toInt()}%',
-                          style: AppTypography.caption3Bold.copyWith(
-                            color: progress >= 100 ? AppColors.green300 : AppColors.status100_75,
-                            height: 1.2,
+                        if (todo != null) ...[
+                          SizedBox(width: AppSpacing.h8),
+                          Text(
+                            progress >= 100 ? '완료' : '진행 중',
+                            style: AppTypography.caption3Bold.copyWith(
+                              color: progress >= 100
+                                  ? AppColors.green300
+                                  : AppColors.status100_75,
+                              height: 1.2,
+                            ),
                           ),
-                        ),
+                        ],
                       ],
-                    ],
-                  ),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -148,7 +153,7 @@ class HomeListItem extends StatelessWidget {
     );
   }
 
-  String _buildSubtitle(String dateRange, String? dDay) {
+  String? _buildSubtitle(String dateRange, String? dDay) {
     // 루틴 occurrence는 종료 조건에 따라 ∞ / D-N / N회로 표시.
     if (todo != null && todo!.isRecurringOccurrence) {
       final series = routineSeries?.firstWhere(
@@ -162,6 +167,8 @@ class HomeListItem extends StatelessWidget {
       );
       if (sub != null) return sub;
     }
+    // 데일리 투두(시작=종료)는 날짜 표시 생략.
+    if (todo != null && !todo!.isDDayTodo()) return null;
     return dDay != null ? '$dateRange $dDay' : dateRange;
   }
 

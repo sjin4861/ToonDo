@@ -111,10 +111,17 @@ class TodoListSection extends StatelessWidget {
                     if (isRoutine) {
                       subtitle = _routineSubtitle(todo, viewModel.selectedDate);
                     } else if (isDDay) {
-                      final dDay =
-                          todo.endDate
-                              .difference(viewModel.selectedDate)
-                              .inDays;
+                      final end = DateTime(
+                        todo.endDate.year,
+                        todo.endDate.month,
+                        todo.endDate.day,
+                      );
+                      final base = DateTime(
+                        viewModel.selectedDate.year,
+                        viewModel.selectedDate.month,
+                        viewModel.selectedDate.day,
+                      );
+                      final dDay = end.difference(base).inDays;
                       final dDayStr =
                           dDay > 0
                               ? 'D-$dDay'
