@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -6,9 +7,9 @@ import 'package:presentation/viewmodels/welcome/welcome_viewmodel.dart';
 import 'package:presentation/designsystem/colors/app_colors.dart';
 import 'package:presentation/designsystem/spacing/app_spacing.dart';
 import 'package:presentation/designsystem/typography/app_typography.dart';
-import 'package:presentation/designsystem/components/buttons/app_google_login_button.dart';
-import 'package:presentation/designsystem/components/buttons/app_kakao_login_button.dart';
 import 'package:presentation/designsystem/components/buttons/app_phone_login_button.dart';
+import 'package:presentation/views/mypage/help_guide/legal/legal_texts.dart';
+import 'package:presentation/views/welcome/widget/legal_bottom_sheet.dart';
 
 class WelcomeBody extends StatelessWidget {
   const WelcomeBody({super.key});
@@ -28,7 +29,7 @@ class WelcomeBody extends StatelessWidget {
           // SizedBox(height: AppSpacing.v52), // 소셜 로그인 사용 시 주석 해제
           _buildButtons(context),
           Spacer(),
-          _buildTermsText(),
+          _buildTermsText(context),
         ],
       ),
     );
@@ -105,17 +106,49 @@ class WelcomeBody extends StatelessWidget {
     );
   }
 
-  Widget _buildTermsText() {
+  Widget _buildTermsText(BuildContext context) {
+    final base = AppTypography.caption3Regular.copyWith(
+      color: AppColors.green600,
+    );
+    final linkStyle = base.copyWith(
+      decoration: TextDecoration.underline,
+      decorationColor: AppColors.green600,
+      fontWeight: FontWeight.w600,
+    );
     return SafeArea(
       top: false,
       child: Padding(
         padding: const EdgeInsets.only(bottom: 12),
-        child: Text(
-            '버튼을 눌러 다음 화면으로 이동 시,\n서비스 이용 약관 및 개인정보 처리 방안에 동의한 것으로 간주합니다.',
-            textAlign: TextAlign.center,
-            style: AppTypography.caption3Regular.copyWith(
-              color: AppColors.green600
-            ),
+        child: RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            style: base,
+            children: [
+              const TextSpan(text: '버튼을 눌러 다음 화면으로 이동 시,\n'),
+              TextSpan(
+                text: '서비스 이용 약관',
+                style: linkStyle,
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () => LegalBottomSheet.show(
+                        context,
+                        title: '서비스 이용 약관',
+                        content: LegalTexts.termsOfService,
+                      ),
+              ),
+              const TextSpan(text: ' 및 '),
+              TextSpan(
+                text: '개인정보 수집 및 이용',
+                style: linkStyle,
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () => LegalBottomSheet.show(
+                        context,
+                        title: '개인정보 수집 및 이용',
+                        content: LegalTexts.privacyPolicy,
+                      ),
+              ),
+              const TextSpan(text: '에 동의한 것으로 간주합니다.'),
+            ],
+          ),
         ),
       ),
     );
